@@ -88,18 +88,6 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      utvalgTxt <- NakkeUtvalg$utvalgTxt
 
 
-     if (valgtVar == 'LipidI63u80') {
-          #		'Hjerneinfarkt (I63) <= 80 år, levende utskrevet
-          RegData <- RegData[which(RegData$UtskrTil != 10), ] # RegData$Slagdiagnose==2 & RegData$Alder <=80
-          diagnose <- 2	#I63
-          minald <- 18
-          maxald <- 80
-          RegData$Variabel[RegData$UtStatinerLipid==1] <- 1
-     }
-
-
-     RegData$Variabel <- 0
-
      if (valgtVar == 'Alder') {
           #Andel over 70 år
           RegData$Variabel[which(RegData[ ,valgtVar] >= 70)] <- 1

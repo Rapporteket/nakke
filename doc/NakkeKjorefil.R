@@ -83,7 +83,7 @@ datoTil <- '2016-04-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'SmertestillPreOp'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'OprIndikMyelopati'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, ErstatningPreOp,
 		  #Fornoyd12mnd, FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, NytteOpr3mnd, NytteOpr12mnd
@@ -114,7 +114,7 @@ for (valgtVar in variable) {
 #------------------------------ Andel, per enhet --------------------------
 #-----------------------------------------------------------------------------------
 rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T) #Nakke18012016, AlleVarNum2016-01-04Num
+NakkeData <- read.table('C:/Registre/Nakke/AlleVarNum2016-10-03.csv', sep=';', header=T) #Nakke18012016, AlleVarNum2016-01-04Num
 RegData <- NakkeData
 setwd("C:/ResultattjenesteGIT/Nakke/")
 
@@ -124,19 +124,17 @@ reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-04-01'
+datoTil <- '2015-12-31'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-libkat <- 'C:/Registre/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
 tittel=1
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'NRSsmerteArmEndr12mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'OprIndikMyelopati'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, NDIendr12mnd, NytteOpr3mnd, NytteOpr12mnd
 		  #NRSsmerteArmEndr12mnd,Verre3mnd, Verre12mnd, OprIndikMyelopati, Roker, Saardren,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
-setwd()
 outfile <- paste(valgtVar, '_ShusSyn.png', sep='')	#''	#Navn angis av Jasper
 FigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
