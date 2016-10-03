@@ -28,7 +28,7 @@ reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-05-01'
+datoTil <- '2015-12-31'
 erMann <- 0			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus

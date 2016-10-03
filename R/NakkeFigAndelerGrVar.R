@@ -288,8 +288,10 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (valgtVar=='OprIndikMyelopati') {
           #LegeSkjema. Andel med OprIndikMyelopati=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[which(RegData$OprIndikMyelopati %in% 0:1), ]
-          RegData$Variabel <- RegData$OprIndikMyelopati
+          #RegData <- RegData[which(RegData$OprIndikMyelopati %in% 0:1), ]
+          #RegData$Variabel <- RegData$OprIndikMyelopati
+       #Antar tomme = nei. (Tore 3.okt. 2016)
+       RegData$Variabel[which(RegData$OprIndikMyelopati == 1)] <- 1
           TittelUt <- 'Operasjonsårsak: Myelopati'
      }
 
