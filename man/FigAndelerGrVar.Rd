@@ -28,7 +28,9 @@ FornoydBeh3mnd: Fornøyde pasienter, 3 mnd.
 KomplinfekDyp3mnd: Pasientrapportert dyp infeksjon, 3 mnd.
 KomplinfekOverfl3mnd: Overfladisk infeksjon, 3 mnd.
 KomplStemme3mnd: Stemmevansker, 3 mnd.
+KomplStemme12mnd: Stemmevansker, 12 mnd.
 KomplSvelging3mnd: Svelgvansker, 3 mnd.
+KomplSvelging12mnd: Svelgvansker, 12 mnd.
 Misfor12mnd: Misfornøyde pasienter, 12 mnd.
 Misfor3mnd: Misfornøyde pasienter, 3 mnd.
 NDIendr12mnd: Minst 30% forbedring av NDI, 12 mnd.

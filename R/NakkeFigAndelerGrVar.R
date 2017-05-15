@@ -88,18 +88,6 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      utvalgTxt <- NakkeUtvalg$utvalgTxt
 
 
-     if (valgtVar == 'LipidI63u80') {
-          #		'Hjerneinfarkt (I63) <= 80 år, levende utskrevet
-          RegData <- RegData[which(RegData$UtskrTil != 10), ] # RegData$Slagdiagnose==2 & RegData$Alder <=80
-          diagnose <- 2	#I63
-          minald <- 18
-          maxald <- 80
-          RegData$Variabel[RegData$UtStatinerLipid==1] <- 1
-     }
-
-
-     RegData$Variabel <- 0
-
      if (valgtVar == 'Alder') {
           #Andel over 70 år
           RegData$Variabel[which(RegData[ ,valgtVar] >= 70)] <- 1
@@ -288,8 +276,10 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (valgtVar=='OprIndikMyelopati') {
           #LegeSkjema. Andel med OprIndikMyelopati=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[which(RegData$OprIndikMyelopati %in% 0:1), ]
-          RegData$Variabel <- RegData$OprIndikMyelopati
+          #RegData <- RegData[which(RegData$OprIndikMyelopati %in% 0:1), ]
+          #RegData$Variabel <- RegData$OprIndikMyelopati
+       #Antar tomme = nei. (Tore 3.okt. 2016)
+       RegData$Variabel[which(RegData$OprIndikMyelopati == 1)] <- 1
           TittelUt <- 'Operasjonsårsak: Myelopati'
      }
 

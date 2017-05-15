@@ -1,6 +1,7 @@
 #' Henter data registrert for Degenerativ Nakke
 #'
-#' Henter data for Degenerativ Nakke fra "staging"
+#' Henter data for Degenerativ Nakke fra "staging"-database.
+#' Kan benytte datoFra og datoFra som input.
 #'
 #' @inheritParams FigAndeler
 #'
@@ -23,13 +24,11 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	Arbeidstaus3mnd,
 	ArbeidstausPreOp,
 	ASAgrad,
-	AVD_RESH,
-	Avdeling,
+	AvdRESH,
 	BMI,
 	BMIkategori,
 	CentreID12mnd,
 	CentreID3mnd,
-	CentreIdPas,
 	Dagkirurgi,
 	DelvisSykemeldtPros12mnd,
 	DelvisSykemeldtPros3mnd,
@@ -49,12 +48,11 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	ForlopsID,
 	FornoydBeh12mnd,
 	FornoydBeh3mnd,
+	Fylke,
 	Helsetilst12mnd,
 	Helsetilst3mnd,
 	HelsetilstPreOp,
-	HelsetilstPreOpMissing,
 	Hoyde,
-	HoydeMissing,
 	InngrepType,
 	Kjonn,
 	KnivtidSluttMin,
@@ -83,7 +81,6 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	LegeskjemaStatus,
 	LiggeDognPostop,
 	LiggeDognTotalt,
-	MceCentreID,
 	Morsmal,
 	NDIscore12mnd,
 	NDIscore3mnd,
@@ -99,7 +96,6 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	OprDato,
 	OprIndikAnnet,
 	OprIndikasjon,
-	OprIndikasjonUtfylt,
 	OprIndikMyelopati,
 	OprIndikParese,
 	OprIndikPareseGrad,
@@ -107,8 +103,6 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	OprIndikSmerteLokNakke,
 	OprIndikSmerter,
 	OprKode,
-	ORG_RESH,
-	Organisasjon,
 	Parese12mnd,
 	Parese3mnd,
 	ParesePreOp,
@@ -121,10 +115,7 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	RadiologiMyelografi,
 	RadiologiRtgCcol,
 	RadiologiRtgCcolFunkOpptak,
-	RadiologiUndersokelseUtfylt,
 	Reopr90d,
-	RHF,
-	RHF_RESH,
 	Roker,
 	RtgFunnANNET,
 	Saardren,
@@ -155,243 +146,16 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	UtDato,
 	VarighetSykeMeld12mnd,
 	VarighetSykeMeld3mnd,
-	Vekt,
-	VektMissing
+	Vekt
 FROM AlleVarNum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
 
 RegData <- rapbase::LoadRegData(registryName, query, dbType)
 
 #FROM AlleVarNum INNER JOIN ForlopsOversikt ON AlleVarNum.MCEID = ForlopsOversikt.ForlopsID
-
-
-#	AntibiotikaAntDogn
-#	AntibiotikaDose
-#	AntibiotikaDoseAntall
-#	AntibiotikaIntEvtAntDogn
-#	AntibiotikaIntKunOprDag
-#	AntibiotikaMedikament
-#	BakreFusjonDistaltNiv
-#	BakreFusjonProximaltNiv
-#	BakreFusjonSkruer
-#	BakreFusjonStag
-#	BakreFusjonWire
-#	BenGraftAutograft
-#	BenGraftBankben
-#	BenGraftBensubstitutt
-#	DodsDato
-#	DodsfallOpphold
-#	DodsfallOppholdAnnetSpes
-#	EMSblareTarm12mnd
-#	EMSblareTarm3mnd
-#	EMSblareTarmPreOp
-#	EMSgangeFunk12mnd
-#	EMSgangeFunk3mnd
-#	EMSgangeFunkPreOp
-#	EMShandFunk12mnd
-#	EMShandFunk3mnd
-#	EMShandFunkPreOp
-#	EMSkoordinasjon12mnd
-#	EMSkoordinasjon3mnd
-#	EMSkoordinasjonPreOp
-#	EMSnummenhet12mnd
-#	EMSnummenhet3mnd
-#	EMSnummenhetPreOp
-#	EqAngst12mnd
-#	EqAngst3mnd
-#	EqGange12mnd
-#	EqGange3mnd
-#	EqGangePreOp
-#	EqPersStell12mnd
-#	EqPersStell3mnd
-#	EqPersStellPreOp
-#	EqSmerte12mnd
-#	EqSmerte3mnd
-#	EqSmertePreOp
-#	EqVanlGjMaal12mnd
-#	EqVanlGjMaal3mnd
-#	EqVanlGjMaalPreOp
-#	ForlopsLaget
-#	ForlopsLagetAv
-#	ForlopsOppdaterAv
-#	ForlopsOppdatert
-#	FriskmeldtDato12mnd
-#	FriskmeldtDato3mnd
-#	NDIarbeid12mnd
-#	NDIarbeid3mnd
-#	NDIarbeidPreOp
-#	NDIbilkjoring12mnd
-#	NDIbilkjoring3mnd
-#	NDIbilkjoringPreOp
-#	NDIfritid12mnd
-#	NDIfritid3mnd
-#	NDIfritidPreOp
-#	NDIhodepineE12mnd
-#	NDIhodepineE3mnd
-#	NDIhodepinePreOp
-#	NDIkonsentrasjon12mnd
-#	NDIkonsentrasjon3mnd
-#	NDIkonsentrasjonPreOp
-#	NDIlesing12mnd
-#	NDIlesing3mnd
-#	NDIlesingPreOp
-#	NDIlofting12mnd
-#	NDIlofting3mnd
-#	NDIloftingPreOp
-#	NDIpersStell12mnd
-#	NDIpersStell3mnd
-#	NDIpersStellPreOp
-#	NDIsmerte12mnd
-#	NDIsmerte3mnd
-#	NDIsmertePreOp
-#	NDIsovn12mnd
-#	NDIsovn3mnd
-#	NDIsovnPreOp
-#    NRSsmerteArm3mnd
-#    NRSsmerteArmMissingPreOp      Ikke brukbar. Manglende verdier for andre enn missing=1
-#    NRSsmerteNakkeMissingPreOp    Ikke brukbar. Manglende verdier for andre enn missing=1
-#    NRSsmerteNakke12mnd
-#	NRSsmerteHodet12mnd
-#	NRSsmerteHodet3mnd
-#	NRSsmerteHodetMissingPreOp
-#	NRSsmerteHodetPreOp
-#	NRSsmerteNakke3mnd
-#	OppFolgLaget12mnd
-#	OppFolgLaget3mnd
-#	OppFolgLagetAv12mnd
-#	OppFolgLagetAv3mnd
-#	OppFolgOppdatert12mnd
-#	OppFolgOppdatert3mnd
-#	OppFolgOppdatertAv12mnd
-#	OppFolgOppdatertAv3mnd
-#	OprIndikMyelopatiMotorisk
-#	OprIndikMyelopatiSensorisk
-#	OprMetodeAndre
-#	OprMetodeAnnenBakreDekompr
-#	OprMetodeBakreFusjon
-#	OprMetodeDiskektomi
-#	OprMetodeDiskektomiBenblokk
-#	OprMetodeDiskektomiCage
-#	OprMetodeDiskektomiPlate
-#	OprMetodeDiskektomiSkiveprotese
-#	OprMetodeForamenotomiBakreBiLat
-#	OprMetodeForamenotomiBakreUniLat
-#	OprMetodeKirDekompresjon
-#	OprMetodeKorpektomi
-#	OprMetodeKorpektomiBenblokk
-#	OprMetodeKorpektomiBur
-#	OprMetodeKorpektomiPlate
-#	OprMetodeMikroMakroEndo
-#	OprMetodeTilgangBakre
-#	OprMetodeTilgangFremre
-#	OprMetodeTilgangFremreH
-#	OprMetodeTilgangFremreV
-#	PareseDager
-#	PareseTimer
-#	PareseUker
-#	PasientDod
-#	PasLaget
-#	PasLagetAv
-#	PasOppdatert
-#	PasOppdatertAv
-#	PatSkjemaLaget
-#	PatSkjemaLagetAv
-#	PatSkjemaOppdatert
-#	PatSkjemaOppdatertAv
-#	PerOpKomplAnafylaksiI
-#	PerOpKomplAnnenNerveskade
-#	PerOpKomplAnnet
-#	PerOpKomplBlodning
-#	PerOpKomplDurarift
-#	PerOpKomplFeilplasseringImplant
-#	PerOpKomplKardioVaskulare
-#	PerOpKomplMedullaskade
-#	PerOpKomplNerverotSkade
-#	PerOpKomplOpFeilNivaa
-#	PerOpKomplOsofagusSkade
-#	PerOpKomplRespiratorisk
-#	PerOpKomplSkadeStoreBlodkar
-#	PostnrPas
-#	PoststedPas
-#	RanawatKlassifikasjon
-#	ReoprInnen90DagerUfylt
-#    RokerPas,
-#	RtgFunnCervicalSpStenose
-#	RtgFunnDegnerasjonNakke
-#	RtgFunnIntrMedHoysingnalMR
-#	RtgFunnNormal
-#	RtgFunnProlaps
-#	RtgFunnRotkanalstenose
-#	RtgFunnSpondylolistese
-#	RtgFunnUtfylt
-#	SamtykkeStatus
-#	SideNivaaC0_C1
-#	SideNivaaC0C1H
-#	SideNivaaC0C1V
-#	SideNivaaC1C2
-#	SideNivaaC1C2H
-#	SideNivaaC1C2V
-#	SideNivaaC2C3
-#	SideNivaaC2C3H
-#	SideNivaaC2C3V
-#	SideNivaaC3C4
-#	SideNivaaC3C4H
-#	SideNivaaC3C4V
-#	SideNivaaC4C5
-#	SideNivaaC4C5H
-#	SideNivaaC4C5V
-#	SideNivaaC5C6
-#	SideNivaaC5C6H
-#	SideNivaaC5C6V
-#	SideNivaaC6C7
-#	SideNivaaC6C7H
-#	SideNivaaC6C7V
-#	SideNivaaC7TH1
-#	SideNivaaC7TH1H
-#	SideNivaaC7TH1V
-#	SmerteLokOverEks12mnd
-#	SmerteLokOverEks3mnd
-#	SmerteLokOverEksPreOp
-#	SmerteLokSide12mnd
-#	SmerteLokSide3mnd
-#	SmerteLokSidePreOp
-#	Smertestill12mnd
-#	Smertestill3mnd
-#	SmertestillBruk12mnd
-#	SmertestillBruk3mnd
-#	SykdAnnenendokrin
-#	SykdAnnenreumatisk
-#	SykdAnnet
-#	SykdBechtrew
-#	SykdCarpalTunnelSyndr
-#	SykdCerebrovaskular
-#	SykdDepresjonAngst
-#	SykdHjertekar
-#	SykdHodepine
-#	SykdHypertensjon
-#	SykDiabetesMellitus
-#	SykdImmunSuprBeh
-#	SykdKreft
-#	SykdKroniskLunge
-#	SykdKroniskNevrologisk
-#	SykdKrSmerterMuskelSkjelSyst
-#	SykdOsteoporose
-#	SykdReumatoidartritt
-#	SykdSkulderImpigment
-#	SykdVaskularClaudicatio
-#	SykdWhiplashNakke
-#	TidlSkulderPlager12mnd
-#	TidlSkulderPlager3mnd
-#	TidlSkulderPlagerPreOp
-#	UforeTrygdPros12mnd
-#	UsEmgNevrografi
-#	UsRotblokkade
-#	UtfyltDato12mnd
-#	UtfyltDato3mnd
-#	UtfyltDatoLegeskjema
-#	UtfyltDatoPas
-#	YrkeFysiskeKrav
-
+#Tatt ut, mai 2017:
+	#AVD_RESH,Avdeling,CentreIdPas,HelsetilstPreOpMissing,HoydeMissing,MceCentreID,OprIndikasjonUtfylt,ORG_RESH,
+	#	Organisasjon,RadiologiUndersokelseUtfylt,RHF,RHF_RESH,VektMissing)
 
 
 return(RegData)

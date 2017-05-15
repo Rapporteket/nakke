@@ -40,7 +40,7 @@ Roker: Røykere
 Saardren: Andel som får sårdren
 SmertestillPreOp: Bruker smertestillende, preop.
 SymptVarighetNakkeHode: Varighet av hode-/nakkesmerter over 1 år
-SymptVarighetSmerterUker: Varighet av smerter minst 1 år
+SymptVarighetArmer: Varighet av armsmerter, minst 1 år  #' SymptVarighetSmerterUker
 UforetrygdPreOp: Søkt eller planlegger å søke uføretrygd?
 Utdanning: Andel høyskole-/universitetsutdannede
 Verre12mnd: Klart verre, 12 mnd.

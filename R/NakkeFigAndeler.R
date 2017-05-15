@@ -89,7 +89,6 @@ indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
 	}
 
-
 if (valgtVar=='Alder') {
 	gr <- c(0,seq(20,90,10),150)
 	RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)
