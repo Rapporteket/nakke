@@ -1,6 +1,6 @@
 #' Henter data registrert for Degenerativ Nakke
 #'
-#' Henter data for Degenerativ Nakke fra "staging"-database. 
+#' Henter data for Degenerativ Nakke fra "staging"-database.
 #' Kan benytte datoFra og datoFra som input.
 #'
 #' @inheritParams FigAndeler
@@ -29,7 +29,6 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	BMIkategori,
 	CentreID12mnd,
 	CentreID3mnd,
-	CentreIdPas,
 	Dagkirurgi,
 	DelvisSykemeldtPros12mnd,
 	DelvisSykemeldtPros3mnd,
@@ -155,7 +154,7 @@ RegData <- rapbase::LoadRegData(registryName, query, dbType)
 
 #FROM AlleVarNum INNER JOIN ForlopsOversikt ON AlleVarNum.MCEID = ForlopsOversikt.ForlopsID
 #Tatt ut, mai 2017:
-	#AVD_RESH,Avdeling,HelsetilstPreOpMissing,HoydeMissing,MceCentreID,OprIndikasjonUtfylt,ORG_RESH,
+	#AVD_RESH,Avdeling,CentreIdPas,HelsetilstPreOpMissing,HoydeMissing,MceCentreID,OprIndikasjonUtfylt,ORG_RESH,
 	#	Organisasjon,RadiologiUndersokelseUtfylt,RHF,RHF_RESH,VektMissing)
 
 
