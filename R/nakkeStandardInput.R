@@ -13,7 +13,7 @@ nakkeStandardInput <- function(id, label = "Brukervalg") {
 
   # make values and lables for reshID
   reshList <-
-    setNames(as.list(unique(RegData$AVD_RESH)), unique(RegData$SykehusNavn))
+    setNames(as.list(unique(RegData$AvdRESH)), unique(RegData$SykehusNavn))
 
   tagList(
     selectInput(ns("erMann"),

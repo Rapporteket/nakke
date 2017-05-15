@@ -17,11 +17,12 @@
 #------------------------------ (Fordelinger) --------------------------
 rm(list=ls())
 library(Nakke)
-NakkeData <- read.table('C:/Registre/Nakke/NakkeSQL_2016-05-10prod.csv', sep=';', header=T) #Nakke18012016, AlleVarNum2016-01-04Num
-library(synthpop)
+NakkeData <- read.table('C:/Registre/Nakke/AlleVarNum2017-05-15.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
+#library(synthpop)
 #variable <- names(NakkeData)[-which(names(NakkeData)=='OprDato')]
-NakkeDataSyn <- syn(NakkeData[ ,variable], method = "sample", seed = 500)
-RegData <- cbind(OprDato = NakkeData$OprDato, NakkeDataSyn$syn)
+#NakkeDataSyn <- syn(NakkeData[ ,variable], method = "sample", seed = 500)
+#RegData <- cbind(OprDato = NakkeData$OprDato, NakkeDataSyn$syn)
+
 # Inndata til funksjon:
 #...NB: SkjemaID
 reshID <- 601161 #De tre med flest reg:
@@ -40,7 +41,7 @@ valgtVar <- 'EqAngstPreOp'	#Må velge... Alder, AntallNivaaOpr, Antibiotika, Arb
       #SivilStatus, Saardren,SmertestillBrukPreOp, SymptVarighetArmer, SymptVarighetNakkeHode,
       #TidlOpr, TidlOprAntall, UforetrygdPreOp,Utdanning
 
-outfile <- paste(valgtVar, '_fordSyn.png', sep='')	#''	#Navn angis av Jasper
+outfile <- paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Nakke/")
 
 FigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
@@ -69,7 +70,7 @@ for (valgtVar in variable) {
 #------------------------------ Andel, utvikling over tid --------------------------
 #-----------------------------------------------------------------------------------
 rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T) #Nakke18012016, AlleVarNum2016-01-04Num
+NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
 RegData <- NakkeData
 setwd("C:/ResultattjenesteGIT//Nakke")
 
@@ -114,7 +115,7 @@ for (valgtVar in variable) {
 #------------------------------ Andel, per enhet --------------------------
 #-----------------------------------------------------------------------------------
 rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/AlleVarNum2016-10-03.csv', sep=';', header=T) #Nakke18012016, AlleVarNum2016-01-04Num
+NakkeData <- read.table('C:/Registre/Nakke/AlleVarNum2016-10-03.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
 RegData <- NakkeData
 setwd("C:/ResultattjenesteGIT/Nakke/")
 
@@ -156,7 +157,7 @@ for (valgtVar in variable) {
 #------------------------------ Gjennomsnitt/Median per år --------------------------
 #-----------------------------------------------------------------------------------
 rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T) #Nakke18012016, AlleVarNum2016-01-04Num
+NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
 RegData <- NakkeData
 setwd("C:/Registre/Nakke/trunk/GjsnTid")
 
@@ -195,7 +196,7 @@ for (valgtVar in variable) {
 #------------------------------ Gjsn/med per enhet --------------------------
 #-----------------------------------------------------------------------------------
 rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T) #Nakke18012016, AlleVarNum2016-01-04Num
+NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
 RegData <- NakkeData
 # Inndata til funksjon:
 #...NB: SkjemaID

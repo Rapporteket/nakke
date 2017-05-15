@@ -20,7 +20,7 @@ NakkePreprosess <- function(RegData=RegData)
 	RegData$InnDato <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")
 	RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
 	#Variabel som identifiserer avdelingas resh
-	names(RegData)[which(names(RegData) == 'AVD_RESH')] <- 'ReshId'
+	names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
 	class(RegData$ReshId) <- 'numeric'
 
 
