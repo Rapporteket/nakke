@@ -14,4 +14,3 @@ nakkeStandardInput provides common ui uc for shiny Nakke
  @param label Label for this module
  @export
 }
-

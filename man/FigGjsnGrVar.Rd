@@ -52,4 +52,3 @@ Funksjon som genererer en figur med gjennomsnitt/median
 for hvert sykehus og kan ta inn ulike numeriske variable.
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 }
-

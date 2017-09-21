@@ -6,3 +6,6 @@ Nakke.Rproj
 NakkeFigAndelGrVar FEIL.jrxml
 *.pdf
 *.csv
+*.aux
+*.log
+

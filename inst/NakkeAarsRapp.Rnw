@@ -1,0 +1,80 @@
+\documentclass{article}
+
+\begin{document}
+
+
+\section{Resultater degenerativ nakke}
+
+I Norge drives nakkekirurgi kun ved nevrokirurgiske avdelinger knyttet til de fem
+universitetssykehusene i Oslo, Bergen, Trondheim, Stavanger og Tromsø, samt ved
+hovedsakelig ett privat sykehus (Oslofjordklinikken).
+Da der ikke finnes etablerte kvalitetsindikatorer for nakkekirurgi vil dette bli en
+viktig oppgave for NKR. Da en ny validering av datakvaliteten ikke er fullført grunnet
+uventede databaseproblemer, vises kun et generelt mål på pasient rapporterte
+tilfredshet (PREM) i årets rapport. I neste årsrapport vil NKR presentere sykehusvise
+kvalitetsdata splittet på diagnose, behandling.
+Pasienttilfredshet (PREM)
+
+<<NAKKE, echo=FALSE, eval=FALSE>>=
+rm(list=ls())
+library(Nakke)
+load('A:/Nakke/NakkeAarsrapp2016.Rdata') #RegData
+setwd('C:/ResultattjenesteGIT//nkr/aarsrapp')
+
+# Preprosessere data:
+RegData <- NakkePreprosess(RegData=RegData)
+	#Kjønnsvariabel:ErMann - vil senere benytte denne
+	#RegData$ErMann <- RegData$Kjonn
+	#RegData$ErMann[which(RegData$Kjonn == 2)] <- 0
+	#RegData$InnDato <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")
+	#RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
+	#names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
+	#class(RegData$ReshId) <- 'numeric'
+
+
+#Fremre, uten Myelopati
+#Bakre tilgang, med Myelopati
+
+
+#Andel over 70 år per sykehus
+Andel70aar <- FigAndelerGrVar(RegData=RegData, valgtVar='Alder', outfile='Alder70.pdf')
+
+KlartBedre <- FigAndelerGrVar(RegData=RegData, valgtVar='NytteOpr12mnd', outfile='NytteOpr12mnd.pdf')
+
+#Stemmevansker3mnd, fremre, uten myelopati
+Stemmevansker3mnd <- FigAndelerGrVar(RegData=RegData, valgtVar='NytteOpr12mnd', outfile='NytteOpr12mnd.pdf')
+
+#Svelgvansker3mnd, fremre, uten myelopati
+Svelgvansker3mnd <- FigAndelerGrVar(RegData=RegData, valgtVar='NytteOpr12mnd', outfile='NytteOpr12mnd.pdf')
+
+
+#Bruk av antibiotikaprofylakse (fremre, bakre)
+
+#Brukav sårdren, fremre, uten myelopati
+
+#Sårinfeksjon, 3mnd, kun bakre kirurgi
+
+#Gjennomsnittlig bedreing, NDI: Fremre uten myelopati
+#Gjennomsnittlig bedreing, NDI: Bakre med myelopati
+
+#Bedring av armsmerte (NRS??), fremre uten myelopati
+
+#Andel fornøyde med behandlinga, fremre
+#Andel fornøyde med behandlinga, bakre
+
+
+@
+
+
+Pasienter som opereres i nakken for degenerative tilstander har armsmerte med
+eller uten funksjonssvikt (radikulopati), varierende grad av nakkesmerter og noen
+har ryggmargspåvirkning (myelopati). Som hovedregel kan ikke pasienter som
+opereres på grunn av ryggmargspåvirkning påregne bedring i samme grad som de
+som behandles for armsmerte. Figur 3.21 viser at også andelen som opereres for
+myelopati varierer mellom sykehusene.
+
+Figur 3.21: Andel pasienter som opereres for ryggmargspåvirkning (myelopati) ved
+norske sykehus.
+
+
+\end{document}

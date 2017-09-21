@@ -25,4 +25,3 @@ NakkeLibUtvalg(RegData, datoFra, datoTil, minald = 0, maxald = 130,
 \description{
 Funksjon som gjør utvalg av dataene, returnerer det reduserte datasettet og utvalgsteksten.
 }
-

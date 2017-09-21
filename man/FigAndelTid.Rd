@@ -81,4 +81,3 @@ Funksjon som genererer en figur med andeler av en variabel for hvert år.
 \details{
 Detaljer
 }
-

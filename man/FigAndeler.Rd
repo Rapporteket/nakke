@@ -79,4 +79,3 @@ En figur med søylediagram (fordeling) av ønsket variabel
 Søylediagrammet viser fordelinga til den valgte variabelen. Søylene er horisontale eller vertikale
 avhengig av hvor stor plass kategorinavnet til søyla tar.
 }
-

@@ -17,11 +17,14 @@
 #------------------------------ (Fordelinger) --------------------------
 rm(list=ls())
 library(Nakke)
-NakkeData <- read.table('C:/Registre/Nakke/AlleVarNum2017-05-15.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
-#library(synthpop)
-#variable <- names(NakkeData)[-which(names(NakkeData)=='OprDato')]
-#NakkeDataSyn <- syn(NakkeData[ ,variable], method = "sample", seed = 500)
-#RegData <- cbind(OprDato = NakkeData$OprDato, NakkeDataSyn$syn)
+dato <- '2017-09-21'
+fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
+NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
+RegData <- NakkeData
+RegData <- RegData[which(RegData$Aar<2017),]
+save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
+load(paste0(fil,".Rdata")) #RegData
+
 
 # Inndata til funksjon:
 #...NB: SkjemaID

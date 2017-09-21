@@ -66,4 +66,3 @@ Smerte: Skalaen går fra 0 til 10, dvs. at differansen ligger mellom -10 og 10..
 EQ5D: Skala fra -0.594 tl 1, jo høyere jo bedre.
 Oswestry: Skala fra 0 til 100, hvor lavest er friskest
 }
-

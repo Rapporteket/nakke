@@ -9,4 +9,3 @@ nakkeStandard(input, output, session, valgtVar, enhetsUtvalg, valgtMaal)
 \description{
 nakkeStandard is the module server function for shiny Nakke
 }
-

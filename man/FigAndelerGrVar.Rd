@@ -82,4 +82,3 @@ Funksjon som genererer en figur med andeler av en variabel for en valgt grupperi
 f.eks. sykehus.
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 }
-
