@@ -2,9 +2,10 @@
 #'
 #' nakkeStandard is the module server function for shiny Nakke
 #'
-#' @param input
-#' @param output
-#' @param session
+#' @param input inngangsdata
+#' @param output info som sendes ut
+#' @param session Hmmm
+#' @inheritParams FigAndeler
 #' @export
 
 nakkeStandard <- function(input, output, session, valgtVar, enhetsUtvalg,

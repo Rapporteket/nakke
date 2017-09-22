@@ -1,8 +1,9 @@
 
 
 #--------------------------------------SAMLERAPPORT-----------------------------------
-
-...
+setwd("C:/ResultattjenesteGIT/Nakke/inst")
+knitr::knit('NakkeAarsRapp.Rnw')
+tools::texi2pdf('NakkeAarsRapp.tex')
 #---------------- Tulledata ----------------------------------------
 
 

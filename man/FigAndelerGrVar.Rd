@@ -6,7 +6,8 @@
 \usage{
 FigAndelerGrVar(RegData, valgtVar, datoFra = "2012-01-01",
   datoTil = "3000-12-31", enhetsUtvalg = 0, minald = 0, maxald = 130,
-  erMann = "", hentData = 0, preprosess = TRUE, tittel = 1, reshID,
+  erMann = "", myelopati = 99, fremBak = 0, Ngrense = 10,
+  hentData = 0, preprosess = TRUE, tittel = 1, reshID = 0,
   outfile = "")
 }
 \arguments{
@@ -59,6 +60,8 @@ Utdanning: Andel høyskole-/universitetsutdannede}
 \item{maxald}{Alder, til og med}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
+
+\item{Ngrense}{Minste antall registreringer for at ei gruppe skal bli vist}
 
 \item{hentData}{Angir om funksjonen skal kjøre spørring for å hente data eller ikke.
 0: ikke kjør (standard)

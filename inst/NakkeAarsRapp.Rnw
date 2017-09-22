@@ -19,7 +19,8 @@ Pasienttilfredshet (PREM)
 rm(list=ls())
 library(Nakke)
 load('A:/Nakke/NakkeAarsrapp2016.Rdata') #RegData
-setwd('C:/ResultattjenesteGIT//nkr/aarsrapp')
+#setwd('C:/ResultattjenesteGIT/nkr/aarsrapp')
+setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp')
 
 # Preprosessere data:
 RegData <- NakkePreprosess(RegData=RegData)
@@ -32,8 +33,24 @@ RegData <- NakkePreprosess(RegData=RegData)
 	#class(RegData$ReshId) <- 'numeric'
 
 
-#Fremre, uten Myelopati
+#Fremre, uten Myelopati:
+indikkeMyeloFremre <- which(OprIndikMyelopati==0 & RegData$OprMetodeTilgangFremre==1)
 #Bakre tilgang, med Myelopati
+indMyeloBakre <- which(RegData$OprIndikMyelopati==1 & RegData$OprMetodeTilgangBakre==1)
+
+table(RegData$OprIndikMyelopati)
+table(RegData$OprMetodeTilgangBakre)
+table(RegData$OprMetodeTilgangFremre)
+table(RegData[ ,c('OprIndikMyelopati','OprMetodeTilgangBakre')])
+table(RegData[ ,c('OprIndikMyelopati','OprMetodeTilgangFremre')])
+
+minald <- 0	#alder, fra og med
+maxald <- 130	#alder, til og med
+datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2015-12-31'
+erMann <- 0			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
+tittel=1
+enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
 
 
 #Andel over 70 år per sykehus
@@ -42,26 +59,45 @@ Andel70aar <- FigAndelerGrVar(RegData=RegData, valgtVar='Alder', outfile='Alder7
 KlartBedre <- FigAndelerGrVar(RegData=RegData, valgtVar='NytteOpr12mnd', outfile='NytteOpr12mnd.pdf')
 
 #Stemmevansker3mnd, fremre, uten myelopati
-Stemmevansker3mnd <- FigAndelerGrVar(RegData=RegData, valgtVar='NytteOpr12mnd', outfile='NytteOpr12mnd.pdf')
+Stemme3mnd <- FigAndelerGrVar(RegData=RegData, valgtVar='KomplStemme3mnd',
+                                     myelopati=1,fremBak = 1, outfile='Stemme3mnd.pdf')
 
 #Svelgvansker3mnd, fremre, uten myelopati
-Svelgvansker3mnd <- FigAndelerGrVar(RegData=RegData, valgtVar='NytteOpr12mnd', outfile='NytteOpr12mnd.pdf')
+Svelg3mnd <- FigAndelerGrVar(RegData=RegData, valgtVar='KomplSvelging3mnd',
+                                     myelopati=1,fremBak = 1, outfile='Svelg3mnd.pdf')
 
 
 #Bruk av antibiotikaprofylakse (fremre, bakre)
+dum <- FigAndelerGrVar(RegData=RegData, valgtVar='Antibiotika',
+                                     fremBak = 1, outfile='AntibiotikaFrem.pdf')
+dum <- FigAndelerGrVar(RegData=RegData, valgtVar='Antibiotika',
+                                     fremBak = 2, outfile='AntibiotikaBak.pdf')
 
 #Brukav sårdren, fremre, uten myelopati
+dum <- FigAndelerGrVar(RegData=RegData, valgtVar='Saardren',
+                                     myelopati=0,fremBak = 1, outfile='SaardrenUmF.pdf')
+
 
 #Sårinfeksjon, 3mnd, kun bakre kirurgi
+#RIKTIG VARIABEL??
+dum <- FigAndelerGrVar(RegData=RegData, valgtVar='KomplinfekOverfl3mnd',
+                                     fremBak = 2, outfile='KomplinfekOverfl3mnd.pdf')
 
-#Gjennomsnittlig bedreing, NDI: Fremre uten myelopati
-#Gjennomsnittlig bedreing, NDI: Bakre med myelopati
-
-#Bedring av armsmerte (NRS??), fremre uten myelopati
 
 #Andel fornøyde med behandlinga, fremre
 #Andel fornøyde med behandlinga, bakre
 
+#Gjennomsnittlig? bedring, NDI: Fremre uten myelopati
+#                               Bakre med myelopati
+dum <- FigGjsnGrVar(RegData=RegData, valgtVar='NDIendr12mnd',
+                                     myelopati=0, fremBak = 1, outfile='NDIendr12mndUmF.pdf')
+dum <- FigGjsnGrVar(RegData=RegData, valgtVar='NDIendr12mnd',
+                                     myelopati=1, fremBak = 2, outfile='NDIendr12mndMB.pdf')
+
+#Bedring av armsmerte (NRS??), fremre uten myelopati
+
+dum <- FigGjsnGrVar(RegData=RegData, valgtVar='NRSsmerteArmEndr12mnd',
+                                     myelopati=0, fremBak = 1, outfile=NRSsmerteArmEndr12mndUmF.pdf')
 
 @
 

@@ -6,6 +6,7 @@
 #'
 #'
 #' @inheritParams FigAndeler
+#' @param Ngrense Minste antall registreringer for at ei gruppe skal bli vist
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling
 #'             AndreRelSykdommer: Andre sykdommer
@@ -47,8 +48,8 @@
 #' @export
 
 FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31', enhetsUtvalg=0,
-                            minald=0, maxald=130, erMann='', hentData=0, preprosess=TRUE,
-                            tittel=1, reshID=0, outfile='') {
+                            minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, Ngrense=10,
+                            hentData=0, preprosess=TRUE, tittel=1, reshID=0, outfile='') {
 
      if (hentData == 1) {
           RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
@@ -59,7 +60,7 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
           RegData <- NakkePreprosess(RegData=RegData)
      }
 
-
+    '%i%' <- intersect
      #----------- Figurparametre ------------------------------
      cexShNavn <- 1 #0.85
 
@@ -76,14 +77,14 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
 
      grVar <- 'SykehusNavn'
      RegData[ ,grVar] <- factor(RegData[ ,grVar])
-     Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
+     #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
 
      RegData$Variabel <- 0
 
      #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
      NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                                   erMann=erMann)
+                                   erMann=erMann, myelopati=myelopati, fremBak=fremBak)
      RegData <- NakkeUtvalg$RegData
      utvalgTxt <- NakkeUtvalg$utvalgTxt
 
@@ -179,9 +180,9 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (valgtVar=='KomplStemme3mnd') {
           #3MndSkjema. Andel med KomplStemme3mnd=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[(which(RegData$OppFolgStatus3mnd == 1) &
-                                which(RegData$KomplStemme3mnd %in% 0:1) &
-                               which(RegData$OprMetodeTilgangFremre==1)), ]
+          RegData <- RegData[which(RegData$OppFolgStatus3mnd == 1) %i%
+                                which(RegData$KomplStemme3mnd %in% 0:1) %i%
+                               which(RegData$OprMetodeTilgangFremre==1), ]
           RegData$Variabel <- RegData[ ,valgtVar]
           TittelUt <- 'Stemmevansker, 3 mnd.'
      }
@@ -189,9 +190,9 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (valgtVar=='KomplStemme12mnd') {
           #3MndSkjema. Andel med KomplStemme12mnd=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[(which(RegData$OppFolgStatus12mnd == 1) &
-                                which(RegData$KomplStemme12mnd %in% 0:1) &
-                                which(RegData$OprMetodeTilgangFremre==1)), ]
+          RegData <- RegData[which(RegData$OppFolgStatus12mnd == 1) %i%
+                                which(RegData$KomplStemme12mnd %in% 0:1) %i%
+                                which(RegData$OprMetodeTilgangFremre==1), ]
           RegData$Variabel <- RegData[ ,valgtVar]
           TittelUt <- 'Stemmevansker, 12 mnd.'
      }
@@ -200,8 +201,8 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
           #3MndSkjema. Andel med KomplSvelging3mnd=1
           #Kode 0,1: Nei, Ja +tomme
        ind <-
-          RegData <- RegData[(which(RegData$OppFolgStatus3mnd == 1) &
-                                       which(RegData$KomplSvelging3mnd %in% 0:1) &
+          RegData <- RegData[(which(RegData$OppFolgStatus3mnd == 1) %i%
+                                       which(RegData$KomplSvelging3mnd %in% 0:1) %i%
                                        which(RegData$OprMetodeTilgangFremre==1)), ]
           RegData$Variabel <- RegData[ ,valgtVar]
           TittelUt <- 'Svelgvansker, 3 mnd.'
@@ -210,8 +211,8 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (valgtVar=='KomplSvelging12mnd') {
           #3MndSkjema. Andel med KomplSvelging12mnd=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[(which(RegData$OppFolgStatus12mnd == 1) &
-                                       which(RegData$KomplSvelging12mnd %in% 0:1) &
+          RegData <- RegData[(which(RegData$OppFolgStatus12mnd == 1) %i%
+                                       which(RegData$KomplSvelging12mnd %in% 0:1) %i%
                                          which(RegData$OprMetodeTilgangFremre==1)), ]
           RegData$Variabel <- RegData[ ,valgtVar]
           TittelUt <- 'Svelgvansker, 12 mnd.'

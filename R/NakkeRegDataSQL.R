@@ -103,6 +103,8 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	OprIndikSmerteLokNakke,
 	OprIndikSmerter,
 	OprKode,
+  OprMetodeTilgangBakre,
+  OprMetodeTilgangFremre,
 	Parese12mnd,
 	Parese3mnd,
 	ParesePreOp,

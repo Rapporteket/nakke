@@ -8,7 +8,7 @@
 #' @export
 
 NakkeLibUtvalg <- function(RegData, datoFra, datoTil, minald=0, maxald=130, erMann='',
-		fargepalett='BlaaOff')	#insttype,
+                           myelopati=99, fremBak=0, fargepalett='BlaaOff')	#insttype,
 {
 
 
@@ -16,6 +16,12 @@ Ninn <- dim(RegData)[1]
 indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
 indDato <- which(RegData$InnDato >= as.POSIXlt(datoFra) & RegData$InnDato <= as.POSIXlt(datoTil))
 indKj <- if (erMann %in% 0:1) {which(RegData$ErMann == erMann)} else {indKj <- 1:Ninn}
+indMyelo <- if (myelopati %in% 0:1) {which(RegData$OprIndikMyelopati == myelopati)} else {indMyelo <- 1:Ninn}
+indFremBak <- switch(fremBak,
+                      '0' = 1:Ninn,
+                      '1' = which(RegData$OprMetodeTilgangFremre==1),
+                      '2' = which(RegData$OprMetodeTilgangBakre==1))
+
 #indTidlOp <- if (tidlOp %in% 1:4) {which(RegData$TidlOpr==tidlOp)} else {indTidlOp <- 1:Ninn}
 indMed <- intersect(indAld, intersect(indDato, indKj))
 RegData <- RegData[indMed,]
@@ -25,11 +31,13 @@ TidlOprtxt <-	c('Tidl. operert samme nivå', 'Tidl. operert annet nivå', 'Tidl.
 
 N <- dim(RegData)[1]
 
-utvalgTxt <- c(paste('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
-			' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}, sep='' ),
-	if ((minald>0) | (maxald<130)) {paste('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
-						' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år', sep='')},
-	if (erMann %in% 0:1) {paste('Kjønn: ', c('Kvinner', 'Menn')[erMann+1], sep='')}
+utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
+			' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}),
+	if ((minald>0) | (maxald<130)) {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
+						' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
+	if (erMann %in% 0:1) {paste0('Kjønn: ', c('Kvinner', 'Menn')[erMann+1])},
+	if (myelopati %in% 0:1) {paste0('Myelopati:', c('Nei', 'Ja')[myelopati+1])},
+	if (fremBak %in% 1:2) {paste0('Tilgang:', c('Fremre','Bakre')[fremBak])}
 #	if (tidlOp %in% 1:4) {TidlOprtxt[tidlOp]}
 	)
 

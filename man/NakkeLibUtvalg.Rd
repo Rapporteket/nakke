@@ -5,7 +5,7 @@
 \title{Funksjon som gjør utvalg i datagrunnlaget til registreringene for Nakke}
 \usage{
 NakkeLibUtvalg(RegData, datoFra, datoTil, minald = 0, maxald = 130,
-  erMann = "", fargepalett = "BlaaOff")
+  erMann = "", myelopati = 99, fremBak = 0, fargepalett = "BlaaOff")
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
