@@ -82,13 +82,6 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
 
      RegData$Variabel <- 0
 
-     #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-     NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                                   erMann=erMann, myelopati=myelopati, fremBak=fremBak)
-     RegData <- NakkeUtvalg$RegData
-     utvalgTxt <- NakkeUtvalg$utvalgTxt
-
-
      if (valgtVar == 'Alder') {
           #Andel over 70 år
           RegData$Variabel[which(RegData[ ,valgtVar] >= 70)] <- 1
@@ -356,7 +349,7 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
 
      #Gjør utvalg
      NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                                   erMann=erMann)
+                                   erMann=erMann, myelopati=myelopati, fremBak=fremBak)
      RegData <- NakkeUtvalg$RegData
      utvalgTxt <- NakkeUtvalg$utvalgTxt
 
@@ -372,15 +365,15 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (length(indGrUt)==0) { indGrUt <- 0}
      AndelerGr[indGrUt] <- dummy0
      sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
-     Ngrtxt <- paste('N=', as.character(Ngr), sep='')	#
-     Ngrtxt[indGrUt] <- paste('N<', Ngrense,sep='')	#paste(' (<', Ngrense,')',sep='')	#
+     Ngrtxt <- paste0('\n(', as.character(Ngr),')')	#
+     Ngrtxt[indGrUt] <- paste0('\n(<', Ngrense,')')	#paste(' (<', Ngrense,')',sep='')	#
 
      AndelerGrSort <- AndelerGr[sortInd]
      AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
      #	GrNavnSort <- paste(names(Ngr)[sortInd], ', ',Ngrtxt[sortInd], sep='')
-     GrNavnSort <- names(Ngr)[sortInd]
+     GrNavnSort <- paste0(names(Ngr)[sortInd], Ngrtxt[sortInd]) #names(Ngr)[sortInd]
 
-     andeltxt <- paste(sprintf('%.1f',AndelerGrSort), '%',sep='') 	#round(as.numeric(AndelerGrSort),1)
+     andeltxt <- paste0(sprintf('%.1f',AndelerGrSort), '%') 	#round(as.numeric(AndelerGrSort),1)
      if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
 
      if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
@@ -422,11 +415,13 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
                  legend=paste(smltxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N,sep='' ),
                  bty='o', bg='white', box.col='white')
           mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
-          text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),
+          #text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),
           title(Tittel, line=1, font.main=1, cex.main=1.3)
 
           text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
                las=1, cex=0.9, adj=0, col=farger[1])	#Andeler, hvert sykehus
+
+          mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
 
           #Tekst som angir hvilket utvalg som er gjort
           mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))

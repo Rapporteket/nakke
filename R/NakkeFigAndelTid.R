@@ -45,8 +45,8 @@
 
 
 FigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, erMann='', tittel=1, reshID, outfile='',
-                        enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
+                        minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, tittel=1,
+                        reshID=0, outfile='', enhetsUtvalg=0, preprosess=TRUE, hentData=0) {
 
 
      if (hentData == 1) {
@@ -334,8 +334,10 @@ if (valgtVar == 'Utdanning') {
 	TittelUt <- 'Andel høyskole-/universitetsutdannede'
 }
 
+
+#Gjør utvalg
 NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                              erMann=erMann)	#, tidlOp=tidlOp
+                              erMann=erMann, myelopati=myelopati, fremBak=fremBak)
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 

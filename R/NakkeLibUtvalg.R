@@ -11,19 +11,20 @@ NakkeLibUtvalg <- function(RegData, datoFra, datoTil, minald=0, maxald=130, erMa
                            myelopati=99, fremBak=0, fargepalett='BlaaOff')	#insttype,
 {
 
+'%i%' <- intersect
 
 Ninn <- dim(RegData)[1]
 indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
 indDato <- which(RegData$InnDato >= as.POSIXlt(datoFra) & RegData$InnDato <= as.POSIXlt(datoTil))
 indKj <- if (erMann %in% 0:1) {which(RegData$ErMann == erMann)} else {indKj <- 1:Ninn}
 indMyelo <- if (myelopati %in% 0:1) {which(RegData$OprIndikMyelopati == myelopati)} else {indMyelo <- 1:Ninn}
-indFremBak <- switch(fremBak,
+indFremBak <- switch(as.character(fremBak),
                       '0' = 1:Ninn,
                       '1' = which(RegData$OprMetodeTilgangFremre==1),
                       '2' = which(RegData$OprMetodeTilgangBakre==1))
 
 #indTidlOp <- if (tidlOp %in% 1:4) {which(RegData$TidlOpr==tidlOp)} else {indTidlOp <- 1:Ninn}
-indMed <- intersect(indAld, intersect(indDato, indKj))
+indMed <- indAld %i% indDato %i% indKj %i% indMyelo %i% indFremBak
 RegData <- RegData[indMed,]
 
 
