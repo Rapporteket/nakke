@@ -18,12 +18,13 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 #------------------------------ (Fordelinger) --------------------------
 rm(list=ls())
 library(Nakke)
-dato <- '2017-09-21'
+dato <- '2017-09-27'
 fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 RegData <- NakkeData
-RegData <- RegData[which(RegData$Aar<2017),]
-save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
+#RegData <- NakkePreprosess(RegData=RegData)
+#RegData <- RegData[which(RegData$Aar<2017),]
+#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
 load(paste0(fil,".Rdata")) #RegData
 
 
@@ -34,7 +35,7 @@ minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2015-12-31'
-erMann <- 0			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
+erMann <- 99			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
 
