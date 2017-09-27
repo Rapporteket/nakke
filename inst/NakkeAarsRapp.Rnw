@@ -23,7 +23,7 @@ load('A:/Nakke/NakkeAarsrapp2016.Rdata') #RegData
 setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp')
 
 # Preprosessere data:
-RegData <- NakkePreprosess(RegData=RegData)
+#Data er preprossessert før lagring: RegData <- NakkePreprosess(RegData=RegData)
 	#Kjønnsvariabel:ErMann - vil senere benytte denne
 	#RegData$ErMann <- RegData$Kjonn
 	#RegData$ErMann[which(RegData$Kjonn == 2)] <- 0
@@ -55,86 +55,86 @@ enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget s
 
 #Andel over 70 år per sykehus
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, #datoFra = '2016-01-01',
-                              valgtVar='Alder', outfile='Alder70.pdf')
-dum <- FigAndelTid(RegData=RegData, preprosess=0, valgtVar='Alder', outfile='Alder70Tid.pdf')
+                              valgtVar='Alder', outfile='NakkeAlder70.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=0, valgtVar='Alder', outfile='NakkeAlder70Tid.pdf')
 
 #Myelopati
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, #datoFra = '2016-01-01',
-                              valgtVar='OprIndikMyelopati', outfile='MyelopatiSh.pdf')
+                              valgtVar='OprIndikMyelopati', outfile='NakkeMyelopatiSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0,
-                              valgtVar='OprIndikMyelopati', outfile='MyelopatiTid.pdf')
+                              valgtVar='OprIndikMyelopati', outfile='NakkeMyelopatiTid.pdf')
 
 #Nytte
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, datoTil='2015-12-31', #datoFra = '2014-01-01',
-                       valgtVar='NytteOpr12mnd', outfile='NytteOpr12mndSh.pdf')
+                       valgtVar='NytteOpr12mnd', outfile='NakkeNytteOpr12mndSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0, datoTil='2015-12-31',
-                      valgtVar='NytteOpr12mnd', outfile='NytteOpr12mndTid.pdf')
+                      valgtVar='NytteOpr12mnd', outfile='NakkeNytteOpr12mndTid.pdf')
 
 #Stemmevansker3mnd, fremre, uten myelopati
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, valgtVar='KomplStemme3mnd', #datoFra = '2015-01-01',
-                                     myelopati=1,fremBak = 1, outfile='Stemme3mndSh.pdf')
+                                     myelopati=1,fremBak = 1, outfile='NakkeStemme3mndSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0, valgtVar='KomplStemme3mnd',
-                                     myelopati=1,fremBak = 1, outfile='Stemme3mndTid.pdf')
+                                     myelopati=1,fremBak = 1, outfile='NakkeStemme3mndTid.pdf')
 
 #Svelgvansker3mnd, fremre, uten myelopati
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, valgtVar='KomplSvelging3mnd', #datoFra = '2015-01-01',
-                                     myelopati=1,fremBak = 1, outfile='Svelg3mndSh.pdf')
+                                     myelopati=1,fremBak = 1, outfile='NakkeSvelg3mndSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0, valgtVar='KomplSvelging3mnd',
-                                     myelopati=1,fremBak = 1, outfile='Svelg3mndTid.pdf')
+                                     myelopati=1,fremBak = 1, outfile='NakkeSvelg3mndTid.pdf')
 
 
 #Bruk av antibiotikaprofylakse (fremre, bakre)
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, valgtVar='Antibiotika', #datoFra = '2015-01-01',
-                                     fremBak = 1, outfile='AntibiotikaFremSh.pdf')
+                                     fremBak = 1, outfile='NakkeAntibiotikaFremSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0,  valgtVar='Antibiotika',
-                                     fremBak = 1, outfile='AntibiotikaFremTid.pdf')
+                                     fremBak = 1, outfile='NakkeAntibiotikaFremTid.pdf')
 dum <- FigAndelerGrVar(RegData=RegData, valgtVar='Antibiotika', #datoFra = '2016-01-01',
-                                     fremBak = 2, outfile='AntibiotikaBakSh.pdf')
+                                     fremBak = 2, outfile='NakkeAntibiotikaBakSh.pdf')
 dum <- FigAndelTid(RegData=RegData, valgtVar='Antibiotika',
-                                     fremBak = 2, outfile='AntibiotikaBakTid.pdf')
+                                     fremBak = 2, outfile='NakkeAntibiotikaBakTid.pdf')
 
 #Brukav sårdren, fremre, uten myelopati
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, valgtVar='Saardren', #datoFra = '2015-01-01',
-                                     myelopati=0,fremBak = 1, outfile='SaardrenUmFSh.pdf')
+                                     myelopati=0,fremBak = 1, outfile='NakkeSaardrenUmFSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0, valgtVar='Saardren',
-                                     myelopati=0,fremBak = 1, outfile='SaardrenUmFTid.pdf')
+                                     myelopati=0,fremBak = 1, outfile='NakkeSaardrenUmFTid.pdf')
 
 #Sårinfeksjon, 3mnd, kun bakre kirurgi
 #RIKTIG VARIABEL??
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, valgtVar='KomplinfekOverfl3mnd', #datoFra = '2015-01-01',
-                                     fremBak = 2, outfile='KomplinfekOverfl3mndSh.pdf')
+                                     fremBak = 2, outfile='NakkeKomplinfekOverfl3mndSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0, valgtVar='KomplinfekOverfl3mnd',
-                                     fremBak = 2, outfile='KomplinfekOverfl3mndTid.pdf')
+                                     fremBak = 2, outfile='NakkeKomplinfekOverfl3mndTid.pdf')
 
 
 #Gjennomsnittlig? bedring, NDI: Fremre uten myelopati
 #                               Bakre med myelopati
 dum <- FigAndelerGrVar(RegData=RegData, datoTil='2015-12-31',  valgtVar='NDIendr12mnd', #datoFra = '2014-01-01',
-                                     myelopati=0, fremBak = 1, outfile='NDIendr12mndUmFSh.pdf')
+                                     myelopati=0, fremBak = 1, outfile='NakkeNDIendr12mndUmFSh.pdf')
 #dum <- FigAndelTid(RegData=RegData, datoTil='2015-12-31',  valgtVar='NDIendr12mnd',
-#                                     myelopati=0, fremBak = 1, outfile='NDIendr12mndUmFTid.pdf')
+#                                     myelopati=0, fremBak = 1, outfile='NakkeNDIendr12mndUmFTid.pdf')
 
 dum <- FigAndelerGrVar(RegData=RegData, datoTil='2015-12-31', valgtVar='NDIendr12mnd', #datoFra = '2014-01-01',
-                                     myelopati=1, fremBak = 2, outfile='NDIendr12mndMBSh.pdf')
+                                     myelopati=1, fremBak = 2, outfile='NakkeNDIendr12mndMBSh.pdf')
 #dum <- FigAndelTid(RegData=RegData, datoTil='2015-12-31', valgtVar='NDIendr12mnd',
-#                                     myelopati=1, fremBak = 2, outfile='NDIendr12mndMBTid.pdf')
+#                                     myelopati=1, fremBak = 2, outfile='NakkeNDIendr12mndMBTid.pdf')
 
 #Bedring av armsmerte (NRS??), fremre uten myelopati
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, valgtVar='NRSsmerteArmEndr12mnd', #datoFra = '2015-01-01',
-                                     myelopati=0, fremBak = 1, outfile='NRSsmerteArmEndr12mndUmFSh.pdf')
+                                     myelopati=0, fremBak = 1, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
 #dum <- FigAndelTid(RegData=RegData, preprosess=0, valgtVar='NRSsmerteArmEndr12mnd',
-#                                     myelopati=0, fremBak = 1, outfile='NRSsmerteArmEndr12mndUmFTid.pdf')
+#                                     myelopati=0, fremBak = 1, outfile='NakkeNRSsmerteArmEndr12mndUmFTid.pdf')
 
 #Andel fornøyde med behandlinga: fremre og bakre
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0,datoTil='2015-12-31', datoFra = '2014-01-01',
-                                     valgtVar='FornoydBeh12mnd',  fremBak = 1, outfile='FornoydBeh12mndFremSh.pdf')
+                                     valgtVar='FornoydBeh12mnd',  fremBak = 1, outfile='NakkeFornoydBeh12mndFremSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0, datoTil='2015-12-31', valgtVar='FornoydBeh12mnd',
-                                     fremBak = 1, outfile='FornoydBeh12mndFremTid.pdf')
+                                     fremBak = 1, outfile='NakkeFornoydBeh12mndFremTid.pdf')
 
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=0, datoTil='2015-12-31', #datoFra = '2014-01-01',
-                       valgtVar='FornoydBeh12mnd',fremBak = 2, outfile='FornoydBeh12mndBakSh.pdf')
+                       valgtVar='FornoydBeh12mnd',fremBak = 2, outfile='NakkeFornoydBeh12mndBakSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=0, datoTil='2015-12-31',
-                   valgtVar='FornoydBeh12mnd',fremBak = 2, outfile='FornoydBeh12mndBakTid.pdf')
+                   valgtVar='FornoydBeh12mnd',fremBak = 2, outfile='NakkeFornoydBeh12mndBakTid.pdf')
 
 
 @
