@@ -38,6 +38,11 @@ indikkeMyeloFremre <- which(OprIndikMyelopati==0 & RegData$OprMetodeTilgangFremr
 #Bakre tilgang, med Myelopati
 indMyeloBakre <- which(RegData$OprIndikMyelopati==1 & RegData$OprMetodeTilgangBakre==1)
 
+indH <- which(RegData$OprMetodeTilgangFremreH)
+indV <- which(RegData$OprMetodeTilgangFremreV)
+
+table(RegData$OprMetodeTilgangFremreH, RegData$KomplStemme3mnd)
+
 table(RegData$OprIndikMyelopati)
 table(RegData$OprMetodeTilgangBakre)
 table(RegData$OprMetodeTilgangFremre)
@@ -72,9 +77,9 @@ dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31',
 
 #Stemmevansker3mnd, fremre, uten myelopati
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplStemme3mnd', #datoFra = '2015-01-01',
-                                     myelopati=1,fremBak = 1, outfile='NakkeStemme3mndSh.pdf')
+                                     myelopati=0,fremBak = 1, outfile='NakkeStemme3mndSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplStemme3mnd',
-                                     myelopati=1,fremBak = 1, outfile='NakkeStemme3mndTid.pdf')
+                                     myelopati=0,fremBak = 1, outfile='NakkeStemme3mndTid.pdf')
 
 #Svelgvansker3mnd, fremre, uten myelopati
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplSvelging3mnd', #datoFra = '2015-01-01',
@@ -140,7 +145,7 @@ dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31',
 #Gjennomsnitt, Tid og grVar:
 ''
 dum <- FigGjsnGrVar(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31', #datoFra = '2014-01-01', N
-                       valgtVar='EMSendr12mnd',fremBak = 2, Ngrense=20, outfile='') #NakkeEMSendr12mndSh.pdf')
+                       valgtVar='EMSendr12mnd',fremBak = 2, Ngrense=20, outfile='NakkeEMSendr12mndSh.pdf')
 dum <-   FigGjsnTid(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31',
                    valgtVar='EMSendr12mnd',fremBak = 2, outfile='NakkeEMSendr12mndTid.pdf')
 
