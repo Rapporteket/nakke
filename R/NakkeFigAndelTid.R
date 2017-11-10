@@ -66,6 +66,7 @@ indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
 	}
 
+'%i%' <- intersect
 RegData$Variabel <- 0
 
 
@@ -188,6 +189,16 @@ if (valgtVar=='KomplinfekOverfl3mnd') {
 	RegData$Variabel <- RegData[ ,valgtVar]
   	VarTxt <- 'overfladiske infeksjoner'
 	TittelUt <- 'Overfladisk infeksjon, 3 mnd.'
+}
+if (valgtVar=='Komplinfek') {
+  #3MndSkjema. Andel med KomplinfekDyp3mnd=1
+  #Kode 0,1: Nei, Ja +tomme
+  ind <- which(RegData$OppFolgStatus3mnd == 1) %i%
+    union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1))
+  RegData <- RegData[ind, ]
+  RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
+  VarTxt <- 'infeksjoner'
+  TittelUt <- 'Pasientrapportert dyp eller overfladisk infeksjon, 3 mnd.'
 }
 
 if (valgtVar=='KomplStemme3mnd') {

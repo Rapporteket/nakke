@@ -6,8 +6,8 @@
 \usage{
 FigGjsnTid(RegData, outfile, valgtVar, erMann = "", minald = 0,
   maxald = 130, tittel = 1, datoFra = "2007-01-01",
-  datoTil = "3000-01-01", valgtMaal = "", enhetsUtvalg = 1,
-  hentData = 0, preprosess = TRUE, reshID)
+  datoTil = "3000-01-01", myelopati = 99, fremBak = 0, valgtMaal = "",
+  enhetsUtvalg = 0, hentData = 0, preprosess = TRUE, reshID = 0)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}

@@ -26,6 +26,7 @@ EnhverKompl3mnd: Alle komplikasjoner
 ErstatningPreOp: Søkt/planlegger å søke erstatning
 FornoydBeh12mnd: Fornøyde pasienter, 12 mnd.
 FornoydBeh3mnd: Fornøyde pasienter, 3 mnd.
+Komplinfek: Pasientrapportert infeksjon (dyp og/eller overfladisk), 3 mnd.
 KomplinfekDyp3mnd: Pasientrapportert dyp infeksjon, 3 mnd.
 KomplinfekOverfl3mnd: Overfladisk infeksjon, 3 mnd.
 KomplStemme3mnd: Stemmevansker, 3 mnd.

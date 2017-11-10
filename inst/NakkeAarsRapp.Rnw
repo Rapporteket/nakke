@@ -83,9 +83,9 @@ dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplStemme3mnd'
 
 #Svelgvansker3mnd, fremre, uten myelopati
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplSvelging3mnd', #datoFra = '2015-01-01',
-                                     myelopati=1,fremBak = 1, outfile='NakkeSvelg3mndSh.pdf')
+                                     myelopati=0,fremBak = 1, outfile='NakkeSvelg3mndSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplSvelging3mnd',
-                                     myelopati=1,fremBak = 1, outfile='NakkeSvelg3mndTid.pdf')
+                                     myelopati=0,fremBak = 1, outfile='NakkeSvelg3mndTid.pdf')
 
 
 #Bruk av antibiotikaprofylakse (fremre, bakre)
@@ -104,12 +104,17 @@ dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Saardren', #
 dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='Saardren',
                                      myelopati=0,fremBak = 1, outfile='NakkeSaardrenUmFTid.pdf')
 
-#Sårinfeksjon, 3mnd, kun bakre kirurgi
-#RIKTIG VARIABEL??
+#Sårinfeksjon, overfladisk 3mnd, kun bakre kirurgi
 dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', #datoFra = '2015-01-01',
                                      fremBak = 2, outfile='NakkeKomplinfekOverfl3mndSh.pdf')
 dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd',
                                      fremBak = 2, outfile='NakkeKomplinfekOverfl3mndTid.pdf')
+
+#Sårinfeksjon (dyp og/eller overfladisk), 3mnd, kun bakre kirurgi
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek', #datoFra = '2015-01-01',
+                                     fremBak = 2,Ngrense = 20, outfile='NakkeKomplinfek3mndSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek',
+                                     fremBak = 2, outfile='NakkeKomplinfek3mndTid.pdf')
 
 
 #Gjennomsnittlig? bedring, NDI: Fremre uten myelopati

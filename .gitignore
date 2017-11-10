@@ -7,4 +7,6 @@ NakkeFigAndelGrVar FEIL.jrxml
 *.csv
 *.aux
 *.log
-
+*.pdf
+aarsrapp
+/aarsrapp
