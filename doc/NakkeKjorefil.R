@@ -14,39 +14,44 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	RegDataSyn <- syn(RegData, method = "sample", seed = 500)
 	RegData <- RegDataSyn$syn
 
+#----------------------------Laste data og parametre----------------------------------------
+	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
+	library(nkr)
+
+	rm(list=ls())
+	library(Nakke)
+	dato <- '2017-09-27'
+	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
+	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
+	RegData <- NakkeData
+	#RegData <- NakkePreprosess(RegData=RegData)
+	#RegData <- RegData[which(RegData$Aar<2017),]
+	#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
+	#load(paste0(fil,".Rdata")) #RegData
+
+	datoFra='2012-01-01'
+	datoTil='3000-12-31'
+	enhetsUtvalg=0
+	minald=0
+	maxald=130
+	erMann=''
+	myelopati=99
+	fremBak=0
+	Ngrense=10
+	grVar='ShNavn'
+	ktr=0
+	aar=2015:2016
+	tidlAar=2013:2014
+	tidsenhet <-
+	hentData=0
+	outfile=''
+
+
 
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (Fordelinger) --------------------------
-rm(list=ls())
-library(Nakke)
-dato <- '2017-09-27'
-fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
-NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
-RegData <- NakkeData
-#RegData <- NakkePreprosess(RegData=RegData)
-#RegData <- RegData[which(RegData$Aar<2017),]
-#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
-#load(paste0(fil,".Rdata")) #RegData
-load('A:/Nakke/NakkeAarsrapp2016.Rdata')
-library(nkr)
-
 
 valgtVar <- 'KomplStemme3mnd'
-datoFra='2012-01-01'
-datoTil='3000-12-31'
-enhetsUtvalg=0
-minald=0
-maxald=130
-erMann=''
-myelopati=99
-fremBak=0
-Ngrense=10
-grVar='ShNavn'
-ktr=0
-aar=2015:2016
-tidlAar=2013:2014
-hentData=0
-outfile=''
 
 #Offentliggjøring fra 2016
 setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp/2016')

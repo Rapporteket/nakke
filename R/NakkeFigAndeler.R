@@ -353,7 +353,7 @@ if (valgtVar=='Utdanning') {
 
 #------------Gjøre utvalg-------------------------
 NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-		erMann=erMann)
+		erMann=erMann, myelopati=myelopati, fremBak=fremBak)
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 
