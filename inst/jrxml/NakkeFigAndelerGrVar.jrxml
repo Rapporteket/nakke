@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-21T09:29:23 -->
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NakkeFigAndelerGrVar" language="groovy" pageWidth="595" pageHeight="800" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" scriptletClass="no.skde.report.nakke.Nakke" isIgnorePagination="true" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="ireport.jasperserver.url" value="https://test.helseregister.no/rapporteket_test/"/>
-	<property name="ireport.jasperserver.report.resource" value="/organizations/Nakke/Reports/NakkeFigAndelerGrVar_files/Main_Jrxml"/>
 	<property name="ireport.jasperserver.reportUnit" value="/organizations/Nakke/Reports/NakkeFigAndelerGrVar"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -44,7 +42,7 @@
 		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="beginDate" class="java.util.Date">
-		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2012-01-01")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("2017-01-01")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="endDate" class="java.util.Date">
 		<parameterDescription><![CDATA[]]></parameterDescription>

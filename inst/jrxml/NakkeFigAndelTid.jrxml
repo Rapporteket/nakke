@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-13T14:08:45 -->
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NakkeFigAndelTid" language="groovy" pageWidth="595" pageHeight="595" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" scriptletClass="no.skde.report.nakke.Nakke" isIgnorePagination="true" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -58,6 +57,12 @@
 	</parameter>
 	<parameter name="erMann" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="myelopati" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fremBak" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="orgUnitSelection" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(1)]]></defaultValueExpression>
