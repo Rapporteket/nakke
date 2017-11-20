@@ -17,6 +17,7 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="ireport.jasperserver.user" value="superuser"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="ireport.jasperserver.report.resource" value="/organizations/Nakke/Reports/NakkeFigAndelerGrVar_files/Main_Jrxml"/>
 	<parameter name="LoggedInUser" class="com.jaspersoft.jasperserver.api.metadata.user.domain.User" isForPrompting="false">
 		<parameterDescription><![CDATA[At server side, gets the User object from the JRS logged in user]]></parameterDescription>
 	</parameter>
@@ -36,7 +37,7 @@
 		<defaultValueExpression><![CDATA[new String("Nakke")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("FigAndelerGrVar(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1, preprosess=TRUE)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("FigAndelerGrVar(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,myelopati=myelopati, fremBak=fremBak, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="valgtVar" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>
@@ -56,6 +57,12 @@
 	</parameter>
 	<parameter name="erMann" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="myelopati" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(99)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fremBak" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
 	</parameter>
 	<parameter name="orgUnitSelection" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(1)]]></defaultValueExpression>

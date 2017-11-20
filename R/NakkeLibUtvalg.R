@@ -38,8 +38,8 @@ utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T
 	if ((minald>0) | (maxald<130)) {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
 						' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
 	if (erMann %in% 0:1) {paste0('Kjønn: ', c('Kvinner', 'Menn')[erMann+1])},
-	if (myelopati %in% 0:1) {paste0('Myelopati:', c('Nei', 'Ja')[myelopati+1])},
-	if (fremBak %in% 1:2) {paste0('Tilgang:', c('Fremre','Bakre')[fremBak])}
+	if (myelopati %in% 0:1) {paste0('Myelopati: ', c('Nei', 'Ja')[myelopati+1])},
+	if (fremBak %in% 1:2) {paste0('Tilgang: ', c('Fremre','Bakre')[fremBak])}
 #	if (tidlOp %in% 1:4) {TidlOprtxt[tidlOp]}
 	)
 
