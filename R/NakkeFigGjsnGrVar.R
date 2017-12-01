@@ -10,7 +10,7 @@
 #'             Alder: alder (år)
 #'             EMSscorePreOp: EMS hos Myelopatipasienter før
 #'             EMSendr12mnd:
-#'             EMSendr12mnd:
+#'             EMSendr3mnd:
 #'             KnivtidTotalMin: total knivtid
 #'             NDIscorePreOp: NDI før operasjon
 #'             LiggeDognPostop: liggetid etter operasjon
