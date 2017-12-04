@@ -6,8 +6,8 @@
 \usage{
 FigAndelTid(RegData, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, erMann = "",
-  tittel = 1, reshID, outfile = "", enhetsUtvalg = 1, preprosess = TRUE,
-  hentData = 0)
+  myelopati = 99, fremBak = 0, tittel = 1, reshID = 0, outfile = "",
+  enhetsUtvalg = 0, preprosess = TRUE, hentData = 0)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -81,4 +81,3 @@ Funksjon som genererer en figur med andeler av en variabel for hvert år.
 \details{
 Detaljer
 }
-

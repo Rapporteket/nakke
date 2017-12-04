@@ -15,7 +15,6 @@ NakkeRegDataSQL(datoFra = "2012-01-01", datoTil = "2099-01-01")
 Henter dataramma RegData for Degenerativ Nakke
 }
 \description{
-Henter data for Degenerativ Nakke fra "staging"-database. 
+Henter data for Degenerativ Nakke fra "staging"-database.
 Kan benytte datoFra og datoFra som input.
 }
-

@@ -4,9 +4,10 @@
 \alias{FigGjsnGrVar}
 \title{Søylediagram som viser sentralmål (gj.sn./median) for hvert sykehus}
 \usage{
-FigGjsnGrVar(RegData, valgtVar, valgtMaal = "Gjsn", datoFra = "2012-04-01",
-  datoTil = "2050-12-31", minald = 0, maxald = 130, erMann = "", reshID,
-  outfile = "", hentData = 0, preprosess = TRUE)
+FigGjsnGrVar(RegData, valgtVar, valgtMaal = "Gjsn", datoFra = "2012-01-01",
+  datoTil = "2050-12-31", myelopati = 99, fremBak = 0, Ngrense = 10,
+  minald = 0, maxald = 130, erMann = "", reshID = 0, outfile = "",
+  hentData = 0, preprosess = TRUE)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -14,6 +15,8 @@ FigGjsnGrVar(RegData, valgtVar, valgtMaal = "Gjsn", datoFra = "2012-04-01",
 \item{valgtVar}{Variabelen det skal vises resultat for.
 Alder: alder (år)
 EMSscorePreOp: EMS hos Myelopatipasienter før
+EMSendr12mnd:
+EMSendr12mnd:
 KnivtidTotalMin: total knivtid
 NDIscorePreOp: NDI før operasjon
 LiggeDognPostop: liggetid etter operasjon
@@ -52,4 +55,3 @@ Funksjon som genererer en figur med gjennomsnitt/median
 for hvert sykehus og kan ta inn ulike numeriske variable.
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 }
-

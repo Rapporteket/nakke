@@ -6,6 +6,7 @@
 #'
 #'
 #' @inheritParams FigAndeler
+#' @param Ngrense Minste antall registreringer for at ei gruppe skal bli vist
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling
 #'             AndreRelSykdommer: Andre sykdommer
@@ -19,6 +20,7 @@
 #'             ErstatningPreOp: Søkt/planlegger å søke erstatning
 #'             FornoydBeh12mnd: Fornøyde pasienter, 12 mnd.
 #'             FornoydBeh3mnd: Fornøyde pasienter, 3 mnd.
+#'             Komplinfek: Pasientrapportert infeksjon (dyp og/eller overfladisk), 3 mnd.
 #'             KomplinfekDyp3mnd: Pasientrapportert dyp infeksjon, 3 mnd.
 #'             KomplinfekOverfl3mnd: Overfladisk infeksjon, 3 mnd.
 #'             KomplStemme3mnd: Stemmevansker, 3 mnd.
@@ -31,8 +33,6 @@
 #'             NRSsmerteArmEndr12mnd: Minst 30% forbedring av NSR-arm, 12 mnd.
 #'             NytteOpr12mnd: Klart bedre, 12 mnd.
 #'             NytteOpr3mnd: Klart bedre, 3 mnd.
-#'             Verre12mnd: Klart verre, 12 mnd.
-#'             Verre3mnd. Klart verre, 3 mnd.
 #'             OprIndikMyelopati: Operasjonsårsak, Myelopati
 #'             Roker: Røykere
 #'             Saardren: Andel som får sårdren
@@ -41,14 +41,16 @@
 #'             SymptVarighetSmerterUker: Varighet av smerter minst 1 år
 #'             UforetrygdPreOp: Søkt eller planlegger å søke uføretrygd?
 #'             Utdanning: Andel høyskole-/universitetsutdannede
+#'             Verre12mnd: Klart verre, 12 mnd.
+#'             Verre3mnd. Klart verre, 3 mnd.
 #'
 #' @return Figur med...
 #'
 #' @export
 
 FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31', enhetsUtvalg=0,
-                            minald=0, maxald=130, erMann='', hentData=0, preprosess=TRUE,
-                            tittel=1, reshID, outfile='') {
+                            minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, Ngrense=10,
+                            hentData=0, preprosess=TRUE, tittel=1, reshID=0, outfile='') {
 
      if (hentData == 1) {
           RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
@@ -59,7 +61,7 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
           RegData <- NakkePreprosess(RegData=RegData)
      }
 
-
+    '%i%' <- intersect
      #----------- Figurparametre ------------------------------
      cexShNavn <- 1 #0.85
 
@@ -76,17 +78,10 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
 
      grVar <- 'SykehusNavn'
      RegData[ ,grVar] <- factor(RegData[ ,grVar])
-     Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
+     #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
 
      RegData$Variabel <- 0
-
-     #Tar ut de med manglende registrering av valgt variabel og gjør utvalg
-     NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                                   erMann=erMann)
-     RegData <- NakkeUtvalg$RegData
-     utvalgTxt <- NakkeUtvalg$utvalgTxt
-
 
      if (valgtVar == 'Alder') {
           #Andel over 70 år
@@ -176,10 +171,22 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
           TittelUt <- 'Overfladisk infeksjon, 3 mnd.'
      }
 
+     if (valgtVar=='Komplinfek') {
+       #3MndSkjema. Andel med KomplinfekDyp3mnd=1
+       #Kode 0,1: Nei, Ja +tomme
+       ind <- which(RegData$OppFolgStatus3mnd == 1) %i%
+         union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1))
+       RegData <- RegData[ind, ]
+       RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
+       VarTxt <- 'infeksjoner'
+       TittelUt <- 'Pasientrapportert dyp eller overfladisk infeksjon, 3 mnd.'
+     }
      if (valgtVar=='KomplStemme3mnd') {
           #3MndSkjema. Andel med KomplStemme3mnd=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[intersect(which(RegData$OppFolgStatus3mnd == 1), which(RegData$KomplStemme3mnd %in% 0:1)), ]
+          RegData <- RegData[which(RegData$OppFolgStatus3mnd == 1) %i%
+                                which(RegData$KomplStemme3mnd %in% 0:1) %i%
+                               which(RegData$OprMetodeTilgangFremre==1), ]
           RegData$Variabel <- RegData[ ,valgtVar]
           TittelUt <- 'Stemmevansker, 3 mnd.'
      }
@@ -187,7 +194,9 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (valgtVar=='KomplStemme12mnd') {
           #3MndSkjema. Andel med KomplStemme12mnd=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[intersect(which(RegData$OppFolgStatus12mnd == 1), which(RegData$KomplStemme12mnd %in% 0:1)), ]
+          RegData <- RegData[which(RegData$OppFolgStatus12mnd == 1) %i%
+                                which(RegData$KomplStemme12mnd %in% 0:1) %i%
+                                which(RegData$OprMetodeTilgangFremre==1), ]
           RegData$Variabel <- RegData[ ,valgtVar]
           TittelUt <- 'Stemmevansker, 12 mnd.'
      }
@@ -195,7 +204,10 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (valgtVar=='KomplSvelging3mnd') {
           #3MndSkjema. Andel med KomplSvelging3mnd=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[intersect(which(RegData$OppFolgStatus3mnd == 1), which(RegData$KomplSvelging3mnd %in% 0:1)), ]
+       ind <-
+          RegData <- RegData[(which(RegData$OppFolgStatus3mnd == 1) %i%
+                                       which(RegData$KomplSvelging3mnd %in% 0:1) %i%
+                                       which(RegData$OprMetodeTilgangFremre==1)), ]
           RegData$Variabel <- RegData[ ,valgtVar]
           TittelUt <- 'Svelgvansker, 3 mnd.'
      }
@@ -203,7 +215,9 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (valgtVar=='KomplSvelging12mnd') {
           #3MndSkjema. Andel med KomplSvelging12mnd=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[intersect(which(RegData$OppFolgStatus12mnd == 1), which(RegData$KomplSvelging12mnd %in% 0:1)), ]
+          RegData <- RegData[(which(RegData$OppFolgStatus12mnd == 1) %i%
+                                       which(RegData$KomplSvelging12mnd %in% 0:1) %i%
+                                         which(RegData$OprMetodeTilgangFremre==1)), ]
           RegData$Variabel <- RegData[ ,valgtVar]
           TittelUt <- 'Svelgvansker, 12 mnd.'
      }
@@ -346,7 +360,7 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
 
      #Gjør utvalg
      NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                                   erMann=erMann)
+                                   erMann=erMann, myelopati=myelopati, fremBak=fremBak)
      RegData <- NakkeUtvalg$RegData
      utvalgTxt <- NakkeUtvalg$utvalgTxt
 
@@ -362,15 +376,15 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
      if (length(indGrUt)==0) { indGrUt <- 0}
      AndelerGr[indGrUt] <- dummy0
      sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
-     Ngrtxt <- paste('N=', as.character(Ngr), sep='')	#
-     Ngrtxt[indGrUt] <- paste('N<', Ngrense,sep='')	#paste(' (<', Ngrense,')',sep='')	#
+     Ngrtxt <- paste0('\n(', as.character(Ngr),')')	#
+     Ngrtxt[indGrUt] <- paste0('\n(<', Ngrense,')')	#paste(' (<', Ngrense,')',sep='')	#
 
      AndelerGrSort <- AndelerGr[sortInd]
      AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
      #	GrNavnSort <- paste(names(Ngr)[sortInd], ', ',Ngrtxt[sortInd], sep='')
-     GrNavnSort <- names(Ngr)[sortInd]
+     GrNavnSort <- paste0(names(Ngr)[sortInd], Ngrtxt[sortInd]) #names(Ngr)[sortInd]
 
-     andeltxt <- paste(sprintf('%.1f',AndelerGrSort), '%',sep='') 	#round(as.numeric(AndelerGrSort),1)
+     andeltxt <- paste0(sprintf('%.1f',AndelerGrSort), '%') 	#round(as.numeric(AndelerGrSort),1)
      if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
 
      if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
@@ -412,11 +426,13 @@ FigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='30
                  legend=paste(smltxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N,sep='' ),
                  bty='o', bg='white', box.col='white')
           mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
-          text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),
+          #text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),
           title(Tittel, line=1, font.main=1, cex.main=1.3)
 
           text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
                las=1, cex=0.9, adj=0, col=farger[1])	#Andeler, hvert sykehus
+
+          mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
 
           #Tekst som angir hvilket utvalg som er gjort
           mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))

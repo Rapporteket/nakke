@@ -45,8 +45,8 @@
 
 
 FigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3000-12-31',
-                        minald=0, maxald=130, erMann='', tittel=1, reshID, outfile='',
-                        enhetsUtvalg=1, preprosess=TRUE, hentData=0) {
+                        minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, tittel=1,
+                        reshID=0, outfile='', enhetsUtvalg=0, preprosess=TRUE, hentData=0) {
 
 
      if (hentData == 1) {
@@ -66,6 +66,7 @@ indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
 	}
 
+'%i%' <- intersect
 RegData$Variabel <- 0
 
 
@@ -188,6 +189,16 @@ if (valgtVar=='KomplinfekOverfl3mnd') {
 	RegData$Variabel <- RegData[ ,valgtVar]
   	VarTxt <- 'overfladiske infeksjoner'
 	TittelUt <- 'Overfladisk infeksjon, 3 mnd.'
+}
+if (valgtVar=='Komplinfek') {
+  #3MndSkjema. Andel med KomplinfekDyp3mnd=1
+  #Kode 0,1: Nei, Ja +tomme
+  ind <- which(RegData$OppFolgStatus3mnd == 1) %i%
+    union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1))
+  RegData <- RegData[ind, ]
+  RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
+  VarTxt <- 'infeksjoner'
+  TittelUt <- 'Pasientrapportert dyp eller overfladisk infeksjon, 3 mnd.'
 }
 
 if (valgtVar=='KomplStemme3mnd') {
@@ -334,8 +345,10 @@ if (valgtVar == 'Utdanning') {
 	TittelUt <- 'Andel høyskole-/universitetsutdannede'
 }
 
+
+#Gjør utvalg
 NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                              erMann=erMann)	#, tidlOp=tidlOp
+                              erMann=erMann, myelopati=myelopati, fremBak=fremBak)
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 

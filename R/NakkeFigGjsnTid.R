@@ -30,7 +30,8 @@
 
 FigGjsnTid <- function(RegData, outfile, valgtVar, erMann='',
 		minald=0, maxald=130, tittel=1, datoFra='2007-01-01', datoTil='3000-01-01',
-		valgtMaal='', enhetsUtvalg=1, hentData=0, preprosess=TRUE, reshID){
+		myelopati=99, fremBak=0,
+		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=TRUE, reshID=0){
 
 
 	if (hentData == 1) {
@@ -132,7 +133,7 @@ if (valgtVar=='KnivtidTotalMin') {
 		#Pasientkjema og 12mndskjema. Lav skår, mye plager -> Forbedring = økning.
 		#Kun myelopati-pasienter
 		KIekstrem <- c(-18,18)
-		RegData$Variabel <- RegData$NDIscore12mnd - RegData$NDIscorePreOp
+		RegData$Variabel <- RegData$EMSscore12mnd - RegData$EMSscorePreOp
 		indMyelopati <- which(RegData$OprIndikMyelopati == 1)
 		indVar <- which(RegData$Variabel >= KIekstrem[1])
 		indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
@@ -144,7 +145,7 @@ if (valgtVar=='KnivtidTotalMin') {
 		#Pasientkjema og 3mndskjema. Lav skår, mye plager -> Forbedring = økning.
 		#Kun myelopati-pasienter
 		KIekstrem <- c(-18,18)
-		RegData$Variabel <- RegData$NDIscore3mnd - RegData$NDIscorePreOp
+		RegData$Variabel <- RegData$EMSscore3mnd - RegData$EMSscorePreOp
 		indMyelopati <- which(RegData$OprIndikMyelopati == 1)
 		indVar <- which(RegData$Variabel >= KIekstrem[1])
 		indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
@@ -178,7 +179,7 @@ if (valgtVar=='KnivtidTotalMin') {
 
 #Gjør utvalg
 NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-		erMann=erMann)	#, tidlOp=tidlOp
+		erMann=erMann, myelopati=myelopati, fremBak=fremBak)	#, tidlOp=tidlOp
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 
@@ -191,7 +192,7 @@ if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
 
 if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
 			medSml <- 0
-			indHoved <- 1:dim(RegData)	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
+			indHoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
 			indRest <- NULL
 		} else {						#Skal gjøre sammenlikning
 			medSml <- 1

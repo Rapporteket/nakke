@@ -6,7 +6,8 @@
 \usage{
 FigAndelerGrVar(RegData, valgtVar, datoFra = "2012-01-01",
   datoTil = "3000-12-31", enhetsUtvalg = 0, minald = 0, maxald = 130,
-  erMann = "", hentData = 0, preprosess = TRUE, tittel = 1, reshID,
+  erMann = "", myelopati = 99, fremBak = 0, Ngrense = 10,
+  hentData = 0, preprosess = TRUE, tittel = 1, reshID = 0,
   outfile = "")
 }
 \arguments{
@@ -25,6 +26,7 @@ EnhverKompl3mnd: Alle komplikasjoner
 ErstatningPreOp: Søkt/planlegger å søke erstatning
 FornoydBeh12mnd: Fornøyde pasienter, 12 mnd.
 FornoydBeh3mnd: Fornøyde pasienter, 3 mnd.
+Komplinfek: Pasientrapportert infeksjon (dyp og/eller overfladisk), 3 mnd.
 KomplinfekDyp3mnd: Pasientrapportert dyp infeksjon, 3 mnd.
 KomplinfekOverfl3mnd: Overfladisk infeksjon, 3 mnd.
 KomplStemme3mnd: Stemmevansker, 3 mnd.
@@ -60,6 +62,8 @@ Utdanning: Andel høyskole-/universitetsutdannede}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
 
+\item{Ngrense}{Minste antall registreringer for at ei gruppe skal bli vist}
+
 \item{hentData}{Angir om funksjonen skal kjøre spørring for å hente data eller ikke.
 0: ikke kjør (standard)
 1: kjør}
@@ -82,4 +86,3 @@ Funksjon som genererer en figur med andeler av en variabel for en valgt grupperi
 f.eks. sykehus.
 Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 }
-

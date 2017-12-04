@@ -1,8 +1,9 @@
 
 
 #--------------------------------------SAMLERAPPORT-----------------------------------
-
-...
+setwd("C:/ResultattjenesteGIT/Nakke/inst")
+knitr::knit('NakkeAarsRapp.Rnw')
+tools::texi2pdf('NakkeAarsRapp.tex')
 #---------------- Tulledata ----------------------------------------
 
 
@@ -13,15 +14,66 @@
 	RegDataSyn <- syn(RegData, method = "sample", seed = 500)
 	RegData <- RegDataSyn$syn
 
+#----------------------------Laste data og parametre----------------------------------------
+	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
+	library(nkr)
+
+	rm(list=ls())
+	library(Nakke)
+	dato <- '2017-09-27'
+	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
+	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
+	RegData <- NakkeData
+	#RegData <- NakkePreprosess(RegData=RegData)
+	#RegData <- RegData[which(RegData$Aar<2017),]
+	#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
+	#load(paste0(fil,".Rdata")) #RegData
+
+	datoFra='2012-01-01'
+	datoTil='3000-12-31'
+	enhetsUtvalg=0
+	minald=0
+	maxald=130
+	erMann=''
+	myelopati=99
+	fremBak=0
+	Ngrense=10
+	grVar='ShNavn'
+	ktr=0
+	aar=2015:2016
+	tidlAar=2013:2014
+	tidsenhet <- 'aar'
+	hentData=0
+	outfile=''
+
+
+
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (Fordelinger) --------------------------
-rm(list=ls())
-library(Nakke)
-NakkeData <- read.table('C:/Registre/Nakke/AlleVarNum2017-05-15.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
-#library(synthpop)
-#variable <- names(NakkeData)[-which(names(NakkeData)=='OprDato')]
-#NakkeDataSyn <- syn(NakkeData[ ,variable], method = "sample", seed = 500)
-#RegData <- cbind(OprDato = NakkeData$OprDato, NakkeDataSyn$syn)
+
+valgtVar <- 'KomplStemme3mnd'
+
+#Offentliggjøring fra 2016
+setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp/2016')
+
+#Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
+FigAndelerGrVarAar(RegData=RegData, valgtVar='KomplStemme3mnd',
+                   myelopati=0, fremBak=1, Ngrense=30,
+                   ktr=0,aar=2015:2016,tidlAar=2013:2014, outfile='OffKomplStemme3mnd.png')
+
+#Svelgvansker, 3 mnd (ikke-myelopati, fremre tilgang) – lav
+FigAndelerGrVarAar(RegData=RegData, valgtVar='KomplSvelging3mnd',
+                   myelopati=0, fremBak=1, Ngrense=30,
+                   ktr=0,aar=2015:2016,tidlAar=2013:2014, outfile='OffKomplSvelging3mnd.png')
+
+#Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
+FigAndelerGrVarAar(RegData=RegData, valgtVar='Komplinfek',
+                   fremBak=2, Ngrense=30,
+                   ktr=0,aar=2015:2016,tidlAar=2013:2014, outfile='OffKomplinfek.png')
+
+
+
+
 
 # Inndata til funksjon:
 #...NB: SkjemaID
@@ -30,16 +82,9 @@ minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2015-12-31'
-erMann <- 0			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
+erMann <- 99			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'EqAngstPreOp'	#Må velge... Alder, AntallNivaaOpr, Antibiotika, ArbeidstausPreOp
-        #Arbeidstaus3mnd, Arbeidstaus12mnd, ASAgrad, BMI, EqAngstPreOp, ErstatningPreOp,FornoydBeh3mnd,FornoydBeh12mnd
-      #Komorbiditet,Kompl3mnd, KomplOpr,LiggeDognPostop, LiggeDognTotalt, Morsmal, NytteOpr3mnd, NytteOpr12mnd,
-      #OperasjonsKategori,
-      #OprIndik, OprIndikPareseGrad, OprIndikMyelopati, OprIndikSmerter,Radiologi,Roker, Snuser,
-      #SivilStatus, Saardren,SmertestillBrukPreOp, SymptVarighetArmer, SymptVarighetNakkeHode,
-      #TidlOpr, TidlOprAntall, UforetrygdPreOp,Utdanning
 
 outfile <- paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Nakke/")
@@ -63,7 +108,7 @@ for (valgtVar in variable) {
      outfile <- paste(valgtVar, '.png', sep='')
      FigAndeler(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-                reshID=reshID, enhetsUtvalg=enhetsUtvalg, libkat=libkat, outfile=outfile)
+                reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
      }
 
 
@@ -108,7 +153,7 @@ for (valgtVar in variable) {
      outfile <- paste(valgtVar, '.png', sep='')
      FigAndelTid(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-                reshID=reshID, libkat=libkat, outfile=outfile)
+                reshID=reshID, outfile=outfile)
 }
 
 
@@ -152,7 +197,7 @@ for (valgtVar in variable) {
      outfile <- paste(valgtVar, '.png', sep='')
      FigAndelerGrVar(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-                reshID=reshID, libkat=libkat, outfile=outfile)
+                reshID=reshID, outfile=outfile)
 }
 #------------------------------ Gjennomsnitt/Median per år --------------------------
 #-----------------------------------------------------------------------------------
@@ -204,16 +249,17 @@ reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-06-01'
+datoTil <- '2018-06-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
-valgtMaal = 'Med'
-valgtVar <- 'NRSsmerteArmPreOp'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
+valgtMaal = 'Gjsn'
+valgtVar <- 'EQ5Dendr12mnd'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
           #NDIscorePreOp, NRSsmerteArmPreOp, NRSsmerteNakkePreOp
+          #EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd
 
-outfile <- paste(valgtVar, '_', valgtMaal, '.pdf', sep='')	#''	#Navn angis av Jasper
+outfile <- '' #paste0(valgtVar, '_', valgtMaal, '.pdf')	#''	#Navn angis av Jasper
 
-FigGjsnGrVar(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
+FigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
             datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
             reshID=reshID, outfile=outfile)
 

@@ -15,4 +15,3 @@ RegData En dataramme med det preprosesserte datasettet
 \description{
 Denne funksjonen definerer og formaterer variabler
 }
-

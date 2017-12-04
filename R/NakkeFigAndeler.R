@@ -58,8 +58,8 @@
 #' @export
 
 FigAndeler  <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31',
-		minald=0, maxald=130, erMann='', tittel=1, outfile='', hentData=0, preprosess=TRUE,
-		reshID, enhetsUtvalg=1)
+		minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, tittel=1, outfile='',
+		hentData=0, preprosess=TRUE, reshID, enhetsUtvalg=1)
 {
 
 	if (hentData == 1) {
@@ -353,7 +353,7 @@ if (valgtVar=='Utdanning') {
 
 #------------Gjøre utvalg-------------------------
 NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-		erMann=erMann)
+		erMann=erMann, myelopati=myelopati, fremBak=fremBak)
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 

@@ -14,4 +14,3 @@ The list of possible variables to be used in the report type
 \emph{figAndelTid}. Placed as its own function to trim the shiny app for
 Nakke
 }
-

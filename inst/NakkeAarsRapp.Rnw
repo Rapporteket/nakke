@@ -1,0 +1,173 @@
+\documentclass{article}
+
+\begin{document}
+
+
+\section{Resultater degenerativ nakke}
+
+I Norge drives nakkekirurgi kun ved nevrokirurgiske avdelinger knyttet til de fem
+universitetssykehusene i Oslo, Bergen, Trondheim, Stavanger og Tromsø, samt ved
+hovedsakelig ett privat sykehus (Oslofjordklinikken).
+Da der ikke finnes etablerte kvalitetsindikatorer for nakkekirurgi vil dette bli en
+viktig oppgave for NKR. Da en ny validering av datakvaliteten ikke er fullført grunnet
+uventede databaseproblemer, vises kun et generelt mål på pasient rapporterte
+tilfredshet (PREM) i årets rapport. I neste årsrapport vil NKR presentere sykehusvise
+kvalitetsdata splittet på diagnose, behandling.
+Pasienttilfredshet (PREM)
+
+<<NAKKE, echo=FALSE, eval=FALSE>>=
+rm(list=ls())
+library(Nakke)
+load('A:/Nakke/NakkeAarsrapp2016.Rdata') #RegData
+#setwd('C:/ResultattjenesteGIT/nkr/aarsrapp')
+setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp')
+
+# Preprosessere data:
+#Data er preprossessert før lagring: RegData <- NakkePreprosess(RegData=RegData)
+	#Kjønnsvariabel:ErMann - vil senere benytte denne
+	#RegData$ErMann <- RegData$Kjonn
+	#RegData$ErMann[which(RegData$Kjonn == 2)] <- 0
+	#RegData$InnDato <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")
+	#RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
+	#names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
+	#class(RegData$ReshId) <- 'numeric'
+
+
+#Fremre, uten Myelopati:
+indikkeMyeloFremre <- which(OprIndikMyelopati==0 & RegData$OprMetodeTilgangFremre==1)
+#Bakre tilgang, med Myelopati
+indMyeloBakre <- which(RegData$OprIndikMyelopati==1 & RegData$OprMetodeTilgangBakre==1)
+
+indH <- which(RegData$OprMetodeTilgangFremreH)
+indV <- which(RegData$OprMetodeTilgangFremreV)
+
+table(RegData$OprMetodeTilgangFremreH, RegData$KomplStemme3mnd)
+
+table(RegData$OprIndikMyelopati)
+table(RegData$OprMetodeTilgangBakre)
+table(RegData$OprMetodeTilgangFremre)
+table(RegData[ ,c('OprIndikMyelopati','OprMetodeTilgangBakre')])
+table(RegData[ ,c('OprIndikMyelopati','OprMetodeTilgangFremre')])
+
+minald <- 0	#alder, fra og med
+maxald <- 130	#alder, til og med
+datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2015-12-31'
+erMann <- 0			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
+tittel=1
+enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
+
+
+#Andel over 70 år per sykehus
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, #datoFra = '2016-01-01',
+                              valgtVar='Alder', outfile='NakkeAlder70.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='Alder', outfile='NakkeAlder70Tid.pdf')
+
+#Myelopati
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, #datoFra = '2016-01-01',
+                              valgtVar='OprIndikMyelopati', outfile='NakkeMyelopatiSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE,
+                              valgtVar='OprIndikMyelopati', outfile='NakkeMyelopatiTid.pdf')
+
+#Nytte
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31', #datoFra = '2014-01-01',
+                       valgtVar='NytteOpr12mnd', outfile='NakkeNytteOpr12mndSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31',
+                      valgtVar='NytteOpr12mnd', outfile='NakkeNytteOpr12mndTid.pdf')
+
+#Stemmevansker3mnd, fremre, uten myelopati
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplStemme3mnd', #datoFra = '2015-01-01',
+                                     myelopati=0,fremBak = 1, outfile='NakkeStemme3mndSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplStemme3mnd',
+                                     myelopati=0,fremBak = 1, outfile='NakkeStemme3mndTid.pdf')
+
+#Svelgvansker3mnd, fremre, uten myelopati
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplSvelging3mnd', #datoFra = '2015-01-01',
+                                     myelopati=0,fremBak = 1, outfile='NakkeSvelg3mndSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplSvelging3mnd',
+                                     myelopati=0,fremBak = 1, outfile='NakkeSvelg3mndTid.pdf')
+
+
+#Bruk av antibiotikaprofylakse (fremre, bakre)
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Antibiotika', #datoFra = '2015-01-01',
+                                     fremBak = 1, outfile='NakkeAntibiotikaFremSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE,  valgtVar='Antibiotika',
+                                     fremBak = 1, outfile='NakkeAntibiotikaFremTid.pdf')
+dum <- FigAndelerGrVar(RegData=RegData, valgtVar='Antibiotika', #datoFra = '2016-01-01',
+                                     fremBak = 2, outfile='NakkeAntibiotikaBakSh.pdf')
+dum <- FigAndelTid(RegData=RegData, valgtVar='Antibiotika',
+                                     fremBak = 2, outfile='NakkeAntibiotikaBakTid.pdf')
+
+#Brukav sårdren, fremre, uten myelopati
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Saardren', #datoFra = '2015-01-01',
+                                     myelopati=0,fremBak = 1, outfile='NakkeSaardrenUmFSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='Saardren',
+                                     myelopati=0,fremBak = 1, outfile='NakkeSaardrenUmFTid.pdf')
+
+#Sårinfeksjon, overfladisk 3mnd, kun bakre kirurgi
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', #datoFra = '2015-01-01',
+                                     fremBak = 2, outfile='NakkeKomplinfekOverfl3mndSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd',
+                                     fremBak = 2, outfile='NakkeKomplinfekOverfl3mndTid.pdf')
+
+#Sårinfeksjon (dyp og/eller overfladisk), 3mnd, kun bakre kirurgi
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek', #datoFra = '2015-01-01',
+                                     fremBak = 2,Ngrense = 20, outfile='NakkeKomplinfek3mndSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek',
+                                     fremBak = 2, outfile='NakkeKomplinfek3mndTid.pdf')
+
+
+#Gjennomsnittlig? bedring, NDI: Fremre uten myelopati
+#                               Bakre med myelopati
+dum <- FigAndelerGrVar(RegData=RegData, datoTil='2015-12-31',  valgtVar='NDIendr12mnd', #datoFra = '2014-01-01',
+                                     myelopati=0, fremBak = 1, outfile='NakkeNDIendr12mndUmFSh.pdf')
+#dum <- FigAndelTid(RegData=RegData, datoTil='2015-12-31',  valgtVar='NDIendr12mnd',
+#                                     myelopati=0, fremBak = 1, outfile='NakkeNDIendr12mndUmFTid.pdf')
+
+dum <- FigAndelerGrVar(RegData=RegData, datoTil='2015-12-31', valgtVar='NDIendr12mnd', #datoFra = '2014-01-01',
+                                     myelopati=1, fremBak = 2, outfile='NakkeNDIendr12mndMBSh.pdf')
+#dum <- FigAndelTid(RegData=RegData, datoTil='2015-12-31', valgtVar='NDIendr12mnd',
+#                                     myelopati=1, fremBak = 2, outfile='NakkeNDIendr12mndMBTid.pdf')
+
+#Bedring av armsmerte (NRS??), fremre uten myelopati
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteArmEndr12mnd', #datoFra = '2015-01-01',
+                                     myelopati=0, fremBak = 1, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
+#dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteArmEndr12mnd',
+#                                     myelopati=0, fremBak = 1, outfile='NakkeNRSsmerteArmEndr12mndUmFTid.pdf')
+
+#Andel fornøyde med behandlinga: fremre og bakre
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE,datoTil='2015-12-31', datoFra = '2014-01-01',
+                                     valgtVar='FornoydBeh12mnd',  fremBak = 1, outfile='NakkeFornoydBeh12mndFremSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31', valgtVar='FornoydBeh12mnd',
+                                     fremBak = 1, outfile='NakkeFornoydBeh12mndFremTid.pdf')
+
+dum <- FigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31', #datoFra = '2014-01-01',
+                       valgtVar='FornoydBeh12mnd',fremBak = 2, outfile='NakkeFornoydBeh12mndBakSh.pdf')
+dum <- FigAndelTid(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31',
+                   valgtVar='FornoydBeh12mnd',fremBak = 2, outfile='NakkeFornoydBeh12mndBakTid.pdf')
+
+
+#Gjennomsnitt, Tid og grVar:
+''
+dum <- FigGjsnGrVar(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31', #datoFra = '2014-01-01', N
+                       valgtVar='EMSendr12mnd',fremBak = 2, Ngrense=20, outfile='NakkeEMSendr12mndSh.pdf')
+dum <-   FigGjsnTid(RegData=RegData, preprosess=FALSE, datoTil='2015-12-31',
+                   valgtVar='EMSendr12mnd',fremBak = 2, outfile='NakkeEMSendr12mndTid.pdf')
+
+@
+
+
+Pasienter som opereres i nakken for degenerative tilstander har armsmerte med
+eller uten funksjonssvikt (radikulopati), varierende grad av nakkesmerter og noen
+har ryggmargspåvirkning (myelopati). Som hovedregel kan ikke pasienter som
+opereres på grunn av ryggmargspåvirkning påregne bedring i samme grad som de
+som behandles for armsmerte.
+
+Figur 3.21 viser at også andelen som opereres for
+myelopati varierer mellom sykehusene.
+
+Figur 3.21: Andel pasienter som opereres for ryggmargspåvirkning (myelopati) ved
+norske sykehus.
+
+
+\end{document}
