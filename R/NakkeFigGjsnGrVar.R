@@ -9,10 +9,13 @@
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: alder (år)
 #'             EMSscorePreOp: EMS hos Myelopatipasienter før
-#'             EMSendr12mnd:
-#'             EMSendr3mnd:
+#'             EMSendr12mnd: Forbedring av EMS hos myelopati-pasienter, 12 mnd.
+#'             EMSendr3mnd: Forbedring av EMS hos myelopati-pasienter, 3 mnd.
+#'             EQ5Dendr12mnd: Forbedring av EQ5D, 12 mnd.
+#'             EQ5Dendr3mnd: Forbedring av EQ5D, 3 mnd.
 #'             KnivtidTotalMin: total knivtid
 #'             NDIscorePreOp: NDI før operasjon
+#'             NDIendr3mnd:
 #'             LiggeDognPostop: liggetid etter operasjon
 #'             LiggeDognTotalt: antall liggedøgn, totalt
 #'             NRSsmerteArmPreOp: NSR, arm før operasjon
@@ -93,6 +96,75 @@ if (valgtVar=='EMSendr3mnd') {
   deltittel <- 'forbedring av EMS, myelopati-pas., 3 mnd.'
   ytxt1 <- '(endring av EMS-skår)'
 }
+
+
+
+if (valgtVar=='NDIendr3mnd') {
+  #Pasientkjema og 3mndskjema. Lav skår, lite plager -> forbedring = nedgang.
+  KIekstrem <- c(-100,100)
+  RegData$Variabel <- RegData$NDIscorePreOp - RegData$NDIscore3mnd
+  indVar <- which(RegData$Variabel >= KIekstrem[1])
+  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
+  RegData <- RegData[intersect(indVar, indSkjema), ]
+  deltittel <- 'forbedring av NDI, 3 mnd. etter operasjon'
+  ytxt1 <- '(endring av NDI-skår)'
+}
+
+if (valgtVar=='NDIendr12mnd') {
+  #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
+  KIekstrem <- c(-100,100)
+  RegData$Variabel <- RegData$NDIscorePreOp - RegData$NDIscore12mnd
+  indVar <- which(RegData$Variabel >= KIekstrem[1])
+  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
+  RegData <- RegData[intersect(indVar, indSkjema), ]
+  deltittel <- 'forbedring av NDI, 12 mnd. etter operasjon'
+  ytxt1 <- '(endring av NDI-skår)'
+}
+
+if (valgtVar=='EQ5Dendr3mnd') {
+  #Pasientkjema og 3mndskjema. Lav skår, mye plager -> Forbedring = økning.
+  #Kun myelopati-pasienter
+  KIekstrem <- c(-1.6, 1.6)
+  RegData$Variabel <- RegData$Eq5DScore3mnd - RegData$Eq5DScorePreOp
+  indVar <- which(RegData$Variabel >= KIekstrem[1])
+  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
+  RegData <- RegData[intersect(indVar, indSkjema), ]
+  deltittel <- 'forbedring av EQ5D, 3 mnd.'
+  ytxt1 <- '(endring av EQ5D-skår)'
+}
+if (valgtVar=='EQ5Dendr12mnd') {
+  #Pasientkjema og 12mndskjema. Lav skår, mye plager -> Forbedring = økning.
+  #Kun myelopati-pasienter
+  KIekstrem <- c(-1.6, 1.6)
+  RegData$Variabel <- RegData$Eq5DScore12mnd - RegData$Eq5DScorePreOp
+  indVar <- which(RegData$Variabel >= KIekstrem[1])
+  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
+  RegData <- RegData[intersect(indVar, indSkjema), ]
+  deltittel <- 'forbedring av EQ5D, 12 mnd.'
+  ytxt1 <- '(endring av EQ5D-skår)'
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if (valgtVar == 'KnivtidTotalMin') {
 	#Legeskjema.

@@ -42,7 +42,7 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	ktr=0
 	aar=2015:2016
 	tidlAar=2013:2014
-	tidsenhet <-
+	tidsenhet <- 'aar'
 	hentData=0
 	outfile=''
 
@@ -108,7 +108,7 @@ for (valgtVar in variable) {
      outfile <- paste(valgtVar, '.png', sep='')
      FigAndeler(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-                reshID=reshID, enhetsUtvalg=enhetsUtvalg, libkat=libkat, outfile=outfile)
+                reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
      }
 
 
@@ -153,7 +153,7 @@ for (valgtVar in variable) {
      outfile <- paste(valgtVar, '.png', sep='')
      FigAndelTid(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-                reshID=reshID, libkat=libkat, outfile=outfile)
+                reshID=reshID, outfile=outfile)
 }
 
 
@@ -197,7 +197,7 @@ for (valgtVar in variable) {
      outfile <- paste(valgtVar, '.png', sep='')
      FigAndelerGrVar(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-                reshID=reshID, libkat=libkat, outfile=outfile)
+                reshID=reshID, outfile=outfile)
 }
 #------------------------------ Gjennomsnitt/Median per år --------------------------
 #-----------------------------------------------------------------------------------
@@ -249,16 +249,17 @@ reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-06-01'
+datoTil <- '2018-06-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
-valgtMaal = 'Med'
-valgtVar <- 'NRSsmerteArmPreOp'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
+valgtMaal = 'Gjsn'
+valgtVar <- 'EQ5Dendr12mnd'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
           #NDIscorePreOp, NRSsmerteArmPreOp, NRSsmerteNakkePreOp
+          #EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd
 
-outfile <- paste(valgtVar, '_', valgtMaal, '.pdf', sep='')	#''	#Navn angis av Jasper
+outfile <- '' #paste0(valgtVar, '_', valgtMaal, '.pdf')	#''	#Navn angis av Jasper
 
-FigGjsnGrVar(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
+FigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
             datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
             reshID=reshID, outfile=outfile)
 
