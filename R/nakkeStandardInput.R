@@ -2,9 +2,9 @@
 #'
 #' nakkeStandardInput provides common ui uc for shiny Nakke
 #'
-#'  @param id namespace for this module
-#'  @param label Label for this module
-#'  @export
+#' @param id namespace for this module
+#' @param label Label for this module
+#' @export
 
 nakkeStandardInput <- function(id, label = "Brukervalg") {
 

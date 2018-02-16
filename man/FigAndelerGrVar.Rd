@@ -39,8 +39,6 @@ NDIendr12mnd: Minst 30% forbedring av NDI, 12 mnd.
 NRSsmerteArmEndr12mnd: Minst 30% forbedring av NSR-arm, 12 mnd.
 NytteOpr12mnd: Klart bedre, 12 mnd.
 NytteOpr3mnd: Klart bedre, 3 mnd.
-Verre12mnd: Klart verre, 12 mnd.
-Verre3mnd. Klart verre, 3 mnd.
 OprIndikMyelopati: Operasjonsårsak, Myelopati
 Roker: Røykere
 Saardren: Andel som får sårdren
@@ -48,7 +46,9 @@ SmertestillPreOp: Bruker smertestillende, preop.
 SymptVarighetNakkeHode: Varighet av hode-/nakkesmerter over 1 år
 SymptVarighetSmerterUker: Varighet av smerter minst 1 år
 UforetrygdPreOp: Søkt eller planlegger å søke uføretrygd?
-Utdanning: Andel høyskole-/universitetsutdannede}
+Utdanning: Andel høyskole-/universitetsutdannede
+Verre12mnd: Klart verre, 12 mnd.
+Verre3mnd. Klart verre, 3 mnd.}
 
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 

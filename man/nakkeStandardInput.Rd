@@ -6,11 +6,11 @@
 \usage{
 nakkeStandardInput(id, label = "Brukervalg")
 }
+\arguments{
+\item{id}{namespace for this module}
+
+\item{label}{Label for this module}
+}
 \description{
 nakkeStandardInput provides common ui uc for shiny Nakke
-}
-\details{
-@param id namespace for this module
- @param label Label for this module
- @export
 }

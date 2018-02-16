@@ -15,10 +15,13 @@ FigGjsnGrVar(RegData, valgtVar, valgtMaal = "Gjsn", datoFra = "2012-01-01",
 \item{valgtVar}{Variabelen det skal vises resultat for.
 Alder: alder (år)
 EMSscorePreOp: EMS hos Myelopatipasienter før
-EMSendr12mnd:
-EMSendr12mnd:
+EMSendr12mnd: Forbedring av EMS hos myelopati-pasienter, 12 mnd.
+EMSendr3mnd: Forbedring av EMS hos myelopati-pasienter, 3 mnd.
+EQ5Dendr12mnd: Forbedring av EQ5D, 12 mnd.
+EQ5Dendr3mnd: Forbedring av EQ5D, 3 mnd.
 KnivtidTotalMin: total knivtid
 NDIscorePreOp: NDI før operasjon
+NDIendr3mnd:
 LiggeDognPostop: liggetid etter operasjon
 LiggeDognTotalt: antall liggedøgn, totalt
 NRSsmerteArmPreOp: NSR, arm før operasjon

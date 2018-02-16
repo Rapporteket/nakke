@@ -7,8 +7,8 @@
 FigAndelerGrVarAar(RegData, valgtVar, datoFra = "2012-01-01",
   datoTil = "3000-12-31", enhetsUtvalg = 0, minald = 0, maxald = 130,
   erMann = "", myelopati = 99, fremBak = 0, Ngrense = 10,
-  grVar = "ShNavn", ktr = 0, aar = 0, tidlAar = 0, hentData = 0,
-  preprosess = TRUE, tittel = 1, outfile = "")
+  grVar = "ShNavn", ktr = 0, aar = 0, tidlAar = 0, tidsenhet = "aar",
+  hentData = 0, preprosess = TRUE, tittel = 1, outfile = "")
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}

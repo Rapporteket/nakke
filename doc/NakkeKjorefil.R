@@ -285,3 +285,10 @@ for (valgtVar in variable) {
 
 
 
+
+
+#------------------------------ Shiny --------------------------
+library(Nakke)
+setwd('C:/ResultattjenesteGIT/Nakke/R')
+runShinyAppReports()
+
