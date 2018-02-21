@@ -7,7 +7,7 @@
 #'
 #' @export
 
-NakkeLibUtvalg <- function(RegData, datoFra, datoTil, minald=0, maxald=130, erMann='', aar=0,
+NakkeLibUtvalg <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', minald=0, maxald=130, erMann='', aar=0,
                            myelopati=99, fremBak=0, fargepalett='BlaaOff')	#insttype,
 {
 
