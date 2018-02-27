@@ -78,78 +78,91 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
             sortAvtagende <- FALSE
       }
 
-      if (valgtVar == 'Alder') {
-          #Andel over 70 år
-          RegData$Variabel[which(RegData[ ,valgtVar] >= 70)] <- 1
-          TittelUt <- 'Pasienter over 70 år'
-     }
+if (valgtVar=='Alder') { #AndelTid
+	#Pasienter over 70 år
+  	RegData$Variabel[which(RegData$Alder >= 70)] <- 1
+  	VarTxt <- 'pasienter >=70år'
+	TittelUt <- 'Andel pasienter over 70 år'
+}
+if (valgtVar=='AndreRelSykdommer') { #AndelTid
+	#IKKE LENGER (feb 18): Tar med blanke som 0. (Hver sykdom får også verdien 0 når denne er tom.)
+  	#RegData$Variabel[which(RegData[ ,valgtVar] == 1)] <- 1
+    RegData <- RegData[which(RegData[,valgtVar] %in% 0:1), ]
+  	VarTxt <- 'med andre sykdommer'
+	TittelUt <- 'Andre sykdommer'
+}
+if (valgtVar=='Antibiotika') { #AndelTid
+	#Andel av de som har fått antibiotika
+	RegData <- RegData[which(RegData$Antibiotika %in% 0:1),]
+  	RegData$Variabel <-RegData$Antibiotika
+  	VarTxt <- 'som har fått antibiotika'
+	TittelUt <- 'Fått antibiotika'
+}
 
-     if (valgtVar == 'AndreRelSykdommer') {
-          #Komorbiditet
-          RegData <- RegData[which(RegData[,valgtVar] %in% 0:1), ]
-          RegData$Variabel <- RegData[ ,valgtVar]
-          TittelUt <- 'Andre sykdommer'
-     }
-     if (valgtVar == 'Antibiotika') {
-          #Komorbiditet
-          RegData <- RegData[which(RegData[,valgtVar] %in% 0:1), ]
-          RegData$Variabel <- RegData[ ,valgtVar]
-          TittelUt <- 'Fått antibiotika'
-     }
-     if (valgtVar %in% c('ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd')) {
-          # Andel i kategori 6 tom 9, mottar sykepenger Av 1-9, (ikke bare de som sykemeldt fra før)
-          #  #grtxt <- c('I arbeid','Hjemmeværende', 'Studie/skole', 'Pensjonist', 'Arbeidsledig', 'Sykemeldt',
-          #		'Delvis sykemeldt', 'Attføring/rehab.', 'Uførepensjon', 'Ufør og sykem.', 'Ikke utfylt')
-          indSkjema <- switch(valgtVar,
-                              ArbeidstausPreOp = which(RegData$PasientSkjemaStatus == 1),
-                              Arbeidstaus3mnd = which(RegData$OppFolgStatus3mnd == 1),
-                              Arbeidstaus12mnd = which(RegData$OppFolgStatus12mnd == 1))
-          indDum <- which(RegData[ ,valgtVar] %in% 1:9)
-          RegData <- RegData[intersect(indDum, indSkjema), ]
-          TittelUt <- switch(valgtVar,
-                             ArbeidstausPreOp = 'Mottar sykepenger, preoperativt?',
-                             Arbeidstaus3mnd = 'Mottar sykepenger, 3 mnd etter operasjon?' ,
-                             Arbeidstaus12mnd = 'Mottar sykepenger, 12 mnd etter operasjon?')
-          RegData$Variabel[which(RegData[ ,valgtVar] %in% 6:9)] <- 1
-     }
-     if (valgtVar == 'ASAgrad') {
-          RegData <- RegData[which(RegData[,valgtVar] %in% 1:5), ]
-          RegData$Variabel[which(RegData[ ,valgtVar] > 2)] <- 1
-          TittelUt <- 'ASA-grad > II'
-     }
-     if (valgtVar == 'BMI') {
-          #BMI > 30
-          RegData <- RegData[which(RegData[,valgtVar] >10), ]
-          RegData$Variabel[which(RegData[ ,valgtVar] > 30)] <- 1
-          TittelUt <- 'Pasienter med fedme (BMI>30)'
-     }
-     if (valgtVar == 'EnhverKompl3mnd') {
-          #Komplikasjoner
-          indSkjema <- which(RegData$OppFolgStatus3mnd == 1)
-          RegData <- RegData[intersect(which(RegData[,valgtVar] %in% 0:1), indSkjema), ]
-          RegData$Variabel <- RegData[ ,valgtVar]
-          TittelUt <- 'Alle komplikasjoner'
-     }
-     if (valgtVar == 'ErstatningPreOp') {
+if (valgtVar %in% c('ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd')) { #AndelTid
+	# Andel i kategori 6 tom 9, mottar sykepenger Av 1-9, (ikke bare de som sykemeldt fra før)
+#  #grtxt <- c('I arbeid','Hjemmeværende', 'Studie/skole', 'Pensjonist', 'Arbeidsledig', 'Sykemeldt',
+#		'Delvis sykemeldt', 'Attføring/rehab.', 'Uførepensjon', 'Ufør og sykem.', 'Ikke utfylt')
+	indSkjema <- switch(valgtVar,
+	    ArbeidstausPreOp = which(RegData$PasientSkjemaStatus == 1),
+	    Arbeidstaus3mnd = which(RegData$OppFolgStatus3mnd == 1),
+	    Arbeidstaus12mnd = which(RegData$OppFolgStatus12mnd == 1))
+	indDum <- which(RegData[ ,valgtVar] %in% 1:9)
+	RegData <- RegData[intersect(indDum, indSkjema), ]
+	TittelUt <- switch(valgtVar,
+	    ArbeidstausPreOp = 'Mottar sykepenger, preoperativt?',
+	    Arbeidstaus3mnd = 'Mottar sykepenger, 3 mnd etter operasjon?' ,
+	    Arbeidstaus12mnd = 'Mottar sykepenger, 12 mnd etter operasjon?')
+  	RegData$Variabel[which(RegData[ ,valgtVar] %in% 6:9)] <- 1
+  	VarTxt <- 'som mottar sykepenger'
+}
+if (valgtVar=='ASAgrad') { #AndelTid
+	#Legeskjema. Andel av de som har ASA-grad 3-5
+	RegData <- RegData[which(RegData$ASAgrad %in% 1:5),]
+	RegData$Variabel[which(RegData[ ,valgtVar] %in% 3:5)] <- 1
+  	VarTxt <- 'med ASA>II'
+	TittelUt <- 'Andel pasienter med ASA-grad III-V'
+}
+ if (valgtVar=='BMI') { #AndelTid
+	#Pasientskjema. Andel med BMI>30
+	RegData <- RegData[intersect(which(RegData$PasientSkjemaStatus == 1), which(RegData$BMI > 0)), ]
+	RegData$Variabel[which(RegData[ ,valgtVar] >30)] <- 1
+  	VarTxt <- 'med BMI>30'
+	TittelUt <- 'Andel pasienter med fedme  (BMI>30)'
+}
+if (valgtVar=='EnhverKompl3mnd') { #AndelTid
+     #Pasientskjema. Alle komplikasjoner, 3mnd.
+    indSkjema <- which(RegData$OppFolgStatus3mnd == 1)
+    RegData <- RegData[intersect(which(RegData[,valgtVar] %in% 0:1), indSkjema), ]
+    RegData$Variabel <- RegData[ ,valgtVar]
+     VarTxt <- 'komplikasjoner'
+     TittelUt <- 'Komplikasjoner (totalt) 3 mnd. etter operasjon'
+}
+
+if (valgtVar=='ErstatningPreOp') { #AndelTid
           #Pasientskjema. Andel med ErstatningPreOp 1 el 3
           #Kode 1:4,9: 'Ja', 'Nei', 'Planlegger', 'Innvilget', 'Ukjent'
           RegData <- RegData[intersect(which(RegData$PasientSkjemaStatus == 1),
                                        which(RegData$ErstatningPreOp %in% 1:4)), ]
           RegData$Variabel[which(RegData[ ,valgtVar] %in% c(1,3))] <- 1
-          TittelUt <- 'Pasienten har søkt/planlegger å søke erstatning'
-     }
-     if (valgtVar %in% c('FornoydBeh3mnd','FornoydBeh12mnd')) {
-          #3/12mndSkjema. Andel med Fornøyd/litt fornøyd (1,2)
-          #Kode 1:5,9: 'Fornøyd', 'Litt fornøyd', 'Verken eller', 'Litt misfornøyd', 'Misfornøyd', 'Ukjent')
-          indSkjema <- switch(valgtVar,
-                              FornoydBeh3mnd = intersect(which(RegData$FornoydBeh3mnd %in% 1:5),which(RegData$OppFolgStatus3mnd==1)),
-                              FornoydBeh12mnd = intersect(which(RegData$FornoydBeh12mnd %in% 1:5),which(RegData$OppFolgStatus12mnd==1)))
-          RegData <- RegData[indSkjema, ]
-          RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:2)] <- 1
-          TittelUt <- switch(valgtVar,
-                             FornoydBeh3mnd = 'Fornøyde pasienter, 3 mnd.' ,
-                             FornoydBeh12mnd = 'Fornøyde pasienter, 12 mnd.')
-     }
+  	VarTxt <- 'søkt erstatning'
+	TittelUt <- 'Har søkt/planlegger å søke erstatning før operasjon'
+}
+
+if (valgtVar %in% c('FornoydBeh3mnd','FornoydBeh12mnd')) { #AndelTid
+	#3/12mndSkjema. Andel med Fornøyd/litt fornøyd (1,2)
+	#Kode 1:5,9: 'Fornøyd', 'Litt fornøyd', 'Verken eller', 'Litt misfornøyd', 'Misfornøyd', 'Ukjent')
+	indSkjema <- switch(valgtVar,
+	    FornoydBeh3mnd = intersect(which(RegData$FornoydBeh3mnd %in% 1:5),which(RegData$OppFolgStatus3mnd==1)),
+	    FornoydBeh12mnd = intersect(which(RegData$FornoydBeh12mnd %in% 1:5),which(RegData$OppFolgStatus12mnd==1)))
+	RegData <- RegData[indSkjema, ]
+	RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:2)] <- 1
+	VarTxt <- 'fornøyde'
+	TittelUt <- switch(valgtVar,
+	         FornoydBeh3mnd = 'Fornøyde pasienter, 3 mnd' ,
+	         FornoydBeh12mnd = 'Fornøyde pasienter, 12 mnd')
+}
+
      if (valgtVar=='KomplinfekDyp3mnd') {
           #3MndSkjema. Andel med KomplinfekDyp3mnd=1
           #Kode 0,1: Nei, Ja +tomme
@@ -188,21 +201,22 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
           TittelUt <- 'Svelgvansker, 12 mnd.'
      }
 
-     if (valgtVar %in% c('Misfor3mnd','Misfor12mnd')) {
-          #3/12mndSkjema. Andel med Fornøyd/litt fornøyd (1,2)
-          #Kode 1:5,9: 'Fornøyd', 'Litt fornøyd', 'Verken eller', 'Litt misfornøyd', 'Misfornøyd', 'Ukjent')
-          indSkjema <- switch(valgtVar,
-                              Misfor3mnd = intersect(which(RegData$FornoydBeh3mnd %in% 1:5),which(RegData$OppFolgStatus3mnd==1)),
-                              Misfor12mnd = intersect(which(RegData$FornoydBeh12mnd %in% 1:5),which(RegData$OppFolgStatus12mnd==1)))
-          RegData <- RegData[indSkjema, ]
-          indVar <- switch(valgtVar,
-                           Misfor3mnd = which(RegData$FornoydBeh3mnd %in% 4:5),
-                           Misfor12mnd = which(RegData$FornoydBeh12mnd %in% 4:5))
-          RegData$Variabel[indVar] <- 1
-          TittelUt <- switch(valgtVar,
-                             Misfor3mnd = 'Misfornøyde pasienter, 3 mnd.' ,
-                             Misfor12mnd = 'Misfornøyde pasienter, 12 mnd.')
-     }
+ if (valgtVar %in% c('Misfor3mnd','Misfor12mnd')) { #AndelTid
+	#3/12mndSkjema. Andel med Fornøyd/litt fornøyd (1,2)
+	#Kode 1:5,9: 'Fornøyd', 'Litt fornøyd', 'Verken eller', 'Litt misfornøyd', 'Misfornøyd', 'Ukjent')
+	indSkjema <- switch(valgtVar,
+	    Misfor3mnd = intersect(which(RegData$FornoydBeh3mnd %in% 1:5),which(RegData$OppFolgStatus3mnd==1)),
+	    Misfor12mnd = intersect(which(RegData$FornoydBeh12mnd %in% 1:5),which(RegData$OppFolgStatus12mnd==1)))
+	RegData <- RegData[indSkjema, ]
+	indVar <- switch(valgtVar,
+	    Misfor3mnd = which(RegData$FornoydBeh3mnd %in% 4:5),
+	    Misfor12mnd = which(RegData$FornoydBeh12mnd %in% 4:5))
+	RegData$Variabel[indVar] <- 1
+	VarTxt <- 'fornøyde'
+	TittelUt <- switch(valgtVar,
+	         Misfor3mnd = 'Misfornøyde pasienter, 3 mnd' ,
+	         Misfor12mnd = 'Misfornøyde pasienter, 12 mnd')
+}
      if (valgtVar=='NDIendr12mnd') {
           #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
           RegData$NDIEndr <- 100*(RegData$NDIscorePreOp - RegData$NDIscore12mnd)/RegData$NDIscorePreOp
@@ -325,7 +339,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
 
 
       UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt, KImaal=KImaal, retn=retn,
-                     tittel=tittel, flerevar=flerevar, variable=variable, sortAvtagende=sortAvtagende)
+                     tittel=TittelUt, flerevar=flerevar, variable=variable, sortAvtagende=sortAvtagende)
       #RegData inneholder nå variablene 'Variabel' og 'VariabelGr'
       return(invisible(UtData))
 

@@ -28,6 +28,7 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	#RegData <- RegData[which(RegData$Aar<2017),]
 	#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
 	#load(paste0(fil,".Rdata")) #RegData
+	load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
 	datoFra='2012-01-01'
 	datoTil='3000-12-31'
@@ -125,7 +126,7 @@ reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-04-01'
+datoTil <- '2018-04-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
@@ -136,8 +137,8 @@ valgtVar <- 'OprIndikMyelopati'	#Må velge... Alder, AndreRelSykdommer, Antibiot
 		  #Verre3mnd, Verre12mnd, OprIndikMyelopati, OprIndikSmerter, PerOpEnhverKompl, Roker, Saardren,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 
-outfile <- paste(valgtVar, 'Syn.png', sep='')	#''	#Navn angis av Jasper
-FigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+outfile <- '' #paste0(valgtVar, 'Syn.png')	#''	#Navn angis av Jasper
+NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 

@@ -4,9 +4,9 @@
 \alias{NakkeLibUtvalg}
 \title{Funksjon som gjør utvalg i datagrunnlaget til registreringene for Nakke}
 \usage{
-NakkeLibUtvalg(RegData, datoFra, datoTil, minald = 0, maxald = 130,
-  erMann = "", aar = 0, myelopati = 99, fremBak = 0,
-  fargepalett = "BlaaOff")
+NakkeLibUtvalg(RegData, datoFra = "2012-01-01", datoTil = "3000-01-01",
+  minald = 0, maxald = 130, erMann = "", aar = 0, myelopati = 99,
+  fremBak = 0, fargepalett = "BlaaOff")
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
