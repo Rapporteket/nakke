@@ -90,12 +90,13 @@ enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget s
 outfile <- paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Nakke/")
 
-FigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, outfile=outfile)
 
 
 
+setwd('C:/Registerinfo og historie/Nakke/Figurer')
 variable <- c('Alder', 'AntallNivaaOpr', 'Antibiotika', 'ArbeidstausPreOp',
               'Arbeidstaus3mnd', 'Arbeidstaus12mnd', 'ASAgrad', 'BMI', 'EqAngstPreOp', 'ErstatningPreOp',
               'FornoydBeh3mnd','FornoydBeh12mnd', 'Komorbiditet', 'Kompl3mnd', 'KomplOpr', 'LiggeDognPostop',
@@ -106,8 +107,8 @@ variable <- c('Alder', 'AntallNivaaOpr', 'Antibiotika', 'ArbeidstausPreOp',
               'TidlOpr', 'TidlOprAntall', 'UforetrygdPreOp', 'Utdanning')
 
 for (valgtVar in variable) {
-     outfile <- paste(valgtVar, '.png', sep='')
-     FigAndeler(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
+     outfile <- paste0(valgtVar, '.png')
+     NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
                 reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
      }
@@ -130,7 +131,7 @@ datoTil <- '2018-04-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'OprIndikMyelopati'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'AndreRelSykdommer'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, ErstatningPreOp,
 		  #Fornoyd12mnd, FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, NytteOpr3mnd, NytteOpr12mnd
@@ -147,12 +148,12 @@ variable <- c('Alder', 'AndreRelSykdommer', 'Antibiotika',
 		  'FornoydBeh3mnd', 'FornoydBeh12mnd', 'Misfor3mnd', 'Misfor12mnd', 'KomplinfekDyp3mnd',
 		  'KomplinfekOverfl3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'NytteOpr3mnd', 'NytteOpr12mnd',
 		  'Verre3mnd', 'Verre12mnd', 'OprIndikMyelopati', 'OprIndikSmerter', 'PerOpEnhverKompl', 'Roker',
-		  'Saardren', 'SmertestillPreOp', 'SymptVarighetNakkeHode', 'SymptVarighetSmerterUker',
+		  'Saardren', 'SmertestillPreOp', 'SymptVarighetNakkeHode', #'SymptVarighetSmerterUker',
 		  'UforetrygdPreOp', 'Utdanning')
-
+setwd('C:/Registerinfo og historie/Nakke/Figurer')
 for (valgtVar in variable) {
-     outfile <- paste(valgtVar, '.png', sep='')
-     FigAndelTid(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
+     outfile <- paste0(valgtVar, '.png')
+     NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
                 reshID=reshID, outfile=outfile)
 }

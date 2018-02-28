@@ -3,7 +3,7 @@
 #' Henter data for Degenerativ Nakke fra "staging"-database.
 #' Kan benytte datoFra og datoFra som input.
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NakkeFigAndeler
 #'
 #' @return Henter dataramma RegData for Degenerativ Nakke
 #' @export

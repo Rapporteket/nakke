@@ -9,7 +9,7 @@
 #' Oswestry: Skala fra 0 til 100, hvor lavest er friskest
 #'
 #' @param valgtMaal Sentralmål: 'Med' gir median, alt annet gir gjennomsnitt
-#' @inheritParams FigAndeler
+#' @inheritParams NakkeFigAndeler
 #' @param valgtVar - Variabelen det skal vises resultat for.
 #'             EMSendr12mnd: Forbedring av EMS hos myelopati-pasienter, 12 mnd.
 #'             EMSendr3mnd: Forbedring av EMS hos myelopati-pasienter, 3 mnd.

@@ -5,7 +5,7 @@
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NakkeFigAndeler
 #' @param Ngrense Minste antall registreringer for at ei gruppe skal bli vist
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling

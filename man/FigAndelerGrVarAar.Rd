@@ -71,9 +71,6 @@ Utdanning: Andel høyskole-/universitetsutdannede}
 \item{preprosess}{Skal data preprosesseres, dvs. gjøre standard omregning av variable og beregne nye.
 TRUE (standard) / FALSE}
 
-\item{tittel}{Om tittel skal vises i figuren eller ikke. Tittel tas bort i samlerapporter.
-0: ikke vis tittel, 1: vis tittel (standard)}
-
 \item{outfile}{Navn på fil figuren skrives ned til}
 }
 \value{

@@ -6,7 +6,7 @@
 \usage{
 NakkeFigAndelTid(RegData, valgtVar, datoFra = "2013-01-01",
   datoTil = "3000-12-31", minald = 0, maxald = 130, erMann = "",
-  myelopati = 99, fremBak = 0, tittel = 1, reshID = 0, outfile = "",
+  myelopati = 99, fremBak = 0, reshID = 0, outfile = "",
   enhetsUtvalg = 0, preprosess = TRUE, hentData = 0)
 }
 \arguments{
@@ -55,9 +55,6 @@ Verre3mnd. Klart verre, 3 mnd.}
 \item{maxald}{Alder, til og med}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
-
-\item{tittel}{Om tittel skal vises i figuren eller ikke. Tittel tas bort i samlerapporter.
-0: ikke vis tittel, 1: vis tittel (standard)}
 
 \item{reshID}{Avdelingsid (reshID) for egen avdeling,}
 

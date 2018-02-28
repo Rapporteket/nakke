@@ -2,7 +2,7 @@
 #'
 #' Funksjon som gjør utvalg av dataene, returnerer det reduserte datasettet og utvalgsteksten.
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NakkeFigAndeler
 #' @param fargepalett - Velge fargepalett, standard:BlaaOff ("offentliggjøringsfargene")
 #'
 #' @export

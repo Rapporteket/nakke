@@ -4,7 +4,7 @@
 #' for hvert sykehus og kan ta inn ulike numeriske variable.
 #' Funksjonen er delvis skrevet for å kunne brukes til andre grupperingsvariable enn sykehus
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NakkeFigAndeler
 #' @param valgtMaal Sentralmål 'Med' gir median, alt annet gir gjennomsnitt
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: alder (år)

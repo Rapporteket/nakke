@@ -33,9 +33,6 @@ NDIendr12mnd: Forbedring av NDI, 12 mnd. etter operasjon}
 
 \item{maxald}{Alder, til og med}
 
-\item{tittel}{Om tittel skal vises i figuren eller ikke. Tittel tas bort i samlerapporter.
-0: ikke vis tittel, 1: vis tittel (standard)}
-
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
