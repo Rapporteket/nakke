@@ -87,6 +87,7 @@ indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
 	}
 
+#--------------- Definere variable ------------------------------
 NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andeler')
 RegData <- NakkeVarSpes$RegData
 sortAvtagende <- NakkeVarSpes$sortAvtagende
@@ -123,6 +124,9 @@ if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
   }
 
 
+#--------------- Gjøre beregninger ------------------------------
+ikke <- 1
+if (ikke == 0) {
 #Gjør beregninger selv om det evt ikke skal vise figur ut. Trenger utdata.
 Andeler <- list(Hoved = 0, Rest =0)
 NRest <- 0
@@ -138,7 +142,6 @@ Andeler$Hoved <- 100*AntHoved/NHoved
 		Andeler$Rest <- 100*AntRest/NRest
 	}
 }
-
 
 #FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
 if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprIndikSmerter',
@@ -283,7 +286,7 @@ if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprInd
          tittel <- 'Operasjonsårsak: Myelopati'
     }
 
-
+}
 
 #Generelt for alle figurer med sammensatte variable:
   	if (teller == 1) {
@@ -302,29 +305,53 @@ if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprInd
 
 
 #--------------- Gjøre beregninger ------------------------------
-#Gjør beregninger selv om det evt ikke skal vise figur ut. Trenger utdata.
-#NB: DENNE MÅTEN Å BEREGNE PÅ KAN EVT. BARE BENYTTES NÅR VARIABLENE SKAL FORHOLDE SEG TIL SAMME N (nevner)
-#Andeler <- list(Hoved = 0, Rest =0)
-#NRest <- 0
-#AntRest <- 0
-#AntHoved <- switch(as.character(flerevar),
-#				'0' = table(RegData$VariabelGr[indHoved]),
-#				'1' = colSums(sapply(RegData[indHoved ,variable], as.numeric), na.rm=T))
-#NHoved <- switch(as.character(flerevar),
-#				'0' = sum(AntHoved),	#length(indHoved)- Kan inneholde NA
-#				'1' = length(indHoved))
-#Andeler$Hoved <- 100*AntHoved/NHoved
+#FRA INTENSIV
 
-#if (medSml==1) {
-#	AntRest <- switch(as.character(flerevar),
-#					'0' = table(RegData$VariabelGr[indRest]),
-#					'1' = colSums(sapply(RegData[indRest ,variable], as.numeric), na.rm=T))
-#	NRest <- switch(as.character(flerevar),
-#					'0' = sum(AntRest),	#length(indRest)- Kan inneholde NA
-#					'1' = length(indRest))
-#	Andeler$Rest <- 100*AntRest/NRest
-#}
+      AggVerdier <- list(Hoved = 0, Rest =0)
+      N <- list(Hoved = 0, Rest =0)
+      Nfig <- list(Hoved = 0, Rest =0) #figurtekst: N i legend
+      Ngr <- list(Hoved = 0, Rest =0)
+      ind <- NIRUtvalg$ind
+	  variable <- NIRVarSpes$variable
+      
+      Ngr$Hoved <- switch(as.character(flerevar), 
+                          '0' = table(RegData$VariabelGr[ind$Hoved]),
+                          # '1' = colSums(sapply(RegData[ind$Hoved ,variable], as.numeric), na.rm=T))
+                          '1' = apply(RegData[ind$Hoved,variable], MARGIN=2, 
+                                      FUN=function(x) sum(x == 1, na.rm=T)))
+      #N$ gjelder selv om totalutvalget er ulikt for de ulike variablene i flerevar
+     N$Hoved <- switch(as.character(flerevar), 
+                        '0' = sum(Ngr$Hoved),	#length(ind$Hoved)- Kan inneholde NA
+                  #      '1' = length(ind$Hoved)
+                        '1' = apply(RegData[ind$Hoved,variable], MARGIN=2, 
+                                 FUN=function(x) sum(x %in% 0:1, na.rm=T)))
+          AggVerdier$Hoved <- 100*Ngr$Hoved/N$Hoved
+      
+      if (NIRUtvalg$medSml==1) {
+           Ngr$Rest <- switch(as.character(flerevar), 
+                               '0' = table(RegData$VariabelGr[ind$Rest]),
+                              # '1' = colSums(sapply(RegData[ind$Rest ,variable], as.numeric), na.rm=T))
+                               '1' = apply(RegData[ind$Rest,variable], MARGIN=2, 
+                                           FUN=function(x) sum(x == 1, na.rm=T)))
+            N$Rest <- switch(as.character(flerevar), 
+                             '0' = sum(Ngr$Rest),	
+                             '1' = apply(RegData[ind$Rest,variable], MARGIN=2, 
+                                   FUN=function(x) sum(x %in% 0:1, na.rm=T)))
+            AggVerdier$Rest <- 100*Ngr$Rest/N$Rest
+      }
+      
+      if(flerevar==1) {
+            Nfig$Hoved <- ifelse(min(N$Hoved)==max(N$Hoved),
+                                 min(N$Hoved[1]), 
+                                 paste0(min(N$Hoved),'-',max(N$Hoved)))
+            Nfig$Rest <- ifelse(min(N$Rest)==max(N$Rest),
+                                min(N$Rest[1]), 
+                                paste0(min(N$Rest),'-',max(N$Rest)))
+      } else {
+            Nfig <- N}
 
+      grtxt2 <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
+      
 
 
 #SKILLE UT FIGURDELEN SOM EGEN FUNKSJON???????

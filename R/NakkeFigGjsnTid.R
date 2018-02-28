@@ -28,10 +28,10 @@
 #' @export
 
 
-FigGjsnTid <- function(RegData, outfile, valgtVar, erMann='',
-		minald=0, maxald=130, tittel=1, datoFra='2007-01-01', datoTil='3000-01-01',
+NakkeFigGjsnTid <- function(RegData, outfile, valgtVar, erMann='',
+		minald=0, maxald=130, datoFra='2007-01-01', datoTil='3000-01-01',
 		myelopati=99, fremBak=0,
-		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=TRUE, reshID=0){
+		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=TRUE, reshID=0){ #tittel=1,
 
 
 	if (hentData == 1) {
@@ -61,121 +61,15 @@ indEgen1 <- match(reshID, RegData$ReshId)
 if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
 	}
 
-if (length(grep('endr', valgtVar)) != 1 ) {	#Søke på strengen "endr"
-	RegData$Variabel <- RegData[ ,valgtVar]
-}
-
-if (valgtVar=='Eq5DScorePreOp') {
-     #Pasientkjema.
-     KIekstrem <- c(-0.6, 1)
-     indVar <- which(RegData[ , valgtVar] >= KIekstrem[1])
-     indSkjema <- which(RegData$PasientSkjemaStatus==1)
-     RegData <- RegData[intersect(indVar, indSkjema), ]
-     TittelVar <- 'EQ5D, før operasjon'
-     ytxt1 <- '(EQ5D-skåring)'
-}
-if (valgtVar=='KnivtidTotalMin') {
-		#Legeskjema.
-		RegData <- RegData[which(RegData[ ,valgtVar]>0), ]
-		KIekstrem <- c(0, 500)
-		TittelVar <- 'Total knivtid'
-		ytxt1 <- '(minutter)'
-		}
-
-	if (valgtVar=='LiggeDognPostop') {
-		#Legeskjema.
-		RegData <- RegData[which(RegData[ ,valgtVar]>-1), ]
-		KIekstrem <- c(0, 30)
-		TittelVar <- 'Antall liggedøgn postoperativt'
-		ytxt1 <- '(døgn)'
-		}
-
-	if (valgtVar=='LiggeDognTotalt') {
-		#Legeskjema.
-		RegData <- RegData[which(RegData[ ,valgtVar]>-1), ]
-		KIekstrem <- c(0, 30)
-		TittelVar <- 'Antall liggedøgn totalt'
-		ytxt1 <- '(døgn)'
-		}
-	if (valgtVar=='NDIscorePreOp') {
-		#Pasientkjema.
-		KIekstrem <- c(0,100)
-		indVar <- which(RegData[ ,valgtVar] >= KIekstrem[1])
-		indSkjema <- which(RegData$PasientSkjemaStatus==1)
-		RegData <- RegData[intersect(indVar, indSkjema), ]
-		TittelVar <- 'NDI før operasjon'
-		ytxt1 <- '(NDI-skåring)'
-		}
-	if (valgtVar=='NDIendr3mnd') {
-		#Pasientkjema og 3mndskjema. Lav skår, lite plager -> forbedring = nedgang.
-		KIekstrem <- c(-100,100)
-		RegData$Variabel <- RegData$NDIscorePreOp - RegData$NDIscore3mnd
-		indVar <- which(RegData$Variabel >= KIekstrem[1])
-		indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
-		RegData <- RegData[intersect(indVar, indSkjema), ]
-		TittelVar <- 'Forbedring av NDI, 3 mnd. etter operasjon'
-		ytxt1 <- '(endring av NDI-skår)'
-		}
-
-	if (valgtVar=='NDIendr12mnd') {
-		#Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
-		KIekstrem <- c(-100,100)
-		RegData$Variabel <- RegData$NDIscorePreOp - RegData$NDIscore12mnd
-		indVar <- which(RegData$Variabel >= KIekstrem[1])
-		indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
-		RegData <- RegData[intersect(indVar, indSkjema), ]
-		TittelVar <- 'Forbedring av NDI, 12 mnd. etter operasjon'
-		ytxt1 <- '(endring av NDI-skår)'
-		}
-
-
-	if (valgtVar=='EMSendr12mnd') {
-		#Pasientkjema og 12mndskjema. Lav skår, mye plager -> Forbedring = økning.
-		#Kun myelopati-pasienter
-		KIekstrem <- c(-18,18)
-		RegData$Variabel <- RegData$EMSscore12mnd - RegData$EMSscorePreOp
-		indMyelopati <- which(RegData$OprIndikMyelopati == 1)
-		indVar <- which(RegData$Variabel >= KIekstrem[1])
-		indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
-		RegData <- RegData[intersect(indMyelopati, intersect(indVar, indSkjema)), ]
-		TittelVar <- 'Forbedring av EMS hos myelopati-pasienter, 12 mnd.'
-		ytxt1 <- '(endring av EMS-skår)'
-		}
-	if (valgtVar=='EMSendr3mnd') {
-		#Pasientkjema og 3mndskjema. Lav skår, mye plager -> Forbedring = økning.
-		#Kun myelopati-pasienter
-		KIekstrem <- c(-18,18)
-		RegData$Variabel <- RegData$EMSscore3mnd - RegData$EMSscorePreOp
-		indMyelopati <- which(RegData$OprIndikMyelopati == 1)
-		indVar <- which(RegData$Variabel >= KIekstrem[1])
-		indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
-		RegData <- RegData[intersect(indMyelopati, intersect(indVar, indSkjema)), ]
-		TittelVar <- 'Forbedring av EMS hos myelopati-pasienter, 3 mnd.'
-		ytxt1 <- '(endring av EMS-skår)'
-		}
-	if (valgtVar=='EQ5Dendr3mnd') {
-		#Pasientkjema og 3mndskjema. Lav skår, mye plager -> Forbedring = økning.
-		#Kun myelopati-pasienter
-		KIekstrem <- c(-1.6, 1.6)
-		RegData$Variabel <- RegData$Eq5DScore3mnd - RegData$Eq5DScorePreOp
-		indVar <- which(RegData$Variabel >= KIekstrem[1])
-		indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
-		RegData <- RegData[intersect(indVar, indSkjema), ]
-		TittelVar <- 'Forbedring av EQ5D, 3 mnd.'
-		ytxt1 <- '(endring av EQ5D-skår)'
-		}
-	if (valgtVar=='EQ5Dendr12mnd') {
-		#Pasientkjema og 12mndskjema. Lav skår, mye plager -> Forbedring = økning.
-		#Kun myelopati-pasienter
-		KIekstrem <- c(-1.6, 1.6)
-		RegData$Variabel <- RegData$Eq5DScore12mnd - RegData$Eq5DScorePreOp
-		indVar <- which(RegData$Variabel >= KIekstrem[1])
-		indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
-		RegData <- RegData[intersect(indVar, indSkjema), ]
-		TittelVar <- 'Forbedring av EQ5D, 12 mnd.'
-		ytxt1 <- '(endring av EQ5D-skår)'
-		}
-
+NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnTid')
+RegData <- NakkeVarSpes$RegData
+sortAvtagende <- NakkeVarSpes$sortAvtagende
+varTxt <- NakkeVarSpes$varTxt
+KIekstrem <- NakkeVarSpes$NakkeVarSpes
+KImaal <- NakkeVarSpes$KImaal
+KImaaltxt <- NakkeVarSpes$KImaaltxt
+tittelUsh <- NakkeVarSpes$tittel
+ytxt1 <- NakkeVarSpes$ytxt1
 
 #Gjør utvalg
 NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
@@ -201,8 +95,8 @@ if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
 			indRest <- which(as.numeric(RegData$ReshId) != reshID)
 			}
 
-TittelUt <-  c(TittelVar, shtxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), shtxt)
-if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
+tittel <-  c(tittelUsh, shtxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), shtxt)
+#if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
 
 
 
@@ -211,7 +105,7 @@ if (length(indHoved)<5 | ((medSml == 1) & (length(indRest) < 5))) {
 figtype(outfile)
 	tekst <- 'Mindre enn 5 registreringer i egen eller sammenligningsgruppa'
 	plot.new()
-	title(main=Tittel)
+	title(main=tittel)
 	text(0.5, 0.5, tekst,cex=1.5)	#, family="sans")
 	if ( outfile != '') {dev.off()}
 } else {
@@ -269,7 +163,7 @@ cexgr <- 0.9	#Kan endres for enkeltvariable
 ymin <- 0.9*min(KonfRest, Konf, na.rm=TRUE)	#ymin1 - 2*h
 ymax <- 1.1*max(KonfRest, Konf, na.rm=TRUE)	#ymax1 + 2*h
 if (valgtMaal=='Med') {maaltxt <- 'Median ' } else {maaltxt <- 'Gjennomsnitt '}
-ytxt <- paste(maaltxt, ytxt1, sep='')
+ytxt <- paste0(maaltxt, ytxt1)
 
 #Plottspesifikke parametre:
 FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
@@ -307,16 +201,18 @@ arrows(x0=Aartxt, y0=Midt-h, x1=Aartxt, length=0.08, code=2, angle=90,
 arrows(x0=Aartxt, y0=Midt+h, x1=Aartxt, y1=replace(Konf[2, ], ind, Midt[ind]+h),
 		length=0.08, code=2, angle=90, col=fargeHovedRes, lwd=1.5)
 
-if (tittel==1) {title(main=Tittel, font.main=1, line=1)}
+#if (tittel==1) {
+  title(main=tittel, font.main=1, line=1)
 #Tekst som angir hvilket utvalg som er gjort
-if (length(utvalgTxt)>0) {
-mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3-(1-tittel)+0.8*((NutvTxt-1):0)))}
+#if (length(utvalgTxt)>0) {
+  #mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3-(1-tittel)+0.8*((NutvTxt-1):0)))}
+  mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
 
 if ( outfile != '') {dev.off()}
 
 ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 1)
 rownames(ResData) <- c('Midt', 'KIned', 'KIopp', 'MidtRest', 'KIRestned', 'KIRestopp')[1:(3*(medSml+1))]
-UtData <- list(paste(toString(TittelUt),'.', sep=''), ResData )
+UtData <- list(paste0(toString(tittel),'.'), ResData )
 names(UtData) <- c('Tittel', 'Data')
 return(invisible(UtData))
 

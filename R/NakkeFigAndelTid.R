@@ -167,16 +167,8 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
 
     title(tittel, line=1, font.main=1)
 
-    #Legge på linjer i plottet. Denne kan nok gjøres mer elegant...
-    if ((ymax > 10) & (ymax < 40)) {lines(range(Aartxt),rep(10,2), col=farger[4])}
-    if (ymax > 20) {lines(range(Aartxt),rep(20,2), col=farger[4])}
-    if ((ymax > 30) & (ymax < 40)) {lines(range(Aartxt),rep(30,2), col=farger[4])}
-    if (ymax > 40) {lines(range(Aartxt),rep(40,2), col=farger[4])}
-    if (ymax > 60) {lines(range(Aartxt),rep(60,2), col=farger[4])}
-    if (ymax > 80) {lines(range(Aartxt),rep(80,2), col=farger[4])}
-    if (ymax > 100) {lines(range(Aartxt),rep(100,2), col=farger[4])}
-    #		axis(2, at=c(0,20,40,60,80,100), pos=0),
-
+    #Legge på linjer i plottet.
+    grid(nx = NA, ny = NULL, col = farger[4], lty = "solid")
 
     lines(Aartxt, AndelHoved, col=fargeHoved, lwd=3)
     points(Aartxt, AndelHoved, pch="'", cex=2, col=fargeHoved)

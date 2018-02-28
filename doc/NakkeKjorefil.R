@@ -174,16 +174,15 @@ maxald <- 130	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2015-12-31'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-tittel=1
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'OprIndikMyelopati'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'ErstatningPreOp'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, NDIendr12mnd, NytteOpr3mnd, NytteOpr12mnd
 		  #NRSsmerteArmEndr12mnd,Verre3mnd, Verre12mnd, OprIndikMyelopati, Roker, Saardren,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
-outfile <- paste(valgtVar, '_ShusSyn.png', sep='')	#''	#Navn angis av Jasper
+outfile <- '' #paste0(valgtVar, '_ShusSyn.png')	#''	#Navn angis av Jasper
 FigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
@@ -196,8 +195,8 @@ variable <- c('Alder', 'AndreRelSykdommer', 'Antibiotika',
              'SmertestillPreOp', 'SymptVarighetNakkeHode', 'SymptVarighetSmerterUker', 'UforetrygdPreOp', 'Utdanning')
 
 for (valgtVar in variable) {
-     outfile <- paste(valgtVar, '.png', sep='')
-     FigAndelerGrVar(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
+     outfile <- paste0(valgtVar, '.png')
+     NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
                 reshID=reshID, outfile=outfile)
 }
@@ -219,12 +218,12 @@ erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), 
 libkat <- 'C:/Registre/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
 tittel=1
 enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'KnivtidTotalMin'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
+valgtVar <- 'Eq5DScorePreOp'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
                #KnivtidTotalMin, LiggeDognPostop, LiggeDognTotalt
                #NDIendr12mnd, NDIendr3mnd, NDIscorePreOp
 
-outfile <- paste(valgtVar, '.png', sep='')	#''	#Navn angis av Jasper
-utdata <- FigGjsnTid(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal='',
+outfile <- '' #paste(valgtVar, '.png', sep='')	#''	#Navn angis av Jasper
+utdata <- NakkeFigGjsnTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal='',
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
@@ -232,10 +231,10 @@ variable <- c('EMSendr12mnd', 'EMSendr3mnd', 'EQ5Dendr12mnd', 'EQ5Dendr3mnd', 'E
               'KnivtidTotalMin', 'LiggeDognPostop', 'LiggeDognTotalt',
               'NDIendr12mnd', 'NDIendr3mnd', 'NDIscorePreOp')
 for (valgtVar in variable) {
-     outfile <- paste(valgtVar, '_GjsnTid.png', sep='')
-     FigGjsnTid(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal='',
+     outfile <- paste0(valgtVar, '_GjsnTid.png')
+     NakkeFigGjsnTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal='',
                                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-                                reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+                                reshID=reshID, enhetsUtvalg=1, outfile=outfile)
 }
 
 
@@ -255,13 +254,13 @@ datoTil <- '2018-06-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 valgtMaal = 'Gjsn'
-valgtVar <- 'EQ5Dendr12mnd'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
+valgtVar <- 'Alder'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
           #NDIscorePreOp, NRSsmerteArmPreOp, NRSsmerteNakkePreOp
           #EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd
 
 outfile <- '' #paste0(valgtVar, '_', valgtMaal, '.pdf')	#''	#Navn angis av Jasper
 
-FigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
+NakkeFigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
             datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
             reshID=reshID, outfile=outfile)
 
@@ -269,8 +268,8 @@ FigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valg
 variable <- c('Alder', 'EMSscorePreOp', 'LiggeDognPostop','KnivtidTotalMin', 'LiggeDognTotalt',
           'NDIscorePreOp', 'NRSsmerteArmPreOp', 'NRSsmerteNakkePreOp')
 for (valgtVar in variable) {
-     outfile <- paste(valgtVar, '.png', sep='')
-     FigGjsnGrVar(RegData=NakkeData, datoFra=datoFra, valgtVar=valgtVar,
+     outfile <- paste0(valgtVar, '.png')
+     NakkeFigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
                 reshID=reshID, outfile=outfile)
 }

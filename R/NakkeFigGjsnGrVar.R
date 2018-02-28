@@ -26,7 +26,7 @@
 #' @export
 
 
-FigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-01-01', datoTil='2050-12-31',
+NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-01-01', datoTil='2050-12-31',
                          myelopati=99, fremBak=0, Ngrense=10,
 		minald=0, maxald=130, erMann='', reshID=0, outfile='', hentData=0, preprosess=TRUE) {
 
@@ -53,170 +53,17 @@ RegData[ ,grVar] <- factor(RegData[ ,grVar])
 #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 xaksetxt <- ''
 
-if (valgtVar == 'Alder') {
-#Alle skal ha alder
-	#Legeskjema.
-	RegData <- RegData[which(RegData[ ,valgtVar] >0), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'alder'
-	xaksetxt <- 'alder (år)'
-	}
 
-if (valgtVar == 'EMSscorePreOp') {
-	#Pasientskjema. Bare myelopatipasienter (OprIndikMyelopati == 1)
-	indPas <- which(RegData$PasientSkjemaStatus==1)
-	indMye <- which(RegData$OprIndikMyelopati == 1)
-	indVar <- which(RegData[ ,valgtVar] >-1)
-	RegData <- RegData[intersect(intersect(indPas, indMye),indVar), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'EMS hos Myelopatipasienter før operasjon'
-	xaksetxt <- ''
-	}
-if (valgtVar=='EMSendr12mnd') {
-  #Pasientkjema og 12mndskjema. Lav skår, mye plager -> Forbedring = økning.
-  #Kun myelopati-pasienter
-  KIekstrem <- c(-18,18)
-  RegData$Variabel <- RegData$EMSscore12mnd - RegData$EMSscorePreOp
-  indMyelopati <- which(RegData$OprIndikMyelopati == 1)
-  indVar <- which(RegData$Variabel >= KIekstrem[1])
-  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
-  RegData <- RegData[intersect(indMyelopati, intersect(indVar, indSkjema)), ]
-  deltittel <- 'forbedring av EMS, myelopati-pas., 12 mnd.'
-  ytxt1 <- '(endring av EMS-skår)'
-}
-if (valgtVar=='EMSendr3mnd') {
-  #Pasientkjema og 3mndskjema. Lav skår, mye plager -> Forbedring = økning.
-  #Kun myelopati-pasienter
-  KIekstrem <- c(-18,18)
-  RegData$Variabel <- RegData$EMSscore3mnd - RegData$EMSscorePreOp
-  indMyelopati <- which(RegData$OprIndikMyelopati == 1)
-  indVar <- which(RegData$Variabel >= KIekstrem[1])
-  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
-  RegData <- RegData[intersect(indMyelopati, intersect(indVar, indSkjema)), ]
-  deltittel <- 'forbedring av EMS, myelopati-pas., 3 mnd.'
-  ytxt1 <- '(endring av EMS-skår)'
-}
-
-
-
-if (valgtVar=='NDIendr3mnd') {
-  #Pasientkjema og 3mndskjema. Lav skår, lite plager -> forbedring = nedgang.
-  KIekstrem <- c(-100,100)
-  RegData$Variabel <- RegData$NDIscorePreOp - RegData$NDIscore3mnd
-  indVar <- which(RegData$Variabel >= KIekstrem[1])
-  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
-  RegData <- RegData[intersect(indVar, indSkjema), ]
-  deltittel <- 'forbedring av NDI, 3 mnd. etter operasjon'
-  ytxt1 <- '(endring av NDI-skår)'
-}
-
-if (valgtVar=='NDIendr12mnd') {
-  #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
-  KIekstrem <- c(-100,100)
-  RegData$Variabel <- RegData$NDIscorePreOp - RegData$NDIscore12mnd
-  indVar <- which(RegData$Variabel >= KIekstrem[1])
-  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
-  RegData <- RegData[intersect(indVar, indSkjema), ]
-  deltittel <- 'forbedring av NDI, 12 mnd. etter operasjon'
-  ytxt1 <- '(endring av NDI-skår)'
-}
-
-if (valgtVar=='EQ5Dendr3mnd') {
-  #Pasientkjema og 3mndskjema. Lav skår, mye plager -> Forbedring = økning.
-  #Kun myelopati-pasienter
-  KIekstrem <- c(-1.6, 1.6)
-  RegData$Variabel <- RegData$Eq5DScore3mnd - RegData$Eq5DScorePreOp
-  indVar <- which(RegData$Variabel >= KIekstrem[1])
-  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
-  RegData <- RegData[intersect(indVar, indSkjema), ]
-  deltittel <- 'forbedring av EQ5D, 3 mnd.'
-  ytxt1 <- '(endring av EQ5D-skår)'
-}
-if (valgtVar=='EQ5Dendr12mnd') {
-  #Pasientkjema og 12mndskjema. Lav skår, mye plager -> Forbedring = økning.
-  #Kun myelopati-pasienter
-  KIekstrem <- c(-1.6, 1.6)
-  RegData$Variabel <- RegData$Eq5DScore12mnd - RegData$Eq5DScorePreOp
-  indVar <- which(RegData$Variabel >= KIekstrem[1])
-  indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
-  RegData <- RegData[intersect(indVar, indSkjema), ]
-  deltittel <- 'forbedring av EQ5D, 12 mnd.'
-  ytxt1 <- '(endring av EQ5D-skår)'
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if (valgtVar == 'KnivtidTotalMin') {
-	#Legeskjema.
-	RegData <- RegData[which(RegData[ ,valgtVar] >-1), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'total knivtid'
-	xaksetxt <- 'minutter'
-	}
-if (valgtVar == 'NDIscorePreOp') {
-	#Pasientskjema.
-	RegData <- RegData[intersect(which(RegData$PasientSkjemaStatus==1), which(RegData[ ,valgtVar] >-1)), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'NDI før operasjon'
-	xaksetxt <- 'skåring'
-	}
-if (valgtVar == 'LiggeDognPostop') {
-	#Legeskjema.
-	RegData <- RegData[which(RegData[ ,valgtVar] >-1), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'liggetid etter operasjon'
-	xaksetxt <- 'dager'
-	}
-if (valgtVar == 'LiggeDognTotalt') {
-	#Legeskjema
-	RegData <- RegData[which(RegData[ ,valgtVar] >-1), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'antall liggedøgn, totalt'
-	xaksetxt <- 'dager'
-	}
-if (valgtVar == 'NRSsmerteArmPreOp') {
-	#Pasientskjema.
-	indPas <- which(RegData$PasientSkjemaStatus==1)
-	indVar <- which(RegData[ ,valgtVar] >-1)
-	RegData <- RegData[intersect(indPas ,indVar), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'NSR, arm før operasjon'
-	xaksetxt <- 'skåring'
-	}
-if (valgtVar == 'NRSsmerteNakkePreOp') {
-	#Pasientskjema.
-	indPas <- which(RegData$PasientSkjemaStatus==1)
-	indVar <- which(RegData[ ,valgtVar] >-1)
-	RegData <- RegData[intersect(indPas ,indVar), ]
-	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'NSR, nakke før operasjon'
-	xaksetxt <- 'skåring'
-	}
-
-
-
-
-
+NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnTid')
+RegData <- NakkeVarSpes$RegData
+sortAvtagende <- NakkeVarSpes$sortAvtagende
+varTxt <- NakkeVarSpes$varTxt
+KIekstrem <- NakkeVarSpes$NakkeVarSpes
+KImaal <- NakkeVarSpes$KImaal
+KImaaltxt <- NakkeVarSpes$KImaaltxt
+deltittel <- NakkeVarSpes$deltittel
+xAkseTxt <- NakkeVarSpes$xAkseTxt
+ytxt1 <- NakkeVarSpes$ytxt1
 #Gjør utvalg
 NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
 		erMann=erMann, myelopati=myelopati, fremBak=fremBak)	#, tidlOp=tidlOp
@@ -325,7 +172,7 @@ par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
 
 	barplot(Midt, horiz=T, border=NA, col=farger[3], xlim=c(xmin, xmax), add=TRUE,
-			font.main=1, xlab = xaksetxt, las=1) 	#xlim=c(0,ymax), #, cex.names=0.5
+			font.main=1, xlab = xAkseTxt, las=1) 	#xlim=c(0,ymax), #, cex.names=0.5
 	title(tittel, font.main=1)
 	title('med 95% konfidensintervall', line=0.5, font.main=1, cex.main=0.95)
 	mtext(at=pos+0.18, GrNavnSort, side=2, las=1, cex=cexGrNavn, adj=1, line=0.25)	#Sykehusnavn
