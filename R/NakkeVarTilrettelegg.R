@@ -41,6 +41,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
   sortAvtagende <- TRUE  #Sortering av resultater
   KImaal <- NA
   tittel <- 'Mangler tittel'
+  deltittel <- ''
   variable <- 'Ingen'
   #deltittel <- ''
   RegData$Variabel <- 0

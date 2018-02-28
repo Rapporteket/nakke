@@ -141,7 +141,7 @@ valgtVar <- 'AndreRelSykdommer'	#Må velge... Alder, AndreRelSykdommer, Antibiot
 outfile <- '' #paste0(valgtVar, 'Syn.png')	#''	#Navn angis av Jasper
 NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+           reshID=reshID, enhetsUtvalg=1, outfile=outfile)
 
 variable <- c('Alder', 'AndreRelSykdommer', 'Antibiotika',
           'ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd', 'ASAgrad', 'BMI', 'ErstatningPreOp',
@@ -183,7 +183,7 @@ valgtVar <- 'ErstatningPreOp'	#Må velge... Alder, AndreRelSykdommer, Antibiotik
 		  #NRSsmerteArmEndr12mnd,Verre3mnd, Verre12mnd, OprIndikMyelopati, Roker, Saardren,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 outfile <- '' #paste0(valgtVar, '_ShusSyn.png')	#''	#Navn angis av Jasper
-FigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 

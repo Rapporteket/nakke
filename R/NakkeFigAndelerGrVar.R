@@ -65,17 +65,6 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      #----------- Figurparametre ------------------------------
      cexShNavn <- 1 #0.85
 
-     #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
-     #trengs ikke data for hele landet:
-     reshID <- as.numeric(reshID)
-     indEgen1 <- match(reshID, RegData$ReshId)
-     smltxt <- 'Hele landet'
-     if (enhetsUtvalg == 7) {
-          smltxt <- as.character(RegData$Region[indEgen1])
-          RegData <- RegData[which(RegData$Region == smltxt), ]	#kun egen region
-          cexShNavn <- 1
-     }
-
      grVar <- 'SykehusNavn'
      RegData[ ,grVar] <- factor(RegData[ ,grVar])
      #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
@@ -87,7 +76,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      tittel <- NakkeVarSpes$tittel
 
      #Gjør utvalg
-     NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+     NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                                    erMann=erMann, myelopati=myelopati, fremBak=fremBak)
      RegData <- NakkeUtvalg$RegData
      utvalgTxt <- NakkeUtvalg$utvalgTxt
@@ -104,7 +93,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      if (length(indGrUt)==0) { indGrUt <- 0}
      AndelerGr[indGrUt] <- dummy0
      sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
-     Ngrtxt <- paste0('\n(', as.character(Ngr),')')	#
+     Ngrtxt <- paste0('\n(N=', as.character(Ngr),')')	#
      Ngrtxt[indGrUt] <- paste0('\n(<', Ngrense,')')	#paste(' (<', Ngrense,')',sep='')	#
 
      AndelerGrSort <- AndelerGr[sortInd]
@@ -151,7 +140,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           ytopp <- pos[AntGr]+1	#-length(indGrUt)]
           lines(x=rep(AndelHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
           legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
-                 legend=paste(smltxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N,sep='' ),
+                 legend=paste0('Hele landet', ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N),
                  bty='o', bg='white', box.col='white')
           mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
           #text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),
@@ -160,7 +149,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
                las=1, cex=0.9, adj=0, col=farger[1])	#Andeler, hvert sykehus
 
-          mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
+          #mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
 
           #Tekst som angir hvilket utvalg som er gjort
           mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))

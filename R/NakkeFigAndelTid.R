@@ -58,14 +58,6 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
     RegData <- NakkePreprosess(RegData=RegData)
   }
 
-
-  #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
-  #trengs ikke data for hele landet:
-  reshID <- as.numeric(reshID)
-  indEgen1 <- match(reshID, RegData$ReshId)
-  if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
-  }
-
   '%i%' <- intersect
 
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelTid')
@@ -77,47 +69,25 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
   tittel <- NakkeVarSpes$tittel
 
   #Gjør utvalg
-  NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                                erMann=erMann, myelopati=myelopati, fremBak=fremBak)
+  NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+                                erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg)
   RegData <- NakkeUtvalg$RegData
   utvalgTxt <- NakkeUtvalg$utvalgTxt
+  ind <- NakkeUtvalg$ind
 
-
-  #Generere hovedgruppe og sammenlikningsgruppe
-  #Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
-  indEgen1 <- match(reshID, RegData$ReshId)
-  if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-    shtxt <- as.character(RegData$SykehusNavn[indEgen1]) } else {
-      shtxt <- 'Hele landet'
-    }
-
-  if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
-    medSml <- 0
-    indHoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
-    indRest <- NULL
-  } else {						#Skal gjøre sammenlikning
-    medSml <- 1
-    if (enhetsUtvalg == 1) {
-      indHoved <-which(as.numeric(RegData$ReshId)==reshID)
-      smltxt <- 'landet forøvrig'
-      indRest <- which(as.numeric(RegData$ReshId) != reshID)
-    }
-  }
-
-
-  NHovedRes <- length(indHoved)
-  NSmlRes <- length(indRest)
+  NHovedRes <- length(ind$Hoved)
+  NSmlRes <- length(ind$Rest)
 
 
   #-------------------------Beregning av andel-----------------------------------------
   Aartxt <- min(RegData$Aar):max(RegData$Aar)
   RegData$Aar <- factor(RegData$Aar, levels=Aartxt)
 
-  NAarRest <- tapply(RegData$Variabel[indRest], RegData$Aar[indRest], length)
-  NAarHendRest <- tapply(RegData$Variabel[indRest], RegData$Aar[indRest],sum, na.rm=T)
+  NAarRest <- tapply(RegData$Variabel[ind$Rest], RegData$Aar[ind$Rest], length)
+  NAarHendRest <- tapply(RegData$Variabel[ind$Rest], RegData$Aar[ind$Rest],sum, na.rm=T)
   AndelRest <- NAarHendRest/NAarRest*100
-  NAarHoved <- tapply(RegData[indHoved, 'Variabel'], RegData[indHoved ,'Aar'], length)
-  NAarHendHoved <- tapply(RegData[indHoved, 'Variabel'], RegData[indHoved ,'Aar'],sum, na.rm=T)
+  NAarHoved <- tapply(RegData[ind$Hoved, 'Variabel'], RegData[ind$Hoved ,'Aar'], length)
+  NAarHendHoved <- tapply(RegData[ind$Hoved, 'Variabel'], RegData[ind$Hoved ,'Aar'],sum, na.rm=T)
   AndelHoved <- NAarHendHoved/NAarHoved*100
   Andeler <- rbind(AndelRest, AndelHoved)
 
@@ -125,7 +95,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
   #----------FIGUR------------------------------
   #Hvis for få observasjoner..
   #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & medSml == 1)) {
-  if (length(indHoved) < 10 | (medSml ==1 & length(indRest)<10)) {
+  if (length(ind$Hoved) < 10 | (medSml ==1 & length(ind$Rest)<10)) {
     #-----------Figur---------------------------------------
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger

@@ -56,10 +56,10 @@ antDes <- 1
 
 #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
 #trengs ikke data for hele landet:
-reshID <- as.numeric(reshID)
-indEgen1 <- match(reshID, RegData$ReshId)
-if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
-	}
+# reshID <- as.numeric(reshID)
+# indEgen1 <- match(reshID, RegData$ReshId)
+# if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
+# 	}
 
 NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnTid')
 RegData <- NakkeVarSpes$RegData
@@ -72,35 +72,37 @@ tittelUsh <- NakkeVarSpes$tittel
 ytxt1 <- NakkeVarSpes$ytxt1
 
 #Gjør utvalg
-NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-		erMann=erMann, myelopati=myelopati, fremBak=fremBak)	#, tidlOp=tidlOp
+NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+		erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg)	#, tidlOp=tidlOp
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
+ind <- NakkeUtvalg$ind
+hovedgrTxt <- NakkeUtvalg$hovedgrTxt
+medSml <- NakkeUtvalg$medSml
 
+# indEgen1 <- match(reshID, RegData$ReshId)
+# if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
+# 		shtxt <- as.character(RegData$SykehusNavn[indEgen1]) } else {
+# 		shtxt <- 'Hele landet'
+# 			}
+#
+# if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
+# 			medSml <- 0
+# 			indHoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
+# 			indRest <- NULL
+# 		} else {						#Skal gjøre sammenlikning
+# 			medSml <- 1
+# 			indHoved <-which(as.numeric(RegData$ReshId)==reshID)
+# 			smltxt <- 'landet forøvrig'
+# 			indRest <- which(as.numeric(RegData$ReshId) != reshID)
+# 			}
 
-indEgen1 <- match(reshID, RegData$ReshId)
-if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-		shtxt <- as.character(RegData$SykehusNavn[indEgen1]) } else {
-		shtxt <- 'Hele landet'
-			}
-
-if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
-			medSml <- 0
-			indHoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
-			indRest <- NULL
-		} else {						#Skal gjøre sammenlikning
-			medSml <- 1
-			indHoved <-which(as.numeric(RegData$ReshId)==reshID)
-			smltxt <- 'landet forøvrig'
-			indRest <- which(as.numeric(RegData$ReshId) != reshID)
-			}
-
-tittel <-  c(tittelUsh, shtxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), shtxt)
+tittel <-  c(tittelUsh, hovedgrTxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), hovedgrTxt)
 #if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
 
 
 
-if (length(indHoved)<5 | ((medSml == 1) & (length(indRest) < 5))) {
+if (length(ind$Hoved)<5 | ((medSml == 1) & (length(ind$Rest) < 5))) {
     #-----------Figur---------------------------------------
 figtype(outfile)
 	tekst <- 'Mindre enn 5 registreringer i egen eller sammenligningsgruppa'
@@ -117,9 +119,9 @@ AntAar <- length(Aartxt)
 
 
 #Resultat for hovedgruppe
-N <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], length)
+N <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'Aar'], length)
 if (valgtMaal=='Med') {
-	MedIQR <- plot(RegData$Aar[indHoved],RegData$Variabel[indHoved],  notch=TRUE, plot=FALSE)
+	MedIQR <- plot(RegData$Aar[ind$Hoved],RegData$Variabel[ind$Hoved],  notch=TRUE, plot=FALSE)
 	Midt <- as.numeric(MedIQR$stats[3, ])	#as.numeric(MedIQR$stats[3, sortInd])
 	Konf <- MedIQR$conf
 	#Hvis vil bruke vanlige konf.int:
@@ -131,8 +133,8 @@ if (valgtMaal=='Med') {
 #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give
 #roughly a 95% confidence interval for the difference in two medians.
 } else {	#Gjennomsnitt blir standard.
-	Midt <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], mean)
-	SD <- tapply(RegData[indHoved ,'Variabel'], RegData[indHoved, 'Aar'], sd)
+	Midt <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'Aar'], mean)
+	SD <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'Aar'], sd)
 	Konf <- rbind(Midt - 2*SD/sqrt(N), Midt + 2*SD/sqrt(N))
 }
 	Konf <- replace(Konf, which(Konf < KIekstrem[1]), KIekstrem[1])
@@ -142,15 +144,15 @@ if (valgtMaal=='Med') {
 MidtRest <- NULL
 KonfRest <- NULL
 if (medSml ==  1) {
-NRest <- tapply(RegData[indRest ,'Variabel'], RegData[indRest, 'Aar'], length)
+NRest <- tapply(RegData[ind$Rest ,'Variabel'], RegData[ind$Rest, 'Aar'], length)
 	if (valgtMaal=='Med') {
-		MedIQRrest <- plot(RegData$Aar[indRest],RegData$Variabel[indRest],  notch=TRUE, plot=FALSE)
+		MedIQRrest <- plot(RegData$Aar[ind$Rest],RegData$Variabel[ind$Rest],  notch=TRUE, plot=FALSE)
 		MidtRest <- as.numeric(MedIQRrest$stats[3, ])
 		KonfRest <- MedIQRrest$conf
 	} else {
-	MidtRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], mean)	#indRest
-	SDRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], sd)
-	NRest <- tapply(RegData[indRest,'Variabel'], RegData[indRest, 'Aar'], length)
+	MidtRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'Aar'], mean)	#ind$Rest
+	SDRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'Aar'], sd)
+	NRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'Aar'], length)
 	KonfRest <- rbind(MidtRest - 2*SDRest/sqrt(NRest), MidtRest + 2*SDRest/sqrt(NRest))
 	}
 	KonfRest <- replace(KonfRest, which(KonfRest < KIekstrem[1]), KIekstrem[1])
