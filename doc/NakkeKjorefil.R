@@ -32,6 +32,7 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 
 	datoFra='2012-01-01'
 	datoTil='3000-12-31'
+	reshID <- 601161 #De tre med flest reg:
 	enhetsUtvalg=0
 	minald=0
 	maxald=130
@@ -52,8 +53,6 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (Fordelinger) --------------------------
 
-valgtVar <- 'KomplStemme3mnd'
-
 #Offentliggjøring fra 2016
 setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp/2016')
 
@@ -71,30 +70,17 @@ FigAndelerGrVarAar(RegData=RegData, valgtVar='KomplSvelging3mnd',
 FigAndelerGrVarAar(RegData=RegData, valgtVar='Komplinfek',
                    fremBak=2, Ngrense=30,
                    ktr=0,aar=2015:2016,tidlAar=2013:2014, outfile='OffKomplinfek.png')
-
-
-
-
-
-# Inndata til funksjon:
-#...NB: SkjemaID
-reshID <- 601161 #De tre med flest reg:
-minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
-datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2015-12-31'
-erMann <- 99			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-tittel=1
-enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-
-outfile <- paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 setwd("C:/ResultattjenesteGIT/Nakke/")
+
+valgtVar <- 'OprIndik'
+outfile <- '' #paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 
 NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, outfile=outfile)
 
-
+variable <- c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprIndikSmerter',
+              'OprIndikMyelopati', 'Radiologi')
 
 setwd('C:/Registerinfo og historie/Nakke/Figurer')
 variable <- c('Alder', 'AntallNivaaOpr', 'Antibiotika', 'ArbeidstausPreOp',
@@ -107,7 +93,7 @@ variable <- c('Alder', 'AntallNivaaOpr', 'Antibiotika', 'ArbeidstausPreOp',
               'TidlOpr', 'TidlOprAntall', 'UforetrygdPreOp', 'Utdanning')
 
 for (valgtVar in variable) {
-     outfile <- paste0(valgtVar, '.png')
+     outfile <- paste0(valgtVar, '_ny.png')
      NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
                 reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
@@ -207,17 +193,6 @@ NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep='
 RegData <- NakkeData
 setwd("C:/Registre/Nakke/trunk/GjsnTid")
 
-# Inndata til funksjon:
-#...NB: SkjemaID
-reshID <- 601161 #De tre med flest reg:
-minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
-datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-04-01'
-erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-libkat <- 'C:/Registre/Rlib/trunk/'		#del av sti til bibliotekkatalog, før /lib/r/<funksjon.R>
-tittel=1
-enhetsUtvalg <- 0	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
 valgtVar <- 'Eq5DScorePreOp'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
                #KnivtidTotalMin, LiggeDognPostop, LiggeDognTotalt
                #NDIendr12mnd, NDIendr3mnd, NDIscorePreOp

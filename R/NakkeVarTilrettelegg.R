@@ -811,7 +811,161 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     retn <- 'H'
   }
 
-  UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt, KImaal=KImaal,
+
+
+
+   #-------------- SAMMENSATTE variable
+      #For flerevar=1 må vi omdefinere variablene slik at alle gyldige registreringer
+      #(dvs. alle registreringer som skal telles med) er 0 eller 1. De som har oppfylt spørsmålet
+      # er 1, mens ugyldige registreringer er NA. Det betyr at hvis vi skal ta bort registreringer
+      # som i kategorier av typen "Ukjent" kodes disse som NA, mens hvis de skal være med kodes de
+      # som 0.
+      #Vi sender tilbake alle variable som indikatorvariable, dvs. med 0,1,NA
+
+ # if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprIndikSmerter',
+#                      'OprIndikMyelopati', 'Radiologi')){
+
+
+      if (valgtVar=='OprIndik') {
+        tittel <- 'Operasjonsårsak'
+        retn <- 'H'
+		flerevar <-  1
+        #OprIndiasjonasjonUfylt <>1 - tom variabel,
+        #Svært få (ca 20 av 3000) har tom registrering. Setter derfor felles N lik alle reg.
+		  #01.03.2018: Mange har tom registrering... Må derfor skille på N for de ulike variable
+		variable <- c('OprIndikParese', 'OprIndikMyelopati', 'OprIndikSmerter', 'SmerteMyelo', 'OprIndikAnnet')
+        grtxt <- c('Pareser', 'Myelopati', 'Smerter', 'Sm. og Myelop.', 'Annet')
+        #indAnnet <- which(RegData$OprIndikAnnet == 1)
+        #indPareser <- which(RegData$OprIndikParese == 1)
+        #Smerter og Myelopati
+		indSmerter <- which(RegData$OprIndikSmerter == 1)
+        indMyelopati <- which(RegData$OprIndikMyelopati == 1)
+		RegData$SmerteMyelo <- 0
+		RegData$SmerteMyelo[indSmerter %i% indMyelopati] <- 1
+            ind01 <- which(RegData[ ,variable] != -1, arr.ind = T) #Alle ja/nei
+            ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
+            RegData[ ,variable] <- NA
+            RegData[ ,variable][ind01] <- 0
+            RegData[ ,variable][ind1] <- 1
+            xAkseTxt <- 'Andel opphold (%)'
+
+      }
+
+      if (valgtVar=='Radiologi') {
+        retn <- 'H'
+        #RadilogiUnderokelseUfylt  - tom variabel,
+        #RadiologiRtgCcolFunkOpptak  - tom variabel,
+        #Svært få har tom registrering. Setter derfor felles N lik alle reg.
+
+        AntVar <- cbind(
+          #length(indAnnet),
+          CT = sum(RegData$RadiologiCt, na.rm=T), #length(indPareser),
+          MR = sum(RegData$RadiologiMr, na.rm=T),
+          Myelografi = sum(RegData$RadiologiMyelografi, na.rm=T),
+          RontgenCcol = sum(RegData$RadiologiRtgCcol, na.rm=T)
+        )
+        NVar<-rep(dim(RegData)[1], length(AntVar))
+        grtxt <- c('CT', 'MR', 'Myelografi', 'Røntgen-Ccol')
+        tittel <- 'Radiologisk undersøkelse'
+      }
+
+      if (valgtVar=='Komorbiditet') {
+        retn <- 'H'
+        RegData <- RegData[which(RegData$AndreRelSykdommer>-1), ]
+        RegData$SykdReumatisk <- 0
+        indSykdReumatisk <- (RegData$SykdAnnenreumatisk ==1 | (RegData$SykdBechtrew==1 | RegData$SykdReumatoidartritt==1))
+        RegData$SykdReumatisk[indSykdReumatisk] <- 1
+        Variable <- c('SykdAnnenendokrin', 'SykdAnnet','SykdCarpalTunnelSyndr', 'SykdCerebrovaskular',
+                      'SykdDepresjonAngst', 'SykdHjertekar', 'SykdHodepine', 'SykdHypertensjon', 'SykDiabetesMellitus',
+                      'SykdKreft', 'SykdKroniskLunge', 'SykdKroniskNevrologisk', 'SykdKrSmerterMuskelSkjelSyst',
+                      'SykdOsteoporose', 'SykdSkulderImpigment', 'SykdWhiplashNakke')
+        AntVar <- colSums (RegData[ ,c("SykdReumatisk", Variable, "AndreRelSykdommer")], na.rm = TRUE)
+        NVar<-rep(dim(RegData)[1], length(AntVar))
+        grtxt <- c('Annen Reumatisk', 'Annen endokrin', 'Andre', 'Carpal TS', 'Cerebrovaskulær', 'Depresjon/Angst',
+                   'Hjerte-/Karsykd.', 'Hodepine', 'Hypertensjon', 'Diabetes', 'Kreft', 'Kr. lungesykdom',
+                   'Kr. nevrologisk', 'Kr. muskel/skjelettsm.', 'Osteoporose', 'Skuldersyndrom', 'Whiplash/skade', 'Tot. komorb')
+
+        tittel <- 'Komorbiditet'
+      }
+
+      if (valgtVar=='KomplOpr') {
+        retn <- 'H'
+        Variable <- c('PerOpKomplAnafylaksiI','PerOpKomplAnnet','PerOpKomplBlodning','PerOpKomplDurarift',
+                      'PerOpKomplFeilplasseringImplant','PerOpKomplKardioVaskulare','PerOpKomplMedullaskade',
+                      'PerOpKomplNerverotSkade','PerOpKomplAnnenNerveskade','PerOpKomplOpFeilNivaa',
+                      'PerOpKomplRespiratorisk','PerOpKomplOsofagusSkade','PerOpEnhverKompl')
+
+        AntVar <- colSums (RegData[ ,Variable], na.rm = TRUE)
+        NVar<-rep(dim(RegData)[1], length(AntVar))
+        grtxt <- c('Anafylaksi','Annet','Blødning','Durarift','Feilplassering, impl.','Kardiovaskulære','Medullaskade',
+                   'Nerverotskade','Nerveskade','Op. feil nivå','Respiratorisk','Øsofagusskade','Komplikasjoner, alle')
+        tittel <- 'Komplikasjoner ved operasjon'
+      }
+
+      if (valgtVar=='Kompl3mnd') {
+        retn <- 'H'
+        RegData <- RegData[which(RegData$OppFolgStatus3mnd == 1), ]
+        Variable <- c('KomplDVT3mnd', 'KomplinfekDyp3mnd', 'KomplLungeEmboli3mnd', 'KomplinfekOverfl3mnd',
+                      'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd', 'EnhverKompl3mnd')
+        AntVar <- colSums (RegData[ ,Variable], na.rm = TRUE)
+        NVar<-rep(dim(RegData)[1], length(AntVar))
+        grtxt <- c('DVT', 'Dyp infeksjon', 'Lungeemboli', 'Overfladisk infeksjon', 'Pneumoni',
+                   'Stemmevansker', 'Svelgvansker', 'UVI', 'Totalt, 3 mnd.')
+        tittel <- 'Komplikasjoner etter operasjon'
+      }
+
+
+      if (valgtVar=='OprIndikSmerter') {
+        retn <- 'H'
+        indSmerteArm <- which(RegData$OprIndikSmerteLokArm == 1)
+        indSmerteNakke <- which(RegData$OprIndikSmerteLokNakke == 1)
+        Nsmerte <- sum(RegData$OprIndikSmerter, na.rm=T)
+        AntVar <- cbind(
+          Smerte = Nsmerte,
+          SmerteArm = length(indSmerteArm),
+          SmerteNakke = length(indSmerteNakke),
+          SmerteArmNakke = length(intersect(indSmerteArm, indSmerteNakke))
+        )
+        NVar<- cbind(
+          Smerte = length(which(RegData$OprIndikSmerter > -1)),
+          SmerteArm = Nsmerte,
+          SmerteNakke = Nsmerte,
+          SmerteArmNakke = Nsmerte
+        )
+        grtxt <- c('Smerter', '...Arm', '...Nakke', '...Arm og Nakke')
+        tittel <- 'Operasjonsårsak: Smerter'
+      }
+
+      if (valgtVar=='OprIndikMyelopati') {
+        retn <- 'H'
+        indMotorisk <- which(RegData$OprIndikMyelopatiMotorisk == 1)
+        indSensorisk <- which(RegData$OprIndikMyelopatiSensorisk == 1)
+        Nmyelopati <- sum(RegData$OprIndikMyelopati, na.rm=T)
+        AntVar <- cbind(
+          Myelopati = Nmyelopati,
+          Motorisk = length(indMotorisk),
+          Sensorisk = length(indSensorisk),
+          MotorSensor = length(intersect(indMotorisk, indSensorisk))
+        )
+        NVar<- cbind(
+          Myelopati = length(which(RegData$OprIndikMyelopatiMotorisk > -1)),
+          Motorisk = Nmyelopati,
+          Sensorisk = Nmyelopati,
+          MotorSensor = Nmyelopati
+        )
+        grtxt <- c('Myelopati', '...Sensorisk', '...Motorisk', '...Begge deler')
+        tittel <- 'Operasjonsårsak: Myelopati'
+      }
+
+
+
+
+
+
+
+
+
+    UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt, KImaal=KImaal,
                  tittel=tittel, varTxt=varTxt, flerevar=flerevar, variable=variable, sortAvtagende=sortAvtagende,
                  retn=retn, ytxt1=ytxt1, deltittel=deltittel)
   #RegData inneholder nå variablene 'Variabel' og 'VariabelGr'
