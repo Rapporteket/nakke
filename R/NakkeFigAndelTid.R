@@ -151,10 +151,10 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
     if (NakkeUtvalg$medSml == 1) {
       text(Aartxt, AndelRest, pos=3, NAarHendRest, cex=0.9, col=fargeRest)
       legend('topleft', border=NA, c(paste0(NakkeUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')'),
-                                     paste(smltxt, ' (N=', NSmlRes, ')', sep=''), Ttxt), bty='n', ncol=1, cex=cexleg,
+                                     paste0(NakkeUtvalg$smltxt, ' (N=', NSmlRes, ')'), Ttxt), bty='n', ncol=1, cex=cexleg,
              col=c(fargeHoved, fargeRest, NA), lwd=3)
     } else {
-      legend('top', c(paste(NakkeUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')', sep=''), Ttxt),
+      legend('top', c(paste0(NakkeUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')'), Ttxt),
              col=c(fargeHoved, NA), lwd=3, bty='n')
     }
 
