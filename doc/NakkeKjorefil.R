@@ -20,7 +20,7 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 
 	rm(list=ls())
 	library(Nakke)
-	dato <- '2017-09-27'
+	dato <- '2018-03-02'
 	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 	RegData <- NakkeData
