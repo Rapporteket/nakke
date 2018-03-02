@@ -78,13 +78,6 @@ xaksetxt <- ''	#Benevning
 antDes <- 1
 NB <- ''
 
-#Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
-#trengs ikke data for hele landet:
-# reshID <- as.numeric(reshID)
-# indEgen1 <- match(reshID, RegData$ReshId)
-# if (enhetsUtvalg == 2) {RegData <- 	RegData[which(RegData$ReshId == reshID),]	#kun egen enhet
-# 	}
-#
 #--------------- Definere variable ------------------------------
 NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andeler')
 RegData <- NakkeVarSpes$RegData
@@ -102,213 +95,8 @@ utvalgTxt <- NakkeUtvalg$utvalgTxt
 hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 
 
-
-#Generere hovedgruppe og sammenlikningsgruppe
-#Trenger indeksene før genererer tall for figurer med flere variable med ulike utvalg
-# indEgen1 <- match(reshID, RegData$ReshId)
-# if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-# 		shtxt <- as.character(RegData$SykehusNavn[indEgen1]) } else {
-# 		shtxt <- 'Hele landet'
-# 			}
-#
-#   if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
-#     medSml <- 0
-#     indHoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
-#     indRest <- NULL
-#   } else {						#Skal gjøre sammenlikning
-#     medSml <- 1
-#     if (enhetsUtvalg == 1) {
-#       indHoved <-which(as.numeric(RegData$ReshId)==reshID)
-#       smltxt <- 'landet forøvrig'
-#       indRest <- which(as.numeric(RegData$ReshId) != reshID)
-#     }
-#   }
-
-
-#--------------- Gjøre beregninger ------------------------------
-ikke <- 1
-if (ikke == 0) {
-#Gjør beregninger selv om det evt ikke skal vise figur ut. Trenger utdata.
-Andeler <- list(Hoved = 0, Rest =0)
-N$Rest <- 0
-AntRest <- 0
-
-if (flerevar == 0 ) {
-AntHoved <- table(RegData$VariabelGr[indHoved])
-NHoved <- sum(AntHoved)
-Andeler$Hoved <- 100*AntHoved/NHoved
-	if (medSml==1) {
-		AntRest <- table(RegData$VariabelGr[indRest])
-		N$Rest <- sum(AntRest)	#length(indRest)- Kan inneholde NA
-		Andeler$Rest <- 100*AntRest/N$Rest
-	}
-}
-
-#FIGURER SATT SAMMEN AV FLERE VARIABLE, ULIKT TOTALUTVALG
-if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprIndikSmerter',
-                    'OprIndikMyelopati', 'Radiologi')){
-  flerevar <-  1
-  utvalg <- c('Hoved', 'Rest')	#Hoved vil angi enhet, evt. hele landet hvis ikke gjøre sml, 'Rest' utgjør sammenligningsgruppa
-  RegDataLand <- RegData
-  NHoved <-length(indHoved)
-  N$Rest <- length(indRest)
-
-  for (teller in 1:(medSml+1)) {
-  #  Variablene kjøres for angitt indeks, dvs. to ganger hvis vi skal ha sammenligning med Resten.
-    RegData <- RegDataLand[switch(utvalg[teller], Hoved = indHoved, Rest=indRest), ]
-
-
-     if (valgtVar=='OprIndik') {
-         retn <- 'H'
-         #OprIndiasjonasjonUfylt <>1 - tom variabel,
-         #Svært få (ca 20 av 3000) har tom registrering. Setter derfor felles N lik alle reg.
-
-         #indAnnet <- which(RegData$OprIndikAnnet == 1)
-         #indPareser <- which(RegData$OprIndikParese == 1)
-         indSmerterk <- which(RegData$OprIndikSmerter == 1)
-         indMyelopati <- which(RegData$OprIndikMyelopati == 1)
-         Nmyelopati <- sum(RegData$OprIndikMyelopati, na.rm=T)
-         AntVar <- cbind(
-              #length(indAnnet),
-              Pareser = sum(RegData$OprIndikParese, na.rm=T), #length(indPareser),
-              Myelopati = length(indMyelopati),
-              Smerter = length(indSmerterk),
-              SmerterMyelop = length(intersect(indMyelopati, indSmerterk)),
-              Annet = sum(RegData$OprIndikAnnet, na.rm=T)
-         )
-         NVar<-rep(dim(RegData)[1], length(AntVar))
-         grtxt <- c('Pareser', 'Myelopati', 'Smerter', 'Sm. og Myelop.', 'Annet')
-         tittel <- 'Operasjonsårsak'
-    }
-
-    if (valgtVar=='Radiologi') {
-         retn <- 'H'
-         #RadilogiUnderokelseUfylt  - tom variabel,
-         #RadiologiRtgCcolFunkOpptak  - tom variabel,
-         #Svært få har tom registrering. Setter derfor felles N lik alle reg.
-
-         AntVar <- cbind(
-              #length(indAnnet),
-              CT = sum(RegData$RadiologiCt, na.rm=T), #length(indPareser),
-              MR = sum(RegData$RadiologiMr, na.rm=T),
-              Myelografi = sum(RegData$RadiologiMyelografi, na.rm=T),
-              RontgenCcol = sum(RegData$RadiologiRtgCcol, na.rm=T)
-         )
-         NVar<-rep(dim(RegData)[1], length(AntVar))
-         grtxt <- c('CT', 'MR', 'Myelografi', 'Røntgen-Ccol')
-         tittel <- 'Radiologisk undersøkelse'
-    }
-
-    if (valgtVar=='Komorbiditet') {
-         retn <- 'H'
-          RegData <- RegData[which(RegData$AndreRelSykdommer>-1), ]
-         RegData$SykdReumatisk <- 0
-          indSykdReumatisk <- (RegData$SykdAnnenreumatisk ==1 | (RegData$SykdBechtrew==1 | RegData$SykdReumatoidartritt==1))
-          RegData$SykdReumatisk[indSykdReumatisk] <- 1
-         Variable <- c('SykdAnnenendokrin', 'SykdAnnet','SykdCarpalTunnelSyndr', 'SykdCerebrovaskular',
-               'SykdDepresjonAngst', 'SykdHjertekar', 'SykdHodepine', 'SykdHypertensjon', 'SykDiabetesMellitus',
-              'SykdKreft', 'SykdKroniskLunge', 'SykdKroniskNevrologisk', 'SykdKrSmerterMuskelSkjelSyst',
-             'SykdOsteoporose', 'SykdSkulderImpigment', 'SykdWhiplashNakke')
-         AntVar <- colSums (RegData[ ,c("SykdReumatisk", Variable, "AndreRelSykdommer")], na.rm = TRUE)
-         NVar<-rep(dim(RegData)[1], length(AntVar))
-         grtxt <- c('Annen Reumatisk', 'Annen endokrin', 'Andre', 'Carpal TS', 'Cerebrovaskulær', 'Depresjon/Angst',
-         'Hjerte-/Karsykd.', 'Hodepine', 'Hypertensjon', 'Diabetes', 'Kreft', 'Kr. lungesykdom',
-         'Kr. nevrologisk', 'Kr. muskel/skjelettsm.', 'Osteoporose', 'Skuldersyndrom', 'Whiplash/skade', 'Tot. komorb')
-
-         tittel <- 'Komorbiditet'
-    }
-
-    if (valgtVar=='KomplOpr') {
-         retn <- 'H'
-         Variable <- c('PerOpKomplAnafylaksiI','PerOpKomplAnnet','PerOpKomplBlodning','PerOpKomplDurarift',
-                       'PerOpKomplFeilplasseringImplant','PerOpKomplKardioVaskulare','PerOpKomplMedullaskade',
-                      'PerOpKomplNerverotSkade','PerOpKomplAnnenNerveskade','PerOpKomplOpFeilNivaa',
-                       'PerOpKomplRespiratorisk','PerOpKomplOsofagusSkade','PerOpEnhverKompl')
-
-         AntVar <- colSums (RegData[ ,Variable], na.rm = TRUE)
-         NVar<-rep(dim(RegData)[1], length(AntVar))
-         grtxt <- c('Anafylaksi','Annet','Blødning','Durarift','Feilplassering, impl.','Kardiovaskulære','Medullaskade',
-                    'Nerverotskade','Nerveskade','Op. feil nivå','Respiratorisk','Øsofagusskade','Komplikasjoner, alle')
-         tittel <- 'Komplikasjoner ved operasjon'
-    }
-
-    if (valgtVar=='Kompl3mnd') {
-         retn <- 'H'
-         RegData <- RegData[which(RegData$OppFolgStatus3mnd == 1), ]
-         Variable <- c('KomplDVT3mnd', 'KomplinfekDyp3mnd', 'KomplLungeEmboli3mnd', 'KomplinfekOverfl3mnd',
-                       'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd', 'EnhverKompl3mnd')
-         AntVar <- colSums (RegData[ ,Variable], na.rm = TRUE)
-         NVar<-rep(dim(RegData)[1], length(AntVar))
-         grtxt <- c('DVT', 'Dyp infeksjon', 'Lungeemboli', 'Overfladisk infeksjon', 'Pneumoni',
-                    'Stemmevansker', 'Svelgvansker', 'UVI', 'Totalt, 3 mnd.')
-         tittel <- 'Komplikasjoner etter operasjon'
-    }
-
-
-  if (valgtVar=='OprIndikSmerter') {
-  	retn <- 'H'
-  	indSmerteArm <- which(RegData$OprIndikSmerteLokArm == 1)
-  	indSmerteNakke <- which(RegData$OprIndikSmerteLokNakke == 1)
-  	Nsmerte <- sum(RegData$OprIndikSmerter, na.rm=T)
-  	AntVar <- cbind(
-  		Smerte = Nsmerte,
-  		SmerteArm = length(indSmerteArm),
-  		SmerteNakke = length(indSmerteNakke),
-  		SmerteArmNakke = length(intersect(indSmerteArm, indSmerteNakke))
-  	)
-  	NVar<- cbind(
-  		Smerte = length(which(RegData$OprIndikSmerter > -1)),
-  		SmerteArm = Nsmerte,
-  		SmerteNakke = Nsmerte,
-  		SmerteArmNakke = Nsmerte
-  	)
-  	grtxt <- c('Smerter', '...Arm', '...Nakke', '...Arm og Nakke')
-  	tittel <- 'Operasjonsårsak: Smerter'
-  		}
-
-    if (valgtVar=='OprIndikMyelopati') {
-         retn <- 'H'
-         indMotorisk <- which(RegData$OprIndikMyelopatiMotorisk == 1)
-         indSensorisk <- which(RegData$OprIndikMyelopatiSensorisk == 1)
-         Nmyelopati <- sum(RegData$OprIndikMyelopati, na.rm=T)
-         AntVar <- cbind(
-              Myelopati = Nmyelopati,
-              Motorisk = length(indMotorisk),
-              Sensorisk = length(indSensorisk),
-              MotorSensor = length(intersect(indMotorisk, indSensorisk))
-         )
-         NVar<- cbind(
-              Myelopati = length(which(RegData$OprIndikMyelopatiMotorisk > -1)),
-              Motorisk = Nmyelopati,
-              Sensorisk = Nmyelopati,
-              MotorSensor = Nmyelopati
-         )
-         grtxt <- c('Myelopati', '...Sensorisk', '...Motorisk', '...Begge deler')
-         tittel <- 'Operasjonsårsak: Myelopati'
-    }
-
-
-
-#Generelt for alle figurer med sammensatte variable:
-  	if (teller == 1) {
-  		AntHoved <- AntVar
-  		NHoved <- max(NVar, na.rm=T)
-  		Andeler$Hoved <- 100*AntVar/NVar
-  	}
-  	if (teller == 2) {
-  		AntRest <- AntVar
-  		N$Rest <- max(NVar,na.rm=T)	#length(indRest)- Kan inneholde NA
-  		Andeler$Rest <- 100*AntVar/NVar
-  	}
-  } #end medSml (med sammenligning)
-}	#end sjekk om figuren inneholder flere variable
-
-}
-
 #--------------- Gjøre beregninger ------------------------------
 #FRA INTENSIV
-#ikke <- 1
-#if (ikke == 0) {
 
       AggVerdier <- list(Hoved = 0, Rest =0)
       N <- list(Hoved = 0, Rest =0)
@@ -319,13 +107,11 @@ if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprInd
 
       Ngr$Hoved <- switch(as.character(flerevar),
                           '0' = table(RegData$VariabelGr[ind$Hoved]),
-                          # '1' = colSums(sapply(RegData[ind$Hoved ,variable], as.numeric), na.rm=T))
                           '1' = apply(RegData[ind$Hoved,variable], MARGIN=2,
                                       FUN=function(x) sum(x == 1, na.rm=T)))
       #N$ gjelder selv om totalutvalget er ulikt for de ulike variablene i flerevar
      N$Hoved <- switch(as.character(flerevar),
                         '0' = sum(Ngr$Hoved),	#length(ind$Hoved)- Kan inneholde NA
-                  #      '1' = length(ind$Hoved)
                         '1' = apply(RegData[ind$Hoved,variable], MARGIN=2,
                                  FUN=function(x) sum(x %in% 0:1, na.rm=T)))
           AggVerdier$Hoved <- 100*Ngr$Hoved/N$Hoved
@@ -333,7 +119,6 @@ if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprInd
       if (NakkeUtvalg$medSml==1) {
            Ngr$Rest <- switch(as.character(flerevar),
                                '0' = table(RegData$VariabelGr[ind$Rest]),
-                              # '1' = colSums(sapply(RegData[ind$Rest ,variable], as.numeric), na.rm=T))
                                '1' = apply(RegData[ind$Rest,variable], MARGIN=2,
                                            FUN=function(x) sum(x == 1, na.rm=T)))
             N$Rest <- switch(as.character(flerevar),
@@ -353,7 +138,8 @@ if (valgtVar %in% c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprInd
       } else {
             Nfig <- N}
 
-      grtxt2 <- paste0(sprintf('%.1f',AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
+          antDes <- if (valgtVar == 'KomplOpr') {2} else {1}
+      grtxt2 <- paste0(sprintf(paste('%.', antDes, 'f'),AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
 
 #}
       xAkseTxt <- NakkeVarSpes$xAkseTxt

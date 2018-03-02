@@ -77,7 +77,7 @@ outfile <- '' #paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 
 NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=0, outfile=outfile)
+           reshID=reshID, enhetsUtvalg=0, hentData=0, outfile=outfile)
 
 variable <- c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprIndikSmerter',
               'OprIndikMyelopati', 'Radiologi')

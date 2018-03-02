@@ -80,6 +80,6 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
 
   UtData <- list(RegData=RegData, utvalgTxt=utvalgTxt, fargepalett=fargepalett, ind=ind,
-                 medSml=medSml, hovedgrTxt=hovedgrTxt) #GronnHNpms624,
+                 medSml=medSml, hovedgrTxt=hovedgrTxt, smltxt=smltxt) #GronnHNpms624,
   return(invisible(UtData))
 }
