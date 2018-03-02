@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NakkeFigAndelerGrVar" language="groovy" pageWidth="595" pageHeight="800" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" scriptletClass="no.skde.report.nakke.Nakke" isIgnorePagination="true" uuid="9ca92060-e90f-4e3c-acec-23662a03f059">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -37,7 +37,7 @@
 		<defaultValueExpression><![CDATA[new String("Nakke")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("FigAndelerGrVar(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,myelopati=myelopati, fremBak=fremBak, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("NakkeFigAndelerGrVar(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,myelopati=myelopati, fremBak=fremBak, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="valgtVar" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>

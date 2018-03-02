@@ -95,7 +95,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
   #----------FIGUR------------------------------
   #Hvis for få observasjoner..
   #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & medSml == 1)) {
-  if (length(ind$Hoved) < 10 | (medSml ==1 & length(ind$Rest)<10)) {
+  if (length(ind$Hoved) < 10 | (NakkeUtvalg$medSml ==1 & length(ind$Rest)<10)) {
     #-----------Figur---------------------------------------
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger
@@ -148,13 +148,13 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
     points(Aartxt, AndelRest, pch="'", cex=2, col=fargeRest)	#}
 
     Ttxt <- paste0('(Tall ved punktene angir antall ', varTxt, ')')
-    if (medSml == 1) {
+    if (NakkeUtvalg$medSml == 1) {
       text(Aartxt, AndelRest, pos=3, NAarHendRest, cex=0.9, col=fargeRest)
-      legend('topleft', border=NA, c(paste0(shtxt, ' (N=', NHovedRes, ')'),
+      legend('topleft', border=NA, c(paste0(NakkeUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')'),
                                      paste(smltxt, ' (N=', NSmlRes, ')', sep=''), Ttxt), bty='n', ncol=1, cex=cexleg,
              col=c(fargeHoved, fargeRest, NA), lwd=3)
     } else {
-      legend('top', c(paste(shtxt, ' (N=', NHovedRes, ')', sep=''), Ttxt),
+      legend('top', c(paste(NakkeUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')', sep=''), Ttxt),
              col=c(fargeHoved, NA), lwd=3, bty='n')
     }
 

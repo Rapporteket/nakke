@@ -7,7 +7,7 @@
 #' Her kan mye hentes til analysebok
 #'
 #' @inheritParams NakkeFigAndeler
-#' @inheritParams NakkeLibUtvalg
+#' @inheritParams NakkeUtvalgEnh
 #' @param figurtype Hvilken figurtype det skal tilrettelegges variable for:
 #'                'andeler', 'andelGrVar', 'andelTid', 'gjsnGrVar', 'gjsnTid'
 #'
@@ -82,8 +82,9 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
 	  deltittel <- 'alder'}
     if (figurtype == 'andeler') {	#Fordelingsfigur
       gr <- c(seq(0, 100, 10),150)
+      gr <- c(0,seq(20,90,10),150)
       RegData$VariabelGr <- cut(RegData$Alder, breaks=gr, include.lowest=TRUE, right=FALSE)
-      grtxt <- c('0-9','10-19','20-29','30-39','40-49','50-59','60-69','70-79','80-89','90-99','100+')
+      grtxt <- c('0-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90+')	#c(levels(RegData$VariabelGr)[-length(gr)], '90+')	#c(names(AndelLand)[-length(gr)], '90+')
       xAkseTxt <- 'Aldersgrupper (år)'}
     sortAvtagende <- FALSE
   }
@@ -130,14 +131,6 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
                         Arbeidstaus12mnd = which(RegData$OppFolgStatus12mnd == 1))
     indDum <- which(RegData[ ,valgtVar] %in% 1:9)
     RegData <- RegData[indSkjema, ]
-    if (figurtype %in% c('andelGrVar', 'andelTid' )) {
-      RegData <- RegData[indDum, ]}
-    tittel <- switch(valgtVar,
-                     ArbeidstausPreOp = 'Mottar sykepenger, preoperativt?',
-                     Arbeidstaus3mnd = 'Mottar sykepenger, 3 mnd etter operasjon?' ,
-                     Arbeidstaus12mnd = 'Mottar sykepenger, 12 mnd etter operasjon?')
-    RegData$Variabel[which(RegData[ ,valgtVar] %in% 6:9)] <- 1
-
     RegData$VariabelGr <- 99
     indDum <- which(RegData[ ,valgtVar] %in% 1:10)
     RegData$VariabelGr[indDum] <- RegData[indDum ,valgtVar]
@@ -146,6 +139,14 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
                      ArbeidstausPreOp = 'Arbeidsstatus før operasjon',
                      Arbeidstaus3mnd = 'Arbeidsstatus 3 mnd. etter operasjon' ,
                      Arbeidstaus12mnd = 'Arbeidsstatus 12 mnd. etter operasjon')
+    if (figurtype %in% c('andelGrVar', 'andelTid' )) {
+      RegData <- RegData[indDum, ]
+    tittel <- switch(valgtVar,
+                     ArbeidstausPreOp = 'Mottar sykepenger, preoperativt?',
+                     Arbeidstaus3mnd = 'Mottar sykepenger, 3 mnd etter operasjon?' ,
+                     Arbeidstaus12mnd = 'Mottar sykepenger, 12 mnd etter operasjon?')
+    RegData$Variabel[which(RegData[ ,valgtVar] %in% 6:9)] <- 1
+}
     varTxt <- 'som mottar sykepenger'
     retn <- 'H'
   }
@@ -459,7 +460,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
                      Misfor3mnd = which(RegData$FornoydBeh3mnd %in% 4:5),
                      Misfor12mnd = which(RegData$FornoydBeh12mnd %in% 4:5))
     RegData$Variabel[indVar] <- 1
-    varTxt <- 'fornøyde'
+    varTxt <- 'misfornøyde'
     tittel <- switch(valgtVar,
                      Misfor3mnd = 'Misfornøyde pasienter, 3 mnd' ,
                      Misfor12mnd = 'Misfornøyde pasienter, 12 mnd')
@@ -688,7 +689,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     indDum <- which(RegData$SivilStatus %in% 1:3)
     RegData$VariabelGr[indDum] <- RegData$SivilStatus[indDum]
     RegData$VariabelGr <- factor(RegData$VariabelGr, levels = c(1:3,9))
-    TittelUt <- 'Sivilstatus'
+    tittel <- 'Sivilstatus'
   }
   if (valgtVar == 'SmertestillBrukPreOp') { #Andeler
     # 1 - Sjeldnere enn hver uke, 2 - Hver uke, 3 - Daglig, 4 - Flere ganger daglig, 9 - Ikke utfylt

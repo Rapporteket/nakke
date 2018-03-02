@@ -175,7 +175,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
     barplot(Midt, horiz=T, border=NA, col=farger[3], xlim=c(xmin, xmax), add=TRUE,
             font.main=1, xlab = xAkseTxt, las=1) 	#xlim=c(0,ymax), #, cex.names=0.5
     title(tittel, font.main=1)
-    title('med 95% konfidensintervall', line=0.5, font.main=1, cex.main=0.95)
+    #title('med 95% konfidensintervall', line=0.5, font.main=1, cex.main=0.95)
     mtext(at=pos+0.18, GrNavnSort, side=2, las=1, cex=cexGrNavn, adj=1, line=0.25)	#Sykehusnavn
     mtext(at=pos-0.18, Ngrtxt[sortInd], side=2, las=1, cex=cexGrNavn, adj=1, line=0.25)	#Sykehusnavn
 

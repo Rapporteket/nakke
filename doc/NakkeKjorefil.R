@@ -48,8 +48,6 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	hentData=0
 	outfile=''
 
-
-
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (Fordelinger) --------------------------
 
@@ -176,12 +174,12 @@ NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
 variable <- c('Alder', 'AndreRelSykdommer', 'Antibiotika',
           'ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd', 'ASAgrad', 'BMI', 'EnhverKompl3mnd', 'ErstatningPreOp',
              'FornoydBeh3mnd', 'FornoydBeh12mnd', 'Misfor3mnd', 'Misfor12mnd', 'KomplinfekDyp3mnd',
-             'KomplinfekOverfl3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd', 'NytteOpr3mnd', 'NytteOpr12mnd',
-             'NRSsmerteArmEndr12mnd','Verre3mnd', 'Verre12mnd', 'OprIndikMyelopati', 'Roker', 'Saardren',
-             'SmertestillPreOp', 'SymptVarighetNakkeHode', 'SymptVarighetSmerterUker', 'UforetrygdPreOp', 'Utdanning')
+             'KomplinfekOverfl3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd30pst', 'NytteOpr3mnd',
+          'NytteOpr12mnd', 'NRSsmerteArmEndr12mnd','Verre3mnd', 'Verre12mnd', 'OprIndikMyelopati', 'Roker', 'Saardren',
+             'SmertestillPreOp', 'SymptVarighetArmer', 'SymptVarighetNakkeHode', 'UforetrygdPreOp', 'Utdanning')
 
 for (valgtVar in variable) {
-     outfile <- paste0(valgtVar, '.png')
+     outfile <- paste0(valgtVar, '_sh.png')
      NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
                 datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
                 reshID=reshID, outfile=outfile)

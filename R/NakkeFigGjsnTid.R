@@ -80,22 +80,6 @@ ind <- NakkeUtvalg$ind
 hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 medSml <- NakkeUtvalg$medSml
 
-# indEgen1 <- match(reshID, RegData$ReshId)
-# if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-# 		shtxt <- as.character(RegData$SykehusNavn[indEgen1]) } else {
-# 		shtxt <- 'Hele landet'
-# 			}
-#
-# if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning
-# 			medSml <- 0
-# 			indHoved <- 1:dim(RegData)[1]	#Tidligere redusert datasettet for 2,4,7. (+ 3og6)
-# 			indRest <- NULL
-# 		} else {						#Skal gjøre sammenlikning
-# 			medSml <- 1
-# 			indHoved <-which(as.numeric(RegData$ReshId)==reshID)
-# 			smltxt <- 'landet forøvrig'
-# 			indRest <- which(as.numeric(RegData$ReshId) != reshID)
-# 			}
 
 tittel <-  c(tittelUsh, hovedgrTxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), hovedgrTxt)
 #if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
@@ -188,7 +172,7 @@ if (medSml==1) {
 	polygon( c(Aartxt, Aartxt[AntAar:1]), c(KonfRest[1,], KonfRest[2,AntAar:1]),
 			col=fargeRestRes, border=NA)
 	legend('top', bty='n', fill=fargeRestRes, border=fargeRestRes, cex=cexgr,
-		paste('95% konfidensintervall for ', smltxt, ', N=', sum(NRest, na.rm=T), sep=''))
+		paste('95% konfidensintervall for ', NakkeUtvalg$smltxt, ', N=', sum(NRest, na.rm=T), sep=''))
 }
 h <- strheight(1, cex=cexgr)*0.7	#,  units='figure',
 b <- 1.1*strwidth(max(N, na.rm=T), cex=cexgr)/2	#length(Aartxt)/30

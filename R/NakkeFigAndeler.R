@@ -139,9 +139,9 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
             Nfig <- N}
 
           antDes <- if (valgtVar == 'KomplOpr') {2} else {1}
-      grtxt2 <- paste0(sprintf(paste('%.', antDes, 'f'),AggVerdier$Hoved), '%') #paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
+      grtxt2 <- paste0(sprintf(paste('%.', antDes, 'f'),AggVerdier$Hoved), '%')
+      #}
 
-#}
       xAkseTxt <- NakkeVarSpes$xAkseTxt
       yAkseTxt <- 'Andel opphold (%)'
       retn <- NakkeVarSpes$retn
