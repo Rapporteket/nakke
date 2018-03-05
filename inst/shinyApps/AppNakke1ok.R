@@ -20,7 +20,7 @@ ui <- fluidPage(
       sidebarPanel(
         conditionalPanel(
           'input.ark === "Tabeller"',
-          helpText("Her kommer brukervalg for å velge tabell og kladd/ferdigstilt")
+          helpText("Her kommer det kanskje noen brukervalg")
           ),
         conditionalPanel(
           'input.ark === "Kvalitetsindikatorer"',
@@ -76,76 +76,17 @@ server <- function(input, output) {
   fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
   RegData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
   RegData <- NakkePreprosess(RegData = RegData)
-  DagNaa <- as.POSIXlt(Sys.Date())
+  DagNaa <- Sys.Date()
   AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
-  # Nye variable:
-  RegData$Mnd <- RegData$InnDato$mon +1
-  RegData$Kvartal <- ceiling(RegData$Mnd/3)
-  RegData$Halvaar <- ceiling(RegData$Mnd/6)
-  datoFra12 <- as.Date(paste0(1900+DagNaa$year-1,'-', DagNaa$mon+1, '-', '01'))
-  aarFra <- paste0(1900+DagNaa$year-5, '-01-01')
-
-  RegData12mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra12), ]
-
-  #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
-  fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
-  SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
-  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
-  SkjemaData12mnd <- SkjemaData[as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d") > as.POSIXlt(datoFra12), ]
-
 
 
   output$tabeller <- renderTable({
-
     tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]))
     rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle avdelinger:'
     colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste 5 år'
     xtable::xtable(tabAvdAarN, digits=0, align=c('l', rep('r', ncol(tabAvdAarN))), rownames = T,
-                   caption='Antall registreringer per år og avdeling, siste 5 år.')
-#Velge ferdigstillelse og tidsintervall. Se Rygg
-    LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, 'Sykehusnavn'])
-    PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1, 'Sykehusnavn'])
-    Oppf3mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==3, 'Sykehusnavn'])
-    Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4, 'Sykehusnavn'])
-
-    tabAvd12MndNskjemaDum <- cbind(
-      Lege = LegeSkjema,
-      Pasient = PasientSkjema,
-      'Oppfølging 3 mnd.' = Oppf3mnd,
-      'Oppfølging 12 mnd.' = Oppf12mnd)
-
-    tabAvd12MndNskjemaDum <- addmargins(tabAvd12MndNskjemaDum, margin=1)
-
-    tabAvd12MndNskjema <- cbind(
-      tabAvd12MndNskjemaDum[ ,1:2],
-    'Pasient (%)' = tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100,
-    'Oppfølging 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
-    'Oppfølging 3 mnd. (%)' = tabAvd12MndNskjemaDum[,'Oppfølging 3 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100,
-    'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
-    'Oppfølging 12 mnd. (%)' = tabAvd12MndNskjemaDum[,'Oppfølging 12 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100)
-
-    tabAvd12MndNskjema <- xtable::xtable(tabAvd12MndNskjema, digits=c(0,0,0,1,0,1,0,1), align=c('l', rep('r', ncol(tabAvd12MndNskjema))), rownames = T,
-                   caption='Registrerte skjema ved hver avdeling, siste 12 måneder.')
-
-
-
-    # library(zoo)
-    # library(lubridate)
-    # dates <- as.Date(SkjemaData12mnd$HovedDato, '%Y-%m-%d')
-    # yr <- year(dates)
-    # monyr <- as.yearmon(dates)
-    # lst <- lapply(list(dates, yr, monyr), function(x)
-    #   transform(SkjemaData12mnd, Count=ave(seq_along(x), x, FUN= length)))
-    # names(lst) <- paste0('newdf', seq_along(lst))
-    # list2env(lst, envir=.GlobalEnv)
-    #
-
-    },
+                   caption='Antall registreringer per år og avdeling, siste 5 år.')},
     rownames = T, digits=0
-
-
-
-
     )
 
   #output$oversikt <- renderText()
@@ -155,7 +96,7 @@ server <- function(input, output) {
     #indKj <- if (input$erMann %in% 0:1) {which(RegData$ErMann == input$erMann)} else {indKj <- 1:dim(RegData)[1]}
     #indDato <- which(RegData$InnDato >= as.POSIXlt(input$datovalg) & RegData$InnDato <= as.POSIXlt(input$datovalg))
     #print(input$fremBak)
-    Utvalg <- NakkeUtvalgEnh(RegData=RegData,
+    Utvalg <- NakkeLibUtvalg(RegData=RegData,
                              datoFra = input$datovalg[1], datoTil = input$datovalg[2],
                              erMann = as.numeric(input$erMann),
                              minald = as.numeric(input$alder[1]),

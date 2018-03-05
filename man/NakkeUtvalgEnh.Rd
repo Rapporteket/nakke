@@ -6,7 +6,7 @@
 \usage{
 NakkeUtvalgEnh(RegData, datoFra = "2012-01-01", datoTil = "3000-01-01",
   minald = 0, maxald = 130, erMann = "", aar = 0, myelopati = 99,
-  fremBak = 0, enhetsUtvalg = 0, fargepalett = "BlaaOff")
+  fremBak = 0, enhetsUtvalg = 0, reshID = 0, fargepalett = "BlaaOff")
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -22,6 +22,8 @@ NakkeUtvalgEnh(RegData, datoFra = "2012-01-01", datoTil = "3000-01-01",
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
 
 \item{enhetsUtvalg}{Sammenlikning eller ikke: 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet}
+
+\item{reshID}{Avdelingsid (reshID) for egen avdeling,}
 
 \item{fargepalett}{- Velge fargepalett, standard:BlaaOff ("offentliggjøringsfargene")}
 }
