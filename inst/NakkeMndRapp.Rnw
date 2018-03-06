@@ -1,0 +1,249 @@
+\documentclass[presentation,xcolor=pdftex,dvipsnames,table]{beamer}
+\usetheme{Hannover}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english, norsk]{babel}
+\usepackage{xspace}
+\usepackage{booktabs}
+\usepackage{rotating}
+\usepackage{graphicx}
+
+
+
+<<'initOpts',include=FALSE>>=
+knitr::opts_chunk$set(warnings=FALSE,echo=FALSE, encoding = "UTF-8")
+knitr::opts_knit$set(root.dir = './')
+@
+
+<<'dataOgParam', include=FALSE>>=
+library(Nakke)
+library(knitr)
+library(tools)
+library(lubridate)
+datoTil <- Sys.Date()
+dato <- as.POSIXlt(datoTil)
+datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
+aarFra <- paste0(1900+dato$year-5, '-01-01')
+
+if (!exists('RegData')){
+      RegData <- NakkeRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+
+      registryName <- "nakke"
+      dbType <- "mysql"
+
+	  #HUSK Å HENTE SKJEMATABELL
+  fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
+  SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
+  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
+      }
+
+  RegData <- NakkePreprosess(RegData = RegData)
+  AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
+  # Nye variable:
+  RegData$Mnd <- RegData$InnDato$mon +1
+  RegData$Kvartal <- ceiling(RegData$Mnd/3)
+  RegData$Halvaar <- ceiling(RegData$Mnd/6)
+  aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
+
+  #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
+  SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
+  SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
+  SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
+  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
+  SkjemaData12mnd <- SkjemaData[SkjemaData$InnDato > as.POSIXlt(datoFra), ]
+
+enhetsUtvalg <- 1
+shtxt <- switch(as.character(enhetsUtvalg),
+                     '0' = 'Hele landet',
+                     '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
+                     '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+@
+
+
+\title[Degenerativ Nakke \\\Sexpr{shtxt}]{\textit{NKR - Degenerativ Nakke} \\
+MÅNEDSRAPPORT \\
+\Sexpr{shtxt}}
+\date{}
+
+
+\begin{document}
+\begin{tiny}
+
+\maketitle
+
+\section{Registreringsoversikter}
+
+\begin{frame}[fragile] {Innhold}
+Dette er en sammenstilling av resultater  fra Norsk Kvalitetsregister for Ryggkirurgi, Degenerativ Nakke.
+Alle registreringer er basert på registreringer i registeret per rapportdato. Data er hentet rett fra registeret og er ikke kvalitetssikret.
+Datoer/årstall er basert på operasjonsdato. Resultatene som vises er i all hovedsak for de siste 12 måneder.
+Tidsutvalg for rapportene er spesifisert for hver enkelt figur.
+
+Rapporten viser følgende:
+\begin{itemize}
+\item  Antall registreringer per måned og avdeling.
+\item	Registreringsoversikt med antall registreringer av hver type skjema.
+\item	Figur, kvalind.
+\item	Fig. kvalind
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+<<'Registreringer siste 12 mnd', results='asis'>>=
+
+
+    tabAvdSiste12mnd <- addmargins(table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2,
+                                                         c('Sykehusnavn', 'Mnd')]))
+    colnames(tabAvdSiste12mnd) <- substring(colnames(tabAvdSiste12mnd),1,3)
+	xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('l', rep('r', ncol(tabAvdSiste12mnd))),
+		caption='Antall registereringer (ferdigstilte legeskjema) per måned og avdeling, siste 12 måneder.')
+
+#xtable::print.xtable(
+#    x = xtable::xtable(
+#        x = addmargins(xtabs(formula = ~ Month + Hastegrad ,data = AP)) ,
+#        caption = "Antall registrerte prosedyrer etter hastegrad og måned" ,
+#        digits = 0) , booktabs = TRUE )
+
+@
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+<<'Registrering, type skjema', results='asis'>>=
+
+	    LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, 'Sykehusnavn'])
+    PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1, 'Sykehusnavn'])
+    Oppf3mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==3, 'Sykehusnavn'])
+    Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4, 'Sykehusnavn'])
+
+    tabAvd12MndNskjemaDum <- cbind(
+      Lege = LegeSkjema,
+      Pasient = PasientSkjema,
+      'Oppfølging 3 mnd.' = Oppf3mnd,
+      'Oppfølging 12 mnd.' = Oppf12mnd)
+
+    tabAvd12MndNskjemaDum <- addmargins(tabAvd12MndNskjemaDum, margin=1)
+
+    tabAvd12MndNskjema <- cbind(
+      tabAvd12MndNskjemaDum[ ,1:2],
+      'Pasient (%)' =  tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100,
+      'Oppfølging 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
+      'Oppfølging 3 mnd. (%)' = tabAvd12MndNskjemaDum[ ,'Oppfølging 3 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100
+#      'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
+#      'Oppfølging 12 mnd. (%)' =  tabAvd12MndNskjemaDum[,'Oppfølging 12 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100
+      )
+    #sprintf('%1.3f'
+    xtable::xtable(tabAvd12MndNskjema, align=c('l', rep('r', ncol(tabAvd12MndNskjema))),
+                   digits=c(0,0,0,1,0,1),
+		caption='Antall ferdigstilte skjema av hver type per måned og avdeling, siste 12 måneder.')
+
+@
+\end{frame}
+
+
+
+
+<<'LageFigurer', include=FALSE>>=
+
+# variable <- c('SkadeArsak', 'Ntsci', 'AAis', 'FAis','RegForsinkelse')
+# for (valgtVar in variable) {
+# 	outfile <- paste0(valgtVar, '.pdf')
+# 	NSFigAndeler(RegData=HovedSkjema12mnd, valgtVar=valgtVar, datoFra=datoFra,
+#                 datoTil=datoTil, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg,
+#                 hentData=0, preprosess=0)
+# }
+
+#Stemmevansker3mnd, fremre, uten myelopati
+dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplStemme3mnd', datoFra = datoFra,
+                                     myelopati=0,fremBak = 1, outfile='NakkeStemme3mndSh.pdf')
+#Svelgvansker3mnd, fremre, uten myelopati
+dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplSvelging3mnd', datoFra = datoFra,
+                                     myelopati=0,fremBak = 1, outfile='NakkeSvelg3mndSh.pdf')
+#Brukav sårdren, fremre, uten myelopati
+dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Saardren', datoFra = datoFra,
+                                     myelopati=0,fremBak = 1, outfile='NakkeSaardrenUmFSh.pdf')
+#Sårinfeksjon, overfladisk 3mnd, kun bakre kirurgi
+dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', datoFra = datoFra,
+                                     fremBak = 2, outfile='NakkeKomplinfekOverfl3mndSh.pdf')
+#Sårinfeksjon (dyp og/eller overfladisk), 3mnd, kun bakre kirurgi
+dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek', datoFra = datoFra,
+                                     fremBak = 2,Ngrense = 20, outfile='NakkeKomplinfek3mndSh.pdf')
+
+#Andel fornøyde med behandlinga
+dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra,
+                                     valgtVar='FornoydBeh3mnd',  outfile='NakkeFornoydBeh3mnd.pdf')
+#Nytte
+dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra,
+                       valgtVar='NytteOpr3mnd', outfile='NakkeNytteOpr3mndSh.pdf')
+
+
+#NOEN FIGURER MED UTVIKLING OVER TID
+@
+
+\section{Prosess}
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NakkeSaardrenUmFSh.pdf}
+\caption{Andel pasienter som har fått sårdren. }
+\end{figure}
+
+\section{Kvalitetsindikatorer}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NakkeStemme3mndSh.pdf.pdf}
+\caption{Stemmevansker, 3 måneder etter operasjon. }
+\end{figure}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NakkeSvelg3mndSh.pdf}
+\caption{Svelgvansker, 3 måneder etter operasjon. }
+\end{figure}
+
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NakkeKomplinfekOverfl3mndSh.pdf}
+\caption{Overfladisk infeksjon, 3 måneder etter operasjon. }
+\end{figure}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NakkeKomplinfek3mndSh.pdf}
+\caption{Overfladisk infeksjon, 3 måneder etter operasjon. }
+\end{figure}
+
+
+\section{Pasientrapportert, 3 måneder}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NakkeFornoydBeh3mnd.pdf}
+\caption{Registreringsforsinkelse. }
+\end{figure}
+
+begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NakkeNytteOpr3mndSh.pdf}
+\caption{Registreringsforsinkelse. }
+\end{figure}
+
+
+\end{frame}
+
+
+\end{tiny}
+\end{document}

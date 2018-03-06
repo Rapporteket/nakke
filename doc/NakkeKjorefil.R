@@ -47,6 +47,17 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	tidsenhet <- 'aar'
 	hentData=0
 	outfile=''
+#-------------------------------Månedsrapport---------------------------
+	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
+	SkjemaData <- read.table(fil, sep=';', header=T) #, encoding = 'UTF-8')
+	#SkjemaData$Sykehusnavn <- iconv(SkjemaData$Sykehusnavn, from = 'UTF-8', to = '')
+
+	reshID <- 601161
+
+	setwd('C:/ResultattjenesteGIT/nakke/inst/')
+	knit('NakkeMndRapp.Rnw')
+	texi2pdf(file='NakkeMndRapp.tex')
+
 
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (Fordelinger) --------------------------
