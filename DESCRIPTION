@@ -18,6 +18,7 @@ LazyData: TRUE
 Imports:
     knitr,
     lubridate,
+    zoo,
     xtable
 Suggests:
 VignetteBuilder: knitr

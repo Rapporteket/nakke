@@ -1,4 +1,10 @@
-
+#Three things to keep in mind when dealing with character strings in R:
+#  The encoding should be specified explicitly per (file) connection basis, if you want your
+#R code to be portable;
+#After you read Unicode characters into R, convert them to the native encoding of your system,
+#e.g. using enc2native(); x <- readLines('foo.txt', encoding = 'UTF-8')
+#         x <- enc2native(x)
+#Do not set options(encoding) $encoding: [1] "native.enc". Tester
 
 #--------------------------------------SAMLERAPPORT-----------------------------------
 setwd("C:/ResultattjenesteGIT/Nakke/inst")
@@ -24,6 +30,7 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 	RegData <- NakkeData
+	#RegData$SykehusNavn <- enc2native(as.character(RegData$SykehusNavn))
 	#RegData <- NakkePreprosess(RegData=RegData)
 	#RegData <- RegData[which(RegData$Aar<2017),]
 	#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
@@ -48,14 +55,20 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	hentData=0
 	outfile=''
 #-------------------------------Månedsrapport---------------------------
+	library(knitr)
+	library(devtools)
 	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
-	SkjemaData <- read.table(fil, sep=';', header=T) #, encoding = 'UTF-8')
+	SkjemaData <- read.table(fil, sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
+	#SkjemaData$Sykehusnavn <- enc2native(as.character(SkjemaData$Sykehusnavn))
 	#SkjemaData$Sykehusnavn <- iconv(SkjemaData$Sykehusnavn, from = 'UTF-8', to = '')
-
+	#table(Encoding(as.character(SkjemaData$Sykehusnavn)))
+	#ind <- which(Encoding(as.character(SkjemaData$Sykehusnavn)) == 'UTF-8')
+	#table(SkjemaData$Sykehusnavn) #[ind])
 	reshID <- 601161
 
 	setwd('C:/ResultattjenesteGIT/nakke/inst/')
-	knit('NakkeMndRapp.Rnw')
+	#options(encoded_text_to_latex= 'UTF-8')
+	knit('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 	texi2pdf(file='NakkeMndRapp.tex')
 
 

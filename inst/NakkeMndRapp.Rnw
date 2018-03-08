@@ -11,8 +11,9 @@
 
 
 
-<<'initOpts',include=FALSE>>=
-knitr::opts_chunk$set(warnings=FALSE,echo=FALSE, encoding = "UTF-8")
+<<'initOpts', include=FALSE>>=
+
+knitr::opts_chunk$set(warnings=FALSE, echo=FALSE, encoding = "UTF-8") #, encoded_text_to_latex="UTF-8") #, )
 knitr::opts_knit$set(root.dir = './')
 @
 
@@ -21,6 +22,7 @@ library(Nakke)
 library(knitr)
 library(tools)
 library(lubridate)
+library(zoo)
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
@@ -32,11 +34,11 @@ if (!exists('RegData')){
       registryName <- "nakke"
       dbType <- "mysql"
 
-	  #HUSK Å HENTE SKJEMATABELL
+	  #HUSK Å HENTE SKJEMATABELL med spørring
   fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
   SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
   SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
-      }
+      } #hente data på server
 
   RegData <- NakkePreprosess(RegData = RegData)
   AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
@@ -82,10 +84,17 @@ Tidsutvalg for rapportene er spesifisert for hver enkelt figur.
 
 Rapporten viser følgende:
 \begin{itemize}
-\item  Antall registreringer per måned og avdeling.
-\item	Registreringsoversikt med antall registreringer av hver type skjema.
-\item	Figur, kvalind.
-\item	Fig. kvalind
+\item Antall registreringer per måned og avdeling.
+\item	Registreringsoversikt med antall registreringer av hver skjematype.
+\item	Figurer:
+  \begin{itemize}
+  \item Andel som får sårdren
+  \item	Stemmevansker
+  \item	Svelgvansker
+  \item	Infeksjon
+  \item	Fornøydhet med behandlinga på sykehuset
+  \item	Nytte av operasjonen
+  \end{itemize}
 \end{itemize}
 
 \end{frame}
@@ -124,16 +133,17 @@ Rapporten viser følgende:
     tabAvd12MndNskjemaDum <- cbind(
       Lege = LegeSkjema,
       Pasient = PasientSkjema,
-      'Oppfølging 3 mnd.' = Oppf3mnd,
-      'Oppfølging 12 mnd.' = Oppf12mnd)
+      'Oppf. 3 mnd.' = Oppf3mnd
+      #'Oppf. 12 mnd.' = Oppf12mnd
+      )
 
     tabAvd12MndNskjemaDum <- addmargins(tabAvd12MndNskjemaDum, margin=1)
 
     tabAvd12MndNskjema <- cbind(
       tabAvd12MndNskjemaDum[ ,1:2],
       'Pasient (%)' =  tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100,
-      'Oppfølging 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
-      'Oppfølging 3 mnd. (%)' = tabAvd12MndNskjemaDum[ ,'Oppfølging 3 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100
+      'Oppf. 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
+      'Oppf. 3 mnd. (%)' = tabAvd12MndNskjemaDum[ ,'Oppf. 3 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100
 #      'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
 #      'Oppfølging 12 mnd. (%)' =  tabAvd12MndNskjemaDum[,'Oppfølging 12 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100
       )
@@ -169,11 +179,11 @@ dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Saardre
                                      myelopati=0,fremBak = 1, outfile='NakkeSaardrenUmFSh.pdf')
 #Sårinfeksjon, overfladisk 3mnd, kun bakre kirurgi
 dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', datoFra = datoFra,
-                                     fremBak = 2, outfile='NakkeKomplinfekOverfl3mndSh.pdf')
+                                     outfile='NakkeKomplinfekOverfl3mndSh.pdf')
 #Sårinfeksjon (dyp og/eller overfladisk), 3mnd, kun bakre kirurgi
 dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek', datoFra = datoFra,
-                                     fremBak = 2,Ngrense = 20, outfile='NakkeKomplinfek3mndSh.pdf')
-
+                                     Ngrense = 10, outfile='NakkeKomplinfek3mndSh.pdf')
+#EnhverKompl3mnd
 #Andel fornøyde med behandlinga
 dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra,
                                      valgtVar='FornoydBeh3mnd',  outfile='NakkeFornoydBeh3mnd.pdf')
@@ -192,15 +202,17 @@ dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra
 \includegraphics[scale=0.35]{NakkeSaardrenUmFSh.pdf}
 \caption{Andel pasienter som har fått sårdren. }
 \end{figure}
+\end{frame}
 
 \section{Kvalitetsindikatorer}
 
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{NakkeStemme3mndSh.pdf.pdf}
+\includegraphics[scale=0.35]{NakkeStemme3mndSh.pdf}
 \caption{Stemmevansker, 3 måneder etter operasjon. }
 \end{figure}
+\end{frame}
 
 \begin{frame}[fragile]
 \begin{figure}[ht]
@@ -208,6 +220,7 @@ dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra
 \includegraphics[scale=0.35]{NakkeSvelg3mndSh.pdf}
 \caption{Svelgvansker, 3 måneder etter operasjon. }
 \end{figure}
+\end{frame}
 
 
 \begin{frame}[fragile]
@@ -216,13 +229,15 @@ dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra
 \includegraphics[scale=0.35]{NakkeKomplinfekOverfl3mndSh.pdf}
 \caption{Overfladisk infeksjon, 3 måneder etter operasjon. }
 \end{figure}
+\end{frame}
 
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeKomplinfek3mndSh.pdf}
-\caption{Overfladisk infeksjon, 3 måneder etter operasjon. }
+\caption{Infeksjoner (overfladiske og dype), 3 måneder etter operasjon. }
 \end{figure}
+\end{frame}
 
 
 \section{Pasientrapportert, 3 måneder}
@@ -231,17 +246,16 @@ dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeFornoydBeh3mnd.pdf}
-\caption{Registreringsforsinkelse. }
+\caption{Pasientenes fornøydhet med behandlinga på sykehuset. }
 \end{figure}
+\end{frame}
 
-begin{frame}[fragile]
+\begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeNytteOpr3mndSh.pdf}
-\caption{Registreringsforsinkelse. }
+\caption{Pasienter som har blitt helt bra eller mye bedre etter operasjonen. }
 \end{figure}
-
-
 \end{frame}
 
 

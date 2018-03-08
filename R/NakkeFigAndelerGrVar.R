@@ -48,7 +48,7 @@
 #'
 #' @export
 
-NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31', enhetsUtvalg=0,
+NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31',
                             minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, Ngrense=10,
                             hentData=0, preprosess=TRUE, reshID=0, outfile='') { #tittel=1,
 

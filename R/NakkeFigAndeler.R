@@ -57,7 +57,7 @@
 
 NakkeFigAndeler  <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31',
 		minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, outfile='',
-		hentData=0, preprosess=TRUE, reshID, enhetsUtvalg=1)
+		hentData=0, preprosess=TRUE, reshID=0, enhetsUtvalg=0)
 {
 
 	if (hentData == 1) {
@@ -89,7 +89,7 @@ flerevar <- NakkeVarSpes$flerevar
 
 #------------Gjøre utvalg-------------------------
 NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-		erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg)
+		erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg, reshID = reshID)
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 hovedgrTxt <- NakkeUtvalg$hovedgrTxt
@@ -159,7 +159,7 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 #-----------Figur---------------------------------------
 #Hvis for få observasjoner..
 #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & egenavd==1)) {
-if ( N$Hoved %in% 1:5 | 	(NakkeUtvalg$medSml ==1 & N$Rest<10)) {	#(valgtVar=='Underkat' & all(hovedkat != c(1,2,5,7))) |
+if ( Nfig$Hoved %in% 1:5 | 	(NakkeUtvalg$medSml ==1 & Nfig$Rest<10)) {	#(valgtVar=='Underkat' & all(hovedkat != c(1,2,5,7))) |
 FigTypUt <- figtype(outfile)
 farger <- FigTypUt$farger
 	plot.new()

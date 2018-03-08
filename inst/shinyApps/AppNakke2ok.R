@@ -37,7 +37,7 @@ ui <- fluidPage(
         #'input.ark === "Fordelinger" || input.ark === "Sykehusvise andeler" ',
 
         selectInput(inputId = "valgtVar", label="Velg variabel",
-                    choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr', 'Antibiotika' = 'Antibiotika' ,
+                    choices = c('Alder' = 'Alder', 'AntallNivaaOpr' = 'AntallNivaaOpr', 'Antibiotika' = 'Antibiotika' ,
                                 'ArbeidstausPreOp' = 'ArbeidstausPreOp','Arbeidstaus3mnd' = 'Arbeidstaus3mnd',
                                 'Arbeidstaus12mnd' = 'Arbeidstaus12mnd', 'ASAgrad' = 'ASAgrad', 'BMI' = 'BMI',
                                 'EqAngstPreOp' = 'EqAngstPreOp', 'ErstatningPreOp' = 'ErstatningPreOp',
@@ -48,7 +48,7 @@ ui <- fluidPage(
                                 'OperasjonsKategori' = 'OperasjonsKategori', 'OprIndik' = 'OprIndik',
                                 'OprIndikPareseGrad' = 'OprIndikPareseGrad', 'OprIndikMyelopati' = 'OprIndikMyelopati',
                                 'OprIndikSmerter' = 'OprIndikSmerter', 'Radiologi' = 'Radiologi', 'Roker' = 'Roker',
-                                'Snuser' = 'Snuser', 'SivilStatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
+                                'Snuser' = 'Snuser', 'SivilStatus' = 'SivilStatus', 'Saardren' = 'Saardren',
                                 'SmertestillBrukPreOp' = 'SmertestillBrukPreOp', 'SymptVarighetArmer' = 'SymptVarighetArmer',
                                 'SymptVarighetNakkeHode' = 'SymptVarighetNakkeHode', 'TidlOpr' = 'TidlOpr',
                                 'TidlOprAntall' = 'TidlOprAntall', 'UforetrygdPreOp' = 'UforetrygdPreOp',
@@ -125,9 +125,7 @@ ui <- fluidPage(
                  tableOutput("tabAvdSkjema12"),
                  h2("Antall registreringer per år og avdeling, siste 5 år"),
                  tableOutput("tabAvdNAar5")),
-        tabPanel("Kvalitetsindikatorer",
-                 h2("Figurer med kvalitetsindikatorer"),
-                 h2("Månedsrapport til nedlasting")),
+        tabPanel("Kvalitetsindikatorer", verbatimTextOutput("kvalInd")),
         tabPanel("Fordelinger",
                  h2("Figuren viser fordeling av valgt variabel"),
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
@@ -136,7 +134,7 @@ ui <- fluidPage(
                  h4(' '),
                  plotOutput("fordelinger")),
         tabPanel("Sykehusvise andeler",
-                 h2("Figuren viser sykehusvise andeler for valgt variabel"),
+                 h2("Figuren sykehusvise andeler for valgt variabel"),
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Man kan også gjøre ulike filtreringer."),
                  h4(' '),
@@ -249,8 +247,7 @@ server <- function(input, output) {
   },
   rownames = T, digits=0)
 
-#output$tekstDash <- c('Figurer med kvalitetsindikatorer',
-#                      'hente ned månedsrapport'),
+
 
 
   output$fordelinger <- renderPlot({
