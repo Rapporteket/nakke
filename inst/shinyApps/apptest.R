@@ -13,7 +13,7 @@ library(shiny)
 ui <- shinyUI(basicPage(
   textInput('firstname', 'First name', value = 'Jimmy'),
   textInput('lastname', 'Last name', value = 'John'),
-  downloadButton('report')
+  downloadButton(outputId = 'mndRapp', label = 'Månedsrapport til nedlasting')
 ))
 
 
@@ -23,11 +23,11 @@ library(knitr)
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
-    output$report = downloadHandler(
+    output$mndRapp = downloadHandler(
       filename = 'myreport.pdf',
 
       content = function(file) {
-        out = knit2pdf('./inst/NakkeMndRapp.Rnw', clean = TRUE)
+        out = knit2pdf('C:/ResultattjenesteGIT/Nakke/inst/NakkeMndRapp.Rnw', encoding = 'UTF-8', clean = TRUE)
         file.rename(out, file) # move pdf to file for downloading
       },
 

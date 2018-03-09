@@ -70,6 +70,7 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	#options(encoded_text_to_latex= 'UTF-8')
 	knit('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 	texi2pdf(file='NakkeMndRapp.tex')
+	knit2pdf('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 
 
 #------------------------------ Andeler flere var --------------------------
@@ -124,22 +125,20 @@ for (valgtVar in variable) {
 
 #------------------------------ Andel, utvikling over tid --------------------------
 #-----------------------------------------------------------------------------------
-rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
-RegData <- NakkeData
-setwd("C:/ResultattjenesteGIT//Nakke")
-
 # Inndata til funksjon:
 #...NB: SkjemaID
 reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2018-04-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
+myelopati <- 2
+fremBak <- 0
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'AndreRelSykdommer'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+tidsenhet <- 'Mnd'
+valgtVar <- 'KomplStemme3mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, ErstatningPreOp,
 		  #Fornoyd12mnd, FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, NytteOpr3mnd, NytteOpr12mnd
@@ -147,7 +146,7 @@ valgtVar <- 'AndreRelSykdommer'	#Må velge... Alder, AndreRelSykdommer, Antibiot
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 
 outfile <- '' #paste0(valgtVar, 'Syn.png')	#''	#Navn angis av Jasper
-NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, tidsenhet=tidsenhet,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=1, outfile=outfile)
 

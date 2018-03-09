@@ -5,8 +5,8 @@
 \title{Tidstrend (år) av andel for en gitt variabel.}
 \usage{
 NakkeFigAndelTid(RegData, valgtVar, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, erMann = "",
-  myelopati = 99, fremBak = 0, reshID = 0, outfile = "",
+  datoTil = "3000-12-31", tidsenhet = "Aar", minald = 0, maxald = 130,
+  erMann = "", myelopati = 99, fremBak = 0, reshID = 0, outfile = "",
   enhetsUtvalg = 0, preprosess = TRUE, hentData = 0)
 }
 \arguments{
@@ -50,6 +50,8 @@ Verre3mnd. Klart verre, 3 mnd.}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
 
+\item{tidsenhet}{Oppløsning på tidsaksen. Verdier: 'Aar' (standard), 'Halvaar', 'Kvartal','Mnd'}
+
 \item{minald}{Alder, fra og med}
 
 \item{maxald}{Alder, til og med}
@@ -73,7 +75,8 @@ TRUE (standard) / FALSE}
 Figur med ...
 }
 \description{
-Funksjon som genererer en figur med andeler av en variabel for hvert år.
+Denne funksjonen lager et linjediagram som viser utvikling over tid  for andeler av valgt variabel,
+filtrert på de utvalg som er gjort.
 }
 \details{
 Detaljer

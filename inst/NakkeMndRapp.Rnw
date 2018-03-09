@@ -27,7 +27,7 @@ datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 aarFra <- paste0(1900+dato$year-5, '-01-01')
-
+#--------------------MÅ ENDRES PÅ SERVER--------------------
 if (!exists('RegData')){
       RegData <- NakkeRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
 
@@ -40,6 +40,13 @@ if (!exists('RegData')){
   SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
       } #hente data på server
 
+  dato <- '2018-03-02'
+  SkjemaData <- read.table('A:/Nakke/SkjemaOversikt2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
+  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
+  RegData <- read.table('A:/Nakke/AlleVarNum2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
+
+  reshID <- 601161
+#----------------------------------------
   RegData <- NakkePreprosess(RegData = RegData)
   AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
   # Nye variable:
@@ -101,25 +108,24 @@ Rapporten viser følgende:
 
 
 \begin{frame}[fragile]
-<<'Registreringer siste 12 mnd', results='asis'>>=
 
+<<'Registreringer siste 12 mnd', results='asis'>>=
 
     tabAvdSiste12mnd <- addmargins(table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2,
                                                          c('Sykehusnavn', 'Mnd')]))
     colnames(tabAvdSiste12mnd) <- substring(colnames(tabAvdSiste12mnd),1,3)
-	xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('l', rep('r', ncol(tabAvdSiste12mnd))),
-		caption='Antall registereringer (ferdigstilte legeskjema) per måned og avdeling, siste 12 måneder.')
-
-#xtable::print.xtable(
-#    x = xtable::xtable(
-#        x = addmargins(xtabs(formula = ~ Month + Hastegrad ,data = AP)) ,
-#        caption = "Antall registrerte prosedyrer etter hastegrad og måned" ,
-#        digits = 0) , booktabs = TRUE )
-
+	tabAvdSiste12mndUt <- print(xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('l', rep('r', ncol(tabAvdSiste12mnd))),
+		caption='Antall registereringer (ferdigstilte legeskjema) per måned og avdeling, siste 12 måneder.'),
+		scalebox=0.8)
 @
+
+%\scalebox{0.9}{
+%\begin{tabular}
+%\Sexpr{tabAvdSiste12mndUt}
+%\end{tabular}
+%}
+
 \end{frame}
-
-
 
 
 \begin{frame}[fragile]
@@ -141,7 +147,7 @@ Rapporten viser følgende:
 
     tabAvd12MndNskjema <- cbind(
       tabAvd12MndNskjemaDum[ ,1:2],
-      'Pasient (%)' =  tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100,
+#      'Pasient (%)' =  tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100,
       'Oppf. 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
       'Oppf. 3 mnd. (%)' = tabAvd12MndNskjemaDum[ ,'Oppf. 3 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100
 #      'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
@@ -149,7 +155,7 @@ Rapporten viser følgende:
       )
     #sprintf('%1.3f'
     xtable::xtable(tabAvd12MndNskjema, align=c('l', rep('r', ncol(tabAvd12MndNskjema))),
-                   digits=c(0,0,0,1,0,1),
+                   digits=c(0,0,0,0,1),
 		caption='Antall ferdigstilte skjema av hver type per måned og avdeling, siste 12 måneder.')
 
 @
@@ -180,6 +186,9 @@ dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Saardre
 #Sårinfeksjon, overfladisk 3mnd, kun bakre kirurgi
 dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', datoFra = datoFra,
                                      outfile='NakkeKomplinfekOverfl3mndSh.pdf')
+dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', datoFra = datoFra,
+                                    enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
+                        outfile='NakkeKomplinfekOverfl3mndTid.pdf')
 #Sårinfeksjon (dyp og/eller overfladisk), 3mnd, kun bakre kirurgi
 dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek', datoFra = datoFra,
                                      Ngrense = 10, outfile='NakkeKomplinfek3mndSh.pdf')
@@ -230,6 +239,15 @@ dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra
 \caption{Overfladisk infeksjon, 3 måneder etter operasjon. }
 \end{figure}
 \end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NakkeKomplinfekOverfl3mndTid.pdf}
+\caption{Overfladisk infeksjon, 3 måneder etter operasjon. Utvikling over tid. }
+\end{figure}
+\end{frame}
+
 
 \begin{frame}[fragile]
 \begin{figure}[ht]

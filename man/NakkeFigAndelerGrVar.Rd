@@ -5,9 +5,9 @@
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
 NakkeFigAndelerGrVar(RegData, valgtVar, datoFra = "2012-01-01",
-  datoTil = "3000-12-31", enhetsUtvalg = 0, minald = 0, maxald = 130,
-  erMann = "", myelopati = 99, fremBak = 0, Ngrense = 10,
-  hentData = 0, preprosess = TRUE, reshID = 0, outfile = "")
+  datoTil = "3000-12-31", minald = 0, maxald = 130, erMann = "",
+  myelopati = 99, fremBak = 0, Ngrense = 10, hentData = 0,
+  preprosess = TRUE, reshID = 0, outfile = "")
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -52,8 +52,6 @@ Verre3mnd. Klart verre, 3 mnd.}
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
-
-\item{enhetsUtvalg}{Sammenlikning eller ikke: 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet}
 
 \item{minald}{Alder, fra og med}
 

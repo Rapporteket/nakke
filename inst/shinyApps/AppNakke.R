@@ -9,6 +9,24 @@
 
 library(shiny)
 
+ui <- shinyUI(basicPage(
+  downloadButton('report')
+))
+
+server <- function(input, output) {
+  output$report = downloadHandler(
+    filename = 'MndRapp.pdf',
+    content = function(file) {
+      out = knit2pdf('C:/ResultattjenesteGIT/Nakke/inst/NakkeMndRapp.Rnw', encoding = 'UTF-8', clean = TRUE)
+      file.rename(out, file) # move pdf to file for downloading
+    },
+    contentType = 'application/pdf'
+  )
+
+}
+
+
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
@@ -29,7 +47,20 @@ ui <- fluidPage(
 
       conditionalPanel(
         'input.ark == "Kvalitetsindikatorer"',
-        helpText("Her kommer det kanskje noen brukervalg")
+        selectInput(inputId = "valgtVarKvalInd", label="Velg variabel",
+                    choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
+                                'Komplikasjon, svelging' = 'KomplSvelging3mnd')),
+        dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = "2017-01-01"),
+        selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
+                    choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                'Kvartal'='Kvartal', 'Måned'='Mnd'))),
+        selectInput(inputId = "myelopatiKvalInd", label="Myelopati:",
+                    choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
+        selectInput(inputId = "fremBakKvalInd", label="Tilgang: ",
+                    choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+        selectInput(inputId = 'enhetsUtvalgKvalInd', label='Egen enhet og/eller landet',
+                    choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
+        )
       ),
 
       conditionalPanel( #Denne skal bare vises for figursamlinger
@@ -126,8 +157,11 @@ ui <- fluidPage(
                  h2("Antall registreringer per år og avdeling, siste 5 år"),
                  tableOutput("tabAvdNAar5")),
         tabPanel("Kvalitetsindikatorer",
+                 h2("Månedsrapport til nedlasting:"),
+                 downloadButton(outputId = 'mndRapp', label='Månedsrapport (tar litt tid)'),
                  h2("Figurer med kvalitetsindikatorer"),
-                 h2("Månedsrapport til nedlasting")),
+                 plotOutput("kvalIndFig1"),
+                 plotOutput("kvalIndFig2")),
         tabPanel("Fordelinger",
                  h2("Figuren viser fordeling av valgt variabel"),
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
@@ -169,6 +203,7 @@ server <- function(input, output) {
   RegData$Kvartal <- ceiling(RegData$Mnd/3)
   RegData$Halvaar <- ceiling(RegData$Mnd/6)
   aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
+  reshID <- 601161
 
   #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
   fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
@@ -251,6 +286,32 @@ server <- function(input, output) {
 
 #output$tekstDash <- c('Figurer med kvalitetsindikatorer',
 #                      'hente ned månedsrapport'),
+  output$mndRapp = downloadHandler(
+    filename = 'MndRapp.pdf',
+    content = function(file) {
+      out = knit2pdf('C:/ResultattjenesteGIT/Nakke/inst/NakkeMndRapp.Rnw', encoding = 'UTF-8', clean = TRUE)
+      file.rename(out, file) # move pdf to file for downloading
+    },
+    contentType = 'application/pdf'
+  )
+
+  output$kvalIndFig1 <- renderPlot({
+    print(input$enhetsUtvalgKvalInd)
+    print(input$tidsenhetKvalInd)
+
+    NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshID,
+                   valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
+                   myelopati = as.numeric(input$myelopatiKvalInd),
+                   fremBak = as.numeric(input$fremBakKvalInd),
+                   enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd), tidsenhet = input$tidsenhetKvalInd)
+ } )
+
+  output$kvalIndFig2 <- renderPlot(
+    NakkeFigAndelerGrVar(RegData=RegData, preprosess=0,
+                         valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
+                         myelopati = as.numeric(input$myelopatiKvalInd),
+                         fremBak = as.numeric(input$fremBakKvalInd))
+  )
 
 
   output$fordelinger <- renderPlot({
