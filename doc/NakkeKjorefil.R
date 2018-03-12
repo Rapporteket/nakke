@@ -98,10 +98,10 @@ FigAndelerGrVarAar(RegData=RegData, valgtVar='Komplinfek',
                    ktr=0,aar=2015:2016,tidlAar=2013:2014, outfile='OffKomplinfek.png')
 setwd("C:/ResultattjenesteGIT/Nakke/")
 
-valgtVar <- 'Alder' #OprIndikSmerter'
+valgtVar <- 'OprIndikSmerter' #OprIndikSmerter'
 outfile <- '' #paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 
-NakkeFigAndeler(RegData=RegData[1:20,], datoFra=datoFra, valgtVar=valgtVar,
+NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=0, hentData=0, outfile=outfile)
 

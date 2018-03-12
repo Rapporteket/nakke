@@ -29,7 +29,14 @@ datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 aarFra <- paste0(1900+dato$year-5, '-01-01')
 #--------------------HENTE DATA--------------------
 
-#if (!exists('SkjemaData')){
+server <- 1
+if (server == 0){
+  dato <- '2018-03-02'
+  SkjemaData <- read.table('A:/Nakke/SkjemaOversikt2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
+  RegData <- read.table('A:/Nakke/AlleVarNum2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
+  reshID <- 601161}
+
+if (!exists('SkjemaData')){
       RegData <- NakkeRegDataSQL(datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
   querySD <- paste0('SELECT
@@ -39,18 +46,12 @@ FROM SkjemaOversikt
 #                 WHERE HovedDato >= \'', 2014-01-01, '\'')
 
 SkjemaData <- rapbase::LoadRegData(registryName="Nakke", query=querySD, dbType="mysql")
-#} #hente data på server
+} #hente data på server
 
-server <- 1
-if (server == 0){
-  dato <- '2018-03-02'
-  SkjemaData <- read.table('A:/Nakke/SkjemaOversikt2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
-  RegData <- read.table('A:/Nakke/AlleVarNum2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
-  reshID <- 601161}
 #----------------------------------------
 
   RegData <- NakkePreprosess(RegData = RegData)
-  RegData12mnd <- Regdata[RegData$InnDato > as.POSIXlt(datoFra), ]
+  RegData12mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra), ]
   AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
   # Nye variable:
   RegData$Mnd <- RegData$InnDato$mon +1
