@@ -37,8 +37,8 @@ if (!exists('RegData')){
   query <- paste0('SELECT
 Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
 FROM SkjemaOversikt
-                 WHERE OprDato >= "2014-01-01" ')
-#                 WHERE OprDato >= \'', 2014-01-01, '\'')
+                 WHERE HovedDato >= "2014-01-01" ')
+#                 WHERE HovedDato >= \'', 2014-01-01, '\'')
 
 SkjemaData <- rapbase::LoadRegData(registryName, query, dbType)
 } #hente data på server
