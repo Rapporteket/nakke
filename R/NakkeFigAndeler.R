@@ -138,9 +138,7 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
       } else {
             Nfig <- N}
 
-          antDes <- if (valgtVar == 'KomplOpr') {2} else {1}
-      grtxt2 <- paste0(sprintf(paste('%.', antDes, 'f'),AggVerdier$Hoved), '%')
-      #}
+
 
       xAkseTxt <- NakkeVarSpes$xAkseTxt
       yAkseTxt <- 'Andel opphold (%)'
@@ -154,6 +152,15 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
       smltxt <- NakkeUtvalg$smltxt
       KImaal <- NakkeVarSpes$KImaal
       fargepalett <- NakkeUtvalg$fargepalett
+
+
+      antDes <- if (valgtVar == 'KomplOpr') {2} else {1}
+      #grtxt2 <- paste0(sprintf(paste('%.', antDes, 'f'),AggVerdier$Hoved), '%')
+      NutvTxt <- length(utvalgTxt)
+      antDesTxt <- paste0('%.', antDes, 'f')
+      #txtpst <- paste0(' (', rev(sprintf(antDesTxt, AggVerdier$Hoved)), '%)')
+      txtpst <- paste0(' (', sprintf(antDesTxt, AggVerdier$Hoved), '%)')
+      grtxtpst <- paste0(rev(grtxt),  rev(txtpst))   #sprintf("%.3f", pi)
 
 #SKILLE UT FIGURDELEN SOM EGEN FUNKSJON???????
 #-----------Figur---------------------------------------
@@ -178,9 +185,6 @@ cexgr <- 1	#Kan endres for enkeltvariable
 #Plottspesifikke parametre:
 FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
 #Tilpasse marger for å kunne skrive utvalgsteksten
-NutvTxt <- length(utvalgTxt)
-antDesTxt <- paste0('%.', antDes, 'f')
-grtxtpst <- paste0(rev(grtxt), ' (', rev(sprintf(antDesTxt, AggVerdier$Hoved)), '%)')
 vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.7))
 par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
@@ -202,7 +206,7 @@ if (NakkeVarSpes$retn == 'H') {
 		col=fargeHoved, border='white', font.main=1, xlim=c(0, xmax), ylim=c(ymin,ymax))	#
     #Intensiv: pos <- rev(barplot(rev(as.numeric(AggVerdier$Hoved)), xlim=c(0,xmax), ylim=c(ymin, ymax), #, plot=FALSE)
 	#				   xlab=xAkseTxt, horiz=T, border=NA, col=fargeHoved)) #, col.axis='white', col='white'))
-	if (N$Hoved>0) {mtext(at=pos+0.05, text=grtxtpst, side=2, las=1, cex=cexgr, adj=1, line=0.25)}
+	if (Nfig$Hoved>0) {mtext(at=pos+0.05, text=grtxtpst, side=2, las=1, cex=cexgr, adj=1, line=0.25)}
 
 	if (NakkeUtvalg$medSml == 1) {
 		points(as.numeric(rev(AggVerdier$Rest)), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
@@ -218,12 +222,12 @@ if (NakkeVarSpes$retn == 'H') {
 
 if (NakkeVarSpes$retn == 'V' ) {
 #Vertikale søyler eller linje
-	if (length(grtxt2) == 1) {grtxt2 <- paste0('(', sprintf(antDesTxt, AggVerdier$Hoved), '%)')}
 	ymax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
 	pos <- barplot(as.numeric(AggVerdier$Hoved), beside=TRUE, las=1, ylab="Andel pasienter (%)",
 		xlab=xaksetxt, col=fargeHoved, border='white', ylim=c(0, ymax))	#sub=xaksetxt,
+	#if (length(grtxt2) == 1) {grtxt2 <- txtpst}
 	mtext(at=pos, grtxt, side=1, las=1, cex=cexgr, adj=0.5, line=0.5)
-	mtext(at=pos, grtxt2, side=1, las=1, cex=cexgr, adj=0.5, line=1.5)
+	mtext(at=pos, txtpst, side=1, las=1, cex=0.9*cexgr, adj=0.5, line=1.5)
 if (NakkeUtvalg$medSml == 1) {
 	points(pos, as.numeric(AggVerdier$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
 	legend('top', c(paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'), paste0(smltxt, ' (N=', Nfig$Rest,')')),
