@@ -62,6 +62,8 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	library(devtools)
 	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
 	SkjemaData <- read.table(fil, sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
+	RegData <- read.table('A:/Nakke/AlleVarNum2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
+
 	#SkjemaData$Sykehusnavn <- enc2native(as.character(SkjemaData$Sykehusnavn))
 	#SkjemaData$Sykehusnavn <- iconv(SkjemaData$Sykehusnavn, from = 'UTF-8', to = '')
 	#table(Encoding(as.character(SkjemaData$Sykehusnavn)))
