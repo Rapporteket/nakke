@@ -17,8 +17,11 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	RegData <- NakkePreprosess(RegData=RegData)
 
 	library(synthpop)
-	RegDataSyn <- syn(RegData, method = "sample", seed = 500)
+	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500)
 	RegData <- RegDataSyn$syn
+
+	Skjemanavn	SkjemaStatus	ForlopsID	OpprettetAv	OpprettetDato	SistLagretAv	SistLagretDato	HovedDato	Sykehusnavn	AvdRESH	SkjemaRekkeflg
+
 
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')

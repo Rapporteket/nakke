@@ -29,25 +29,30 @@ datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 aarFra <- paste0(1900+dato$year-5, '-01-01')
 #--------------------MÅ ENDRES PÅ SERVER--------------------
 if (!exists('RegData')){
-      RegData <- NakkeRegDataSQL() #datoFra = datoFra, datoTil = datoTil)
+      RegData <- NakkeRegDataSQL(datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
       registryName <- "nakke"
       dbType <- "mysql"
 
-	  #HUSK Å HENTE SKJEMATABELL med spørring
-  fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
-  SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
-  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
-      } #hente data på server
+  query <- paste0('SELECT
+Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
+FROM SkjemaOversikt
+                  WHERE OprDato >= 2014-01-01')
 
+SkjemaData <- rapbase::LoadRegData(registryName, query, dbType)
+} #hente data på server
+
+server <- 1
+if (server == 0){
   dato <- '2018-03-02'
   SkjemaData <- read.table('A:/Nakke/SkjemaOversikt2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
-  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
   RegData <- read.table('A:/Nakke/AlleVarNum2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
-
-  reshID <- 601161
+  reshID <- 601161}
 #----------------------------------------
+  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
+
   RegData <- NakkePreprosess(RegData = RegData)
+  RegData12mnd <- Regdata[RegData$InnDato > as.POSIXlt(datoFra), ]
   AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
   # Nye variable:
   RegData$Mnd <- RegData$InnDato$mon +1
@@ -175,29 +180,29 @@ Rapporten viser følgende:
 # }
 
 #Stemmevansker3mnd, fremre, uten myelopati
-dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplStemme3mnd', datoFra = datoFra,
+dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplStemme3mnd', datoFra = datoFra,
                                      myelopati=0,fremBak = 1, outfile='NakkeStemme3mndSh.pdf')
 #Svelgvansker3mnd, fremre, uten myelopati
-dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplSvelging3mnd', datoFra = datoFra,
+dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplSvelging3mnd', datoFra = datoFra,
                                      myelopati=0,fremBak = 1, outfile='NakkeSvelg3mndSh.pdf')
 #Brukav sårdren, fremre, uten myelopati
-dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Saardren', datoFra = datoFra,
+dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Saardren', datoFra = datoFra,
                                      myelopati=0,fremBak = 1, outfile='NakkeSaardrenUmFSh.pdf')
 #Sårinfeksjon, overfladisk 3mnd, kun bakre kirurgi
-dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', datoFra = datoFra,
+dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', datoFra = datoFra,
                                      outfile='NakkeKomplinfekOverfl3mndSh.pdf')
 dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd', datoFra = datoFra,
                                     enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
                         outfile='NakkeKomplinfekOverfl3mndTid.pdf')
 #Sårinfeksjon (dyp og/eller overfladisk), 3mnd, kun bakre kirurgi
-dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek', datoFra = datoFra,
+dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Komplinfek', datoFra = datoFra,
                                      Ngrense = 10, outfile='NakkeKomplinfek3mndSh.pdf')
 #EnhverKompl3mnd
 #Andel fornøyde med behandlinga
-dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra,
+dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, datoFra = datoFra,
                                      valgtVar='FornoydBeh3mnd',  outfile='NakkeFornoydBeh3mnd.pdf')
 #Nytte
-dum <- NakkeFigAndelerGrVar(RegData=RegData, preprosess=FALSE, datoFra = datoFra,
+dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, datoFra = datoFra,
                        valgtVar='NytteOpr3mnd', outfile='NakkeNytteOpr3mndSh.pdf')
 
 
