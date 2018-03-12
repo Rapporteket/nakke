@@ -29,8 +29,7 @@ datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 aarFra <- paste0(1900+dato$year-5, '-01-01')
 #--------------------HENTE DATA--------------------
 
-print(paste0('Finnes RegData? ',!exists('RegData')))
-if (!exists('SkjemaData')){
+#if (!exists('SkjemaData')){
       RegData <- NakkeRegDataSQL(datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
   querySD <- paste0('SELECT
@@ -40,7 +39,7 @@ FROM SkjemaOversikt
 #                 WHERE HovedDato >= \'', 2014-01-01, '\'')
 
 SkjemaData <- rapbase::LoadRegData(registryName="Nakke", query=querySD, dbType="mysql")
-} #hente data på server
+#} #hente data på server
 
 server <- 1
 if (server == 0){
