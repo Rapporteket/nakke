@@ -44,6 +44,10 @@
 		<parameterDescription><![CDATA[Set to 0 to void annotations]]></parameterDescription>
 		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
 	</parameter>
+	<parameter name="reportYear" class="java.lang.Integer">
+		<parameterDescription><![CDATA[Year from which data are used]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new Integer(2017)]]></defaultValueExpression>
+	</parameter>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>

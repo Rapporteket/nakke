@@ -28,6 +28,8 @@ dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 aarFra <- paste0(1900+dato$year-5, '-01-01')
 #--------------------HENTE DATA--------------------
+
+print(paste0('Finnes RegData? ',!exists('RegData')))
 if (!exists('RegData')){
       RegData <- NakkeRegDataSQL(datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
