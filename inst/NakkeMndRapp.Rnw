@@ -30,7 +30,7 @@ aarFra <- paste0(1900+dato$year-5, '-01-01')
 #--------------------HENTE DATA--------------------
 
 print(paste0('Finnes RegData? ',!exists('RegData')))
-if (!exists('RegData')){
+if (!exists('SkjemaData')){
       RegData <- NakkeRegDataSQL(datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
   querySD <- paste0('SELECT
