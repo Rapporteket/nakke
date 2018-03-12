@@ -27,7 +27,7 @@ datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
 aarFra <- paste0(1900+dato$year-5, '-01-01')
-#--------------------MÅ ENDRES PÅ SERVER--------------------
+#--------------------HENTE DATA--------------------
 if (!exists('RegData')){
       RegData <- NakkeRegDataSQL(datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
@@ -47,7 +47,6 @@ if (server == 0){
   RegData <- read.table('A:/Nakke/AlleVarNum2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
   reshID <- 601161}
 #----------------------------------------
-  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
 
   RegData <- NakkePreprosess(RegData = RegData)
   RegData12mnd <- Regdata[RegData$InnDato > as.POSIXlt(datoFra), ]
@@ -57,6 +56,7 @@ if (server == 0){
   RegData$Kvartal <- ceiling(RegData$Mnd/3)
   RegData$Halvaar <- ceiling(RegData$Mnd/6)
   aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
+  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
 
   #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
   SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
