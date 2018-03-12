@@ -121,7 +121,7 @@ Rapporten viser følgende:
     colnames(tabAvdSiste12mnd) <- substring(colnames(tabAvdSiste12mnd),1,3)
 	tabAvdSiste12mndUt <- print(xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('l', rep('r', ncol(tabAvdSiste12mnd))),
 		caption='Antall registereringer (ferdigstilte legeskjema) per måned og avdeling, siste 12 måneder.'),
-		scalebox=0.8)
+		scalebox=0.7)
 @
 
 %\scalebox{0.9}{
