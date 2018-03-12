@@ -31,16 +31,13 @@ aarFra <- paste0(1900+dato$year-5, '-01-01')
 if (!exists('RegData')){
       RegData <- NakkeRegDataSQL(datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
-      registryName <- "nakke"
-      dbType <- "mysql"
-
-  query <- paste0('SELECT
+  querySD <- paste0('SELECT
 Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
 FROM SkjemaOversikt
                  WHERE HovedDato >= "2014-01-01" ')
 #                 WHERE HovedDato >= \'', 2014-01-01, '\'')
 
-SkjemaData <- rapbase::LoadRegData(registryName, query, dbType)
+SkjemaData <- rapbase::LoadRegData(registryName="Nakke", query=querySD, dbType="mysql")
 } #hente data på server
 
 server <- 1
