@@ -163,7 +163,7 @@ ui <- fluidPage(
                  plotOutput("kvalIndFig1"),
                  plotOutput("kvalIndFig2")),
         tabPanel("Fordelinger",
-                 h2("Figuren viser fordeling av valgt variabel"),
+                 h3("Figur som viser fordeling av valgt variabel"),
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Man kan også gjøre ulike filtreringer."),
                  h4(' '),
@@ -296,8 +296,6 @@ server <- function(input, output) {
   )
 
   output$kvalIndFig1 <- renderPlot({
-    print(input$enhetsUtvalgKvalInd)
-    print(input$tidsenhetKvalInd)
 
     NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshID,
                    valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,

@@ -8,6 +8,7 @@
 	<property name="ireport.jasperserver.user" value="superuser"/>
 	<property name="ireport.jasperserver.report.resource" value="/organizations/Nakke/Reports/NakkeMndRapp_files/Main_Jrxml"/>
 	<property name="ireport.jasperserver.reportUnit" value="/organizations/Nakke/Reports/NakkeMndRapp"/>
+	<property name="com.jaspersoft.studio.report.unit.description" value="Rapport som viser antall registreringer og resultater fra siste år"/>
 	<parameter name="LoggedInUser" class="com.jaspersoft.jasperserver.api.metadata.user.domain.User" isForPrompting="false">
 		<parameterDescription><![CDATA[At server side, gets the User object from the JRS logged in user]]></parameterDescription>
 	</parameter>
