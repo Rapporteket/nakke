@@ -2,7 +2,7 @@
 #'
 #' Denne funksjonen definerer og formaterer variabler
 #'
-#' @inheritParams FigAndeler
+#' @inheritParams NakkeFigAndeler
 #'
 #' @return RegData En dataramme med det preprosesserte datasettet
 #'
@@ -22,7 +22,8 @@ NakkePreprosess <- function(RegData=RegData)
 	#Variabel som identifiserer avdelingas resh
 	names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
 	class(RegData$ReshId) <- 'numeric'
-
+	#names(RegData)[which(names(RegData) == 'SykehusNavn')] <- 'ShNavn'
+	RegData$ShNavn <- RegData$SykehusNavn
 
   return(invisible(RegData))
 }
