@@ -8,7 +8,7 @@
 \usepackage{booktabs}
 \usepackage{rotating}
 \usepackage{graphicx}
-
+\setbeamerfont{caption}{size=\scriptsize}
 
 
 <<'initOpts', include=FALSE>>=
@@ -119,8 +119,9 @@ tabAvdSiste12mnd <- addmargins(table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekke
                                                      c('Sykehusnavn', 'Mnd')]))
 colnames(tabAvdSiste12mnd) <- substring(colnames(tabAvdSiste12mnd),1,3)
 tabAvdSiste12mndUt <- print(xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('l', rep('r', ncol(tabAvdSiste12mnd))),
-                                           caption='Antall registereringer (ferdigstilte legeskjema) per måned og avdeling, siste 12 måneder.'),
-                            scalebox=0.7)
+                                           caption='Antall registereringer (ferdigstilte legeskjema)
+                                                          per måned og avdeling, siste 12 måneder.'),
+                            scalebox=0.72)
 @
 
 %\scalebox{0.9}{
@@ -137,7 +138,8 @@ tabAvdSiste12mndUt <- print(xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('
 
 LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, 'Sykehusnavn'])
 PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1, 'Sykehusnavn'])
-Oppf3mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==3, 'Sykehusnavn'])
+Oppf3mnd <- table(SkjemaData12mnd[which(SkjemaData12mnd$SkjemaRekkeflg==3 &
+                                          SkjemaData12mnd$InnDato < (as.Date(dato)-100)), 'Sykehusnavn'])
 Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4, 'Sykehusnavn'])
 
 tabAvd12MndNskjemaDum <- cbind(
@@ -160,7 +162,8 @@ tabAvd12MndNskjema <- cbind(
 #sprintf('%1.3f'
 xtable::xtable(tabAvd12MndNskjema, align=c('l', rep('r', ncol(tabAvd12MndNskjema))),
                digits=c(0,0,0,0,1),
-               caption='Antall ferdigstilte skjema av hver type per måned og avdeling, siste 12 måneder.')
+               caption = paste0('Antall ferdigstilte skjema av hver type per måned og avdeling, for operasjoner
+                                  utført siste 12 måneder. For oppfølgingsskjema er antall og andel basert på operasjoner i perioden ', datoFra,' til ', (as.Date(dato)-100),'.'))
 
 @
 \end{frame}
@@ -181,21 +184,21 @@ xtable::xtable(tabAvd12MndNskjema, align=c('l', rep('r', ncol(tabAvd12MndNskjema
 #Stemmevansker3mnd, fremre, uten myelopati
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplStemme3mnd', datoFra = datoFra,
                             myelopati=0,outfile='NakkeStemme3mndSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplStemme3mnd', datoFra = datoFra,
+dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplStemme3mnd', datoFra = datoFra,
                         myelopati=0, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
                         outfile='NakkeStemme3mndTid.pdf')
 
 #Svelgvansker3mnd, fremre, uten myelopati
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplSvelging3mnd', datoFra = datoFra,
                             myelopati=0,fremBak = 1, outfile='NakkeSvelg3mndSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='KomplSvelging3mnd', datoFra = datoFra,
+dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplSvelging3mnd', datoFra = datoFra,
                         myelopati=0, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
-                        outfile='KomplSvelging3mndTid.pdf')
+                        outfile='NakkeSvelg3mndTid.pdf')
 
 #Brukav sårdren, fremre, uten myelopati
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Saardren', datoFra = datoFra,
                             myelopati=0, fremBak = 1, outfile='NakkeSaardrenUmFSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='Saardren', datoFra = datoFra,
+dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Saardren', datoFra = datoFra,
                         myelopati=0,  fremBak = 1, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
                         outfile='NakkeSaardrenUmFTid.pdf')
 
@@ -206,30 +209,30 @@ dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Ko
 #Sårinfeksjon (dyp og/eller overfladisk), 3mnd, kun bakre kirurgi
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Komplinfek',
                             fremBak = 2, outfile='NakkeKomplinfek3mndSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='Komplinfek',
+dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Komplinfek',
                         fremBak = 2, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
-                        outfile='NakkeKomplinfekOverfl3mndTid.pdf')
+                        outfile='NakkeKomplinfek3mndTid.pdf')
 #EnhverKompl3mnd
 #Andel fornøyde med behandlinga
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE,
                             valgtVar='FornoydBeh3mnd',  outfile='NakkeFornoydBeh3mndSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='FornoydBeh3mnd',
-                        fremBak = 2, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
+dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='FornoydBeh3mnd',
+                        enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
                         outfile='NakkeFornoydBeh3mndTid.pdf')
 
 #Nytte, fremre u/myelopati
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE,
                             fremBak = 1, myelopati=0,
                             valgtVar='NytteOpr3mnd', outfile='NakkeNytteOpr3mndFremUmSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='NytteOpr3mnd',
+dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NytteOpr3mnd',
                         fremBak = 1, myelopati=0, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
-                        outfile='NakkeNytteOpr3mndFrenUmTid.pdf')
+                        outfile='NakkeNytteOpr3mndFremUmTid.pdf')
 
 #Nytte, bakre m/myelopati
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE,
                             fremBak = 2, myelopati=1,
                             valgtVar='NytteOpr3mnd', outfile='NakkeNytteOpr3mndBakMmSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData, preprosess=FALSE, valgtVar='NytteOpr3mnd',
+dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NytteOpr3mnd',
                          fremBak = 2, myelopati=1, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
                         outfile='NakkeNytteOpr3mndBakMmTid.pdf')
 
@@ -240,8 +243,8 @@ NakkeFigGjsnGrVar(RegData=RegData12mnd,valgtVar='NDIendr3mnd',
             fremBak=1, myelopati=0, reshID=reshID, outfile='NDIendr3mndFremUmSh.pdf')
 
 NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
-           fremBak=1, myelopati=0,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndFremUmSh.pdf')
+           fremBak=1, myelopati=0, tidsenhet='Mnd',
+           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndFremUmTid.pdf')
 
 
 #Gjennomsnittlig forbedring i NDI, bakre u/myelopati
@@ -249,8 +252,8 @@ NakkeFigGjsnGrVar(RegData=RegData12mnd,valgtVar='NDIendr3mnd',
             fremBak=2, myelopati=1, reshID=reshID, outfile='NDIendr3mndBakMmSh.pdf')
 
 NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
-           fremBak=2, myelopati=1,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndBakMmSh.pdf')
+           fremBak=2, myelopati=1, tidsenhet='Mnd',
+           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndBakMmTid.pdf')
 
 
 #Gj.sn. armsmerte, fremre u/myelopati
@@ -258,16 +261,16 @@ NakkeFigGjsnGrVar(RegData=RegData12mnd,valgtVar='NRSsmerteArmEndr3mnd',
             fremBak=2, myelopati=1, reshID=reshID, outfile='NRSsmerteArmEndr3mndBakMmSh.pdf')
 
 NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteArmEndr3mnd',
-           fremBak=2, myelopati=1,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NRSsmerteArmEndr3mndBakMmSh.pdf')
+           fremBak=2, myelopati=1, tidsenhet='Mnd',
+           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NRSsmerteArmEndr3mndBakMmTid.pdf')
 
 #Gjsn. nakkesmerte, alle
-NakkeFigGjsnGrVar(RegData=RegData12mnd,valgtVar='NDIendr3mnd',
-            fremBak=2, myelopati=1, reshID=reshID, outfile='NDIendr3mndBakMmSh.pdf')
+NakkeFigGjsnGrVar(RegData=RegData12mnd,valgtVar='NRSsmerteNakkeEndr3mnd',
+            reshID=reshID, outfile='NSRsmerteNakkeEndr3mndSh.pdf')
 
-NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
-           fremBak=2, myelopati=1,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndBakMmSh.pdf')
+NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3mnd',
+                tidsenhet='Mnd',
+           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NSRsmerteNakkeEndr3mndTid.pdf')
 
 
 @
@@ -278,7 +281,7 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeSaardrenUmFSh.pdf}
-\caption{Andel pasienter som har fått sårdren. }
+\caption[scale=0.3]{Andel pasienter som har fått sårdren. }
 \end{figure}
 \end{frame}
 
@@ -339,12 +342,76 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeKomplinfek3mndTid.pdf}
-\caption{Infeksjoner (overfladiske og dype),, 3 måneder etter operasjon. Utvikling over tid. }
+\caption{Infeksjoner (overfladiske og dype), 3 måneder etter operasjon. Utvikling over tid. }
 \end{figure}
 \end{frame}
 
 
 \section{PROM/PREM, 3 måneder}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NDIendr3mndFremUmSh.pdf}
+\caption{Gjennomsnittlig forbedring i NDI, fremre tilgang, u/myelopati. }
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NDIendr3mndFremUmTid.pdf}
+\caption{Gjennomsnittlig forbedring i NDI, fremre tilgang, u/myelopati. }
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NDIendr3mndBakMmSh.pdf}
+\caption{Gjennomsnittlig forbedring i NDI for myelopatipasienter, bakre tilgang.}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NDIendr3mndBakMmTid.pdf}
+\caption{Gjennomsnittlig forbedring i NDI for myelopatipasienter, bakre tilgang.}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NRSsmerteArmEndr3mndBakMmSh.pdf}
+\caption{Gjennomsnittlig forbedring i armsmerte, fremre tilgang u/myelopati.}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NRSsmerteArmEndr3mndBakMmTid.pdf}
+\caption{Gjennomsnittlig forbedring i armsmerte, fremre tilgang u/myelopati.}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NSRsmerteNakkeEndr3mndSh.pdf}
+\caption{Gjennomsnittlig forbedring i nakkesmerte}
+\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.35]{NSRsmerteNakkeEndr3mndTid.pdf}
+\caption{Gjennomsnittlig forbedring i nakkesmerte, utvikling over tid.}
+\end{figure}
+\end{frame}
 
 \begin{frame}[fragile]
 \begin{figure}[ht]
@@ -374,7 +441,7 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{NakkeFornoydBeh3mndFremUmTid.pdf}
+\includegraphics[scale=0.35]{NakkeNytteOpr3mndFremUmTid.pdf}
 \caption{Pasienter uten myelopati operert med fremre tilgang og som har blitt helt bra eller mye bedre 3 mnd. etter operasjonen. Utvikling over tid. }
 \end{figure}
 \end{frame}
@@ -390,7 +457,7 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{NakkeFornoydBeh3mndBakMmTid.pdf}
+\includegraphics[scale=0.35]{NakkeNytteOpr3mndBakMmTid.pdf}
 \caption{Pasienter med myelopati operert med bakre tilgang og som har blitt helt bra eller mye bedre 3 mnd. etter operasjonen.}
 \end{figure}
 \end{frame}

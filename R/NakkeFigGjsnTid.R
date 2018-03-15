@@ -30,7 +30,7 @@
 
 NakkeFigGjsnTid <- function(RegData, outfile, valgtVar, erMann='',
 		minald=0, maxald=130, datoFra='2007-01-01', datoTil='3000-01-01',
-		myelopati=99, fremBak=0,
+		myelopati=99, fremBak=0, tidsenhet='Aar',
 		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=TRUE, reshID=0){ #tittel=1,
 
 
@@ -89,17 +89,47 @@ tittel <-  c(tittelUsh, hovedgrTxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', '
 if (length(ind$Hoved)<5 | ((medSml == 1) & (length(ind$Rest) < 5))) {
     #-----------Figur---------------------------------------
 figtype(outfile)
-	tekst <- 'Mindre enn 5 registreringer i egen eller sammenligningsgruppa'
+	tekst <- 'Færre enn 5 registreringer i egen eller sammenligningsgruppa'
 	plot.new()
 	title(main=tittel)
-	text(0.5, 0.5, tekst,cex=1.5)	#, family="sans")
+	text(0.5, 0.5, tekst,cex=1.2)	#, family="sans")
 	if ( outfile != '') {dev.off()}
 } else {
 
+  #------------------------Klargjøre tidsenhet--------------
+  RegData$Mnd <- RegData$InnDato$mon +1
+  RegData$Kvartal <- ceiling(RegData$Mnd/3)
+  RegData$Halvaar <- ceiling(RegData$Mnd/6)
+  RegData$Aar <- 1900 + RegData$InnDato$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
 
-Aartxt <- min(RegData$Aar):max(RegData$Aar)
-RegData$Aar <- factor(RegData$Aar, levels=Aartxt)
-AntAar <- length(Aartxt)
+  #Brukes til sortering
+  RegData$TidsEnhet <- switch(tidsenhet,
+                              Aar = RegData$Aar-min(RegData$Aar)+1,
+                              Mnd = RegData$Mnd-min(RegData$Mnd[RegData$Aar==min(RegData$Aar)])+1
+                              +(RegData$Aar-min(RegData$Aar))*12,
+                              Kvartal = RegData$Kvartal-min(RegData$Kvartal[RegData$Aar==min(RegData$Aar)])+1+
+                                (RegData$Aar-min(RegData$Aar))*4,
+                              Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
+                                (RegData$Aar-min(RegData$Aar))*2
+  )
+
+  tidtxt <- switch(tidsenhet,
+                   Mnd = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
+                               sprintf('%02.0f', RegData$Mnd[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='.'),
+                   Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
+                                   sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
+                   Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
+                                   sprintf('%01.0f', RegData$Halvaar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
+                   Aar = as.character(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]))
+
+  RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=1:max(RegData$TidsEnhet)) #evt. levels=tidtxt
+
+#--------------------------------
+#START HER!!!!!!!!!!!
+
+#Aartxt <- min(RegData$Aar):max(RegData$Aar)
+#RegData$Aar <- factor(RegData$Aar, levels=Aartxt)
+#AntAar <- length(Aartxt)
 
 
 #Resultat for hovedgruppe
@@ -172,7 +202,7 @@ if (medSml==1) {
 	polygon( c(Aartxt, Aartxt[AntAar:1]), c(KonfRest[1,], KonfRest[2,AntAar:1]),
 			col=fargeRestRes, border=NA)
 	legend('top', bty='n', fill=fargeRestRes, border=fargeRestRes, cex=cexgr,
-		paste('95% konfidensintervall for ', NakkeUtvalg$smltxt, ', N=', sum(NRest, na.rm=T), sep=''))
+		paste0('95% konfidensintervall for ', NakkeUtvalg$smltxt, ', N=', sum(NRest, na.rm=T)))
 }
 h <- strheight(1, cex=cexgr)*0.7	#,  units='figure',
 b <- 1.1*strwidth(max(N, na.rm=T), cex=cexgr)/2	#length(Aartxt)/30

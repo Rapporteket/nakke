@@ -550,7 +550,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     indVar <- which(is.finite(RegData$NRSEndr))
     RegData <- RegData[intersect(indPas ,indVar), ]
     RegData$Variabel <- RegData$NRSEndr
-    deltittel <- 'NSR, armsmerte, endring 3 mnd.'
+    deltittel <- 'NSR, nakkesmerte, endring 3 mnd.'
     xAkseTxt <- 'skåring'
   }
   if (valgtVar == 'NRSsmerteNakkePreOp') { #GjsnGrVar

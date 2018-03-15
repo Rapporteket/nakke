@@ -19,7 +19,6 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	library(synthpop)
 	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500)
 	RegData <- RegDataSyn$syn
-<<<<<<< HEAD
 #------------------------------ Laste data ------------------------------
 rm(list=ls())
 library(Nakke)
@@ -33,12 +32,6 @@ RegData <- NakkeData
 load(paste0(fil,".Rdata")) #RegData
 load('A:/NakkeAarsrapp2016.Rdata')
 table(RegData$SykehusNavn, RegData$Aar)
-#------------------------------ Andeler flere var --------------------------
-#------------------------------ (Fordelinger) --------------------------
-=======
-
-	Skjemanavn	SkjemaStatus	ForlopsID	OpprettetAv	OpprettetDato	SistLagretAv	SistLagretDato	HovedDato	Sykehusnavn	AvdRESH	SkjemaRekkeflg
-
 
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
@@ -100,7 +93,6 @@ table(RegData$SykehusNavn, RegData$Aar)
 
 #Offentliggjøring fra 2016
 setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp/2016')
->>>>>>> c9a70cc4be64053147929270e1f242aab88e74d6
 
 #Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
 FigAndelerGrVarAar(RegData=RegData, valgtVar='KomplStemme3mnd',
@@ -161,10 +153,10 @@ myelopati <- 2
 fremBak <- 0
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
 tidsenhet <- 'Mnd'
-valgtVar <- 'KomplStemme3mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- ''	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, ErstatningPreOp,
 		  #Fornoyd12mnd, FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
-		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, NytteOpr3mnd, NytteOpr12mnd
+		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, , NytteOpr3mnd, NytteOpr12mnd
 		  #Verre3mnd, Verre12mnd, OprIndikMyelopati, OprIndikSmerter, PerOpEnhverKompl, Roker, Saardren,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 
@@ -204,30 +196,20 @@ maxald <- 130	#alder, til og med
 datoFra <- '2016-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2016-12-31'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-<<<<<<< HEAD
 tittel=1
-enhetsUtvalg <-01	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'KomplStemme3mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
-=======
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
 valgtVar <- 'ErstatningPreOp'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
->>>>>>> c9a70cc4be64053147929270e1f242aab88e74d6
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, NDIendr12mnd, NytteOpr3mnd, NytteOpr12mnd
 		  #NRSsmerteArmEndr12mnd,Verre3mnd, Verre12mnd, OprIndikMyelopati, Roker, Saardren,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
-<<<<<<< HEAD
 outfile <- paste0(valgtVar, '_ShusSyn.pdf')	#''	#Navn angis av Jasper
-outfile <- ''
-FigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
-=======
 outfile <- '' #paste0(valgtVar, '_ShusSyn.png')	#''	#Navn angis av Jasper
 NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
->>>>>>> c9a70cc4be64053147929270e1f242aab88e74d6
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+           reshID=reshID, outfile=outfile)
 
 variable <- c('Alder', 'AndreRelSykdommer', 'Antibiotika',
           'ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd', 'ASAgrad', 'BMI', 'EnhverKompl3mnd', 'ErstatningPreOp',
@@ -249,13 +231,13 @@ NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep='
 RegData <- NakkeData
 setwd("C:/Registre/Nakke/trunk/GjsnTid")
 
-valgtVar <- 'Eq5DScorePreOp'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
+valgtVar <- 'NDIendr3mnd'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
                #KnivtidTotalMin, LiggeDognPostop, LiggeDognTotalt
                #NDIendr12mnd, NDIendr3mnd, NDIscorePreOp
 
 outfile <- '' #paste(valgtVar, '.png', sep='')	#''	#Navn angis av Jasper
 utdata <- NakkeFigGjsnTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal='',
-           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
+           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Mnd',
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
 variable <- c('EMSendr12mnd', 'EMSendr3mnd', 'EQ5Dendr12mnd', 'EQ5Dendr3mnd', 'Eq5DScorePreOp',
