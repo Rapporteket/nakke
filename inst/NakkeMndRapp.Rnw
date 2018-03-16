@@ -210,11 +210,11 @@ dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Saardr
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd',
                             outfile='NakkeKomplinfekOverfl3mndSh.pdf')
 
-#Sårinfeksjon (dyp og/eller overfladisk), 3mnd, kun bakre kirurgi
+#Sårinfeksjon (dyp og/eller overfladisk), 3mnd, alle
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Komplinfek',
-                            fremBak = 2, outfile='NakkeKomplinfek3mndSh.pdf')
+                            outfile='NakkeKomplinfek3mndSh.pdf')
 dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Komplinfek',
-                        fremBak = 2, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
+                        enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
                         outfile='NakkeKomplinfek3mndTid.pdf')
 #EnhverKompl3mnd
 #Andel fornøyde med behandlinga

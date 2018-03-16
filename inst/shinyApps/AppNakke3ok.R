@@ -191,7 +191,7 @@ server <- function(input, output) {
   library(lubridate)
   library(zoo)
   #load('A:/Nakke/NakkeAarsrapp2016.Rdata') #Preprossesserte data
-  dato <- '2018-03-16'
+  dato <- '2018-03-02'
   fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
   RegData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 
