@@ -19,19 +19,6 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	library(synthpop)
 	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500)
 	RegData <- RegDataSyn$syn
-#------------------------------ Laste data ------------------------------
-rm(list=ls())
-library(Nakke)
-dato <- '2017-09-27'
-fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
-NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
-RegData <- NakkeData
-#RegData <- NakkePreprosess(RegData=RegData)
-#RegData <- RegData[which(RegData$Aar<2017),]
-#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
-load(paste0(fil,".Rdata")) #RegData
-load('A:/NakkeAarsrapp2016.Rdata')
-table(RegData$SykehusNavn, RegData$Aar)
 
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
@@ -64,9 +51,10 @@ table(RegData$SykehusNavn, RegData$Aar)
 	ktr=0
 	aar=2015:2016
 	tidlAar=2013:2014
-	tidsenhet <- 'aar'
+	tidsenhet <- 'Aar'
 	hentData=0
 	outfile=''
+
 #-------------------------------Månedsrapport---------------------------
 	library(knitr)
 	library(devtools)
@@ -226,18 +214,14 @@ for (valgtVar in variable) {
 }
 #------------------------------ Gjennomsnitt/Median per år --------------------------
 #-----------------------------------------------------------------------------------
-rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
-RegData <- NakkeData
-setwd("C:/Registre/Nakke/trunk/GjsnTid")
 
-valgtVar <- 'NDIendr3mnd'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
+valgtVar <- 'KnivtidTotalMin'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
                #KnivtidTotalMin, LiggeDognPostop, LiggeDognTotalt
                #NDIendr12mnd, NDIendr3mnd, NDIscorePreOp
 
 outfile <- '' #paste(valgtVar, '.png', sep='')	#''	#Navn angis av Jasper
-utdata <- NakkeFigGjsnTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal='',
-           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Mnd',
+utdata <- NakkeFigGjsnTid(RegData=RegData, datoFra='2016-01-01', valgtVar=valgtVar, valgtMaal='',
+           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Kvartal',
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
 
 variable <- c('EMSendr12mnd', 'EMSendr3mnd', 'EQ5Dendr12mnd', 'EQ5Dendr3mnd', 'Eq5DScorePreOp',

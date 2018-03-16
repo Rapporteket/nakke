@@ -91,7 +91,7 @@ MÅNEDSRAPPORT \\
 Dette er en sammenstilling av resultater  fra Norsk Kvalitetsregister for Ryggkirurgi, Degenerativ Nakke.
 Alle registreringer er basert på registreringer i registeret per rapportdato. Data er hentet rett fra registeret og er ikke kvalitetssikret.
 Datoer/årstall er basert på operasjonsdato. Resultatene som vises er i all hovedsak for de siste 12 måneder.
-Tidsutvalg for rapportene er spesifisert for hver enkelt figur.
+Tidsutvalg for rapportene er spesifisert øverst i hver enkelt figur.
 
 Rapporten viser følgende:
 \begin{itemize}
@@ -107,6 +107,8 @@ Rapporten viser følgende:
 \item Forbedring av armsmerter
 \item Forbeding av nakkesmerter
 \end{itemize}
+
+Dette er bare et lite utvalg resultater. På Rapporteket kan du finne mer spesifikke resultater for disse og mange andre variable.
 
 \end{frame}
 
@@ -141,6 +143,8 @@ PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1, 'Sykeh
 Oppf3mnd <- table(SkjemaData12mnd[which(SkjemaData12mnd$SkjemaRekkeflg==3 &
                                           SkjemaData12mnd$InnDato < (as.Date(dato)-100)), 'Sykehusnavn'])
 Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4, 'Sykehusnavn'])
+Lege3mnd <- table(SkjemaData12mnd[which(SkjemaData12mnd$SkjemaRekkeflg==2 &
+                                          SkjemaData12mnd$InnDato < (as.Date(dato)-100)), 'Sykehusnavn'])
 
 tabAvd12MndNskjemaDum <- cbind(
   Lege = LegeSkjema,
@@ -155,7 +159,7 @@ tabAvd12MndNskjema <- cbind(
   tabAvd12MndNskjemaDum[ ,1:2],
   #      'Pasient (%)' =  tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100,
   'Oppf. 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
-  'Oppf. 3 mnd. (%)' = tabAvd12MndNskjemaDum[ ,'Oppf. 3 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100
+  'Oppf. 3 mnd. (%)' = 100*tabAvd12MndNskjemaDum[ ,'Oppf. 3 mnd.']/c(Lege3mnd,  sum(Lege3mnd)) #tabAvd12MndNskjemaDum[,'Lege']*100
   #      'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
   #      'Oppfølging 12 mnd. (%)' =  tabAvd12MndNskjemaDum[,'Oppfølging 12 mnd.']/tabAvd12MndNskjemaDum[,'Lege']*100
 )
@@ -190,7 +194,7 @@ dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplS
 
 #Svelgvansker3mnd, fremre, uten myelopati
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplSvelging3mnd', datoFra = datoFra,
-                            myelopati=0,fremBak = 1, outfile='NakkeSvelg3mndSh.pdf')
+                            myelopati=0,outfile='NakkeSvelg3mndSh.pdf')
 dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplSvelging3mnd', datoFra = datoFra,
                         myelopati=0, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
                         outfile='NakkeSvelg3mndTid.pdf')
@@ -258,10 +262,10 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
 
 #Gj.sn. armsmerte, fremre u/myelopati
 NakkeFigGjsnGrVar(RegData=RegData12mnd,valgtVar='NRSsmerteArmEndr3mnd',
-            fremBak=2, myelopati=1, reshID=reshID, outfile='NRSsmerteArmEndr3mndBakMmSh.pdf')
+            fremBak=1, myelopati=0, reshID=reshID, outfile='NRSsmerteArmEndr3mndBakMmSh.pdf')
 
 NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteArmEndr3mnd',
-           fremBak=2, myelopati=1, tidsenhet='Mnd',
+           fremBak=1, myelopati=0, tidsenhet='Mnd',
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NRSsmerteArmEndr3mndBakMmTid.pdf')
 
 #Gjsn. nakkesmerte, alle
@@ -417,7 +421,7 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteNakke
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeFornoydBeh3mnd.pdf}
-\caption{Pasientenes fornøydhet med behandlinga på sykehuset. }
+\caption{Pasienter som var helt eller litt fornøyd med behandlinga på sykehuset. }
 \end{figure}
 \end{frame}
 
@@ -425,7 +429,7 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteNakke
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeFornoydBeh3mndTid.pdf}
-\caption{Pasientenes fornøydhet med behandlinga på sykehuset. Utvikling over tid. }
+\caption{Pasienter som var helt eller litt fornøyd med behandlinga på sykehuset. Utvikling over tid. }
 \end{figure}
 \end{frame}
 

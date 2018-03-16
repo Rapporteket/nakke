@@ -45,8 +45,6 @@ NakkeFigGjsnTid <- function(RegData, outfile, valgtVar, erMann='',
 
 
 #----------- Figurparametre ------------------------------
-
-#retn <- 'V'		#Vertikal som standard. 'H' angis evt. for enkeltvariable
 grtxt <- ''		#Spesifiseres for hver enkelt variabel
 grtxt2 <- ''	#Spesifiseres evt. for hver enkelt variabel
 subtxt <- ''	#Benevning
@@ -73,7 +71,7 @@ ytxt1 <- NakkeVarSpes$ytxt1
 
 #Gjør utvalg
 NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-		erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg)	#, tidlOp=tidlOp
+		erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg, reshID = reshID)	#, tidlOp=tidlOp
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 ind <- NakkeUtvalg$ind
@@ -122,20 +120,19 @@ figtype(outfile)
                                    sprintf('%01.0f', RegData$Halvaar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
                    Aar = as.character(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]))
 
+
   RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=1:max(RegData$TidsEnhet)) #evt. levels=tidtxt
-
+AntTidsenh <- length(tidtxt)
 #--------------------------------
-#START HER!!!!!!!!!!!
-
 #Aartxt <- min(RegData$Aar):max(RegData$Aar)
 #RegData$Aar <- factor(RegData$Aar, levels=Aartxt)
 #AntAar <- length(Aartxt)
 
 
 #Resultat for hovedgruppe
-N <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'Aar'], length)
+N <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'TidsEnhet'], length)
 if (valgtMaal=='Med') {
-	MedIQR <- plot(RegData$Aar[ind$Hoved],RegData$Variabel[ind$Hoved],  notch=TRUE, plot=FALSE)
+	MedIQR <- plot(RegData$TidsEnhet[ind$Hoved],RegData$Variabel[ind$Hoved],  notch=TRUE, plot=FALSE)
 	Midt <- as.numeric(MedIQR$stats[3, ])	#as.numeric(MedIQR$stats[3, sortInd])
 	Konf <- MedIQR$conf
 	#Hvis vil bruke vanlige konf.int:
@@ -147,8 +144,8 @@ if (valgtMaal=='Med') {
 #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give
 #roughly a 95% confidence interval for the difference in two medians.
 } else {	#Gjennomsnitt blir standard.
-	Midt <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'Aar'], mean)
-	SD <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'Aar'], sd)
+	Midt <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'TidsEnhet'], mean)
+	SD <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'TidsEnhet'], sd)
 	Konf <- rbind(Midt - 2*SD/sqrt(N), Midt + 2*SD/sqrt(N))
 }
 	Konf <- replace(Konf, which(Konf < KIekstrem[1]), KIekstrem[1])
@@ -158,23 +155,25 @@ if (valgtMaal=='Med') {
 MidtRest <- NULL
 KonfRest <- NULL
 if (medSml ==  1) {
-NRest <- tapply(RegData[ind$Rest ,'Variabel'], RegData[ind$Rest, 'Aar'], length)
+NRest <- tapply(RegData[ind$Rest ,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], length)
 	if (valgtMaal=='Med') {
-		MedIQRrest <- plot(RegData$Aar[ind$Rest],RegData$Variabel[ind$Rest],  notch=TRUE, plot=FALSE)
+		MedIQRrest <- plot(RegData$TidsEnhet[ind$Rest],RegData$Variabel[ind$Rest],  notch=TRUE, plot=FALSE)
 		MidtRest <- as.numeric(MedIQRrest$stats[3, ])
 		KonfRest <- MedIQRrest$conf
 	} else {
-	MidtRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'Aar'], mean)	#ind$Rest
-	SDRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'Aar'], sd)
-	NRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'Aar'], length)
+	MidtRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], mean)	#ind$Rest
+	SDRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], sd)
+	NRest <- tapply(RegData[ind$Rest,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], length)
 	KonfRest <- rbind(MidtRest - 2*SDRest/sqrt(NRest), MidtRest + 2*SDRest/sqrt(NRest))
 	}
 	KonfRest <- replace(KonfRest, which(KonfRest < KIekstrem[1]), KIekstrem[1])
 	KonfRest <- replace(KonfRest, which(KonfRest > KIekstrem[2]), KIekstrem[2])
 }
 #-----------Figur---------------------------------------
-xmin <- Aartxt[1]-0.5
-xmax <- max(Aartxt)+0.5
+xskala <- 1:length(tidtxt)
+xmax <- max(xskala)
+#xmin <- 0.5
+#xmax <- max(tidtxt)+0.5
 cexgr <- 0.9	#Kan endres for enkeltvariable
 ymin <- 0.9*min(KonfRest, Konf, na.rm=TRUE)	#ymin1 - 2*h
 ymax <- 1.1*max(KonfRest, Konf, na.rm=TRUE)	#ymax1 + 2*h
@@ -191,30 +190,29 @@ farger <- FigTypUt$farger
 fargeHovedRes <- farger[1]
 fargeRestRes <- farger[4]
 
-plot(Aartxt, Midt, xlim= c(xmin, xmax), ylim=c(ymin, ymax), type='n', frame.plot=FALSE, #ylim=c(ymin-0.05*ymax, ymax),
-		#cex=0.8, cex.lab=0.9, cex.axis=0.9,
+plot(xskala, Midt, xlim=c(0.9,xmax+0.1), ylim=c(ymin,ymax), type='n', frame.plot=FALSE, col='white',
 		ylab=c(ytxt,'med 95% konfidensintervall'),
 		xlab='Operasjonsår', xaxt='n',
 		sub='(Tall i boksene angir antall operasjoner)', cex.sub=cexgr)	#, axes=F)
-axis(side=1, at = Aartxt)
+axis(side=1, at = xskala, labels = tidtxt)
 #Sammenlikning:
 if (medSml==1) {
-	polygon( c(Aartxt, Aartxt[AntAar:1]), c(KonfRest[1,], KonfRest[2,AntAar:1]),
+	polygon( c(xskala, xskala[AntTidsenh:1]), c(KonfRest[1,], KonfRest[2,AntTidsenh:1]),
 			col=fargeRestRes, border=NA)
 	legend('top', bty='n', fill=fargeRestRes, border=fargeRestRes, cex=cexgr,
 		paste0('95% konfidensintervall for ', NakkeUtvalg$smltxt, ', N=', sum(NRest, na.rm=T)))
 }
 h <- strheight(1, cex=cexgr)*0.7	#,  units='figure',
-b <- 1.1*strwidth(max(N, na.rm=T), cex=cexgr)/2	#length(Aartxt)/30
-rect(Aartxt-b, Midt-h, Aartxt+b, Midt+h, border = fargeHovedRes, lwd=1)	#border=farger[4], col=farger[4]
-text(Aartxt, Midt, N, col=fargeHovedRes, cex=cexgr)
+b <- 1.1*strwidth(max(N, na.rm=T), cex=cexgr)/2	#length(tidtxt)/30
+rect(xskala-b, Midt-h, xskala+b, Midt+h, border = fargeHovedRes, lwd=1)	#border=farger[4], col=farger[4]
+text(xskala, Midt, N, col=fargeHovedRes, cex=cexgr)
 
 #Konfidensintervall:
 ind <- which(Konf[1, ] > Midt-h) #Konfidensintervall som er tilnærmet 0
 options('warn'=-1)
-arrows(x0=Aartxt, y0=Midt-h, x1=Aartxt, length=0.08, code=2, angle=90,
+arrows(x0=xskala, y0=Midt-h, x1=xskala, length=0.08, code=2, angle=90,
 		y1=replace(Konf[1, ], ind, Midt[ind]-h), col=fargeHovedRes, lwd=1.5)
-arrows(x0=Aartxt, y0=Midt+h, x1=Aartxt, y1=replace(Konf[2, ], ind, Midt[ind]+h),
+arrows(x0=xskala, y0=Midt+h, x1=xskala, y1=replace(Konf[2, ], ind, Midt[ind]+h),
 		length=0.08, code=2, angle=90, col=fargeHovedRes, lwd=1.5)
 
 #if (tittel==1) {
