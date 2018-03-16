@@ -516,17 +516,17 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     tittel <- 'Minst 30% forbedring av NSR-arm, 12 mnd.'
 	if (figurtype == 'gjsnGrVar') {
 		RegData$Variabel <- RegData[ ,valgtVar]}
-	deltittel <- 'NSR, armsmerte, endring 12 mnd.'
+	deltittel <- 'NRS, armsmerte, endring 12 mnd.'
 	xAkseTxt <- 'skåring'
 	}
-  if (valgtVar == 'NRSsmerteArmEndr3mnd') { #AndelGrVar #GjsnGrVar
+  if (valgtVar == 'NRSsmerteArmEndr3mnd') { #AndelGrVar #GjsnGrVar, GjsnTid
     #Pasientskjema.
     RegData$NRSEndr <- 100*(RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm3mnd)/RegData$NRSsmerteArmPreOp
     indPas <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
     indVar <- which(is.finite(RegData$NRSEndr)) #Kun de som har reg både før og etter
     RegData <- RegData[intersect(indPas ,indVar), ]
     RegData$Variabel[which(RegData$NRSEndr >=30)] <- 1
-    tittel <- 'Minst 30% forbedring av NSR-arm, 3 mnd.'
+    tittel <- 'Minst 30% forbedring av NRS-arm, 3 mnd.'
     if (figurtype == 'gjsnGrVar') {
       RegData$Variabel <- RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm3mnd}
     deltittel <- 'NSR, armsmerte, endring 3 mnd.'
@@ -545,7 +545,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
 
   if (valgtVar == 'NRSsmerteNakkeEndr3mnd') { #GjsnGrVar, GjsnTid
     #Pasientskjema.
-    RegData$NRSEndr <- (RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm3mnd) #100*/RegData$NRSsmerteArmPreOp
+    RegData$NRSEndr <- (RegData$NRSsmerteNakkePreOp - RegData$NRSsmerteNakke3mnd) #100*/RegData$NRSsmerteArmPreOp
     indPas <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
     indVar <- which(is.finite(RegData$NRSEndr))
     RegData <- RegData[intersect(indPas ,indVar), ]

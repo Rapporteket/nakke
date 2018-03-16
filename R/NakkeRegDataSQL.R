@@ -90,7 +90,7 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
   NRSsmerteArm3mnd,
   NRSsmerteNakkePreOp,
   NRSsmerteNakke12mnd,
-	NRSsmerteNakke3mnd,
+	NRSsmerteNakke3mnd, NRSsmerteNakke3mnd
 	NytteOpr12mnd,
 	NytteOpr3mnd,
 	OperasjonsKategori,
