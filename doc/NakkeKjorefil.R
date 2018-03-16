@@ -26,7 +26,7 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 
 	rm(list=ls())
 	library(Nakke)
-	dato <- '2018-03-02'
+	dato <- '2018-03-16'
 	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 	RegData <- NakkeData
@@ -37,21 +37,22 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	#load(paste0(fil,".Rdata")) #RegData
 	load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
-	datoFra='2012-01-01'
+	datoFra='2017-03-01'
 	datoTil='3000-12-31'
 	reshID <- 601161 #De tre med flest reg:
-	enhetsUtvalg=0
+	enhetsUtvalg=1
 	minald=0
 	maxald=130
 	erMann=''
-	myelopati=99
-	fremBak=0
+	myelopati=0
+	fremBak=1
 	Ngrense=10
 	grVar='ShNavn'
 	ktr=0
 	aar=2015:2016
 	tidlAar=2013:2014
-	tidsenhet <- 'Aar'
+	tidsenhet <- 'Mnd'
+	valgtMaal <- 'Gjsn'
 	hentData=0
 	outfile=''
 
@@ -60,7 +61,7 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	library(devtools)
 	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
 	SkjemaData <- read.table(fil, sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
-	RegData <- read.table('A:/Nakke/AlleVarNum2018-03-02.csv', sep=';', header=T, encoding = 'UTF-8')
+	RegData <- read.table('A:/Nakke/AlleVarNum2018-03-16.csv', sep=';', header=T, encoding = 'UTF-8')
 
 	#SkjemaData$Sykehusnavn <- enc2native(as.character(SkjemaData$Sykehusnavn))
 	#SkjemaData$Sykehusnavn <- iconv(SkjemaData$Sykehusnavn, from = 'UTF-8', to = '')
@@ -215,14 +216,15 @@ for (valgtVar in variable) {
 #------------------------------ Gjennomsnitt/Median per år --------------------------
 #-----------------------------------------------------------------------------------
 
-valgtVar <- 'KnivtidTotalMin'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
+valgtVar <- 'NRSsmerteArmEndr3mnd'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd, Eq5DScorePreOp,
                #KnivtidTotalMin, LiggeDognPostop, LiggeDognTotalt
                #NDIendr12mnd, NDIendr3mnd, NDIscorePreOp
 
 outfile <- '' #paste(valgtVar, '.png', sep='')	#''	#Navn angis av Jasper
-utdata <- NakkeFigGjsnTid(RegData=RegData, datoFra='2016-01-01', valgtVar=valgtVar, valgtMaal='',
-           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Kvartal',
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile=outfile)
+utdata <- NakkeFigGjsnTid(RegData=RegData, datoFra='2017-03-01', valgtVar=valgtVar, valgtMaal='',
+           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Mnd',
+           fremBak = 1, myelopati = 0,
+           reshID=reshID, enhetsUtvalg=1, outfile=outfile)
 
 variable <- c('EMSendr12mnd', 'EMSendr3mnd', 'EQ5Dendr12mnd', 'EQ5Dendr3mnd', 'Eq5DScorePreOp',
               'KnivtidTotalMin', 'LiggeDognPostop', 'LiggeDognTotalt',

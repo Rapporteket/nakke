@@ -63,7 +63,7 @@ NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurty
 RegData <- NakkeVarSpes$RegData
 sortAvtagende <- NakkeVarSpes$sortAvtagende
 varTxt <- NakkeVarSpes$varTxt
-KIekstrem <- NakkeVarSpes$NakkeVarSpes
+KIekstrem <- NakkeVarSpes$KIekstrem
 KImaal <- NakkeVarSpes$KImaal
 KImaaltxt <- NakkeVarSpes$KImaaltxt
 tittelUsh <- NakkeVarSpes$tittel
@@ -168,12 +168,11 @@ NRest <- tapply(RegData[ind$Rest ,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], l
 	}
 	KonfRest <- replace(KonfRest, which(KonfRest < KIekstrem[1]), KIekstrem[1])
 	KonfRest <- replace(KonfRest, which(KonfRest > KIekstrem[2]), KIekstrem[2])
+	KonfRest[ ,which(is.na(KonfRest[1,]))] <- MidtRest[which(is.na(KonfRest[1,]))]
 }
 #-----------Figur---------------------------------------
 xskala <- 1:length(tidtxt)
 xmax <- max(xskala)
-#xmin <- 0.5
-#xmax <- max(tidtxt)+0.5
 cexgr <- 0.9	#Kan endres for enkeltvariable
 ymin <- 0.9*min(KonfRest, Konf, na.rm=TRUE)	#ymin1 - 2*h
 ymax <- 1.1*max(KonfRest, Konf, na.rm=TRUE)	#ymax1 + 2*h
@@ -197,7 +196,9 @@ plot(xskala, Midt, xlim=c(0.9,xmax+0.1), ylim=c(ymin,ymax), type='n', frame.plot
 axis(side=1, at = xskala, labels = tidtxt)
 #Sammenlikning:
 if (medSml==1) {
-	polygon( c(xskala, xskala[AntTidsenh:1]), c(KonfRest[1,], KonfRest[2,AntTidsenh:1]),
+  xverdi <- c(xskala, xskala[AntTidsenh:1]) #c(xskala[1:9], xskala[(AntTidsenh-1):1]) #c(xskala, xskala[AntTidsenh:1])
+  yverdi <- c(KonfRest[1,], KonfRest[2,AntTidsenh:1]) #c(KonfRest[1,1:9], KonfRest[2,(AntTidsenh-1):1]) #c(KonfRest[1,], KonfRest[2,AntTidsenh:1])
+	polygon(x=xverdi, y=yverdi,
 			col=fargeRestRes, border=NA)
 	legend('top', bty='n', fill=fargeRestRes, border=fargeRestRes, cex=cexgr,
 		paste0('95% konfidensintervall for ', NakkeUtvalg$smltxt, ', N=', sum(NRest, na.rm=T)))

@@ -43,6 +43,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
   tittel <- 'Mangler tittel'
   deltittel <- ''
   variable <- 'Ingen'
+  KIekstrem <- NULL
   #deltittel <- ''
   RegData$Variabel <- 0
   #Kan her definere opp alle aktuelle grupperingsvariable og deres tekst, eller
@@ -508,6 +509,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
 
   if (valgtVar == 'NRSsmerteArmEndr12mnd') { #AndelGrVar #GjsnGrVar
     #Pasientskjema.
+    KIekstrem <- c(-10,10)
     RegData$NRSEndr <- 100*(RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm12mnd)/RegData$NRSsmerteArmPreOp
     indPas <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
     indVar <- which(is.finite(RegData$NRSEndr))
@@ -521,6 +523,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
 	}
   if (valgtVar == 'NRSsmerteArmEndr3mnd') { #AndelGrVar #GjsnGrVar, GjsnTid
     #Pasientskjema.
+    KIekstrem <- c(-10,10)
     RegData$NRSEndr <- 100*(RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm3mnd)/RegData$NRSsmerteArmPreOp
     indPas <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
     indVar <- which(is.finite(RegData$NRSEndr)) #Kun de som har reg både før og etter
@@ -530,6 +533,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
       RegData$Variabel <- RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm3mnd}
     deltittel <- 'NSR, armsmerte, endring 3 mnd.'
+    tittel <- 'NRS, armsmerte, endring 3 mnd. etter'
     xAkseTxt <- 'skåring'
   }
 
@@ -545,12 +549,14 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
 
   if (valgtVar == 'NRSsmerteNakkeEndr3mnd') { #GjsnGrVar, GjsnTid
     #Pasientskjema.
+    KIekstrem <- c(-10,10)
     RegData$NRSEndr <- (RegData$NRSsmerteNakkePreOp - RegData$NRSsmerteNakke3mnd) #100*/RegData$NRSsmerteArmPreOp
     indPas <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus3mnd==1)
     indVar <- which(is.finite(RegData$NRSEndr))
     RegData <- RegData[intersect(indPas ,indVar), ]
     RegData$Variabel <- RegData$NRSEndr
-    deltittel <- 'NSR, nakkesmerte, endring 3 mnd.'
+    deltittel <- 'NSR, nakkesmerte, endring 3 mnd. etter'
+    tittel <- deltittel
     xAkseTxt <- 'skåring'
   }
   if (valgtVar == 'NRSsmerteNakkePreOp') { #GjsnGrVar
@@ -560,6 +566,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     RegData <- RegData[intersect(indPas ,indVar), ]
     RegData$Variabel <- RegData[ ,valgtVar]
     deltittel <- 'NSR, nakke før operasjon'
+    tittel <- deltittel
     xAkseTxt <- 'skåring'
   }
   if (valgtVar %in% c('NytteOpr3mnd', 'NytteOpr12mnd')) { #Andeler #AndelTid  #AndelGrVar
@@ -955,7 +962,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
 
     UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt, KImaal=KImaal,
                  tittel=tittel, varTxt=varTxt, flerevar=flerevar, variable=variable, sortAvtagende=sortAvtagende,
-                 retn=retn, ytxt1=ytxt1, deltittel=deltittel)
+                 retn=retn, ytxt1=ytxt1, deltittel=deltittel, KIekstrem=KIekstrem)
   #RegData inneholder nå variablene 'Variabel' og 'VariabelGr'
   return(invisible(UtData))
 
