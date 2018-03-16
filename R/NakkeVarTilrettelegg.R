@@ -527,7 +527,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     RegData <- RegData[intersect(indPas ,indVar), ]
     RegData$Variabel[which(RegData$NRSEndr >=30)] <- 1
     tittel <- 'Minst 30% forbedring av NRS-arm, 3 mnd.'
-    if (figurtype == 'gjsnGrVar') {
+    if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
       RegData$Variabel <- RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm3mnd}
     deltittel <- 'NSR, armsmerte, endring 3 mnd.'
     xAkseTxt <- 'skåring'

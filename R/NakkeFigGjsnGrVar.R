@@ -54,7 +54,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
   xaksetxt <- ''
 
 
-  NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnTid')
+  NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnGrVar')
   RegData <- NakkeVarSpes$RegData
   sortAvtagende <- NakkeVarSpes$sortAvtagende
   varTxt <- NakkeVarSpes$varTxt
