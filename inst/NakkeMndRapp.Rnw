@@ -420,7 +420,7 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteNakke
 \begin{frame}[fragile]
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.35]{NakkeFornoydBeh3mnd.pdf}
+\includegraphics[scale=0.35]{NakkeFornoydBeh3mndSh.pdf}
 \caption{Pasienter som var helt eller litt fornøyd med behandlinga på sykehuset. }
 \end{figure}
 \end{frame}
