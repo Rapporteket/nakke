@@ -168,7 +168,7 @@ NRest <- tapply(RegData[ind$Rest ,'Variabel'], RegData[ind$Rest, 'TidsEnhet'], l
 	}
 	KonfRest <- replace(KonfRest, which(KonfRest < KIekstrem[1]), KIekstrem[1])
 	KonfRest <- replace(KonfRest, which(KonfRest > KIekstrem[2]), KIekstrem[2])
-	KonfRest[ ,which(is.na(KonfRest[1,]))] <- MidtRest[which(is.na(KonfRest[1,]))]
+	KonfRest[ ,which(is.na(KonfRest[1,]))] <- KIekstrem
 }
 #-----------Figur---------------------------------------
 xskala <- 1:length(tidtxt)
