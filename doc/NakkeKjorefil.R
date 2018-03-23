@@ -11,14 +11,23 @@ setwd("C:/ResultattjenesteGIT/Nakke/inst")
 knitr::knit('NakkeAarsRapp.Rnw')
 tools::texi2pdf('NakkeAarsRapp.tex')
 #---------------- Tulledata ----------------------------------------
+#Permuter alle variable
+#Erstatt sykehusnavn med fiktive.
+#Beholde noen egenskaper?
 
-
-  RegData <- NakkeRegDataSQL()
-	RegData <- NakkePreprosess(RegData=RegData)
+#set.seed(seed, kind = NULL, normal.kind = NULL)
+#x <- as.data.frame(matrix(1:10,nrow=5))
+#ind <- sample(x, replace = FALSE, prob = NULL)
+#ind <- synthpop::syn(x, method = "sample", seed = 500) #
 
 	library(synthpop)
-	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500)
+sykehus <- paste('Sykehus', LETTERS[1:10])
+sannsford <- c(0.5, 4, 10, 3, 7, 5, 2, 8, 9.5, 6)
+RegData$SykehusNavn <- sample(sykehus, prob=sannsford/sum(sannsford), size=dim(RegData)[1], replace=T)# Endre slik at får mer ulik fordeling
+	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500) #Trekker med tilbakelegging
 	RegData <- RegDataSyn$syn
+	write.table(RegData, file='RegDataTest.csv', sep = ';', row.names = F, col.names = T)
+	save(RegData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/RegDataSyn.Rdata'))
 
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
