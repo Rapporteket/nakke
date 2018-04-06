@@ -21,13 +21,16 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 #ind <- synthpop::syn(x, method = "sample", seed = 500) #
 
 	library(synthpop)
+varBort <- c('FodselsDato', 'SykehusNavn3mnd', 'SykehusNavn12mnd')
+RegData <- RegData[,-which(names(RegData) %in% varBort)]
 sykehus <- paste('Sykehus', LETTERS[1:10])
-sannsford <- c(0.5, 4, 10, 3, 7, 5, 2, 8, 9.5, 6)
-RegData$SykehusNavn <- sample(sykehus, prob=sannsford/sum(sannsford), size=dim(RegData)[1], replace=T)# Endre slik at får mer ulik fordeling
+mengdePasienter <- c(0.3, 4, 10, 3, 7, 5, 1, 8, 9.5, 6)
+RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter), size=dim(RegData)[1], replace=T)
 	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500) #Trekker med tilbakelegging
 	RegData <- RegDataSyn$syn
-	write.table(RegData, file='RegDataTest.csv', sep = ';', row.names = F, col.names = T)
-	save(RegData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/RegDataSyn.Rdata'))
+	write.table(RegData, file='C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataTest.csv', sep = ';', row.names = F, col.names = T)
+	save(RegData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.RData'))
+	load('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.Rdata')
 
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')

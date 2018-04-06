@@ -1,0 +1,43 @@
+---
+title: "Shinykommandoer"
+author: "Lena Ringstad Olsen"
+date: "6 april 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Formål
+
+Ønsker å sammenfatte noen av de viktigste funksjonene i Shiny så jeg klarer å huske hva de gjør og hvilken som skal brukes når.
+
+
+## Kommandoer, UI, dvs. det som vises på skjermen
+
+* fluidPage() - A fluid page layout consists of rows which in turn include columns. Kan velge å spesifisere rubrikker ved sidebarLayout eller spesifikt i rader og kolnner.
+
+* tabsetPanel() - deler inn i arkfaner (tabs)
+
+*navlistPanel() - 
+
+
+Segmenting layouts using the tabsetPanel() and navlistPanel() functions.
+
+Creating applications with multiple top-level components using the navbarPage() function
+
+
+## server - alle beregninger som ligger bak
+
+
+
+## html-koder
+* hr() - horisontal strek som skiller mellom paneler på sida
+* br() - line break element
+
+
+http://shiny.rstudio.com/articles/tag-glossary.html
+
+Bibliotek over html-koder:
+https://www.w3schools.com/tags/

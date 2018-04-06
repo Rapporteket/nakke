@@ -35,9 +35,8 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
   titlePanel("Testing testing, Nakke"),
 
   # Velge sykehus og vise antall
-  #sidebarLayout( #Definerer overordnet layout med en sidekolonne og ett hovedpanel.
-    #sidebarPanel( #Området som viser "valgbokser"
-	fluidRow(column(width = 3, #Første kolonne. Alternativ til sidebarLayout(sidebarPanel())
+  sidebarLayout( #Definerer layout. Endre til
+    sidebarPanel( #Området som viser "valgbokser"
       conditionalPanel( #Ønsker ulike valgmuligheter for ulike faner/ark
         'input.ark == "Tabeller"',
         dateInput(inputId = 'datoTil', value = Sys.Date(), min = '2012-01-01',
@@ -48,7 +47,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
       ),
 
       conditionalPanel(
-        'input.ark == "Viktigste resultater"',
+        'input.ark == "Kvalitetsindikatorer"',
         selectInput(inputId = "valgtVarKvalInd", label="Velg variabel",
                     choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
                                 'Komplikasjon, svelging' = 'KomplSvelging3mnd')),
@@ -141,52 +140,35 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                     choices = c("Alle"=0, "Fremre"=1, "Bakre"=2))
       )
 
-    ), #sidebarPanel/kolonna til høyre
+    ), #sidebarPanel
 
 
 
 
     # Vise det vi har valgt...
-    breddePlot <- 7,
-    column(width = breddePlot, #mainPanel(
+    mainPanel(
       tabsetPanel( #
         id='ark',
 
-        tabPanel("Viktigste resultater",
-                 #fluidRow(
-                   #column(width=5,
-                 h2("Månedsrapport:"), #),
-                   #column(width=2,
-                 downloadButton(outputId = 'mndRapp', label='Last ned månedsrapport (tar litt tid)', class = "butt"),
-                 tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
-                   #)),
-                 br(),
-                 br(),
-                 br(),
-                 br(),
-                 br(),
-                 h2("Figurer med kvalitetsindikatorer", align='center' ),
-                 br(),
-                 h3(em("Utvikling over tid")),
-                 plotOutput("kvalIndFig1"),
-                 br(),
-                 h3(em("Sykehusvise resultater")),
-                 plotOutput("kvalIndFig2")),
         tabPanel("Tabeller",
                  h2("Antall registreringer per måned og avdeling"),
                  tableOutput("tabAvdMnd12"),
-                 br(),
                  h2("Ferdigstilte skjema ved hver avdeling for valgte 12 måneder"),
                  tableOutput("tabAvdSkjema12"),
-                 br(),
                  h2("Antall registreringer per år og avdeling, siste 5 år"),
-                 tableOutput("tabAvdNAar5")
-        ),
+                 tableOutput("tabAvdNAar5")),
+        tabPanel("Kvalitetsindikatorer",
+                 h2("Månedsrapport til nedlasting:"),
+                 downloadButton(outputId = 'mndRapp', label='Månedsrapport (tar litt tid)'),
+                 h2("Figurer med kvalitetsindikatorer"),
+                 plotOutput("kvalIndFig1"),
+                 plotOutput("kvalIndFig2")),
         tabPanel("Fordelinger",
                  h3("Figur som viser fordeling av valgt variabel"),
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Man kan også gjøre ulike filtreringer."),
-                 br(),
+                 h4(' '),
+                 h4(' '),
                  plotOutput("fordelinger")),
         tabPanel("Sykehusvise andeler",
                  h2("Figuren viser sykehusvise andeler for valgt variabel"),
@@ -289,9 +271,9 @@ server <- function(input, output) {
       'Oppfølging 12 mnd. (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf12mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, 1)
     )
     #sprintf('%1.3f'
-    xtable::xtable(tabAvd12MndNskjema,  align = c('l', rep('r', ncol(tabAvd12MndNskjema))))
+    xtable::xtable(tabAvd12MndNskjema)
   },
-  rownames = T, align= 'r' #
+  rownames = T, align = 'r' #c('l', rep('r', ncol(tabAvd12MndNskjema)))
   ) #digits=1,
 
 
