@@ -9,6 +9,7 @@
 
 library(shiny)
 library(knitr)
+library(shinyBS) # Additional Bootstrap Controls
 
 # ui <- shinyUI(basicPage(
 #   downloadButton('report')
@@ -25,7 +26,6 @@ library(knitr)
 #   )
 #
 # }
-
 
 
 # Define UI for application that draws figures
@@ -147,8 +147,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
 
     # Vise det vi har valgt...
-    breddePlot <- 7,
-    column(width = breddePlot, #mainPanel(
+    column(width = 7, #mainPanel(
       tabsetPanel( #
         id='ark',
 
@@ -165,7 +164,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                  br(),
                  br(),
                  br(),
-                 h2("Figurer med kvalitetsindikatorer", align='center' ),
+                 h2("Kvalitetsindikatorer", align='center' ),
                  br(),
                  h3(em("Utvikling over tid")),
                  plotOutput("kvalIndFig1"),
@@ -209,11 +208,13 @@ server <- function(input, output) {
   library(Nakke)
   library(lubridate)
   library(zoo)
+  system.file('inst/NakkeMndRapp.Rnw', package='Nakke')
   #load('A:/Nakke/NakkeAarsrapp2016.Rdata') #Preprossesserte data
   dato <- '2018-03-16'
   fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
-  RegData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
-  #Funker: data('NakkeRegDataSyn', package = 'Nakke')
+  #RegData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
+  #Funker:
+  data('NakkeRegDataSyn', package = 'Nakke')
   #try(data(package = "Nakke"))
 
   RegData <- NakkePreprosess(RegData = RegData)
@@ -228,11 +229,13 @@ server <- function(input, output) {
 
   #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
   fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
-  SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
+  data('SkjemaDataSyn', package = 'Nakke')
+  #SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
   SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus > -1, ]
   SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
   SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
   SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
+  SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 
 
   #Felles reaktive tabeller
@@ -250,7 +253,6 @@ server <- function(input, output) {
       SkjemaData12mnd[which(SkjemaData12mnd$SkjemaStatus == as.numeric(input$status)), ]
     }
     #Flyttes til overvåkning
-
     tabAvdSiste12mnd <- addmargins(table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, c('Sykehusnavn', 'Mnd')]))
     colnames(tabAvdSiste12mnd) <- substring(colnames(tabAvdSiste12mnd),1,3)
     xtable::xtable(tabAvdSiste12mnd)
@@ -260,11 +262,13 @@ server <- function(input, output) {
 
 
 
-  #Velge ferdigstillelse og tidsintervall. Se Rygg
+  #Velge ferdigstillelse og tidsintervall.
   output$tabAvdSkjema12 <- renderTable({
     SkjemaDataFerdig <- SkjemaData[SkjemaData$SkjemaStatus ==1, ]
     #Flyttes til overvåkning
     datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
+    #datoFra12 <- '2017-03-01'
+    #SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt('2018-04-30')
     SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(input$datoTil)
                                         & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
     LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, 'Sykehusnavn'])
@@ -309,12 +313,24 @@ server <- function(input, output) {
 #                      'hente ned månedsrapport'),
   output$mndRapp = downloadHandler(
     filename = 'MndRapp.pdf',
+    reshID <- 601161,
     content = function(file) {
-      out = knit2pdf('C:/ResultattjenesteGIT/Nakke/inst/NakkeMndRapp.Rnw', encoding = 'UTF-8', clean = TRUE)
+      out = knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8', clean = TRUE)
       file.rename(out, file) # move pdf to file for downloading
     },
     contentType = 'application/pdf'
   )
+
+    output$report = downloadHandler(
+      filename = 'myreport.pdf',
+
+      content = function(file) {
+        out = knit2pdf('input.Rnw', clean = TRUE)
+        file.rename(out, file) # move pdf to file for downloading
+      },
+
+      contentType = 'application/pdf'
+    )
 
   output$kvalIndFig1 <- renderPlot({
 

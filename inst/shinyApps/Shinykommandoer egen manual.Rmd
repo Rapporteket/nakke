@@ -31,6 +31,26 @@ Creating applications with multiple top-level components using the navbarPage() 
 ## server - alle beregninger som ligger bak
 
 
+## tooltips
+library(ggvis)
+df %>% ggvis(~x, ~y) %>% layer_points() %>% 
+    add_tooltip(function(x) paste0(names(x), ": ", 
+                format(x), collapse = "<br />"), "hover") %>%
+    bind_shiny("plot_id")
+And then in ui.R, to place the plot you use:
+
+ggvisOutput("plot_id")
+
+## From ui.R: Adds a tooltip to element with inputId = "someInput"
+## with text, "This is an input.", that appears to the left on hover.
+bsTooltip(id = "someInput", title = "This is an input",
+          placement = "left", trigger = "hover")
+
+## From server.R: Add the same tooltip as above
+addTooltip(session, id = "someInput", title = "This is an input.",
+           placement = "left", trigger = "hover")
+
+
 
 ## html-koder
 * hr() - horisontal strek som skiller mellom paneler på sida

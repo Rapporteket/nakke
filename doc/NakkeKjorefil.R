@@ -21,16 +21,27 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 #ind <- synthpop::syn(x, method = "sample", seed = 500) #
 
 	library(synthpop)
-varBort <- c('FodselsDato', 'SykehusNavn3mnd', 'SykehusNavn12mnd')
+library(dplyr)
+varBort <- c('FodselsDato', 'SykehusNavn3mnd', 'SykehusNavn12mnd', 'ForlopsID')
+ForlopsID <- RegData$ForlopsID
 RegData <- RegData[,-which(names(RegData) %in% varBort)]
 sykehus <- paste('Sykehus', LETTERS[1:10])
 mengdePasienter <- c(0.3, 4, 10, 3, 7, 5, 1, 8, 9.5, 6)
 RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter), size=dim(RegData)[1], replace=T)
 	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500) #Trekker med tilbakelegging
-	RegData <- RegDataSyn$syn
+	RegData <- data.frame(RegDataSyn$syn, ForlopsID)
 	write.table(RegData, file='C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataTest.csv', sep = ';', row.names = F, col.names = T)
 	save(RegData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.RData'))
 	load('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.Rdata')
+
+	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
+	SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
+	SkjemaDataRed <- SkjemaData[ ,c('SkjemaStatus','ForlopsID','HovedDato','SkjemaRekkeflg')]
+	#SkjemaDataSyn <- synthpop::syn(SkjemaData, method = "sample", seed = 500) #Trekker med tilbakelegging
+	SkjemaData <- dplyr::left_join(SkjemaDataRed, RegData[,c('ForlopsID','SykehusNavn')], by = "ForlopsID", copy=FALSE)
+	names(SkjemaData)[which(names(SkjemaData) == 'SykehusNavn')] <- 'Sykehusnavn'
+	save(SkjemaData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData'))
+	load('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.Rdata')
 
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
@@ -348,3 +359,17 @@ library(Nakke)
 setwd('C:/ResultattjenesteGIT/Nakke/R')
 runShinyAppReports()
 
+#Konto
+library(shinyapps)
+??shinyappsProxies
+?shinyappsOptions
+#Publisere:
+#httr::set_config(httr::use_proxy(url="http://www-proxy.helsenord.no", port=8080))
+options(RCurlOptions = list(proxy = "http://www-proxy.helsenord.no:8080"))
+options(shinyapps.http = "rcurl")
+library(rsconnect)
+rsconnect::setAccountInfo(name='lenatest',
+                          token='00581594B2D659880FFB21E82C8ED3A3',
+                          secret='lvlAX2DFawjnMtrr0nFxANa7ARaRDOE2AROkYU+C')
+rsconnect::deployApp('C:/ResultattjenesteGIT/Nakke/inst/shinyApps')
+#
