@@ -9,7 +9,7 @@
 
 library(shiny)
 library(knitr)
-library(shinyBS) # Additional Bootstrap Controls
+#ibrary(shinyBS) # Additional Bootstrap Controls
 
 # ui <- shinyUI(basicPage(
 #   downloadButton('report')
