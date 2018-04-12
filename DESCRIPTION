@@ -20,6 +20,8 @@ Imports:
     lubridate,
     zoo,
     xtable
+Remotes:
+    Rapporteket/rapbase
 Suggests:
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
