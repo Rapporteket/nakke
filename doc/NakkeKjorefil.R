@@ -364,12 +364,17 @@ library(shinyapps)
 ??shinyappsProxies
 ?shinyappsOptions
 #Publisere:
-#httr::set_config(httr::use_proxy(url="http://www-proxy.helsenord.no", port=8080))
+httr::set_config(httr::use_proxy(url="http://www-proxy.helsenord.no", port=8080))
+httr::set_config(httr::use_proxy(url="http://flex-proxy.nhn.no", port=8080))
+Sys.setenv(http_proxy="http://www-proxy.helsenord.no:8080")
+#httr::set_config(use_proxy(url="18.91.12.23", port=8080))
 options(RCurlOptions = list(proxy = "http://www-proxy.helsenord.no:8080"))
 options(shinyapps.http = "rcurl")
+
+
 library(rsconnect)
 rsconnect::setAccountInfo(name='lenatest',
                           token='00581594B2D659880FFB21E82C8ED3A3',
                           secret='lvlAX2DFawjnMtrr0nFxANa7ARaRDOE2AROkYU+C')
 rsconnect::deployApp('C:/ResultattjenesteGIT/Nakke/inst/shinyApps')
-#
+#options(rpubs.upload.method = "internal")

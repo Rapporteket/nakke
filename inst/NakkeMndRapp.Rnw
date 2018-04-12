@@ -9,6 +9,7 @@
 \usepackage{rotating}
 \usepackage{graphicx}
 \setbeamerfont{caption}{size=\scriptsize}
+%usepackage{framed}
 
 
 <<'initOpts', include=FALSE>>=

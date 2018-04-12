@@ -315,22 +315,25 @@ server <- function(input, output) {
     filename = 'MndRapp.pdf',
     reshID <- 601161,
     content = function(file) {
-      out = knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8', clean = TRUE)
+      # permission to the current working directory
+      src <- normalizePath(system.file('NakkeMndRapp.Rnw', package='Nakke'))
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      file.copy(src, 'NakkeMndRapp.Rnw', overwrite = TRUE)
+
+       texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
+       texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
+      #render_html(
+
+      out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
+        #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
+
       file.rename(out, file) # move pdf to file for downloading
     },
     contentType = 'application/pdf'
   )
-
-    output$report = downloadHandler(
-      filename = 'myreport.pdf',
-
-      content = function(file) {
-        out = knit2pdf('input.Rnw', clean = TRUE)
-        file.rename(out, file) # move pdf to file for downloading
-      },
-
-      contentType = 'application/pdf'
-    )
+#  If you already have made the PDF file, you can just copy it to file, i.e.
+#  content = function(file) file.copy('your_existing.pdf', file, overwrite = TRUE)
 
   output$kvalIndFig1 <- renderPlot({
 
