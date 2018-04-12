@@ -237,6 +237,9 @@ server <- function(input, output) {
   SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
   SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 
+  reshID <- 601161
+
+
 
   #Felles reaktive tabeller
   #   reactive({
@@ -312,8 +315,8 @@ server <- function(input, output) {
 #output$tekstDash <- c('Figurer med kvalitetsindikatorer',
 #                      'hente ned månedsrapport'),
   output$mndRapp = downloadHandler(
-    filename = 'MndRapp.pdf',
-    reshID <- 601161,
+     filename = 'MndRapp.pdf',
+    #content = function(file) file.copy(system.file('NakkeMndRapp.pdf', package = 'Nakke'), file, overwrite = TRUE),
     content = function(file) {
       # permission to the current working directory
       src <- normalizePath(system.file('NakkeMndRapp.Rnw', package='Nakke'))
@@ -323,7 +326,7 @@ server <- function(input, output) {
 
        texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
        texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
-      #render_html(
+      #help(render_latex)
 
       out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
         #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
