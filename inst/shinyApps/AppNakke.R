@@ -156,7 +156,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                    #column(width=5,
                  h2("Månedsrapport:"), #),
                    #column(width=2,
-                 downloadButton(outputId = 'mndRapp', label='Last ned månedsrapport (tar litt tid)', class = "butt"),
+                 downloadButton(outputId = 'mndRapp.pdf', label='Last ned månedsrapport (tar litt tid)', class = "butt"),
                  tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
                    #)),
                  br(),
@@ -238,6 +238,8 @@ server <- function(input, output) {
   SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 
   reshID <- 601161
+  #  texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
+  #  texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
 
 
 
@@ -314,7 +316,7 @@ server <- function(input, output) {
 
 #output$tekstDash <- c('Figurer med kvalitetsindikatorer',
 #                      'hente ned månedsrapport'),
-  output$mndRapp = downloadHandler(
+  output$mndRapp.pdf = downloadHandler(
      filename = 'MndRapp.pdf',
     #content = function(file) file.copy(system.file('NakkeMndRapp.pdf', package = 'Nakke'), file, overwrite = TRUE),
     content = function(file) {
@@ -324,14 +326,15 @@ server <- function(input, output) {
       on.exit(setwd(owd))
       file.copy(src, 'NakkeMndRapp.Rnw', overwrite = TRUE)
 
-       texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
-       texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
-      #help(render_latex)
+        texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
+        texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
+      # #help(render_latex)
+#       out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
+         #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
+#      file.rename(out, file) # move pdf to file for downloading
+        #file.copy(system.file('NakkeMndRapp.pdf', package='Nakke'), file)
+        file.copy('NakkeMndRapp.pdf', file)
 
-      out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
-        #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
-
-      file.rename(out, file) # move pdf to file for downloading
     },
     contentType = 'application/pdf'
   )
