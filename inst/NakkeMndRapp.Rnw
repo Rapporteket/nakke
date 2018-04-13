@@ -211,12 +211,14 @@ dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Saardr
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='KomplinfekOverfl3mnd',
                             outfile='NakkeKomplinfekOverfl3mndSh.pdf')
 
+#\caption{Infeksjoner (overfladiske og dype), 3 måneder etter operasjon. }
+#\caption{Infeksjoner (overfladiske og dype), 3 måneder etter operasjon. Utvikling
 #Sårinfeksjon (dyp og/eller overfladisk), 3mnd, alle
-dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Komplinfek',
-                            outfile='NakkeKomplinfek3mndSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Komplinfek',
-                        enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
-                        outfile='NakkeKomplinfek3mndTid.pdf')
+#dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE, valgtVar#='Komplinfek',
+ #                           outfile='NakkeKomplinfek3mndSh.pdf')
+#dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='Komplinfek',
+ #                       enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
+ #                       outfile='NakkeKomplinfek3mndTid.pdf')
 #EnhverKompl3mnd
 #Andel fornøyde med behandlinga
 dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE,
@@ -234,12 +236,12 @@ dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NytteO
                         outfile='NakkeNytteOpr3mndFremUmTid.pdf')
 
 #Nytte, bakre m/myelopati
-dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE,
-                            fremBak = 2, myelopati=1,
-                            valgtVar='NytteOpr3mnd', outfile='NakkeNytteOpr3mndBakMmSh.pdf')
-dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NytteOpr3mnd',
-                         fremBak = 2, myelopati=1, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
-                        outfile='NakkeNytteOpr3mndBakMmTid.pdf')
+# dum <- NakkeFigAndelerGrVar(RegData=RegData12mnd, preprosess=FALSE,
+#                             fremBak = 2, myelopati=1,
+#                             valgtVar='NytteOpr3mnd', outfile='NakkeNytteOpr3mndBakMmSh.pdf')
+# dum <- NakkeFigAndelTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NytteOpr3mnd',
+#                          fremBak = 2, myelopati=1, enhetsUtvalg = 1, reshID = reshID, tidsenhet = 'Mnd',
+                        # outfile='NakkeNytteOpr3mndBakMmTid.pdf')
 
 
 
@@ -252,13 +254,13 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndFremUmTid.pdf')
 
 
-#Gjennomsnittlig forbedring i NDI, bakre u/myelopati
-NakkeFigGjsnGrVar(RegData=RegData12mnd,valgtVar='NDIendr3mnd',
-            fremBak=2, myelopati=1, reshID=reshID, outfile='NDIendr3mndBakMmSh.pdf')
-
-NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
-           fremBak=2, myelopati=1, tidsenhet='Mnd',
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndBakMmTid.pdf')
+#Gjennomsnittlig forbedring i NDI, bakre m/myelopati
+# NakkeFigGjsnGrVar(RegData=RegData12mnd,valgtVar='NDIendr3mnd',
+#             fremBak=2, myelopati=1, reshID=reshID, outfile='NDIendr3mndBakMmSh.pdf')
+#
+# NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NDIendr3mnd',
+#            fremBak=2, myelopati=1, tidsenhet='Mnd',
+#            reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndBakMmTid.pdf')
 
 
 #Gj.sn. armsmerte, fremre u/myelopati
@@ -334,23 +336,6 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteNakke
 \end{frame}
 
 
-\begin{frame}[fragile]
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.35]{NakkeKomplinfek3mndSh.pdf}
-\caption{Infeksjoner (overfladiske og dype), 3 måneder etter operasjon. }
-\end{figure}
-\end{frame}
-
-
-\begin{frame}[fragile]
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.35]{NakkeKomplinfek3mndTid.pdf}
-\caption{Infeksjoner (overfladiske og dype), 3 måneder etter operasjon. Utvikling over tid. }
-\end{figure}
-\end{frame}
-
 
 \section{PROM/PREM, 3 måneder}
 
@@ -370,21 +355,11 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteNakke
 \end{figure}
 \end{frame}
 
-\begin{frame}[fragile]
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.35]{NDIendr3mndBakMmSh.pdf}
-\caption{Gjennomsnittlig forbedring i NDI for myelopatipasienter, bakre tilgang.}
-\end{figure}
-\end{frame}
+%\includegraphics[scale=0.35]{NDIendr3mndBakMmSh.pdf}
+%\caption{Gjennomsnittlig forbedring i NDI for myelopatipasienter, bakre tilgang.}
 
-\begin{frame}[fragile]
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.35]{NDIendr3mndBakMmTid.pdf}
-\caption{Gjennomsnittlig forbedring i NDI for myelopatipasienter, bakre tilgang.}
-\end{figure}
-\end{frame}
+%\includegraphics[scale=0.35]{NDIendr3mndBakMmTid.pdf}
+%\caption{Gjennomsnittlig forbedring i NDI for myelopatipasienter, bakre tilgang.}
 
 \begin{frame}[fragile]
 \begin{figure}[ht]
@@ -451,21 +426,11 @@ NakkeFigGjsnTid(RegData=RegData12mnd, preprosess=FALSE, valgtVar='NRSsmerteNakke
 \end{figure}
 \end{frame}
 
-\begin{frame}[fragile]
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.35]{NakkeNytteOpr3mndBakMmSh.pdf}
-\caption{Pasienter med myelopati operert med bakre tilgang og som har blitt helt bra eller mye bedre 3 mnd. etter operasjonen. }
-\end{figure}
-\end{frame}
+%\includegraphics[scale=0.35]{NakkeNytteOpr3mndBakMmSh.pdf}
+%\caption{Pasienter med myelopati operert med bakre tilgang og som har blitt helt bra eller mye bedre 3 mnd. etter operasjonen. }
 
-\begin{frame}[fragile]
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.35]{NakkeNytteOpr3mndBakMmTid.pdf}
-\caption{Pasienter med myelopati operert med bakre tilgang og som har blitt helt bra eller mye bedre 3 mnd. etter operasjonen.}
-\end{figure}
-\end{frame}
+%\includegraphics[scale=0.35]{NakkeNytteOpr3mndBakMmTid.pdf}
+%\caption{Pasienter med myelopati operert med bakre tilgang og som har blitt helt bra eller mye bedre 3 mnd. etter operasjonen.}
 
 \end{tiny}
 \end{document}
