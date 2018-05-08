@@ -49,7 +49,7 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 
 	rm(list=ls())
 	library(Nakke)
-	dato <- '2018-03-16'
+	dato <- '2018-05-08'
 	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 	RegData <- NakkeData

@@ -37,7 +37,7 @@
 		<defaultValueExpression><![CDATA[new String("Nakke")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="rFunctionCallString" class="java.lang.String" isForPrompting="false">
-		<defaultValueExpression><![CDATA[new String("NakkeFigAndelerGrVar(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,myelopati=myelopati, fremBak=fremBak, outfile=outfile, reshID=reshID, enhetsUtvalg=enhetsUtvalg, hentData=1)")]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA[new String("NakkeFigAndelerGrVar(RegData=0, valgtVar=valgtVar, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,myelopati=myelopati, fremBak=fremBak, outfile=outfile, reshID=reshID, hentData=1)")]]></defaultValueExpression>
 	</parameter>
 	<parameter name="valgtVar" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("Alder")]]></defaultValueExpression>
@@ -63,9 +63,6 @@
 	</parameter>
 	<parameter name="fremBak" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
-	</parameter>
-	<parameter name="orgUnitSelection" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[new Integer(1)]]></defaultValueExpression>
 	</parameter>
 	<queryString language="SQL">
 		<![CDATA[]]>

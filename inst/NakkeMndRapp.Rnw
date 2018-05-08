@@ -26,7 +26,7 @@ library(lubridate)
 library(zoo)
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
-datoFra <- as.Date(paste0(1900+dato$year-1,'-', dato$mon+1, '-', '01'))
+datoFra <- as.Date(paste0(1900+dato$year-1,'-', ifelse(dato$mon==11, 1, dato$mon+2), '-', '01'))
 aarFra <- paste0(1900+dato$year-5, '-01-01')
 #--------------------HENTE DATA--------------------
 
@@ -65,6 +65,7 @@ SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
 SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
 SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
+SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 SkjemaData12mnd <- SkjemaData[SkjemaData$InnDato > as.POSIXlt(datoFra), ]
 
 enhetsUtvalg <- 1
