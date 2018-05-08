@@ -117,7 +117,7 @@ Dette er bare et lite utvalg resultater. På Rapporteket kan du finne mer spesif
 
 \begin{frame}[fragile]
 
-<<'Registreringer siste 12 mnd', results='asis'>>=
+<<'Registreringer siste 12 mnd', warnings=FALSE , results='asis'>>=
 
 tabAvdSiste12mnd <- addmargins(table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2,
                                                      c('Sykehusnavn', 'Mnd')]))
