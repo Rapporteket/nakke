@@ -64,27 +64,39 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                     choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
         )
       ),
-
       conditionalPanel( #Denne skal bare vises for figursamlinger
         'input.ark == "Fordelinger"',
         #'input.ark === "Fordelinger" || input.ark === "Sykehusvise andeler" ',
 
         selectInput(inputId = "valgtVar", label="Velg variabel",
-                    choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr', 'Antibiotika' = 'Antibiotika' ,
-                                'ArbeidstausPreOp' = 'ArbeidstausPreOp','Arbeidstaus3mnd' = 'Arbeidstaus3mnd',
-                                'Arbeidstaus12mnd' = 'Arbeidstaus12mnd', 'ASAgrad' = 'ASAgrad', 'BMI' = 'BMI',
-                                'EqAngstPreOp' = 'EqAngstPreOp', 'ErstatningPreOp' = 'ErstatningPreOp',
-                                'FornoydBeh3mnd' = 'FornoydBeh3mnd', 'FornoydBeh12mnd' = 'FornoydBeh12mnd' ,
-                                'Komorbiditet' = 'Komorbiditet', 'Kompl3mnd' = 'Kompl3mnd', 'KomplOpr' = 'KomplOpr',
-                                'LiggeDognPostop' = 'LiggeDognPostop', 'LiggeDognTotalt' = 'LiggeDognTotalt',
-                                'Morsmal' = 'Morsmal', 'NytteOpr3mnd' = 'NytteOpr3mnd', 'NytteOpr12mnd' = 'NytteOpr12mnd',
-                                'OperasjonsKategori' = 'OperasjonsKategori', 'OprIndik' = 'OprIndik',
-                                'OprIndikPareseGrad' = 'OprIndikPareseGrad', 'OprIndikMyelopati' = 'OprIndikMyelopati',
-                                'OprIndikSmerter' = 'OprIndikSmerter', 'Radiologi' = 'Radiologi', 'Roker' = 'Roker',
-                                'Snuser' = 'Snuser', 'SivilStatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
-                                'SmertestillBrukPreOp' = 'SmertestillBrukPreOp', 'SymptVarighetArmer' = 'SymptVarighetArmer',
-                                'SymptVarighetNakkeHode' = 'SymptVarighetNakkeHode', 'TidlOpr' = 'TidlOpr',
-                                'TidlOprAntall' = 'TidlOprAntall', 'UforetrygdPreOp' = 'UforetrygdPreOp',
+                    choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr',
+                                'Antibiotika' = 'Antibiotika', 'Arbeidstaus før operasjon' = 'ArbeidstausPreOp','Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
+                                'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd', 'ASA-grad' = 'ASAgrad',
+                                'BMI' = 'BMI', 'Angst (EQ5D) før operasjon' = 'EqAngstPreOp',
+                                'Søkt erstatning før operasjon' = 'ErstatningPreOp',
+                                'Fornoydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
+                                'Fornoydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd' ,
+                                'Komorbiditet' = 'Komorbiditet',
+                                'Komplikasjoner, pas.rapp. 3 mnd. etter' = 'Kompl3mnd',
+                                'Kompllikasjoner ved operasjon' = 'KomplOpr',
+                                'Liggedøgn, postoperativt' = 'LiggeDognPostop',
+                                'Liggedøgn, totalt' = 'LiggeDognTotalt',
+                                'Morsmål' = 'Morsmal',
+                                'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
+                                'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
+                                'Operasjonskategori' = 'OperasjonsKategori',
+                                'Operasjonsindikasjon' = 'OprIndik',
+                                'Operasjonsindiaksjon, paresegrad' = 'OprIndikPareseGrad',
+                                'Operasjonsindiaksjon, myelopati' = 'OprIndikMyelopati',
+                                'Operasjonsindiaksjon, smerter' = 'OprIndikSmerter',
+                                'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
+                                'Snuser' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
+                                'Smertestill, bruk preoperativt' = 'SmertestillBrukPreOp',
+                                'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
+                                'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                                'Tidligere operert' = 'TidlOpr',
+                                'Tidligere operert, antall' = 'TidlOprAntall',
+                                'Uforetrygdet før operasjon' = 'UforetrygdPreOp',
                                 'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
         ),
         dateRangeInput(inputId = 'datovalg', start = "2017-01-01", end = Sys.Date(),
@@ -110,22 +122,36 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
         'input.ark == "Sykehusvise andeler"',
         #'input.ark === "Fordelinger" || input.ark === "Sykehusvise andeler" ',
        selectInput(inputId = "valgtVarAndelGrVar", label="Velg variabel",
-                     choices = c('Alder' = 'Alder', 'AndreRelSykdommer' = 'AndreRelSykdommer',
-                     'Antibiotika' = 'Antibiotika', 'ArbeidstausPreOp' = 'ArbeidstausPreOp',
-                     'Arbeidstaus3mnd' = 'Arbeidstaus3mnd', 'Arbeidstaus12mnd' = 'Arbeidstaus12mnd',
-                     'ASAgrad' = 'ASAgrad', 'BMI' = 'BMI',
-                     'EnhverKompl3mnd' = 'EnhverKompl3mnd', 'ErstatningPreOp' = 'ErstatningPreOp',
-                     'FornoydBeh3mnd' = 'FornoydBeh3mnd', 'FornoydBeh12mnd' = 'FornoydBeh12mnd',
-                     'Misfor3mnd' = 'Misfor3mnd', 'Misfor12mnd' = 'Misfor12mnd',
-                     'KomplinfekDyp3mnd' = 'KomplinfekDyp3mnd', 'KomplinfekOverfl3mnd' = 'KomplinfekOverfl3mnd',
-                     'KomplStemme3mnd' = 'KomplStemme3mnd', 'KomplSvelging3mnd' = 'KomplSvelging3mnd',
-                     'NDIendr12mnd30pst' = 'NDIendr12mnd30pst', 'NytteOpr3mnd' = 'NytteOpr3mnd',
-                     'NytteOpr12mnd' = 'NytteOpr12mnd', 'NRSsmerteArmEndr12mnd' = 'NRSsmerteArmEndr12mnd',
-                     'Verre3mnd' = 'Verre3mnd', 'Verre12mnd' = 'Verre12mnd',
-                     'OprIndikMyelopati' = 'OprIndikMyelopati', 'Roker' = 'Roker',
-                     'Saardren' = 'Saardren', 'SmertestillPreOp' = 'SmertestillPreOp',
-                     'SymptVarighetArmer' = 'SymptVarighetArmer', 'SymptVarighetNakkeHode' = 'SymptVarighetNakkeHode',
-                     'UforetrygdPreOp' = 'UforetrygdPreOp', 'Utdanning' = 'Utdanning')
+                     choices = c('Alder' = 'Alder',
+                     'Andre sykdommer' = 'AndreRelSykdommer',
+                     'Antibiotika' = 'Antibiotika',
+                     'Arbeidstaus før operasjon' = 'ArbeidstausPreOp',
+                     'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
+                     'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
+                     'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
+                     'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
+                     'Søkt erstatning før operasjon' = 'ErstatningPreOp',
+                     'Fornøydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
+                     'Fornøydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
+                     'Misfornøyd, 3 mnd. etter' = 'Misfor3mnd',
+                     'Misforøyd, 12 mnd. etter' = 'Misfor12mnd',
+                     'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
+                     'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
+                     'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
+                     'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
+                     'NDIendring over 30%, 12 mnd. etter' = 'NDIendr12mnd30pst',
+                     'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
+                     'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
+                     'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
+                     'Forverring, 3 mnd. etter' = 'Verre3mnd',
+                     'Forverring, 12 mnd. etter' = 'Verre12mnd',
+                     'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
+                     'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
+                     'Smertestillende, preoperativt' = 'SmertestillPreOp',
+                     'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
+                     'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                     'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
+                     'Utdanning' = 'Utdanning')
         ),
         dateRangeInput(inputId = 'datovalgAndelGrVar', start = "2017-01-01", end = Sys.Date(),
                        label = "TidsperiodeAndelGrVar", separator="t.o.m.", language="nb"),
@@ -138,10 +164,18 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
         selectInput(inputId = "myelopatiAndelGrVar", label="Myelopati:",
                     choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
         selectInput(inputId = "fremBakAndelGrVar", label="Tilgang: ",
-                    choices = c("Alle"=0, "Fremre"=1, "Bakre"=2))
-      )
+                    choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+       br(),
+       p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid:')),
+       selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet',
+                   choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
+       ),
+       selectInput(inputId = "tidsenhetAndelTid", label="Velg tidsenhet",
+                   choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                   'Kvartal'='Kvartal', 'Måned'='Mnd')))
 
-    ), #sidebarPanel/kolonna til høyre
+      )
+    ), #sidebarPanel/kolonna til venstre
 
 
 
@@ -186,14 +220,16 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Man kan også gjøre ulike filtreringer."),
                  br(),
+                 br(),
                  plotOutput("fordelinger")),
         tabPanel("Sykehusvise andeler",
-                 h2("Figuren viser sykehusvise andeler for valgt variabel"),
+                 h2("Figurene viser sykehusvise andeler og utvikling over tid for valgt variabel"),
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Man kan også gjøre ulike filtreringer."),
-                 h4(' '),
-                 h4(' '),
-                 plotOutput("andelerGrVar"))
+                 br(),
+                 br(),
+                 plotOutput("andelerGrVar"),
+                 plotOutput("andelTid"))
       )
     ) #mainPanel
   ) #xxrLayout
@@ -225,7 +261,7 @@ server <- function(input, output) {
   RegData$Kvartal <- ceiling(RegData$Mnd/3)
   RegData$Halvaar <- ceiling(RegData$Mnd/6)
   aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
-  reshID <- 601161
+  reshIDdummy <- 601161
 
   #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
   fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
@@ -237,7 +273,6 @@ server <- function(input, output) {
   SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
   SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 
-  reshID <- 601161
   #  texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
   #  texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
 
@@ -343,7 +378,7 @@ server <- function(input, output) {
 
   output$kvalIndFig1 <- renderPlot({
 
-    NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshID,
+    NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshIDdummy,
                    valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
                    myelopati = as.numeric(input$myelopatiKvalInd),
                    fremBak = as.numeric(input$fremBakKvalInd),
@@ -361,7 +396,7 @@ server <- function(input, output) {
   output$fordelinger <- renderPlot({
 
     NakkeFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
-                    reshID=601161, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                    reshID=reshIDdummy, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                     minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                     erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
@@ -372,11 +407,24 @@ server <- function(input, output) {
   output$andelerGrVar <- renderPlot({
 
     NakkeFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndelGrVar,
-                    reshID=601161,
+                    reshID=reshIDdummy,
                     datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
                     minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
                     erMann=as.numeric(input$erMannAndelGrVar), myelopati = as.numeric(input$myelopatiAndelGrVar),
                     fremBak = as.numeric(input$fremBakAndelGrVar))
+  })
+
+  output$andelTid <- renderPlot({
+
+    NakkeFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndelGrVar,
+                         reshID=reshIDdummy,
+                         datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
+                         minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
+                         erMann=as.numeric(input$erMannAndelGrVar),
+                         myelopati = as.numeric(input$myelopatiAndelGrVar),
+                         fremBak = as.numeric(input$fremBakAndelGrVar),
+                     tidsenhet = input$tidsenhetAndelTid,
+                     enhetsUtvalg = input$enhetsUtvalgAndelTid)
   })
 
 }

@@ -61,3 +61,22 @@ http://shiny.rstudio.com/articles/tag-glossary.html
 
 Bibliotek over html-koder:
 https://www.w3schools.com/tags/
+
+
+## Legge til innlogging (autentisering)
+
+https://auth0.com/blog/adding-authentication-to-shiny-server/
+
+
+
+# Les mer om
+## Building a pipeline for reproducible data screening and quality control	
+Claus Ekstrøm
+Anne Helby Petersen
+
+Overview
+One of the biggest challenges for a data analyst is to ensure the reliability of the data since the validity of the conclusions from the analysis hinges on the quality of the input data. This tutorial will cover the workflow of data screening and -validation that transforms raw data into data that can be used for statistical analysis. 
+
+In particular, we will discuss organizing research projects, tidy data formats, internal and external validity of data, requirements for reproducible research, the dataMaid R package for customized data screening, the *assertr* and *assertive* R packages for data validation and data validation rule sets, and how to produce code books that summarize the final result of the data screening process and provide a starting point for the subsequent statistical analyses.
+
+## Package: data.table

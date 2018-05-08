@@ -66,11 +66,11 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
 
   #-------------------------------------
 
-  if (valgtVar=='Alder') {	#Fordeling, #AndelGrVar, GjsnGrVar, GjsnTid
+  if (valgtVar=='Alder') {	#Fordeling, #AndelGrVar,AndelTid, GjsnGrVar, GjsnTid
     RegData <- RegData[which(RegData$Alder>=0), ]    #Tar bort alder<0
     xAkseTxt <- 'alder (år)'
     tittel <- 'Alder ved innleggelse'
-    if (figurtype %in% c('andelTid', 'andelGrVar')) { #AndelGrVar#AndelTid
+    if (figurtype %in% c('andelTid', 'andelGrVar')) { 
       #Pasienter over 70 år
       RegData$Variabel[which(RegData$Alder >= 70)] <- 1
       varTxt <- 'pasienter >=70år'
@@ -474,7 +474,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
 	}
 
 
-if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
+if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
     #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
     RegData$NDIEndr <- 100*(RegData$NDIscorePreOp - RegData$NDIscore12mnd)/RegData$NDIscorePreOp
     indVar <- which(is.finite(RegData$NDIEndr))
@@ -482,6 +482,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     RegData <- RegData[intersect(indVar, indSkjema), ]
     RegData$Variabel[RegData$NDIEndr>=30] <- 1
     tittel <- 'Minst 30% forbedring av NDI, 12 mnd.'
+	varTxt <- 'med NDI>30%'
   }
 	if (valgtVar=='NDIendr12mnd') { #GjsnTid, GjsnGrVar
 		#Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
@@ -516,6 +517,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar
     RegData <- RegData[intersect(indPas ,indVar), ]
     RegData$Variabel[which(RegData$NRSEndr >=30)] <- 1
     tittel <- 'Minst 30% forbedring av NSR-arm, 12 mnd.'
+	varTxt <- 'med NRSendr.>30%'
 	if (figurtype == 'gjsnGrVar') {
 		RegData$Variabel <- RegData[ ,valgtVar]}
 	deltittel <- 'NRS, armsmerte, endring 12 mnd.'
