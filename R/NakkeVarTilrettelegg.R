@@ -70,7 +70,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
     RegData <- RegData[which(RegData$Alder>=0), ]    #Tar bort alder<0
     xAkseTxt <- 'alder (år)'
     tittel <- 'Alder ved innleggelse'
-    if (figurtype %in% c('andelTid', 'andelGrVar')) { 
+    if (figurtype %in% c('andelTid', 'andelGrVar')) {
       #Pasienter over 70 år
       RegData$Variabel[which(RegData$Alder >= 70)] <- 1
       varTxt <- 'pasienter >=70år'
@@ -583,6 +583,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
                       NytteOpr3mnd = RegData[which(RegData$OppFolgStatus3mnd==1), ],
                       NytteOpr12mnd = RegData[which(RegData$OppFolgStatus12mnd==1), ])
     retn <- 'H'
+    RegData$VariabelGr <- 9
     indDum <- which(RegData[ , valgtVar] %in% 1:7)
     RegData$VariabelGr[indDum] <- RegData[indDum, valgtVar]
     oldvalues <- c(1:7,9)
