@@ -78,9 +78,8 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
     }
     if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
       RegData$Variabel <- RegData$Alder  	#GjsnTid, GjsnGrVar
-      tittel <- 'alder ved innleggelse'
 	  xaksetxt <- 'alder (år)'
-	  deltittel <- 'alder'}
+	  deltittel <- 'alder ved innleggelse'}
     if (figurtype == 'andeler') {	#Fordelingsfigur
       gr <- c(seq(0, 100, 10),150)
       gr <- c(0,seq(20,90,10),150)
@@ -213,14 +212,14 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
 		ytxt1 <- '(endring av EMS-skår)'
 		}
 
-if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar
+if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
 	#Pasientskjema. Bare myelopatipasienter (OprIndikMyelopati == 1)
 	indPas <- which(RegData$PasientSkjemaStatus==1)
 	indMye <- which(RegData$OprIndikMyelopati == 1)
 	indVar <- which(RegData[ ,valgtVar] >-1)
 	RegData <- RegData[intersect(intersect(indPas, indMye),indVar), ]
 	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'EMS hos Myelopatipasienter før operasjon'
+	deltittel <- 'EMS hos myelopatipasienter før operasjon'
 	xAkseTxt <- ''
 	}
 

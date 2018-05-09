@@ -119,8 +119,8 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
       ),
 
       conditionalPanel( #
-        'input.ark == "Andeler"',
-        #'input.ark === "Fordelinger" || input.ark === "Andeler" ',
+        'input.ark == "Sykehusvise andeler"',
+        #'input.ark === "Fordelinger" || input.ark === "Sykehusvise andeler" ',
        selectInput(inputId = "valgtVarAndelGrVar", label="Velg variabel",
                      choices = c('Alder' = 'Alder',
                      'Andre sykdommer' = 'AndreRelSykdommer',
@@ -174,51 +174,8 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                    choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
                                    'Kvartal'='Kvartal', 'Måned'='Mnd')))
 
-      ),
-      conditionalPanel( #
-        'input.ark == "Gjennomsnitt"',
-        #'input.ark === "Fordelinger" || input.ark === "Andeler" ',
-        selectInput(inputId = "valgtVarGjsn", label="Velg variabel",
-                    choices = c('Alder' = 'Alder',
-                                'EMS før operasjon, myelopatipasienter' = 'EMSscorePreOp',
-                                'EMS-forbedring, myelopati, 12 mnd.' = 'EMSendr12mnd',
-                                'EMS-forbedring, myelopati, 3 mnd.' = 'EMSendr3mnd',
-                                'EQ5D-forbedring, 12 mnd.' = 'EQ5Dendr12mnd',
-                                'EQ5D-Forbedring, 3 mnd.' = 'EQ5Dendr3mnd',
-                                'Liggetid etter operasjon' = 'LiggeDognPostop',
-                                'Liggetid, totalt' = 'LiggeDognTotalt',
-                                'NDI før operasjon' = 'NDIscorePreOp',
-                                'NDI-forbedring, 3 mnd.' = 'NDIendr3mnd',
-                                'NSR, arm før operasjon' = 'NRSsmerteArmPreOp',
-                                'NSR, nakke før operasjon' = 'NRSsmerteNakkePreOp',
-                                'Total knivtid' = 'KnivtidTotalMin'
-                    )
-        ),
-        dateRangeInput(inputId = 'datovalgGjsn', start = "2017-01-01", end = Sys.Date(),
-                       label = "TidsperiodeGjsn", separator="t.o.m.", language="nb"),
-        selectInput(inputId = "erMannGjsn", label="Kjønn:",
-                    choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
-        ),
-        sliderInput(inputId="alderGjsn", label = "Alder", min = 0,
-                    max = 130, value = c(0, 130)
-        ),
-        selectInput(inputId = "myelopatiGjsn", label="Myelopati:",
-                    choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-        selectInput(inputId = "fremBakGjsn", label="Tilgang: ",
-                    choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-        selectInput(inputId = "sentralmaal", label="Sentralmål: ",
-                    choices = c("Gjennomsnitt"='Gjsn', "Median"='Med')),
-        br(),
-        p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid:')),
-        selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
-                    choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
-        ),
-        selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet",
-                    choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                    'Kvartal'='Kvartal', 'Måned'='Mnd')))
-
       )
-	), #sidebarPanel/kolonna til venstre
+    ), #sidebarPanel/kolonna til venstre
 
 
 
@@ -259,31 +216,22 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                  tableOutput("tabAvdNAar5")
         ),
         tabPanel("Fordelinger",
-                 h3("Fordeling av valgt variabel"),
+                 h3("Figur som viser fordeling av valgt variabel"),
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Man kan også gjøre ulike filtreringer."),
                  br(),
                  br(),
                  plotOutput("fordelinger")),
-        tabPanel("Andeler",
-                 h2("Sykehusvise andeler og utvikling over tid for valgt variabel"),
+        tabPanel("Sykehusvise andeler",
+                 h2("Figurene viser sykehusvise andeler og utvikling over tid for valgt variabel"),
                  h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Man kan også gjøre ulike filtreringer."),
                  br(),
                  br(),
                  plotOutput("andelerGrVar"),
-                 plotOutput("andelTid")),
-      tabPanel("Gjennomsnitt",
-               h2("Sykehusvise gjennomsnitt/median og utvikling over tid for valgt variabel"),
-               h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
-                  til venstre. Man kan også gjøre ulike filtreringer."),
-               br(),
-               br(),
-               plotOutput("gjsnGrVar"),
-               plotOutput("gjsnTid"))
+                 plotOutput("andelTid"))
       )
-#    )
-	) #mainPanel
+    ) #mainPanel
   ) #xxrLayout
 ) #fluidpage, dvs. alt som vises på skjermen
 
@@ -479,27 +427,6 @@ server <- function(input, output) {
                      enhetsUtvalg = input$enhetsUtvalgAndelTid)
   })
 
-  output$gjsnGrVar <- renderPlot({
-    NakkeFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
-                         reshID=reshIDdummy,
-                         datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-                         minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                         erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
-                         fremBak = as.numeric(input$fremBakGjsn),
-                         valgtMaal = input$sentralmaal)
-  })
-
-  output$gjsnTid <- renderPlot({
-    NakkeFigGjsnTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
-                      reshID=reshIDdummy,
-                      datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-                      minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                      erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
-                      fremBak = as.numeric(input$fremBakGjsn),
-                    valgtMaal = input$sentralmaal,
-                    tidsenhet = input$tidsenhetGjsn,
-                    enhetsUtvalg = input$enhetsUtvalgGjsn)
-  })
 }
 
 # Run the application

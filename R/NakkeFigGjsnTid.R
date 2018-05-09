@@ -11,6 +11,7 @@
 #' @param valgtMaal Sentralmål: 'Med' gir median, alt annet gir gjennomsnitt
 #' @inheritParams NakkeFigAndeler
 #' @param valgtVar - Variabelen det skal vises resultat for.
+#'             Alder: alder (år)
 #'             EMSendr12mnd: Forbedring av EMS hos myelopati-pasienter, 12 mnd.
 #'             EMSendr3mnd: Forbedring av EMS hos myelopati-pasienter, 3 mnd.
 #'             EQ5Dendr12mnd: Forbedring av EQ5D, 12 mnd.
@@ -66,7 +67,6 @@ varTxt <- NakkeVarSpes$varTxt
 KIekstrem <- NakkeVarSpes$KIekstrem
 KImaal <- NakkeVarSpes$KImaal
 KImaaltxt <- NakkeVarSpes$KImaaltxt
-tittelUsh <- NakkeVarSpes$tittel
 ytxt1 <- NakkeVarSpes$ytxt1
 
 #Gjør utvalg
@@ -78,8 +78,9 @@ ind <- NakkeUtvalg$ind
 hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 medSml <- NakkeUtvalg$medSml
 
-
-tittel <-  c(tittelUsh, hovedgrTxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), hovedgrTxt)
+t1 <-ifelse(valgtMaal=='Med', 'Median', 'Gjennomsnittlig')
+tleg <- ifelse(valgtMaal=='Med', 'Median', 'Gjennomsnitt')
+tittel <-  c(paste(t1, NakkeVarSpes$deltittel, sep=' '), hovedgrTxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), hovedgrTxt)
 #if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
 
 

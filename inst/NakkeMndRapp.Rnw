@@ -102,7 +102,6 @@ Rapporten viser følgende:
 \item Andel som får sårdren
 \item	Stemmevansker
 \item	Svelgvansker
-\item	Sårinfeksjon
 \item	Fornøydhet med behandlinga på sykehuset
 \item	Nytte av operasjonen
 \item Forbedring av NDI
@@ -169,7 +168,7 @@ tabAvd12MndNskjema <- cbind(
 xtable::xtable(tabAvd12MndNskjema, align=c('l', rep('r', ncol(tabAvd12MndNskjema))),
                digits=c(0,0,0,0,1),
                caption = paste0('Antall ferdigstilte skjema av hver type per måned og avdeling, for operasjoner
-                                  utført siste 12 måneder. For oppfølgingsskjema er antall og andel basert på operasjoner i perioden ', datoFra,' til ', (as.Date(dato)-100),'.'))
+                                  utført siste 12 måneder. For oppfølgingsskjema er antall og andel basert på operasjoner i perioden ', datoFra,' til ', (as.Date(dato)-100),', mens for lege- og pasientskjema er registreringer fram til dagens dato med.'))
 
 @
 \end{frame}

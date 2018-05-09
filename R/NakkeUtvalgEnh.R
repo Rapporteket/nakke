@@ -26,6 +26,7 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
   indAar <- if (aar[1] > 2000) {which(RegData$Aar %in% as.numeric(aar))} else {indAar <- 1:Ninn}
   indKj <- if (erMann %in% 0:1) {which(RegData$ErMann == erMann)} else {indKj <- 1:Ninn}
   indMyelo <- if (myelopati %in% 0:1) {which(RegData$OprIndikMyelopati == myelopati)} else {indMyelo <- 1:Ninn}
+  #Myelopati: NA=0
   indFremBak <- switch(as.character(fremBak),
                        '0' = 1:Ninn,
                        '1' = which(RegData$OprMetodeTilgangFremre==1),
