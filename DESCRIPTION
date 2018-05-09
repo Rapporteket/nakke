@@ -6,8 +6,8 @@ Description: Alle R-baserte resultattjenester på Rapporteket for Degenerativ
     Nakke. Dette inkluderer R-funksjoner for analyse og visualisering, noweb-
     filer (generere LaTeX-dokumenter) og evt. logofiler o.l. Kan også inkludere
     kjørefiler og eksempeldatasett.
-Version: 0.2
-Date: 2016-02-10
+Version: 1.5
+Date: 2018-04-10
 Author: Lena Ringstad Olsen, Nasjonalt Servicemiljo for Kvalitetsregistre, SKDE
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Depends:
@@ -17,7 +17,11 @@ License: GPL-2
 LazyData: TRUE
 Imports:
     knitr,
+    lubridate,
+    zoo,
     xtable
+Remotes:
+    Rapporteket/rapbase
 Suggests:
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
