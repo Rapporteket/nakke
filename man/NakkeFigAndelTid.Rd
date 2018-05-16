@@ -58,6 +58,10 @@ Verre3mnd. Klart verre, 3 mnd.}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
 
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
+
 \item{reshID}{Avdelingsid (reshID) for egen avdeling,}
 
 \item{outfile}{Navn på fil figuren skrives ned til}

@@ -33,6 +33,10 @@ NRSsmerteNakkePreOp: NSR, nakke før operasjon}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
 
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
+
 \item{minald}{Alder, fra og med}
 
 \item{maxald}{Alder, til og med}

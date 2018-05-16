@@ -6,6 +6,7 @@
 #'
 #'
 #' @inheritParams NakkeFigAndeler
+#' @inheritParams NakkeUtvalgEnh
 #' @param Ngrense Minste antall registreringer for at ei gruppe skal bli vist
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling

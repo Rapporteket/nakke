@@ -7,7 +7,9 @@
 #' Her kan mye hentes til analysebok
 #'
 #' @inheritParams NakkeFigAndeler
-#' @inheritParams NakkeUtvalgEnh
+#' @param valgtVar parameter som angir hvilke(n) variabel man ønsker å tilrettelegge for videre
+#' beregning.
+#' @param ktr Angir om 3 eller 12 mnd kontroll. 0-ikke valgt (standard), 1-3mnd., 2-12mnd.,
 #' @param figurtype Hvilken figurtype det skal tilrettelegges variable for:
 #'                'andeler', 'andelGrVar', 'andelTid', 'gjsnGrVar', 'gjsnTid'
 #'

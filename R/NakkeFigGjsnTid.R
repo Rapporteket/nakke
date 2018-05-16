@@ -10,6 +10,7 @@
 #'
 #' @param valgtMaal Sentralmål: 'Med' gir median, alt annet gir gjennomsnitt
 #' @inheritParams NakkeFigAndeler
+#' @inheritParams NakkeUtvalgEnh
 #' @param valgtVar - Variabelen det skal vises resultat for.
 #'             Alder: alder (år)
 #'             EMSendr12mnd: Forbedring av EMS hos myelopati-pasienter, 12 mnd.
