@@ -5,6 +5,7 @@
 #'
 #' Detaljer
 #'
+#' @inheritParams NakkeUtvalgEnh
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling
 #'             AndreRelSykdommer: Andre sykdommer

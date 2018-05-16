@@ -1,0 +1,13 @@
+name: NakkeTest
+title: NakkeTest
+username:
+account: lenatest
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 321489
+bundleId: 1317117
+url: https://lenatest.shinyapps.io/NakkeTest/
+when: 1523619904.54
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .txt|Shinykommandoer egen manual.Rmd|Are

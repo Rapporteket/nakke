@@ -11,12 +11,7 @@
 #'					1: kjør
 #' @param preprosess Skal data preprosesseres, dvs. gjøre standard omregning av variable og beregne nye.
 #'						TRUE (standard) / FALSE
-#' @param datoFra Operasjonsdato, fra og med. Standard: '2012-01-01'
-#' @param datoTil Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)
-#' @param minald Alder, fra og med
-#' @param maxald Alder, til og med
-#' @param erMann Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-#' @param enhetsUtvalg Sammenlikning eller ikke: 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+#' @inheritParams NakkeUtvalgEnh
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling
 #'             AntallNivaaOpr: Antall nivå operert
@@ -50,6 +45,7 @@
 #'             Utdanning: Utdanningsnivå
 #'
 #' Detajer...:
+#' @inheritParams NakkeUtvalgEnh
 #'
 #' @return En figur med søylediagram (fordeling) av ønsket variabel
 #'

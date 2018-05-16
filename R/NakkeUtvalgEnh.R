@@ -3,6 +3,14 @@
 #' Funksjon som gjør utvalg av dataene, returnerer det reduserte datasettet og utvalgsteksten.
 #'
 #' @inheritParams NakkeFigAndeler
+#' @param datoFra Operasjonsdato, fra og med. Standard: '2012-01-01'
+#' @param datoTil Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)
+#' @param minald Alder, fra og med
+#' @param maxald Alder, til og med
+#' @param erMann Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
+#' @param enhetsUtvalg Sammenlikning eller ikke: 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+#' @param fremBak Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre
+#' @param myelopati Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)
 #' @param fargepalett - Velge fargepalett, standard:BlaaOff ("offentliggjøringsfargene")
 #'
 #' @export

@@ -59,6 +59,10 @@ Verre3mnd. Klart verre, 3 mnd.}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
 
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
+
 \item{Ngrense}{Minste antall registreringer for at ei gruppe skal bli vist}
 
 \item{hentData}{Angir om funksjonen skal kjøre spørring for å hente data eller ikke.
