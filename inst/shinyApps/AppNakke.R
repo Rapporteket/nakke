@@ -183,12 +183,14 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                 'EMS før operasjon, myelopatipasienter' = 'EMSscorePreOp',
                                 'EMS-forbedring, myelopati, 12 mnd.' = 'EMSendr12mnd',
                                 'EMS-forbedring, myelopati, 3 mnd.' = 'EMSendr3mnd',
+                                'EQ5D før operasjon' = 'Eq5DScorePreOp',
                                 'EQ5D-forbedring, 12 mnd.' = 'EQ5Dendr12mnd',
                                 'EQ5D-Forbedring, 3 mnd.' = 'EQ5Dendr3mnd',
                                 'Liggetid etter operasjon' = 'LiggeDognPostop',
                                 'Liggetid, totalt' = 'LiggeDognTotalt',
                                 'NDI før operasjon' = 'NDIscorePreOp',
                                 'NDI-forbedring, 3 mnd.' = 'NDIendr3mnd',
+                                'NDI-forbedring, 12 mnd.' = 'NDIendr12mnd',
                                 'NSR, arm før operasjon' = 'NRSsmerteArmPreOp',
                                 'NSR, nakke før operasjon' = 'NRSsmerteNakkePreOp',
                                 'Total knivtid' = 'KnivtidTotalMin'
@@ -253,6 +255,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                  tableOutput("tabAvdMnd12"),
                  br(),
                  h2("Ferdigstilte skjema ved hver avdeling for valgte 12 måneder"),
+                 p(em("Velg tidsperiode ved å velge sluttdato i menyen til venstre")),
                  tableOutput("tabAvdSkjema12"),
                  br(),
                  h2("Antall registreringer per år og avdeling, siste 5 år"),
@@ -359,6 +362,7 @@ server <- function(input, output) {
     SkjemaDataFerdig <- SkjemaData[SkjemaData$SkjemaStatus ==1, ]
     #Flyttes til overvåkning
     datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
+
     #datoFra12 <- '2017-03-01'
     #SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt('2018-04-30')
     SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(input$datoTil)
@@ -385,7 +389,8 @@ server <- function(input, output) {
       'Oppfølging 12 mnd. (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf12mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, 1)
     )
     #sprintf('%1.3f'
-    xtable::xtable(tabAvd12MndNskjema,  align = c('l', rep('r', ncol(tabAvd12MndNskjema))))
+    xtable::xtable(tabAvd12MndNskjema,  align = c('l', rep('r', ncol(tabAvd12MndNskjema))),
+                   caption= paste0('Tidsperiode: ', as.POSIXlt(datoFra12), 'til', as.POSIXlt(input$datoTil)))
   },
   rownames = T, align= 'r' #
   ) #digits=1,

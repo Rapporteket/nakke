@@ -126,6 +126,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
 
 
           FigTypUt <- figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
+                  #Påvirker ikke filtype ''
           farger <- FigTypUt$farger
           #Tilpasse marger for å kunne skrive utvalgsteksten
           NutvTxt <- length(utvalgTxt)

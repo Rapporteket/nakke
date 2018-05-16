@@ -256,7 +256,7 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
  		ytxt1 <- '(endring av EQ5D-skår)'
 		}
 
-if (valgtVar=='Eq5DScorePreOp') { #gjsnTid
+if (valgtVar=='Eq5DScorePreOp') { #gjsnTid, gjsnGrVar
      #Pasientkjema.
      KIekstrem <- c(-0.6, 1)
      indVar <- which(RegData[ , valgtVar] >= KIekstrem[1])
@@ -264,6 +264,7 @@ if (valgtVar=='Eq5DScorePreOp') { #gjsnTid
      RegData <- RegData[intersect(indVar, indSkjema), ]
      RegData$Variabel <- RegData[, valgtVar]
      tittel <- 'EQ5D før operasjon'
+     deltittel <- 'EQ5D før operasjon'
      ytxt1 <- '(EQ5D-skåring)'
 }
 
@@ -538,9 +539,10 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
     xAkseTxt <- 'skåring'
   }
 
-	if (valgtVar == 'NRSsmerteArmPreOp') { #GjsnGrVar
+	if (valgtVar == 'NRSsmerteArmPreOp') { #GjsnGrVar, GjsnTid
 	#Pasientskjema.
-	indPas <- which(RegData$PasientSkjemaStatus==1)
+	  KIekstrem <- c(0,10)
+	  indPas <- which(RegData$PasientSkjemaStatus==1)
 	indVar <- which(RegData[ ,valgtVar] >-1)
 	RegData <- RegData[intersect(indPas ,indVar), ]
 	RegData$Variabel <- RegData[ ,valgtVar]
@@ -560,8 +562,9 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
     tittel <- deltittel
     xAkseTxt <- 'skåring'
   }
-  if (valgtVar == 'NRSsmerteNakkePreOp') { #GjsnGrVar
+  if (valgtVar == 'NRSsmerteNakkePreOp') { #GjsnGrVar, GjsnTid
     #Pasientskjema.
+    KIekstrem <- c(0,10)
     indPas <- which(RegData$PasientSkjemaStatus==1)
     indVar <- which(RegData[ ,valgtVar] >-1)
     RegData <- RegData[intersect(indPas ,indVar), ]
