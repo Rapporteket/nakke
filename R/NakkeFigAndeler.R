@@ -182,7 +182,7 @@ cexgr <- 1	#Kan endres for enkeltvariable
 FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
 #Tilpasse marger for å kunne skrive utvalgsteksten
 vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.7))
-par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
+par('fig'=c(vmarg, 1, 0, 1-0.025*(NutvTxt-1)))	#Har alltid datoutvalg med
 
 farger <- FigTypUt$farger
 fargeHoved <- farger[1]
@@ -235,10 +235,10 @@ if (NakkeUtvalg$medSml == 1) {
 	}
 }
 
-title(tittel, line=1, font.main=1)
+title(tittel, line=1, font.main=1, cex.main=1.3)
 
 #Tekst som angir hvilket utvalg som er gjort
-mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
 
 par('fig'=c(0, 1, 0, 1))
 if ( outfile != '') {dev.off()}

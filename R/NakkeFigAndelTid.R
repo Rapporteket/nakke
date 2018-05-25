@@ -230,7 +230,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
 
                   axis(side=1, at = xskala, labels = tidtxt, cex.axis=0.85)
 
-                  title(tittel, line=1, font.main=1)
+                  title(tittel, line=1, font.main=1, cex.main=1.3)
 
 
                   lines(xskala, AggVerdier$Hoved, col=fargeHoved, lwd=3)
@@ -257,7 +257,8 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
                   }
 
                   #Tekst som angir hvilket utvalg som er gjort
-                  mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=fargeRest, line=c(3+0.8*((NutvTxt-1):0)))
+                  mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
+                  #                  mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=fargeRest, line=c(3+0.8*((NutvTxt-1):0)))
 
                   par('fig'=c(0, 1, 0, 1))
                   if ( outfile != '') {dev.off()}

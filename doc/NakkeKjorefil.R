@@ -60,15 +60,15 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	#load(paste0(fil,".Rdata")) #RegData
 	load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
-	datoFra='2017-03-01'
+	datoFra='2017-01-01'
 	datoTil='3000-12-31'
 	reshID <- 601161 #De tre med flest reg:
-	enhetsUtvalg=1
+	enhetsUtvalg=0
 	minald=0
 	maxald=130
-	erMann=''
-	myelopati=0
-	fremBak=1
+	erMann=9
+	myelopati=9
+	fremBak=9
 	Ngrense=10
 	grVar='ShNavn'
 	ktr=0
@@ -125,8 +125,8 @@ setwd("C:/ResultattjenesteGIT/Nakke/")
 valgtVar <- 'OprIndikSmerter' #OprIndikSmerter'
 outfile <- '' #paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 
-NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
-           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
+NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,myelopati = myelopati,
+           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, fremBak = 1,
            reshID=reshID, enhetsUtvalg=0, hentData=0, outfile=outfile)
 
 variable <- c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprIndikSmerter',

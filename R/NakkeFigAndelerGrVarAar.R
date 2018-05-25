@@ -292,7 +292,8 @@ smltxt <- NakkeUtvalg$smltxt
                  las=1, cex=0.8, adj=0, col=farger[1])	#Andeler, hvert sykehus
 
             #Tekst som angir hvilket utvalg som er gjort
-            mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+            mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
+            #            mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
 
 
             par('fig'=c(0, 1, 0, 1))

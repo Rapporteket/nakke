@@ -219,11 +219,12 @@ arrows(x0=xskala, y0=Midt+h, x1=xskala, y1=replace(Konf[2, ], ind, Midt[ind]+h),
 		length=0.08, code=2, angle=90, col=fargeHovedRes, lwd=1.5)
 
 #if (tittel==1) {
-  title(main=tittel, font.main=1, line=1)
+title(tittel, line=1, font.main=1, cex.main=1.3)
 #Tekst som angir hvilket utvalg som er gjort
 #if (length(utvalgTxt)>0) {
   #mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3-(1-tittel)+0.8*((NutvTxt-1):0)))}
-  mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+  mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
+  #  mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
 
 if ( outfile != '') {dev.off()}
 
