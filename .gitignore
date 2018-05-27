@@ -14,5 +14,5 @@ NakkeFigAndelGrVar FEIL.jrxml
 *.toc
 *.vrb
 *.tex
-aarsrapp
+aarsrapp/*
 /aarsrapp

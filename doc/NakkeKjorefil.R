@@ -60,7 +60,7 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	#load(paste0(fil,".Rdata")) #RegData
 	load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
-	datoFra='2017-01-01'
+	datoFra='2016-01-01'
 	datoTil='3000-12-31'
 	reshID <- 601161 #De tre med flest reg:
 	enhetsUtvalg=0
@@ -103,7 +103,7 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 #------------------------------ Andeler flere var --------------------------
 #------------------------------ (Fordelinger) --------------------------
 
-#Offentliggjøring fra 2016
+#---------------Offentliggjøring fra 2016----------------
 setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp/2016')
 
 #Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
@@ -205,12 +205,12 @@ setwd("C:/ResultattjenesteGIT/Nakke/")
 reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
 maxald <- 130	#alder, til og med
-datoFra <- '2016-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2016-12-31'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'ErstatningPreOp'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'NDIendr12mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
