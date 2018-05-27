@@ -56,9 +56,9 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
         selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
                     choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
                                 'Kvartal'='Kvartal', 'Måned'='Mnd'))),
-        selectInput(inputId = "myelopatiKvalInd", label="Myelopati:",
+        selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
                     choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-        selectInput(inputId = "fremBakKvalInd", label="Tilgang: ",
+        selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
                     choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
         selectInput(inputId = 'enhetsUtvalgKvalInd', label='Egen enhet og/eller landet',
                     choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
@@ -101,15 +101,15 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
         ),
         dateRangeInput(inputId = 'datovalg', start = "2017-01-01", end = Sys.Date(),
                        label = "Tidsperiode", separator="t.o.m.", language="nb"),
-        selectInput(inputId = "erMann", label="Kjønn:",
+        selectInput(inputId = "erMann", label="Kjønn",
                     choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
         ),
         sliderInput(inputId="alder", label = "Alder", min = 0,
-                    max = 130, value = c(0, 130)
+                    max = 110, value = c(0, 110)
         ),
-        selectInput(inputId = "myelopati", label="Myelopati:",
+        selectInput(inputId = "myelopati", label="Myelopati",
                     choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-        selectInput(inputId = "fremBak", label="Tilgang: ",
+        selectInput(inputId = "fremBak", label="Tilgang ",
                     choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
         selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
                     choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
@@ -154,19 +154,19 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                      'Utdanning' = 'Utdanning')
         ),
         dateRangeInput(inputId = 'datovalgAndelGrVar', start = "2017-01-01", end = Sys.Date(),
-                       label = "TidsperiodeAndelGrVar", separator="t.o.m.", language="nb"),
-        selectInput(inputId = "erMannAndelGrVar", label="Kjønn:",
+                       label = "Tidsperiode", separator="t.o.m.", language="nb"),
+        selectInput(inputId = "erMannAndelGrVar", label="Kjønn",
                     choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
         ),
         sliderInput(inputId="alderAndelGrVar", label = "Alder", min = 0,
-                    max = 130, value = c(0, 130)
+                    max = 110, value = c(0, 110)
         ),
-        selectInput(inputId = "myelopatiAndelGrVar", label="Myelopati:",
+        selectInput(inputId = "myelopatiAndelGrVar", label="Myelopati",
                     choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-        selectInput(inputId = "fremBakAndelGrVar", label="Tilgang: ",
+        selectInput(inputId = "fremBakAndelGrVar", label="Tilgang ",
                     choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
        br(),
-       p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid:')),
+       p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
        selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet',
                    choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
        ),
@@ -197,21 +197,21 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                     )
         ),
         dateRangeInput(inputId = 'datovalgGjsn', start = "2017-01-01", end = Sys.Date(),
-                       label = "TidsperiodeGjsn", separator="t.o.m.", language="nb"),
-        selectInput(inputId = "erMannGjsn", label="Kjønn:",
+                       label = "Tidsperiode", separator="t.o.m.", language="nb"),
+        selectInput(inputId = "erMannGjsn", label="Kjønn",
                     choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
         ),
         sliderInput(inputId="alderGjsn", label = "Alder", min = 0,
-                    max = 130, value = c(0, 130)
+                    max = 110, value = c(0, 110)
         ),
-        selectInput(inputId = "myelopatiGjsn", label="Myelopati:",
+        selectInput(inputId = "myelopatiGjsn", label="Myelopati",
                     choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-        selectInput(inputId = "fremBakGjsn", label="Tilgang: ",
+        selectInput(inputId = "fremBakGjsn", label="Tilgang ",
                     choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-        selectInput(inputId = "sentralmaal", label="Sentralmål: ",
+        selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
                     choices = c("Gjennomsnitt"='Gjsn', "Median"='Med')),
         br(),
-        p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid:')),
+        p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
         selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
                     choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
         ),
@@ -233,7 +233,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
         tabPanel("Viktigste resultater",
                  #fluidRow(
                    #column(width=5,
-                 h2("Månedsrapport:"), #),
+                 h2("Månedsrapport"), #),
                    #column(width=2,
                  downloadButton(outputId = 'mndRapp.pdf', label='FUNKER pt IKKE', class = "butt"),
                  tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color

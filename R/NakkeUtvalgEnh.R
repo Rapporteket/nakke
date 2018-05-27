@@ -15,7 +15,7 @@
 #'
 #' @export
 
-NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', minald=0, maxald=130, erMann='', aar=0,
+NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', minald=0, maxald=110, erMann='', aar=0,
                            myelopati=99, fremBak=0, enhetsUtvalg=0, reshID=0, fargepalett='BlaaOff')	#insttype,
 {
 
@@ -51,7 +51,7 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
   utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
                         ' til ', if (N>0) {max(RegData$InnDato, na.rm=T)} else {datoTil}),
-                 if ((minald>0) | (maxald<130)) {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
+                 if ((minald>0) | (maxald<110)) {paste0('Pasienter fra ', if (N>0) {min(RegData$Alder, na.rm=T)} else {minald},
                                                         ' til ', if (N>0) {max(RegData$Alder, na.rm=T)} else {maxald}, ' år')},
                  if (erMann %in% 0:1) {paste0('Kjønn: ', c('Kvinner', 'Menn')[erMann+1])},
                  if (myelopati %in% 0:1) {paste0('Myelopati: ', c('Nei', 'Ja')[myelopati+1])},
