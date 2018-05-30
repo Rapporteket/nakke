@@ -65,7 +65,7 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	reshID <- 601161 #De tre med flest reg:
 	enhetsUtvalg=0
 	minald=0
-	maxald=130
+	maxald=110
 	erMann=9
 	myelopati=9
 	fremBak=9
@@ -156,7 +156,7 @@ for (valgtVar in variable) {
 #...NB: SkjemaID
 reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
+maxald <- 110	#alder, til og med
 datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2018-04-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
@@ -204,7 +204,7 @@ setwd("C:/ResultattjenesteGIT/Nakke/")
 #...NB: SkjemaID
 reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
+maxald <- 110	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2016-12-31'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
@@ -270,7 +270,7 @@ RegData <- NakkeData
 #...NB: SkjemaID
 reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
+maxald <- 110	#alder, til og med
 datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
 datoTil <- '2018-06-01'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
