@@ -54,9 +54,9 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 	RegData <- NakkeData
 	#RegData$SykehusNavn <- enc2native(as.character(RegData$SykehusNavn))
-	#RegData <- NakkePreprosess(RegData=RegData)
-	#RegData <- RegData[which(RegData$Aar<2017),]
-	#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
+	RegData <- NakkePreprosess(RegData=RegData)
+	NakkeData <- RegData[which(RegData$Aar<2018),]
+	save(NakkeData, file=paste0('A:/Nakke/','NakkeAarsrapp2017','.Rdata'))
 	#load(paste0(fil,".Rdata")) #RegData
 	load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
@@ -352,6 +352,22 @@ ind <- which(RegData$OppFolgStatus3mnd==1)
 write.table(RegData[ind,variable], file='A:/NakkeTilOff.csv', sep=';', row.names = F)
 
 
+#------------------ Data til NPR, Dekningsgradsanalyse
+'SELECT ForlopsID, Alder, Kjonn, Organisasjon, AvdRESH, SykehusNavn, 
+OprDato, OprKode, InngrepType, Dagkirurgi
+FROM AlleVarNum
+WHERE (OprDato >= '2017-01-01' AND OprDato <= '2017-12-31')'
+variable <- c('ForlopsID', 'Alder', 'FodselsDato', 'Kjonn', 
+              'AvdRESH', 'Avdeling', 'OprDato', 'OprKode', 'InngrepType', 'Dagkirurgi')
+Har ikke: RHF_RESH, RHF, ORG_RESH, Organisasjon,ORG_RESH
+Endret: AVD_RESH -> AvdRESH, Avdeling->SykehusNavn, 
+
+NakkeNPR2017data <- read.table('A:/Nakke/NakkeNPR2017data.csv', sep=';', header=T, encoding = 'UTF-8', stringsAsFactors = FALSE)  # na.strings = "NULL", 
+NakkeNPR2017data$OprDato <- as.Date(NakkeNPR2017data$OprDato, format='%Y-%m-%d')
+NakkeNPR2017data$FodselsDato <- as.Date(NakkeNPR2017data$FodselsDato, format='%Y-%m-%d')
+write.table(NakkeNPR2017data, file="A:/Nakke/NakkeNPR2017data.csv", sep=';')
+
+NakkeNPR2017data <- read.table('A:/Nakke/NakkeNPR2017persnr.csv', sep=';', header=T, encoding = 'UTF-8', stringsAsFactors = FALSE)  # na.strings = "NULL", 
 
 
 #------------------------------ Shiny --------------------------

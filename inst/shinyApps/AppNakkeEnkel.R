@@ -6,40 +6,21 @@
 #
 #    http://shiny.rstudio.com/
 #
+
 #Hvert "conditionalPanel" er området til venstre med rullegardinmenyer, spesifiseres for hver enkelt side.
 #I "tabPanel" viser man fram figurer/tabeller
 #I "server"-delen gjøres alle beregninger og legges i "output"
 
 library(shiny)
 library(knitr)
-#ibrary(shinyBS) # Additional Bootstrap Controls
-
-# ui <- shinyUI(basicPage(
-#   downloadButton('report')
-# ))
-#
-# server <- function(input, output) {
-#   output$report = downloadHandler(
-#     filename = 'MndRapp.pdf',
-#     content = function(file) {
-#       out = knit2pdf('C:/ResultattjenesteGIT/Nakke/inst/NakkeMndRapp.Rnw', encoding = 'UTF-8', clean = TRUE)
-#       file.rename(out, file) # move pdf to file for downloading
-#     },
-#     contentType = 'application/pdf'
-#   )
-#
-# }
-
 
 # Define UI for application that draws figures
 ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   # Application title
-  titlePanel("Testing testing, Nakke"),
+  titlePanel("TEST, enkel versjon basert på fiktive Nakkedata"),
 
   # Velge sykehus og vise antall
-  #sidebarLayout( #Definerer overordnet layout med en sidekolonne og ett hovedpanel.
-    #sidebarPanel( #Området som viser "valgbokser"
 	fluidRow(column(width = 3, #Første kolonne. Alternativ til sidebarLayout(sidebarPanel())
       conditionalPanel( #Ønsker ulike valgmuligheter for ulike faner/ark
         'input.ark == "Tabeller"',
@@ -50,27 +31,9 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                     choices = c("Ikke valgt"=2, "Ferdigstilt"=1, "Kladd"=0))
       ),
 
-      conditionalPanel(
-        'input.ark == "Viktigste resultater"',
-        selectInput(inputId = "valgtVarKvalInd", label="Velg variabel",
-                    choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
-                                'Komplikasjon, svelging' = 'KomplSvelging3mnd')),
-        dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = "2017-01-01"),
-        selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
-                    choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                'Kvartal'='Kvartal', 'Måned'='Mnd'))),
-        selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
-                    choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-        selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
-                    choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-        selectInput(inputId = 'enhetsUtvalgKvalInd', label='Egen enhet og/eller landet',
-                    choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
-        )
-      ),
       conditionalPanel( #Denne skal bare vises for figursamlinger
         'input.ark == "Fordelinger"',
-        #'input.ark === "Fordelinger" || input.ark === "Sykehusvise andeler" ',
-
+        #Rullegardinmeny for valgtVar:
         selectInput(inputId = "valgtVar", label="Velg variabel",
                     choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr',
                                 'Antibiotika' = 'Antibiotika', 'Arbeidstaus før operasjon' = 'ArbeidstausPreOp','Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
@@ -86,19 +49,6 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                 'Liggedøgn, totalt' = 'LiggeDognTotalt',
                                 'Morsmål' = 'Morsmal',
                                 'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
-                                'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
-                                'Operasjonskategori' = 'OperasjonsKategori',
-                                'Operasjonsindikasjon' = 'OprIndik',
-                                'Operasjonsindiaksjon, paresegrad' = 'OprIndikPareseGrad',
-                                'Operasjonsindiaksjon, myelopati' = 'OprIndikMyelopati',
-                                'Operasjonsindiaksjon, smerter' = 'OprIndikSmerter',
-                                'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
-                                'Snuser' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
-                                'Smertestill, bruk preoperativt' = 'SmertestillBrukPreOp',
-                                'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
-                                'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
-                                'Tidligere operert' = 'TidlOpr',
-                                'Tidligere operert, antall' = 'TidlOprAntall',
                                 'Uforetrygdet før operasjon' = 'UforetrygdPreOp',
                                 'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
         ),
@@ -128,29 +78,13 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                      choices = c('Alder' = 'Alder',
                      'Andre sykdommer' = 'AndreRelSykdommer',
                      'Antibiotika' = 'Antibiotika',
-                     'Arbeidstaus før operasjon' = 'ArbeidstausPreOp',
-                     'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
-                     'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
-                     'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
+                     'BMI' = 'BMI',
                      'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
                      'Søkt erstatning før operasjon' = 'ErstatningPreOp',
-                     'Fornøydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
                      'Fornøydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
                      'Misfornøyd, 3 mnd. etter' = 'Misfor3mnd',
-                     'Misforøyd, 12 mnd. etter' = 'Misfor12mnd',
                      'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
-                     'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
-                     'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
-                     'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
-                     'NDIendring over 30%, 12 mnd. etter' = 'NDIendr12mnd30pst',
-                     'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
-                     'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
-                     'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
-                     'Forverring, 3 mnd. etter' = 'Verre3mnd',
-                     'Forverring, 12 mnd. etter' = 'Verre12mnd',
                      'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
-                     'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
-                     'Smertestillende, preoperativt' = 'SmertestillPreOp',
                      'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                      'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
                      'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
@@ -177,51 +111,6 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                    choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
                                    'Kvartal'='Kvartal', 'Måned'='Mnd')))
 
-      ),
-      conditionalPanel( #
-        'input.ark == "Gjennomsnitt"',
-        #'input.ark === "Fordelinger" || input.ark === "Andeler" ',
-        selectInput(inputId = "valgtVarGjsn", label="Velg variabel",
-                    choices = c('Alder' = 'Alder',
-                                'EMS før operasjon, myelopatipasienter' = 'EMSscorePreOp',
-                                'EMS-forbedring, myelopati, 12 mnd.' = 'EMSendr12mnd',
-                                'EMS-forbedring, myelopati, 3 mnd.' = 'EMSendr3mnd',
-                                'EQ5D før operasjon' = 'Eq5DScorePreOp',
-                                'EQ5D-forbedring, 12 mnd.' = 'EQ5Dendr12mnd',
-                                'EQ5D-Forbedring, 3 mnd.' = 'EQ5Dendr3mnd',
-                                'Liggetid etter operasjon' = 'LiggeDognPostop',
-                                'Liggetid, totalt' = 'LiggeDognTotalt',
-                                'NDI før operasjon' = 'NDIscorePreOp',
-                                'NDI-forbedring, 3 mnd.' = 'NDIendr3mnd',
-                                'NDI-forbedring, 12 mnd.' = 'NDIendr12mnd',
-                                'NSR, arm før operasjon' = 'NRSsmerteArmPreOp',
-                                'NSR, nakke før operasjon' = 'NRSsmerteNakkePreOp',
-                                'Total knivtid' = 'KnivtidTotalMin'
-                    )
-        ),
-        dateRangeInput(inputId = 'datovalgGjsn', start = "2017-01-01", end = Sys.Date(),
-                       label = "Tidsperiode", separator="t.o.m.", language="nb"),
-        selectInput(inputId = "erMannGjsn", label="Kjønn",
-                    choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
-        ),
-        sliderInput(inputId="alderGjsn", label = "Alder", min = 0,
-                    max = 110, value = c(0, 110)
-        ),
-        selectInput(inputId = "myelopatiGjsn", label="Myelopati",
-                    choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-        selectInput(inputId = "fremBakGjsn", label="Tilgang ",
-                    choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-        selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
-                    choices = c("Gjennomsnitt"='Gjsn', "Median"='Med')),
-        br(),
-        p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
-        selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
-                    choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
-        ),
-        selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet",
-                    choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                    'Kvartal'='Kvartal', 'Måned'='Mnd')))
-
       )
 	), #sidebarPanel/kolonna til venstre
 
@@ -233,27 +122,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
       tabsetPanel( #
         id='ark',
 
-        tabPanel("Viktigste resultater",
-                 #fluidRow(
-                   #column(width=5,
-                 h2("Månedsrapport"), #),
-                   #column(width=2,
-                 downloadButton(outputId = 'mndRapp.pdf', label='FUNKER pt IKKE', class = "butt"),
-                 tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
-                   #)),
-                 br(),
-                 br(),
-                 br(),
-                 br(),
-                 br(),
-                 h2("Kvalitetsindikatorer", align='center' ),
-                 br(),
-                 h3(em("Utvikling over tid")),
-                 plotOutput("kvalIndFig1"),
-                 br(),
-                 h3(em("Sykehusvise resultater")),
-                 plotOutput("kvalIndFig2")),
-        tabPanel("Tabeller",
+         tabPanel("Tabeller",
                  h2("Antall registreringer per måned og avdeling"),
                  tableOutput("tabAvdMnd12"),
                  br(),
@@ -278,15 +147,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                  br(),
                  br(),
                  plotOutput("andelerGrVar"),
-                 plotOutput("andelTid")),
-      tabPanel("Gjennomsnitt",
-               h2("Sykehusvise gjennomsnitt/median og utvikling over tid for valgt variabel"),
-               h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
-                  til venstre. Man kan også gjøre ulike filtreringer."),
-               br(),
-               br(),
-               plotOutput("gjsnGrVar"),
-               plotOutput("gjsnTid"))
+                 plotOutput("andelTid"))
       )
 #    )
 	) #mainPanel
@@ -330,18 +191,6 @@ server <- function(input, output) {
   SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
   SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
   SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
-
-  #  texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
-  #  texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
-
-
-
-  #Felles reaktive tabeller
-  #   reactive({
-  #   SkjemaData <- SkjemaData[which(SkjemaData$SkjemaStatus == input$status), ]
-  #   SkjemaData12mnd <- SkjemaData[as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d") > as.POSIXlt(datoFra12), ]
-  #
-  # })
 
   output$tabAvdMnd12 <- renderTable({
     datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
@@ -409,49 +258,6 @@ server <- function(input, output) {
   },
   rownames = T, digits=0)
 
-#output$tekstDash <- c('Figurer med kvalitetsindikatorer',
-#                      'hente ned månedsrapport'),
-  output$mndRapp.pdf = downloadHandler(
-     filename = 'MndRapp.pdf',
-    #content = function(file) file.copy(system.file('NakkeMndRapp.pdf', package = 'Nakke'), file, overwrite = TRUE),
-    content = function(file) {
-      # permission to the current working directory
-      src <- normalizePath(system.file('NakkeMndRapp.Rnw', package='Nakke'))
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      file.copy(src, 'NakkeMndRapp.Rnw', overwrite = TRUE)
-
-        texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
-        texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
-      # #help(render_latex)
-#       out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
-         #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
-#      file.rename(out, file) # move pdf to file for downloading
-        #file.copy(system.file('NakkeMndRapp.pdf', package='Nakke'), file)
-        file.copy('NakkeMndRapp.pdf', file)
-
-    },
-    contentType = 'application/pdf'
-  )
-#  If you already have made the PDF file, you can just copy it to file, i.e.
-#  content = function(file) file.copy('your_existing.pdf', file, overwrite = TRUE)
-
-  output$kvalIndFig1 <- renderPlot({
-
-    NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshIDdummy,
-                   valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                   myelopati = as.numeric(input$myelopatiKvalInd),
-                   fremBak = as.numeric(input$fremBakKvalInd),
-                   enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd), tidsenhet = input$tidsenhetKvalInd)
- } )
-
-  output$kvalIndFig2 <- renderPlot(
-    NakkeFigAndelerGrVar(RegData=RegData, preprosess=0,
-                         valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                         myelopati = as.numeric(input$myelopatiKvalInd),
-                         fremBak = as.numeric(input$fremBakKvalInd))
-  )
-
 
   output$fordelinger <- renderPlot({
 
@@ -487,27 +293,6 @@ server <- function(input, output) {
                      enhetsUtvalg = input$enhetsUtvalgAndelTid)
   })
 
-  output$gjsnGrVar <- renderPlot({
-    NakkeFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
-                         reshID=reshIDdummy,
-                         datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-                         minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                         erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
-                         fremBak = as.numeric(input$fremBakGjsn),
-                         valgtMaal = input$sentralmaal)
-  })
-
-  output$gjsnTid <- renderPlot({
-    NakkeFigGjsnTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
-                      reshID=reshIDdummy,
-                      datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-                      minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                      erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
-                      fremBak = as.numeric(input$fremBakGjsn),
-                    valgtMaal = input$sentralmaal,
-                    tidsenhet = input$tidsenhetGjsn,
-                    enhetsUtvalg = input$enhetsUtvalgGjsn)
-  })
 }
 
 # Run the application
