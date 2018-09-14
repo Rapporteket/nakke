@@ -106,6 +106,22 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
 
      #if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
+     FigDataParam <- list(AndelerGrSort=AndelerGrSort,
+                          N=N,
+                          Ngr=Ngr,
+                          #KImaal <- KImaal,
+                          #soyletxt=soyletxt,
+                          #grtxt2=grtxt2,
+                          tittel=tittel,
+                          andeltxt=andeltxt,
+                          #xAkseTxt=xAkseTxt,
+                          #yAkseTxt=yAkseTxt,
+                          utvalgTxt=NakkeUtvalg$utvalgTxt,
+                          fargepalett=NakkeUtvalg$fargepalett
+                          #medSml=NakkeUtvalg$medSml
+                          #hovedgrTxt=hovedgrTxt,
+                          #smltxt=RyggUtvalg$smltxt
+     )
 
      #-----------Figur---------------------------------------
      if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
@@ -113,7 +129,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           farger <- FigTypUt$farger
           plot.new()
           if (dim(RegData)[1]>0) {
-               tekst <- paste('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene', sep='')
+               tekst <- paste0('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene')
           } else {tekst <- 'Ingen registrerte data for dette utvalget'}
           title(main=tittel)
           text(0.5, 0.6, tekst, cex=1.2)
@@ -162,4 +178,5 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           if ( outfile != '') {dev.off()}
           #----------------------------------------------------------------------------------
      }
+     return(invisible(FigDataParam))
 }

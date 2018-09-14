@@ -141,6 +141,26 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
       xAkseTxt <- paste0(c('Innleggelsesår', 'Innleggelsesår', 'Innleggelseskvartal', 'Innleggelsesmåned')
                          [which(tidsenhet==vektor)])
 
+
+      FigDataParam <- list(AggVerdier=AggVerdier,
+                           N=N,
+                           Ngr=Ngr,
+                           #KImaal <- KImaal,
+                           #soyletxt=soyletxt,
+                           grtxt2=grtxt2,
+                           varTxt=varTxt,
+                           tidtxt=tidtxt, #RyggVarSpes$grtxt,
+                           tittel=tittel,
+                           xAkseTxt=xAkseTxt,
+                           yAkseTxt=yAkseTxt,
+                           utvalgTxt=NakkeUtvalg$utvalgTxt,
+                           fargepalett=NakkeUtvalg$fargepalett,
+                           medSml=NakkeUtvalg$medSml
+                           #hovedgrTxt=hovedgrTxt,
+                           #smltxt=RyggUtvalg$smltxt
+						   )
+
+
   #----------FIGUR------------------------------
   #Hvis for få observasjoner..
   #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & medSml == 1)) {
@@ -155,9 +175,6 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
     text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
     if ( outfile != '') {dev.off()}
   } else {
-
-
-
 
     #-----------Figur---------------------------------------
 
@@ -265,6 +282,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar, datoFra='2013-01-01', datoTil='3
                   #------------------------------------------------------------------------------
 
   }	#end else statement
+  return(invisible(FigDataParam))
 }	#end function
 
 
