@@ -23,16 +23,16 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 	library(synthpop)
 library(dplyr)
 varBort <- c('FodselsDato', 'SykehusNavn3mnd', 'SykehusNavn12mnd', 'ForlopsID')
-ForlopsID <- RegData$ForlopsID
 RegData <- RegData[,-which(names(RegData) %in% varBort)]
+ForlopsID <- RegData$ForlopsID
 sykehus <- paste('Sykehus', LETTERS[1:10])
-mengdePasienter <- c(0.3, 4, 10, 3, 7, 5, 1, 8, 9.5, 6)
+mengdePasienter <- c(0.3, 4, 10, 3, 7, 5, 1, 8, 9.5, 6) #For å få ulikt antall pasienter på de fiktive sykehusene
 RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter), size=dim(RegData)[1], replace=T)
 	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500) #Trekker med tilbakelegging
 	RegData <- data.frame(RegDataSyn$syn, ForlopsID)
 	write.table(RegData, file='C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataTest.csv', sep = ';', row.names = F, col.names = T)
 	save(RegData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.RData'))
-	load('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.Rdata')
+	load('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.RData')
 
 	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
 	SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
@@ -41,7 +41,7 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	SkjemaData <- dplyr::left_join(SkjemaDataRed, RegData[,c('ForlopsID','SykehusNavn')], by = "ForlopsID", copy=FALSE)
 	names(SkjemaData)[which(names(SkjemaData) == 'SykehusNavn')] <- 'Sykehusnavn'
 	save(SkjemaData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData'))
-	load('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.Rdata')
+	load('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData')
 
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
@@ -207,12 +207,12 @@ setwd("C:/ResultattjenesteGIT/Nakke/")
 reshID <- 601161 #De tre med flest reg:
 minald <- 0	#alder, fra og med
 maxald <- 110	#alder, til og med
-datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-12-31'
+datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
+datoTil <- '2017-12-31'
 erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
 tittel=1
 enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'NDIendr12mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'KomplSvelging3mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
@@ -221,7 +221,7 @@ valgtVar <- 'NDIendr12mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 outfile <- paste0(valgtVar, '_ShusSyn.pdf')	#''	#Navn angis av Jasper
 outfile <- '' #paste0(valgtVar, '_ShusSyn.png')	#''	#Navn angis av Jasper
-NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, fremBak = 1, myelopati = 0,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, outfile=outfile)
 
@@ -330,7 +330,7 @@ variable <- c('ReshId','SykehusNavn','ErMann','Aar','KomplSvelging3mnd') #
 ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplSvelging3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
 write.table(RegData[ind,variable], file='A:/NakkeTilOffSvelg.csv', sep=';', row.names = F)
-
+RegData <- RegData[ind,variable]
 
 #Komplikasjoner (endret fra overfladisk, bakre til dyp og overfladisk, alle)
 #Pasientskjema. Alle komplikasjoner (dype og overfladiske), 3mnd.
@@ -338,6 +338,11 @@ write.table(RegData[ind,variable], file='A:/NakkeTilOffSvelg.csv', sep=';', row.
 #Kode 0,1: Nei, Ja +tomme
 #    OppFolgStatus3mnd == 1, EnhverKompl3mnd %in% 0:1
 #    tittel <- 'Komplikasjoner (totalt) 3 mnd. etter operasjon'
+ind <- which(RegData$OppFolgStatus3mnd == 1) %i%
+  union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1))
+RegData <- RegData[ind, ]
+RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
+
 variable <- c('ReshId', 'SykehusNavn', 'ErMann', 'Aar', 'EnhverKompl3mnd')
 ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$KomplinfekOverfl3mnd %in% 0:1))
 write.table(RegData[ind,variable], file='A:/NakkeTilOffInfOverfl.csv', sep=';', row.names = F)

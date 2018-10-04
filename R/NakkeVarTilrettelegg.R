@@ -388,7 +388,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
                           which(RegData$KomplSvelging12mnd %in% 0:1) %i%
                           which(RegData$OprMetodeTilgangFremre==1)), ]
     RegData$Variabel <- RegData[ ,valgtVar]
-    tittel <- 'Svelgvansker, fremre tilgang, 12 mnd.'
+    tittel <- 'Svelgevansker, fremre tilgang, 12 mnd.'
   }
 
   if (valgtVar=='KomplSvelging3mnd') { #AndelTid
@@ -398,8 +398,8 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
                           which(RegData$KomplSvelging3mnd %in% 0:1) %i%
                           which(RegData$OprMetodeTilgangFremre==1)), ]
     RegData$Variabel <- RegData[ ,valgtVar]
-    varTxt <- 'med svelgvansker'
-    tittel <- 'Svelgvansker, fremre tilgang, 3 mnd.'
+    varTxt <- 'med svelgevansker'
+    tittel <- 'Svelgevansker, fremre tilgang, 3 mnd.'
   }
   if (valgtVar=='LiggeDognPostop') { #Andeler #GjsnTid #GjsnGrVar
     #Legeskjema.
@@ -939,7 +939,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
                       'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd',
                       'EnhverKompl3mnd')
         grtxt <- c('DVT', 'Dyp infeksjon', 'Lungeemboli', 'Overfladisk infeksjon',
-                   'Pneumoni', 'Stemmevansker', 'Svelgvansker', 'UVI', 'Totalt, 3 mnd.')
+                   'Pneumoni', 'Stemmevansker', 'Svelgevansker', 'UVI', 'Totalt, 3 mnd.')
       }
 
       if (valgtVar=='OprIndikSmerter') {
