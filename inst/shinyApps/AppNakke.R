@@ -308,8 +308,8 @@ server <- function(input, output) {
   library(zoo)
   system.file('inst/NakkeMndRapp.Rnw', package='Nakke')
   #load('A:/Nakke/NakkeAarsrapp2016.Rdata') #Preprossesserte data
-  dato <- '2018-03-16'
-  fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
+  #dato <- '2018-03-16'
+  #fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
   #RegData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
   #Funker:
   data('NakkeRegDataSyn', package = 'Nakke')
@@ -324,6 +324,7 @@ server <- function(input, output) {
   RegData$Halvaar <- ceiling(RegData$Mnd/6)
   aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
   reshIDdummy <- 601161
+  reshID <- reshIDdummy
 
   #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
   fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
@@ -434,7 +435,8 @@ server <- function(input, output) {
         #file.copy(system.file('NakkeMndRapp.pdf', package='Nakke'), file)
         file.copy('NakkeMndRapp.pdf', file)
 
-    },
+    }
+,
     contentType = 'application/pdf'
   )
 #  If you already have made the PDF file, you can just copy it to file, i.e.

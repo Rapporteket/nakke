@@ -301,7 +301,7 @@ for (valgtVar in variable) {
 
 #------------------Kvalitetsindikatorer-----------------------
 library(Nakke)
-NakkeData <- read.table('A:/Nakke/AlleVarNum2018-09-05.csv', sep=';', header=T, encoding = 'UTF-8') #
+NakkeData <- read.table('A:/Nakke/AlleVarNum2018-10-04.csv', sep=';', header=T, encoding = 'UTF-8') #
 RegData <- NakkePreprosess(NakkeData)
 RegData <- RegData[RegData$Aar>=2014,]
 # Stemmevansker, 3 mnd.'
@@ -311,7 +311,7 @@ RegData <- RegData[RegData$Aar>=2014,]
 # Andel med KomplStemme3mnd=1
 # Utvalg, ikke-myelopati, fremre tilgang: OprIndikMyelopati=0, OprMetodeTilgangFremre=1
 #Variable: OppFolgStatus3mnd, KomplStemme3mnd, OprMetodeTilgangFremre, OprIndikMyelopati
-variable <- c('ReshId','SykehusNavn','ErMann','Aar','KomplStemme3mnd') #
+variable <- c('ReshId','SykehusNavn','Aar','KomplStemme3mnd') #
 ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplStemme3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
 write.table(RegData[ind,variable], file='A:/NakkeTilOffStemme.csv', sep=';', row.names = F)
@@ -326,26 +326,24 @@ write.table(RegData[ind,variable], file='A:/NakkeTilOffStemme.csv', sep=';', row
 # Utvalg, ikke-myelopati, fremre tilgang: OprIndikMyelopati=0, OprMetodeTilgangFremre=1
 #Variable: OppFolgStatus3mnd, KomplSvelging3mnd, OprMetodeTilgangFremre,
 #OprIndikMyelopati
-variable <- c('ReshId','SykehusNavn','ErMann','Aar','KomplSvelging3mnd') #
+variable <- c('ReshId','SykehusNavn','Aar','KomplSvelging3mnd') #
 ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplSvelging3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
 write.table(RegData[ind,variable], file='A:/NakkeTilOffSvelg.csv', sep=';', row.names = F)
-RegData <- RegData[ind,variable]
 
 #Komplikasjoner (endret fra overfladisk, bakre til dyp og overfladisk, alle)
 #Pasientskjema. Alle komplikasjoner (dype og overfladiske), 3mnd.
 #Mål: lavt
 #Kode 0,1: Nei, Ja +tomme
-#    OppFolgStatus3mnd == 1, EnhverKompl3mnd %in% 0:1
+#    OppFolgStatus3mnd == 1, KomplinfekDyp3mnd eller KomplinfekOverfl3mnd %in% 0:1
 #    tittel <- 'Komplikasjoner (totalt) 3 mnd. etter operasjon'
-ind <- which(RegData$OppFolgStatus3mnd == 1) %i%
-  union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1))
+ind <- intersect(which(RegData$OppFolgStatus3mnd == 1),
+  union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1)))
 RegData <- RegData[ind, ]
-RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
-
-variable <- c('ReshId', 'SykehusNavn', 'ErMann', 'Aar', 'EnhverKompl3mnd')
-ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$KomplinfekOverfl3mnd %in% 0:1))
-write.table(RegData[ind,variable], file='A:/NakkeTilOffInfOverfl.csv', sep=';', row.names = F)
+RegData$KomplInfek <- 0
+RegData$KomplInfek[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
+variable <- c('ReshId', 'SykehusNavn', 'Aar', 'KomplInfek')
+write.table(RegData[ ,variable], file='A:/NakkeTilOffKomplInfek.csv', sep=';', row.names = F)
 
 
 #Ett datasett for alle
