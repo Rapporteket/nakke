@@ -311,10 +311,27 @@ server <- function(input, output) {
   #dato <- '2018-03-16'
   #fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
   #RegData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
+  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+  RegData <- NakkeRegDataSQL() #datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
+
+  querySD <- paste0('
+          SELECT
+            Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
+           FROM SkjemaOversikt
+           WHERE HovedDato >= "2014-01-01" ')
+
+  SkjemaData <- rapbase::LoadRegData(registryName="Nakke", query=querySD, dbType="mysql")
+  knitr::opts_knit$set(root.dir = './')
+  knitr::opts_chunk$set(fig.path='')
+} #hente data på server
+      
+      if (!exists('RegData')){
   #Funker:
   data('NakkeRegDataSyn', package = 'Nakke')
-  #try(data(package = "Nakke"))
+      }
 
+  
   RegData <- NakkePreprosess(RegData = RegData)
   datoTil <- as.POSIXlt(Sys.Date())
   AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
