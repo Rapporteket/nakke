@@ -306,7 +306,7 @@ server <- function(input, output) {
   library(Nakke)
   library(lubridate)
   library(zoo)
-  system.file('inst/NakkeMndRapp.Rnw', package='Nakke')
+  system.file('NakkeMndRapp.Rnw', package='Nakke')
   #load('A:/Nakke/NakkeAarsrapp2016.Rdata') #Preprossesserte data
   #dato <- '2018-03-16'
   #fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
@@ -325,13 +325,13 @@ if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
 } #hente data på server
-      
+
       if (!exists('RegData')){
   #Funker:
   data('NakkeRegDataSyn', package = 'Nakke')
       }
 
-  
+
   RegData <- NakkePreprosess(RegData = RegData)
   datoTil <- as.POSIXlt(Sys.Date())
   AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
