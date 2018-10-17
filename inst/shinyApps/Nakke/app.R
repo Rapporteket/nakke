@@ -327,8 +327,8 @@ server <- function(input, output) {
   reshID <- reshIDdummy
 
   #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
-  fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
   data('SkjemaDataSyn', package = 'Nakke')
+  #fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
   #SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
   SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus > -1, ]
   SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
