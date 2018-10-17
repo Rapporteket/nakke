@@ -306,6 +306,7 @@ server <- function(input, output) {
   library(Nakke)
   library(lubridate)
   library(zoo)
+  library(tools)
   system.file('NakkeMndRapp.Rnw', package='Nakke')
   #load('A:/Nakke/NakkeAarsrapp2016.Rdata') #Preprossesserte data
   #dato <- '2018-03-16'
@@ -444,7 +445,7 @@ if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
       file.copy(src, 'NakkeMndRapp.Rnw', overwrite = TRUE)
 
         texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
-        texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
+        tools::texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
       # #help(render_latex)
 #       out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
          #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
