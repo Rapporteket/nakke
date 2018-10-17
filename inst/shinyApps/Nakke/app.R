@@ -238,7 +238,7 @@ ui <- fluidPage( #"Hoved"Layout for alt som vises på skjermen
                    #column(width=5,
                  h2("Månedsrapport"), #),
                    #column(width=2,
-                 downloadButton(outputId = 'mndRapp.pdf', label='FUNKER pt IKKE', class = "butt"),
+                 downloadButton(outputId = 'mndRapp.pdf', label='Last ned månedsrapport', class = "butt"),
                  tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
                    #)),
                  br(),
