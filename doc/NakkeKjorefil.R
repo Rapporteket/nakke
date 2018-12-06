@@ -43,6 +43,12 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	save(SkjemaData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData'))
 	load('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData')
 
+#--------------Koble med fødselsnr-------------------------------
+  dato <- '2018-12-06'
+	PersNr <- read.table(paste0('A:/Nakke/PersNrNakke2018-12-06.csv',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
+	AlleVarNum <- read.table(paste('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
+	AlleVarNumRed <- AlleVarNum[ ,c(OpDato)]
+
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
 	library(nkr)

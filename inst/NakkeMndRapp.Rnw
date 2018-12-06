@@ -46,6 +46,11 @@ if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
 } #hente data på server
+      if (!exists('RegData')){
+  #Funker:
+  data('NakkeRegDataSyn', package = 'Nakke')
+  data('SkjemaDataSyn', package = 'Nakke')
+     }
 
 
 #----------------------------------------

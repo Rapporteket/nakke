@@ -435,7 +435,7 @@ if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
 #output$tekstDash <- c('Figurer med kvalitetsindikatorer',
 #                      'hente ned månedsrapport'),
   output$mndRapp.pdf = downloadHandler(
-     filename = 'MndRapp.pdf',
+     filename = function(){'MndRapp.pdf'},
     #content = function(file) file.copy(system.file('NakkeMndRapp.pdf', package = 'Nakke'), file, overwrite = TRUE),
     content = function(file) {
       # permission to the current working directory
@@ -445,6 +445,7 @@ if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
       file.copy(src, 'NakkeMndRapp.Rnw', overwrite = TRUE)
 
         texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
+        #print(texfil)
         tools::texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
       # #help(render_latex)
 #       out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
