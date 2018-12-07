@@ -45,9 +45,11 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 
 #--------------Koble med fødselsnr-------------------------------
   dato <- '2018-12-06'
-	PersNr <- read.table(paste0('A:/Nakke/PersNrNakke2018-12-06.csv',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
-	AlleVarNum <- read.table(paste('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
-	AlleVarNumRed <- AlleVarNum[ ,c(OpDato)]
+	PersNr <- read.table(paste0('A:/Nakke/PersNrNakke',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
+	AlleVarNum <- read.table(paste0('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
+	AlleVarNumRed <- AlleVarNum[which(AlleVarNum$SykehusNavn == 'Haukeland USH') ,c('OprDato','PasientID', 'SykehusNavn', 'ForlopsID')]
+KobletFil <- merge(x=AlleVarNumRed, y=PersNr, by='ForlopsID', all.x = T, all.y = F)
+write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names = F, col.names = T)
 
 #----------------------------Laste data og parametre----------------------------------------
 	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
@@ -88,6 +90,7 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 #-------------------------------Månedsrapport---------------------------
 	library(knitr)
 	library(devtools)
+	dato <- '2018-10-04'
 	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
 	SkjemaData <- read.table(fil, sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
 	RegData <- read.table('A:/Nakke/AlleVarNum2018-03-16.csv', sep=';', header=T, encoding = 'UTF-8')
@@ -103,7 +106,7 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	#options(encoded_text_to_latex= 'UTF-8')
 	knit('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 	texi2pdf(file='NakkeMndRapp.tex')
-	knit2pdf('NakkeMndRapp.Rnw', encoding = 'UTF-8')
+#	knit2pdf('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 
 
 #------------------------------ Andeler flere var --------------------------
