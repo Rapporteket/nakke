@@ -90,10 +90,9 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 #-------------------------------Månedsrapport---------------------------
 	library(knitr)
 	library(devtools)
-	dato <- '2018-10-04'
-	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
-	SkjemaData <- read.table(fil, sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
-	RegData <- read.table('A:/Nakke/AlleVarNum2018-03-16.csv', sep=';', header=T, encoding = 'UTF-8')
+	dato <- '2018-12-06'
+	SkjemaData <- read.table(paste0('A:/Nakke/SkjemaOversikt',dato,'.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
+	RegData <- read.table(paste0('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
 
 	#SkjemaData$Sykehusnavn <- enc2native(as.character(SkjemaData$Sykehusnavn))
 	#SkjemaData$Sykehusnavn <- iconv(SkjemaData$Sykehusnavn, from = 'UTF-8', to = '')

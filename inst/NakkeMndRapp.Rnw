@@ -26,8 +26,8 @@ library(lubridate)
 library(zoo)
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
-datoFra <- as.Date(paste0(1900+dato$year-1,'-', ifelse(dato$mon==11, 1, dato$mon+2), '-', '01'))
-aarFra <- paste0(1900+dato$year-5, '-01-01')
+datoFra <- as.Date(paste0(1900+dato$year-ifelse(dato$mon==11, 0, 1),'-', ifelse(dato$mon==11, 1, dato$mon+2), '-', '01'))
+#aarFra <- paste0(1900+dato$year-5, '-01-01')
 #--------------------HENTE DATA--------------------
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
@@ -62,14 +62,14 @@ AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
 RegData$Mnd <- RegData$InnDato$mon +1
 RegData$Kvartal <- ceiling(RegData$Mnd/3)
 RegData$Halvaar <- ceiling(RegData$Mnd/6)
-aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
-SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
+#aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
+SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
+#SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus>-1, ]
 
 #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
 SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
 SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
-SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
 SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 SkjemaData12mnd <- SkjemaData[SkjemaData$InnDato > as.POSIXlt(datoFra), ]
 
