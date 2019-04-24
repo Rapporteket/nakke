@@ -5,7 +5,7 @@
 \title{Søylediagram, horisontalt eller vertikalt, som viser andeler av valgt variabel.}
 \usage{
 NakkeFigAndeler(RegData, valgtVar, datoFra = "2012-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, erMann = "",
+  datoTil = "3000-12-31", minald = 0, maxald = 110, erMann = "",
   myelopati = 99, fremBak = 0, outfile = "", hentData = 0,
   preprosess = TRUE, reshID = 0, enhetsUtvalg = 0)
 }

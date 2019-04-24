@@ -5,9 +5,10 @@
 \title{Tidstrend (år) av andel for en gitt variabel.}
 \usage{
 NakkeFigAndelTid(RegData, valgtVar, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", tidsenhet = "Aar", minald = 0, maxald = 130,
-  erMann = "", myelopati = 99, fremBak = 0, reshID = 0, outfile = "",
-  enhetsUtvalg = 0, preprosess = TRUE, hentData = 0)
+  datoTil = "3000-12-31", tidsenhet = "Aar", minald = 0,
+  maxald = 130, erMann = "", myelopati = 99, fremBak = 0,
+  reshID = 0, outfile = "", enhetsUtvalg = 0, preprosess = TRUE,
+  hentData = 0)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}

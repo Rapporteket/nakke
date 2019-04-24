@@ -4,10 +4,11 @@
 \alias{NakkeFigGjsnTid}
 \title{Tidsutvikling av gjennomsnitt/median for en gitt variabel}
 \usage{
-NakkeFigGjsnTid(RegData, outfile = "", valgtVar, erMann = "", minald = 0,
-  maxald = 130, datoFra = "2007-01-01", datoTil = "3000-01-01",
-  myelopati = 99, fremBak = 0, tidsenhet = "Aar", valgtMaal = "",
-  enhetsUtvalg = 0, hentData = 0, preprosess = TRUE, reshID = 0)
+NakkeFigGjsnTid(RegData, outfile = "", valgtVar, erMann = "",
+  minald = 0, maxald = 130, datoFra = "2007-01-01",
+  datoTil = "3000-01-01", myelopati = 99, fremBak = 0,
+  tidsenhet = "Aar", valgtMaal = "", enhetsUtvalg = 0,
+  hentData = 0, preprosess = TRUE, reshID = 0)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
