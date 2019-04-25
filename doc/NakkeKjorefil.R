@@ -22,9 +22,9 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 
 	library(synthpop)
 library(dplyr)
+ForlopsID <- RegData$ForlopsID
 varBort <- c('FodselsDato', 'SykehusNavn3mnd', 'SykehusNavn12mnd', 'ForlopsID')
 RegData <- RegData[,-which(names(RegData) %in% varBort)]
-ForlopsID <- RegData$ForlopsID
 sykehus <- paste('Sykehus', LETTERS[1:10])
 mengdePasienter <- c(0.3, 4, 10, 3, 7, 5, 1, 8, 9.5, 6) #For å få ulikt antall pasienter på de fiktive sykehusene
 RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter), size=dim(RegData)[1], replace=T)
@@ -57,7 +57,7 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 
 	rm(list=ls())
 	library(Nakke)
-	dato <- '2018-05-08'
+	dato <- '2019-04-25'
 	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 	RegData <- NakkeData

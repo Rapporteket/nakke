@@ -68,7 +68,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
 
   #------------ Viktigste resultater-----------------
-  tabPanel("Viktigste resultater",
+  tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og månedsrapport'),
            h2("Kvalitetsindikatorer", align='center' ),
            br(),
            sidebarPanel(width=3,
@@ -142,12 +142,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
            mainPanel(
              tabsetPanel(id='ark',
-                         tabPanel('Antall registrerte operasjoner',
+                         tabPanel('Antall operasjoner',
                                   uiOutput("undertittelReg"),
                                   p("Velg tidsperiode ved å velge sluttdato/tidsenhet i menyen til venstre"),
                                   br(),
                                   fluidRow(
-                                    tableOutput("tabAntOpph")
+                                    tableOutput("tabAntOpphSh")
                                     #downloadButton(outputId = 'lastNed_tabAntOpph', label='Last ned')
                                   )
                                   # h2("Antall registreringer per avdeling"),
@@ -156,7 +156,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                   # tableOutput("tabAvdNAar5"))
 
                          ),
-                         tabPanel('Antall registrerte skjema',
+                         tabPanel('Antall skjema',
                                   h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
                                   p("Velg tidsperiode i menyen til venstre"),
                                   br(),
@@ -175,7 +175,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
  tabPanel(p("Fordelinger", title='Her finner du resultater for: Alder, antibiotika, arbeidsstatus, BMI, erstatning, fornøydhet, komorbiditet,
             komplikasjoner, liggetid, morsmål, nytteverdi, operasjonskategori, operasjonsindikasjon, radiologi,
             snus, smertestillende, symptomvaribhet, tidl.operert, uføretrygdet, utdanning'),
-          h3("Fordeling av valgt variabel", align='center'),
+          h2("Fordeling av valgt variabel", align='center'),
           sidebarPanel(width = 3,
                       selectInput(inputId = "valgtVar", label="Velg variabel",
                                   choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr',
@@ -412,7 +412,7 @@ server <- function(input, output) {
   SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
   SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
   SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
-  SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
+  SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
 
 
   #----------Tabeller, registreringsoversikter ----------------------
@@ -445,10 +445,22 @@ server <- function(input, output) {
                    Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
                    Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))
     ))})
+  observe({
+  #RegData som har tilknyttede skjema av ulik type. Fra NGER!
+  AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
+                                  skjemastatus=as.numeric(input$skjemastatus))
+  output$tabAntSkjema <- renderTable(AntSkjemaAvHver
+                                     ,rownames = T, digits=0, spacing="xs" )
+  # output$lastNed_tabAntSkjema <- downloadHandler(
+  #   filename = function(){'tabAntSkjema.csv'},
+  #   content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
+    })
 
 
   #Velge ferdigstillelse og tidsintervall.
-  output$tabAvdSkjema12 <- renderTable({
+  output$tabAntSkjema <- renderTable({})
+
+    output$tabAntSkjemaGml <- renderTable({
     SkjemaDataFerdig <- SkjemaData[SkjemaData$SkjemaStatus ==1, ]
     #Flyttes til overvåkning
     datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
@@ -486,18 +498,6 @@ server <- function(input, output) {
   ) #digits=1,
 
 
-  output$tabAvdNAar5 <- renderTable({
-
-    tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]))
-    rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle avdelinger:'
-    colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste 5 år'
-    xtable::xtable(tabAvdAarN)
-    #xtable::xtable(tabAvdAarN)
-  },
-  rownames = T, digits=0)
-
-  #output$tekstDash <- c('Figurer med kvalitetsindikatorer',
-  #                      'hente ned månedsrapport'),
   output$mndRapp.pdf = downloadHandler(
     filename = function(){'MndRapp.pdf'},
     #content = function(file) file.copy(system.file('NakkeMndRapp.pdf', package = 'Nakke'), file, overwrite = TRUE),

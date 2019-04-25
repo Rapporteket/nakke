@@ -29,10 +29,10 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
       datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
       aggVar <-  c('ShNavn', 'InnDato')
       RegDataDum <- RegData[intersect(which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')),
-                               which(as.Date(RegData$InnDato) > as.Date(datoFra, tz='UTC'))), aggVar]
-      RegDataDum$Maaned1 <- floor_date(RegDataDum$InnDato, 'month')
+                               which(as.Date(RegData$InnDato, tz='uTC') > as.Date(datoFra, tz='UTC'))), aggVar]
+      RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$InnDato, 'month')
       tabAvdMnd1 <- table(RegDataDum[ , c('ShNavn', 'Maaned1')])
-      colnames(tabAvdMnd1) <- format(ymd(colnames(tabAvdMnd1)), '%b %y') #month(ymd(colnames(tabAvdMnd1)), label = T)
+      colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)), '%b %y') #month(ymd(colnames(tabAvdMnd1)), label = T)
       if (reshID==0){
         tabAvdMnd1 <- addmargins((tabAvdMnd1))}
       #tabAvdMnd1 <- RegDataDum %>% group_by(Maaned=floor_date(InnDato, "month"), ShNavn) %>%
@@ -64,10 +64,9 @@ tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date()){
 tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1){
   #tabAntSkjema(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1)
   #NB: Denne skal også kunne vise skjema i kladd!
-  #Operasjon	Laparoskopi,	Hysteroskopi,	Oppfølging, 6u, RAND36, ,TSS2
   #Skjemastatus kan være -1, 0 og 1
-  SkjemaOversikt$SkjemaRekkeflg <- factor(SkjemaOversikt$SkjemaRekkeflg, levels = c(1,3,5,7,9,11))
-  skjemanavn <- c('Operasjon','Laparoskopi','Hysteroskopi', 'Oppfølging', 'RAND36', 'TSS2')
+  SkjemaOversikt$SkjemaRekkeflg <- factor(SkjemaOversikt$SkjemaRekkeflg, levels = 1:4)
+  skjemanavn <- c('Pasient preop.','Lege preop.','Oppfølging, 3mnd', 'Oppfølging, 12mnd')
 
   indDato <- which(as.Date(SkjemaOversikt$InnDato) >= datoFra & as.Date(SkjemaOversikt$InnDato) <= datoTil)
   indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
