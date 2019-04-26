@@ -1,8 +1,3 @@
-# SJEKK MÅNEDSRAPPORT, EVT. KJØR FØRST UTEN APP
-# PRØV Å FÅ NEDLASTING AV MNDRAPP TIL Å VIRKE. hVIS OK - PUBLISER
-#LEGG TIL MULIGHET FOR NEDLASTING AV TABELLER
-
-
 # Find out more about building applications with Shiny here:
 #    http://shiny.rstudio.com/
 #
@@ -88,7 +83,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              selectInput(inputId = "valgtVarKvalInd", label="Velg variabel",
                          choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
                                      'Komplikasjon, svelging' = 'KomplSvelging3mnd')),
-             dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = "2018-01-01"),
+             dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = "2017-01-01"),
              selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
                          choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
              selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
@@ -213,7 +208,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Uforetrygdet før operasjon' = 'UforetrygdPreOp',
                                               'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
                       ),
-                      dateRangeInput(inputId = 'datovalg', start = "2018-01-01", end = Sys.Date(),
+                      dateRangeInput(inputId = 'datovalg', start = "2017-01-01", end = Sys.Date(),
                                      label = "Tidsperiode", separator="t.o.m.", language="nb"),
                       selectInput(inputId = "erMann", label="Kjønn",
                                   choices = kjonn
@@ -275,7 +270,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
                                      'Utdanning' = 'Utdanning')
              ),
-             dateRangeInput(inputId = 'datovalgAndelGrVar', start = "2018-01-01", end = Sys.Date(),
+             dateRangeInput(inputId = 'datovalgAndelGrVar', start = "2017-01-01", end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
              selectInput(inputId = "erMannAndelGrVar", label="Kjønn",
                          choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
@@ -330,7 +325,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Total knivtid' = 'KnivtidTotalMin'
                          )
              ),
-             dateRangeInput(inputId = 'datovalgGjsn', start = "2018-01-01", end = Sys.Date(),
+             dateRangeInput(inputId = 'datovalgGjsn', start = "2017-01-01", end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
              selectInput(inputId = "erMannGjsn", label="Kjønn",
                          choices = kjonn
@@ -420,67 +415,6 @@ server <- function(input, output) {
   SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
 
 
-  #-------Samlerapporter--------------------
-
-  # output$mndRapp.pdf = downloadHandler(
-  #   filename = function(){'MndRapp.pdf'},
-  #   #content = function(file) file.copy(system.file('NakkeMndRapp.pdf', package = 'Nakke'), file, overwrite = TRUE),
-  #   content = function(file) {
-  #     # permission to the current working directory
-  #     src <- normalizePath(system.file('NakkeMndRapp.Rnw', package='Nakke'))
-  #     owd <- setwd(tempdir())
-  #     on.exit(setwd(owd))
-  #     file.copy(src, 'NakkeMndRapp.Rnw', overwrite = TRUE)
-  #
-  #     texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
-  #     #print(texfil)
-  #     tools::texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
-  #     # #help(render_latex)
-  #     #       out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
-  #     #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
-  #     #      file.rename(out, file) # move pdf to file for downloading
-  #     #file.copy(system.file('NakkeMndRapp.pdf', package='Nakke'), file)
-  #     file.copy('NakkeMndRapp.pdf', file)
-  #   }
-  #   , contentType = 'application/pdf' )
-  # #  If you already have made the PDF file, you can just copy it to file, i.e.
-  # #  content = function(file) file.copy('your_existing.pdf', file, overwrite = TRUE)
-
-  # funksjon for å kjøre Rnw-filer (render file funksjon)
-  contentFile <- function(file, srcFil, tmpFil, datoFra=startDato, datoTil=Sys.Date()) {
-    src <- normalizePath(system.file(srcFil, package="nger"))
-
-    # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
-    owd <- setwd(tempdir())
-    on.exit(setwd(owd))
-    file.copy(src, tmpFil, overwrite = TRUE)
-
-    texfil <- knitr::knit(tmpFil, encoding = 'UTF-8')
-    tools::texi2pdf(texfil, clean = TRUE)
-
-    gc() #Opprydning gc-"garbage collection"
-    file.copy(paste0(substr(tmpFil, 1, nchar(tmpFil)-3), 'pdf'), file)
-  }
-
-
-
-  output$mndRapp.pdf <- downloadHandler(
-    filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')},
-    content = function(file){
-      contentFile(file, srcFil="NakkeMndRapp.Rnw", tmpFil="tmpNakkeMndRapp.Rnw")
-    })
-
-  output$samleDok <- downloadHandler(
-    filename = function(){
-      paste0('samleDok', Sys.time(), '.pdf')
-    },
-    content = function(file){
-      contentFile(file, srcFil="NGERSamleRapp.Rnw", tmpFil="tmpNGERSamleRapp.Rnw", datoFra=input$datovalgSamleDok[1],
-                  datoTil=input$datovalgSamleDok[2])
-    }
-  )
-
-
   #----------Tabeller, registreringsoversikter ----------------------
 
   # output$tabAvdMnd12 <- renderTable({
@@ -497,8 +431,7 @@ server <- function(input, output) {
   # },
   # rownames = TRUE, digits=0 #, align = c('l', rep('r', ncol(tabAvdSiste12mnd)))
   # )
-
-    output$tabAntOpphSh <- renderTable({
+  output$tabAntOpphSh <- renderTable({
     switch(input$tidsenhetReg,
            Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
            Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
@@ -564,6 +497,33 @@ server <- function(input, output) {
   rownames = T, align= 'r' #
   ) #digits=1,
 
+
+  output$mndRapp.pdf = downloadHandler(
+    filename = function(){'MndRapp.pdf'},
+    #content = function(file) file.copy(system.file('NakkeMndRapp.pdf', package = 'Nakke'), file, overwrite = TRUE),
+    content = function(file) {
+      # permission to the current working directory
+      src <- normalizePath(system.file('NakkeMndRapp.Rnw', package='Nakke'))
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      file.copy(src, 'NakkeMndRapp.Rnw', overwrite = TRUE)
+
+      texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
+      #print(texfil)
+      tools::texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
+      # #help(render_latex)
+      #       out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
+      #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
+      #      file.rename(out, file) # move pdf to file for downloading
+      #file.copy(system.file('NakkeMndRapp.pdf', package='Nakke'), file)
+      file.copy('NakkeMndRapp.pdf', file)
+
+    }
+    ,
+    contentType = 'application/pdf'
+  )
+  #  If you already have made the PDF file, you can just copy it to file, i.e.
+  #  content = function(file) file.copy('your_existing.pdf', file, overwrite = TRUE)
 
   output$kvalIndFig1 <- renderPlot({
 

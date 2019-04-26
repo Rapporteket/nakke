@@ -1,0 +1,12 @@
+name: Nakke
+title: Nakke
+username:
+account: lenatest
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 892318
+bundleId: 2040836
+url: https://lenatest.shinyapps.io/Nakke/
+when: 1556274850.64684
+asMultiple: FALSE
+asStatic: FALSE
