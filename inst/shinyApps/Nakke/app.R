@@ -1,6 +1,8 @@
+#Videre, 26.april:
 # SJEKK MÅNEDSRAPPORT, EVT. KJØR FØRST UTEN APP
 # PRØV Å FÅ NEDLASTING AV MNDRAPP TIL Å VIRKE. hVIS OK - PUBLISER
-#LEGG TIL MULIGHET FOR NEDLASTING AV TABELLER
+#LEGG TIL MULIGHET FOR NEDLASTING AV TABELLER. lEGG TIL BARE EN EL TO OG PUBLISER
+#HVA FORKLUDRER PUBLISERING?
 
 
 # Find out more about building applications with Shiny here:
@@ -448,7 +450,7 @@ server <- function(input, output) {
 
   # funksjon for å kjøre Rnw-filer (render file funksjon)
   contentFile <- function(file, srcFil, tmpFil, datoFra=startDato, datoTil=Sys.Date()) {
-    src <- normalizePath(system.file(srcFil, package="nger"))
+    src <- normalizePath(system.file(srcFil, package="Nakke"))
 
     # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
     owd <- setwd(tempdir())
@@ -462,23 +464,30 @@ server <- function(input, output) {
     file.copy(paste0(substr(tmpFil, 1, nchar(tmpFil)-3), 'pdf'), file)
   }
 
-
-
   output$mndRapp.pdf <- downloadHandler(
     filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')},
-    content = function(file){
-      contentFile(file, srcFil="NakkeMndRapp.Rnw", tmpFil="tmpNakkeMndRapp.Rnw")
-    })
+    content = function(file){contentFile(file, srcFil="NakkeMndRapp.Rnw", tmpFil="tmpNakkeMndRapp.Rnw")})
 
-  output$samleDok <- downloadHandler(
-    filename = function(){
-      paste0('samleDok', Sys.time(), '.pdf')
-    },
-    content = function(file){
-      contentFile(file, srcFil="NGERSamleRapp.Rnw", tmpFil="tmpNGERSamleRapp.Rnw", datoFra=input$datovalgSamleDok[1],
-                  datoTil=input$datovalgSamleDok[2])
-    }
-  )
+  #   contentFile <- function(file, srcFil, tmpFile) {
+  #   src <- normalizePath(system.file(srcFil, package="intensiv"))
+  #
+  #   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
+  #   owd <- setwd(tempdir())
+  #   on.exit(setwd(owd))
+  #   file.copy(src, tmpFile, overwrite = TRUE)
+  #
+  #   texfil <- knitr::knit(tmpFile, encoding = 'UTF-8')
+  #   tools::texi2pdf(texfil, clean = TRUE)
+  #
+  #   gc() #Opprydning gc-"garbage collection"
+  #   file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
+  #   # file.rename(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
+  # }
+  #
+  # output$mndRapp.pdf <- downloadHandler(
+  #   filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')}, #'MndRapp.pdf',
+  #   content = function(file){contentFile(file, srcFil="NIRmndRapp.Rnw", tmpFile="tmpNIRmndRapp.Rnw")}
+  # )
 
 
   #----------Tabeller, registreringsoversikter ----------------------
