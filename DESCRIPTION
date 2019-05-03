@@ -7,8 +7,8 @@ Description: Alle R-baserte resultattjenester på Rapporteket for Degenerativ
     filer (generere LaTeX-dokumenter) og evt. logofiler o.l. Kan også inkludere
     kjørefiler og eksempeldatasett. Pakken inneholder også en Shiny-app. for 
     registeret.
-Version: 1.5
-Date: 2018-04-10
+Version: 1.9
+Date: 2019-04-10
 Author: Lena Ringstad Olsen, Nasjonalt Servicemiljo for Kvalitetsregistre, SKDE
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Depends:
@@ -17,10 +17,12 @@ Depends:
 License: GPL-2
 LazyData: TRUE
 Imports:
-    knitr,
-    lubridate,
-    zoo,
-    xtable
+    kableExtra,
+    knitr, 
+    shiny,
+    tidyverse,
+    xtable,
+    zoo
 Remotes:
     Rapporteket/rapbase
 Suggests:
