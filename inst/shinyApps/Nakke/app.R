@@ -1,6 +1,5 @@
 #Videre, 26.april:
-# SJEKK MÅNEDSRAPPORT, EVT. KJØR FØRST UTEN APP
-# PRØV Å FÅ NEDLASTING AV MNDRAPP TIL Å VIRKE. hVIS OK - PUBLISER
+# NEDLASTING AV MNDRAPP VIRKER. - PUBLISERT, virker ikke på Shinyapps.io
 #LEGG TIL MULIGHET FOR NEDLASTING AV TABELLER. lEGG TIL BARE EN EL TO OG PUBLISER
 #HVA FORKLUDRER PUBLISERING?
 
@@ -154,9 +153,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                   p("Velg tidsperiode ved å velge sluttdato/tidsenhet i menyen til venstre"),
                                   br(),
                                   fluidRow(
-                                    tableOutput("tabAntOpphSh")
-                                    #downloadButton(outputId = 'lastNed_tabAntOpph', label='Last ned')
+                                    tableOutput("tabAntOpphSh"),
+                                    downloadButton(outputId = 'lastNed_tabAntOpphSh', label='Last ned')
                                   )
+
                                   # h2("Antall registreringer per avdeling"),
                                   # tableOutput("tabAvdMnd12"),
                                   # h2("Antall registreringer per år og avdeling, siste 5 år"),
@@ -168,8 +168,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                   p("Velg tidsperiode i menyen til venstre"),
                                   br(),
                                   fluidRow(
-                                    tableOutput("tabAntSkjema")
-                                    #downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
+                                    tableOutput("tabAntSkjema"),
+                                    downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                   )
                                            # h2("Ferdigstilte skjema ved hver avdeling for valgte 12 måneder"),
                                            # p(em("Velg tidsperiode ved å velge sluttdato i menyen til venstre")),
@@ -506,13 +506,15 @@ server <- function(input, output) {
   # },
   # rownames = TRUE, digits=0 #, align = c('l', rep('r', ncol(tabAvdSiste12mnd)))
   # )
-
-    output$tabAntOpphSh <- renderTable({
-    switch(input$tidsenhetReg,
+  observe({
+    tabAntOpphSh <- switch(input$tidsenhetReg,
            Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
            Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
-  }, rownames = T, digits=0, spacing="xs"
-  )
+
+    output$tabAntOpphSh <- renderTable(tabAntOpphSh, rownames = T, digits=0, spacing="xs")
+    output$lastNed_tabAntOpphSh <- downloadHandler(
+      filename = function(){'tabAntOpphSh.csv'},
+      content = function(file, filename){write.csv2(tabAntOpphSh, file, row.names = T, na = '')})
 
   output$undertittelReg <- renderUI({
     br()
@@ -521,15 +523,14 @@ server <- function(input, output) {
                    Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
                    Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))
     ))})
-  observe({
   #RegData som har tilknyttede skjema av ulik type. Fra NGER!
   AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
                                   skjemastatus=as.numeric(input$skjemastatus))
   output$tabAntSkjema <- renderTable(AntSkjemaAvHver
                                      ,rownames = T, digits=0, spacing="xs" )
-  # output$lastNed_tabAntSkjema <- downloadHandler(
-  #   filename = function(){'tabAntSkjema.csv'},
-  #   content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')
+  output$lastNed_tabAntSkjema <- downloadHandler(
+    filename = function(){'tabAntSkjema.csv'},
+    content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')})
     })
 
 
