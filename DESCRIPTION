@@ -24,7 +24,7 @@ Imports:
     xtable,
     zoo
 Remotes:
-    Rapporteket/rapbase
+    Rapporteket/rapbase@rel
 Suggests:
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
