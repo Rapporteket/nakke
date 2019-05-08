@@ -5,9 +5,9 @@ account: lenatest
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 892318
-bundleId: 2054885
+bundleId: 2057450
 url: https://lenatest.shinyapps.io/Nakke/
-when: 1556798809.31397
+when: 1556884909.76297
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: appDeployOK.R

@@ -12,7 +12,12 @@
 
 library(shiny)
 library(knitr)
+#library(magrittr)
+library(knitr)
+library(lubridate)
 #ibrary(shinyBS) # Additional Bootstrap Controls
+library(kableExtra)
+#library(zoo)
 
 # ui <- shinyUI(basicPage(
 #   downloadButton('report')
@@ -235,11 +240,17 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                     ),
            mainPanel(
            h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
-                    til venstre. Man kan også gjøre ulike filtreringer."),
+                    til venstre. Der kan man også gjøre ulike filtreringer."),
+           tabsetPanel(
+             tabPanel('Figur',
            br(),
-           br(),
-           plotOutput("fordelinger"))
-          ), #tab
+           plotOutput("fordelinger")),
+           tabPanel('Tabell',
+                    br(),
+                    tableOutput('fordelingTab'),
+                    downloadButton(outputId = 'lastNed_tabFord', label='Last ned tabell')
+                    )
+          ))), #main
 
   #------------ Andeler-----------------
   tabPanel("Andeler",
@@ -574,7 +585,7 @@ server <- function(input, output) {
   rownames = T, align= 'r' #
   ) #digits=1,
 
-
+#--------------Viktigste resultater-------------------------
   output$kvalIndFig1 <- renderPlot({
 
     NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshIDdummy,
@@ -592,9 +603,8 @@ server <- function(input, output) {
     , height=600, width=500
   )
 
-
+#-----------Fordelinger---------------------
   output$fordelinger <- renderPlot({
-
     NakkeFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
                     reshID=reshIDdummy, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
@@ -603,6 +613,44 @@ server <- function(input, output) {
                     fremBak = as.numeric(input$fremBak))
    }, height=700, width=600)
 
+
+  observe({
+    UtDataFord <-  NakkeFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
+                                   reshID=reshIDdummy, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                                   datoFra=input$datovalg[1], datoTil=input$datovalg[2],
+                                   minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
+                                   erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
+                                   fremBak = as.numeric(input$fremBak))
+
+    #Følgende kan være likt for fordelingsfigurer i alle registre:
+  tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
+  output$tittelFord <- renderUI({
+    tagList(
+      h3(UtDataFord$tittel),
+      h5(HTML(paste0(UtDataFord$utvalgTxt, '<br />')))
+    )}) #, align='center'
+  #output$fordelingTab <- renderTable(tabFord, rownames = T)
+
+  output$fordelingTab <- function() { #gr1=UtDataFord$hovedgrTxt, gr2=UtDataFord$smltxt renderTable(
+    antKol <- ncol(tabFord)
+    kableExtra::kable(tabFord, format = 'html'
+                      , full_width=F
+                      , digits = c(0,1,0,1)[1:antKol]
+    ) %>%
+      add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+      column_spec(column = 1, width_min = '7em') %>%
+      column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
+      row_spec(0, bold = T)
+  }
+
+  output$lastNed_tabFord <- downloadHandler(
+    filename = function(){paste0(input$valgtVar, '_fordeling.csv')},
+    content = function(file, filename){write.csv2(tabFord, file, row.names = T, na = '')
+    })
+
+  }) #observe, fordelinger
+
+  #----------------- Andeler -----------------------
 
   output$andelerGrVar <- renderPlot({
 

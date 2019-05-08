@@ -133,7 +133,7 @@ setwd("C:/ResultattjenesteGIT/Nakke/")
 valgtVar <- 'OprIndikSmerter' #OprIndikSmerter'
 outfile <- '' #paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
 
-NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,myelopati = myelopati,
+utdata <- NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,myelopati = myelopati,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, fremBak = 1,
            reshID=reshID, enhetsUtvalg=0, hentData=0, outfile=outfile)
 

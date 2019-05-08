@@ -158,7 +158,24 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
       txtpst <- paste0(' (', sprintf(antDesTxt, AggVerdier$Hoved), '%)')
       grtxtpst <- paste0(rev(grtxt),  rev(txtpst))   #sprintf("%.3f", pi)
 
-#SKILLE UT FIGURDELEN SOM EGEN FUNKSJON???????
+      FigDataParam <- list(AggVerdier=AggVerdier,
+                           N=Nfig,
+                           Ngr=Ngr,
+                           #KImaal <- NIRVarSpes$KImaal,
+                           #grtxt2=grtxt2,
+                           grtxt=grtxt,
+                           #grTypeTxt=grTypeTxt,
+                           tittel=tittel,
+                           retn=retn,
+                           #subtxt=subtxt,
+                           yAkseTxt=yAkseTxt,
+                           utvalgTxt=utvalgTxt,
+                           fargepalett=NakkeUtvalg$fargepalett,
+                           medSml=medSml,
+                           hovedgrTxt=hovedgrTxt,
+                           smltxt=smltxt)
+
+
 #-----------Figur---------------------------------------
 #Hvis for få observasjoner..
 #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & egenavd==1)) {
@@ -245,13 +262,13 @@ if ( outfile != '') {dev.off()}
 }
 
 #Beregninger som returneres fra funksjonen.
-AggVerdierUt <- rbind(AggVerdier$Hoved, AggVerdier$Rest)
-rownames(AggVerdierUt) <- c('Hoved', 'Rest')
-AntallUt <- rbind(N$Hoved, N$Rest)
-rownames(AntallUt) <- c('Hoved', 'Rest')
-
-UtData <- list(paste0(toString(tittel),'.'), AggVerdierUt, AntallUt, grtxt )
-names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
-return(invisible(UtData))
+# AggVerdierUt <- rbind(AggVerdier$Hoved, AggVerdier$Rest)
+# rownames(AggVerdierUt) <- c('Hoved', 'Rest')
+# AntallUt <- rbind(N$Hoved, N$Rest)
+# rownames(AntallUt) <- c('Hoved', 'Rest')
+#
+# UtData <- list(paste0(toString(tittel),'.'), AggVerdierUt, AntallUt, grtxt )
+# names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
+return(invisible(FigDataParam))
 
 }
