@@ -394,7 +394,7 @@ server <- function(input, output) {
   #fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
   #RegData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
   context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+  if (context == "DEV" | context == "TEST" | context == "QA" | context == "PRODUCTION") {
     RegData <- NakkeRegDataSQL() #datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
     querySD <- paste0('
