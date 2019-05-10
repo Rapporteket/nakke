@@ -96,9 +96,14 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
      Ngrtxt <- paste0('\n(N=', as.character(Ngr),')')	#
      Ngrtxt[indGrUt] <- paste0('\n(<', Ngrense,')')	#paste(' (<', Ngrense,')',sep='')	#
+	Ngr <- Ngr[sortInd]
+	Nvar <- Nvar[sortInd]
 
-     AndelerGrSort <- AndelerGr[sortInd]
-     AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
+   AggVerdier <- list(Hoved = NULL, Tot =NULL)
+    AndelerGrSort <- AndelerGr[sortInd]
+  AggVerdier$Hoved <- AndelerGrSort
+  #AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
+  AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
      #	GrNavnSort <- paste(names(Ngr)[sortInd], ', ',Ngrtxt[sortInd], sep='')
      GrNavnSort <- paste0(names(Ngr)[sortInd], Ngrtxt[sortInd]) #names(Ngr)[sortInd]
 
@@ -106,9 +111,10 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
 
      #if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
-     FigDataParam <- list(AndelerGrSort=AndelerGrSort,
+     FigDataParam <- list(AggVerdier=AggVerdier,
                           N=N,
                           Ngr=Ngr,
+                          Nvar=Nvar,
                           #KImaal <- KImaal,
                           #soyletxt=soyletxt,
                           #grtxt2=grtxt2,
@@ -156,9 +162,9 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
                          xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=cexShNavn*0.9)
           ybunn <- 0.1
           ytopp <- pos[AntGr]+1	#-length(indGrUt)]
-          lines(x=rep(AndelHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
+          lines(x=rep(AggVerdier$Tot, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
           legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
-                 legend=paste0('Hele landet', ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N),
+                 legend=paste0('Hele landet', ' (', sprintf('%.1f',AggVerdier$Tot), '%), ', 'N=', N),
                  bty='o', bg='white', box.col='white')
           mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
           #text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),

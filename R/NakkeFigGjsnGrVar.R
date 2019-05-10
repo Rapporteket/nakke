@@ -7,6 +7,8 @@
 #' @inheritParams NakkeFigAndeler
 #' @inheritParams NakkeUtvalgEnh
 #' @param valgtMaal Sentralmål 'Med' gir median, alt annet gir gjennomsnitt
+#' @param medKI vise konfidensintervall? 0-nei, 1-ja
+#' @param Ngrense nedre grense for antall observasjoner for at et resultat (ei søyle) skal vises
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: alder (år)
 #'             EMSscorePreOp: EMS hos Myelopatipasienter før
@@ -28,7 +30,7 @@
 
 
 NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-01-01', datoTil='2050-12-31',
-                              myelopati=99, fremBak=0, Ngrense=10,
+                              myelopati=99, fremBak=0, Ngrense=10, medKI=1,
                               minald=0, maxald=130, erMann='', reshID=0, outfile='', hentData=0, preprosess=TRUE) {
 
 
@@ -45,26 +47,24 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
   #----------- Figurparametre ------------------------------
 
   #Når bare skal sammenlikne med region trengs ikke data for hele landet:
-  reshID <- as.numeric(reshID)
-  indEgen1 <- match(reshID, RegData$ReshId)
-  smltxt <- 'alle enheter'
+  #reshID <- as.numeric(reshID)
+  #indEgen1 <- match(reshID, RegData$ReshId)
+  #smltxt <- 'alle enheter'
 
   grVar <- 'SykehusNavn'
   RegData[ ,grVar] <- factor(RegData[ ,grVar])
-  #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
-  xaksetxt <- ''
 
 
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnGrVar')
   RegData <- NakkeVarSpes$RegData
-  sortAvtagende <- NakkeVarSpes$sortAvtagende
-  varTxt <- NakkeVarSpes$varTxt
-  KIekstrem <- NakkeVarSpes$NakkeVarSpes
-  KImaal <- NakkeVarSpes$KImaal
-  KImaaltxt <- NakkeVarSpes$KImaaltxt
+  #sortAvtagende <- NakkeVarSpes$sortAvtagende
+  #varTxt <- NakkeVarSpes$varTxt
+  # KIekstrem <- NakkeVarSpes$NakkeVarSpes
+  # KImaal <- NakkeVarSpes$KImaal
+  # KImaaltxt <- NakkeVarSpes$KImaaltxt
   deltittel <- NakkeVarSpes$deltittel
   xAkseTxt <- NakkeVarSpes$xAkseTxt
-  ytxt1 <- NakkeVarSpes$ytxt1
+  #ytxt1 <- NakkeVarSpes$ytxt1
 
   #Gjør utvalg
   NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
@@ -90,6 +90,74 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
 
   tittel <- paste(t1, deltittel, sep=' ')
 
+  #--------------------------------------------------------
+  dummy0 <- NA #-0.001
+  #Kommer ut ferdig sortert!
+  if (valgtMaal=='Med') {
+    MedIQR <- plot(RegData[ ,grVar], RegData$Variabel, notch=TRUE, plot=FALSE)
+    MedIQR$stats[ ,indGrUt] <- dummy0
+    MedIQR$conf[ ,indGrUt] <- dummy0
+    sortInd <- order( MedIQR$stats[3,], decreasing=TRUE)
+    Midt <- as.numeric(MedIQR$stats[3, sortInd])
+    KIned <- MedIQR$conf[1, sortInd]
+    KIopp <- MedIQR$conf[2, sortInd]
+    MedIQRHele <-  boxplot.stats(RegData$Variabel, do.conf = TRUE)
+    MidtHele <- as.numeric(MedIQRHele$stats[3])	#median(RegData$Variabel)
+    KIHele <- MedIQRHele$conf
+    #The notches (if requested) extend to +/-1.58 IQR/sqrt(n). (Chambers et al. (1983, p. 62), given in McGill et al. (1978, p. 16).)
+    #They are based on asymptotic normality of the median and roughly equal sample sizes for the two medians being compared,
+    #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give
+    #roughly a 95% confidence interval for the difference in two medians.
+
+  } else {	#Gjennomsnitt blir standard.
+    Gjsn <- tapply(RegData$Variabel, RegData[ ,grVar], mean, na.rm=T)
+    SE <- tapply(RegData$Variabel, RegData[ ,grVar], sd, na.rm=T)/sqrt(Ngr)
+    Gjsn[indGrUt] <- dummy0
+    SE[indGrUt] <- 0
+    sortInd <- order(Gjsn, decreasing=TRUE)
+    Midt <- as.numeric(Gjsn[sortInd])
+    KIned <- Gjsn[sortInd] - 2*SE[sortInd]
+    KIopp <- Gjsn[sortInd] + 2*SE[sortInd]
+    MidtHele <- round(mean(RegData$Variabel),1)
+    KIHele <- MidtHele + sd(RegData$Variabel)/sqrt(N)*c(-2,2)
+  }
+
+  AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
+  soyletxt <- c(sprintf('%.1f',Midt[1:AntGr]), rep('',length(Ngr)-AntGr))	#	#round(Midt[1:AntGr],1)
+  xmax <-  min(1.1*max(c(Midt, KIned, KIopp), na.rm = T), 1.4*max(Midt, na.rm = T), na.rm = T)
+  xmin <- min(c(0,c(Midt, KIned, KIopp)), na.rm=T)
+  Ngr <- Ngr[sortInd]
+  GrNavnSort <- names(Ngr)
+
+  cexGrNavn <- 1
+  cexSoyletxt <- 1
+
+  AggVerdier <- list(Hoved=Midt, Rest=NULL, KIned=KIned, KIopp=KIopp, KIHele=KIHele)
+  SentralmaalTxt <- switch(valgtMaal,
+                           gjsn='Gjennomsnitt',
+                           med='Median')
+
+  FigDataParam <- list(AggVerdier=AggVerdier, #Endres til Soyleverdi? Evt. AggVerdier
+                        AggTot=MidtHele, #Til AggVerdiTot?
+                        N=list(Hoved=N),
+                        Ngr=Ngr,
+                        grtxt2='',
+                        medKI=medKI,
+                        KImaal = NakkeVarSpes$KImaal,
+                        soyletxt=soyletxt,
+                        grtxt=GrNavnSort,
+                        valgtMaal=valgtMaal,
+                        SentralmaalTxt=SentralmaalTxt,
+                        tittel=tittel,    #NakkeVarSpes$tittel,
+                        #yAkseTxt=yAkseTxt,
+                        retn='H',
+                        xAkseTxt=NakkeVarSpes$xAkseTxt,
+                        grTypeTxt=NakkeUtvalg$grTypeTxt,
+                        utvalgTxt=NakkeUtvalg$utvalgTxt,
+                        fargepalett=NakkeUtvalg$fargepalett,
+                        medSml=NakkeUtvalg$medSml,
+                        smltxt=NakkeUtvalg$smltxt)
+
 
   #-----------Figur---------------------------------------
 
@@ -107,46 +175,6 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
     if ( outfile != '') {dev.off()}
   } else {
 
-    #--------------------------------------------------------
-    dummy0 <- NA #-0.001
-    #Kommer ut ferdig sortert!
-    if (valgtMaal=='Med') {
-      MedIQR <- plot(RegData[ ,grVar], RegData$Variabel, notch=TRUE, plot=FALSE)
-      MedIQR$stats[ ,indGrUt] <- dummy0
-      MedIQR$conf[ ,indGrUt] <- dummy0
-      sortInd <- order( MedIQR$stats[3,], decreasing=TRUE)
-      Midt <- as.numeric(MedIQR$stats[3, sortInd])
-      KIned <- MedIQR$conf[1, sortInd]
-      KIopp <- MedIQR$conf[2, sortInd]
-      MedIQRHele <-  boxplot.stats(RegData$Variabel, do.conf = TRUE)
-      MidtHele <- as.numeric(MedIQRHele$stats[3])	#median(RegData$Variabel)
-      KIHele <- MedIQRHele$conf
-      #The notches (if requested) extend to +/-1.58 IQR/sqrt(n). (Chambers et al. (1983, p. 62), given in McGill et al. (1978, p. 16).)
-      #They are based on asymptotic normality of the median and roughly equal sample sizes for the two medians being compared,
-      #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give
-      #roughly a 95% confidence interval for the difference in two medians.
-
-    } else {	#Gjennomsnitt blir standard.
-      Gjsn <- tapply(RegData$Variabel, RegData[ ,grVar], mean, na.rm=T)
-      SE <- tapply(RegData$Variabel, RegData[ ,grVar], sd, na.rm=T)/sqrt(Ngr)
-      Gjsn[indGrUt] <- dummy0
-      SE[indGrUt] <- 0
-      sortInd <- order(Gjsn, decreasing=TRUE)
-      Midt <- as.numeric(Gjsn[sortInd])
-      KIned <- Gjsn[sortInd] - 2*SE[sortInd]
-      KIopp <- Gjsn[sortInd] + 2*SE[sortInd]
-      MidtHele <- round(mean(RegData$Variabel),1)
-      KIHele <- MidtHele + sd(RegData$Variabel)/sqrt(N)*c(-2,2)
-    }
-
-    #GrNavnSort <- paste(names(Ngr)[sortInd], Ngrtxt[sortInd], sep='')
-    GrNavnSort <- names(Ngr)[sortInd] #, Ngrtxt[sortInd])
-    AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
-    soyletxt <- c(sprintf('%.1f',Midt[1:AntGr]), rep('',length(Ngr)-AntGr))	#	#round(Midt[1:AntGr],1)
-    xmax <-  min(1.1*max(c(Midt, KIned, KIopp), na.rm = T), 1.4*max(Midt, na.rm = T), na.rm = T)
-    xmin <- min(c(0,c(Midt, KIned, KIopp)), na.rm=T)
-    cexGrNavn <- 1
-    cexSoyletxt <- 1
 
     #--------------------------FIGUR---------------------------------------------------
     FigTypUt <- figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett) #, res=96
@@ -198,4 +226,6 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
     if ( outfile != '') {dev.off()}
     #----------------------------------------------------------------------------------
   }
-}
+  return(invisible(FigDataParam))
+
+} #end function

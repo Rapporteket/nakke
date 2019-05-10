@@ -1,4 +1,4 @@
-# Hjelpefunksjoner for NGER
+# Hjelpefunksjoner for Nakke
 #---------------------------------------------
 
 #' Hjelpefunksjoner. Group of functions page title
@@ -16,7 +16,7 @@
 #'
 #' @param RegData data
 #' @param PasientID Variabelen som angir pasientidentifikasjon
-# @inheritParams NGERFigAndeler
+# @inheritParams NakkeFigAndeler
 #' @return Div hjelpefunksjoner
 #' @name hjelpeFunksjoner
 NULL

@@ -52,7 +52,6 @@ KobletFil <- merge(x=AlleVarNumRed, y=PersNr, by='ForlopsID', all.x = T, all.y =
 write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names = F, col.names = T)
 
 #----------------------------Laste data og parametre----------------------------------------
-	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
 	library(nkr)
 
 	rm(list=ls())
@@ -66,7 +65,7 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 	NakkeData <- RegData[which(RegData$Aar<2018),]
 	save(NakkeData, file=paste0('A:/Nakke/','NakkeAarsrapp2017','.Rdata'))
 	#load(paste0(fil,".Rdata")) #RegData
-	load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
+	#load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
 	datoFra='2016-01-01'
 	datoTil='3000-12-31'
@@ -76,7 +75,7 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 	maxald=110
 	erMann=9
 	myelopati=9
-	fremBak=9
+	fremBak=0
 	Ngrense=10
 	grVar='ShNavn'
 	ktr=0
@@ -162,17 +161,6 @@ for (valgtVar in variable) {
 #-----------------------------------------------------------------------------------
 # Inndata til funksjon:
 #...NB: SkjemaID
-reshID <- 601161 #De tre med flest reg:
-minald <- 0	#alder, fra og med
-maxald <- 110	#alder, til og med
-datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2017-12-31'
-erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-tittel=1
-myelopati <- 2
-fremBak <- 0
-enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-tidsenhet <- 'Mnd'
 valgtVar <- 'Komplinfek'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, ErstatningPreOp,
 		  #Fornoyd12mnd, FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
@@ -181,8 +169,11 @@ valgtVar <- 'Komplinfek'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 
 outfile <- '' #paste0(valgtVar, 'Syn.png')	#''	#Navn angis av Jasper
-NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+AndelerTid <- NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
                  datoTil=datoTil, enhetsUtvalg=0, outfile=outfile)
+
+lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
+
 NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, tidsenhet=tidsenhet,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=1, outfile=outfile)
@@ -254,10 +245,11 @@ valgtVar <- 'NRSsmerteArmEndr3mnd'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5De
                #NDIendr12mnd, NDIendr3mnd, NDIscorePreOp
 
 outfile <- '' #paste(valgtVar, '.png', sep='')	#''	#Navn angis av Jasper
-utdata <- NakkeFigGjsnTid(RegData=RegData, datoFra='2017-03-01', valgtVar=valgtVar, valgtMaal='',
-           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Mnd',
+utdata <-
+  NakkeFigGjsnTid(RegData=RegData, datoFra='2017-03-01', valgtVar=valgtVar, valgtMaal='',
+           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Halvaar',
            fremBak = 1, myelopati = 0,
-           reshID=reshID, enhetsUtvalg=1, outfile=outfile)
+           reshID=reshID, enhetsUtvalg=0, outfile=outfile)
 
 variable <- c('EMSendr12mnd', 'EMSendr3mnd', 'EQ5Dendr12mnd', 'EQ5Dendr3mnd', 'Eq5DScorePreOp',
               'KnivtidTotalMin', 'LiggeDognPostop', 'LiggeDognTotalt',
@@ -277,22 +269,13 @@ rm(list=ls())
 NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
 RegData <- NakkeData
 # Inndata til funksjon:
-#...NB: SkjemaID
-reshID <- 601161 #De tre med flest reg:
-minald <- 0	#alder, fra og med
-maxald <- 110	#alder, til og med
-datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2018-06-01'
-erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-tittel=1
-valgtMaal = 'Gjsn'
 valgtVar <- 'Alder'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
           #NDIscorePreOp, NRSsmerteArmPreOp, NRSsmerteNakkePreOp
           #EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd
 
 outfile <- '' #paste0(valgtVar, '_', valgtMaal, '.pdf')	#''	#Navn angis av Jasper
 
-NakkeFigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
+utdata <- NakkeFigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
             datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
             reshID=reshID, outfile=outfile)
 

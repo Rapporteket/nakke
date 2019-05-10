@@ -76,7 +76,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
       #Pasienter over 70 år
       RegData$Variabel[which(RegData$Alder >= 70)] <- 1
       varTxt <- 'pasienter >=70år'
-      tittel <- 'Andel pasienter over 70 år'
+      tittel <- 'Pasienter over 70 år'
     }
     if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
       RegData$Variabel <- RegData$Alder  	#GjsnTid, GjsnGrVar
@@ -160,7 +160,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
       RegData <- RegData[indDum,]
       RegData$Variabel[which(RegData[ ,valgtVar] %in% 3:5)] <- 1
       varTxt <- 'med ASA>II'
-      tittel <- 'Andel pasienter med ASA-grad III-V'
+      tittel <- 'Pasienter med ASA-grad III-V'
     }
     if (figurtype == 'andeler') {
       RegData$VariabelGr <- 99
@@ -184,7 +184,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
     if (figurtype %in% c('andelGrVar', 'andelTid' )) {
       RegData$Variabel[which(RegData[ ,valgtVar] >30)] <- 1
       varTxt <- 'med BMI>30'
-      tittel <- 'Andel pasienter med fedme  (BMI>30)'
+      tittel <- 'Pasienter med fedme  (BMI>30)'
     }
   }
 	if (valgtVar=='EMSendr12mnd') { #GjsnTid #GjsnGrVar
@@ -701,7 +701,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
       RegData <- RegData[indDum, ]
       RegData$Variabel <- RegData$Saardren
       varTxt <- 'med sårdren'
-      tittel <- 'Andel som får sårdren'
+      tittel <- 'Pasienter som får sårdren'
     }
   }
   if (valgtVar == 'SivilStatus') { #Andeler
@@ -832,7 +832,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
       RegData <- RegData[indDum, ]
       RegData$Variabel[which(RegData[ ,valgtVar] %in% 4:5)] <- 1
       varTxt <- 'med høyere utdanning'
-      tittel <- 'Andel høyskole-/universitetsutdannede'
+      tittel <- 'Pasienter med høyskole-/universitetsutdannelse'
     }
     retn <- 'H'
   }

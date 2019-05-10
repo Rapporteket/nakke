@@ -160,7 +160,8 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 
       FigDataParam <- list(AggVerdier=AggVerdier,
                            N=Nfig,
-                           Ngr=Ngr,
+                           Ngr=Nfig,
+                           Nvar=Ngr,
                            #KImaal <- NIRVarSpes$KImaal,
                            #grtxt2=grtxt2,
                            grtxt=grtxt,

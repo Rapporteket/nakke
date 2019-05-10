@@ -97,8 +97,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = "2018-01-01"),
              selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
                          choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-             # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
-             #             choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+             selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
+                         choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
              br(),
              helpText('Følgende valg gjelder bare tidsfigur:'),
              selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
@@ -249,7 +249,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              tabPanel('Tabell',
                     br(),
                     tableOutput('fordelingTab'),
-                    br(),
                     downloadButton(outputId = 'lastNed_tabFord', label='Last ned tabell')
                     )
           ))#main
@@ -334,13 +333,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                column(width = 3,
                       h3("Sykehusvise resultater"),
                       tableOutput("andelerGrVarTab"),
-                      br(),
                       downloadButton(outputId = 'lastNed_tabAndelGrVar', label='Last ned tabell')),
                column(width = 1),
                column(width = 5,
                       h3("Utvikling over tid"),
                       tableOutput("andelTidTab"),
-                      br(),
                       downloadButton(outputId = 'lastNed_tabAndelTid', label='Last ned tabell'))
                #DT::DTOutput("andelerGrVarTab")
       ))
@@ -616,16 +613,15 @@ server <- function(input, output) {
     NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshIDdummy,
                      valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
                      myelopati = as.numeric(input$myelopatiKvalInd),
-                     #fremBak = as.numeric(input$fremBakKvalInd),
+                     fremBak = as.numeric(input$fremBakKvalInd),
                      enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd), tidsenhet = input$tidsenhetKvalInd)
   }, height=300, width=1000)
 
   output$kvalIndFig2 <- renderPlot(
     NakkeFigAndelerGrVar(RegData=RegData, preprosess=0,
                          valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                         #fremBak = as.numeric(input$fremBakKvalInd),
-                         myelopati = as.numeric(input$myelopatiKvalInd)
-                         )
+                         myelopati = as.numeric(input$myelopatiKvalInd),
+                         fremBak = as.numeric(input$fremBakKvalInd))
     , height=600, width=500
   )
 
@@ -661,10 +657,10 @@ server <- function(input, output) {
     antKol <- ncol(tabFord)
     kableExtra::kable(tabFord, format = 'html'
                       , full_width=F
-                      , digits = c(0,0,1,0,0,1)[1:antKol]
+                      , digits = c(0,1,0,1)[1:antKol]
     ) %>%
-      add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-      column_spec(column = 1, width='5em') %>% #width_min = '3em', width_max = '10em') %>%
+      add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+      column_spec(column = 1, width_min = '7em') %>%
       column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
       row_spec(0, bold = T)
   }
@@ -714,13 +710,14 @@ server <- function(input, output) {
                                    enhetsUtvalg = input$enhetsUtvalgAndelTid) #,lagFig=0)
     tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
+
     output$andelTidTab <- function() {
       antKol <- ncol(tabAndelTid)
       kableExtra::kable(tabAndelTid, format = 'html'
-                         , full_width=F
-                         , digits = c(0,0,1,0,0,1)[1:antKol]
-       ) %>%
-         add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+                        , full_width=F
+                        , digits = c(0,1,0,1)[1:antKol]
+      ) %>%
+        add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
         column_spec(column = 1, width_min = '7em') %>%
         column_spec(column = 2:(antKol+1), width = '7em') %>%
         row_spec(0, bold = T)
@@ -740,14 +737,13 @@ server <- function(input, output) {
                                         datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
                                         minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
                                         erMann=as.numeric(input$erMannAndelGrVar), myelopati = as.numeric(input$myelopatiAndelGrVar)) #, lagFig = 0))
-    tabAndelerShus <- cbind('Antall (n)' = AndelerShus$Nvar,
-                            'Antall (N)' = AndelerShus$Ngr,
-                            'Andel (%)' = AndelerShus$AggVerdier$Hoved)
+    tabAndelerShus <- cbind(Antall=AndelerShus$Ngr,
+                            Andeler = AndelerShus$AggVerdier$Hoved)
     output$andelerGrVarTab <- function() {
       antKol <- ncol(tabAndelerShus)
       kableExtra::kable(tabAndelerShus, format = 'html'
                         #, full_width=T
-                        , digits = c(0,0,1) #,0,1)[1:antKol]
+                        , digits = c(0,1) #,0,1)[1:antKol]
       ) %>%
         column_spec(column = 1, width_min = '5em') %>%
         column_spec(column = 2:(antKol+1), width = '4em') %>%

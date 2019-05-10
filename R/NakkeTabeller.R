@@ -104,17 +104,23 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
   #medSml==1
 
   if (figurtype %in% c('andeler','gjsnGrVar', 'andelTid')){
-  tab <-cbind(Ngr$Hoved,
+
+  tab <-cbind(Nvar$Hoved,
+              Ngr$Hoved,
               AggVerdier$Hoved,
               if (medSml==1){cbind(
+                Nvar$Hoved,
                 Ngr$Rest,
-                AggVerdier$Rest)})}
+                AggVerdier$Rest)}
+              )}
 
   if (figurtype %in% c('andeler', 'andelTid')) {
-    colnames(tab) <- c(paste0(hovedgrTxt,', Antall'),
+    colnames(tab) <- c(paste0(hovedgrTxt,', Antall (n)'),
+                       paste0(hovedgrTxt,', Antall (N)'),
                      paste0(hovedgrTxt, ', Andel (%)'),
                      if (medSml==1) {
-                       cbind(paste0(smltxt,', Antall'),
+                       cbind(paste0(smltxt,', Antall (n)'),
+                             paste0(smltxt,', Antall (N)'),
                              paste0(smltxt, ', Andel (%)'))}
                  )}
 
@@ -127,9 +133,9 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
     if(figurtype=='gjsnGrVar') {
     kolnavn <- c('Antall (N)', SentralmaalTxt)
     if (medSml==1) {
-      colnames(tab) <-  c(kolnavn, paste0(smltxt, c(', Antall', ', Andel (%)')))}
+      colnames(tab) <-  c(kolnavn, paste0(smltxt, c(', Antall (N)', ', Andel (%)')))}
     }
-  rownames(tab) <- grtxt
+  if (figurtype == 'andeler') {rownames(tab) <- grtxt}
   return(tab)
 }
 
