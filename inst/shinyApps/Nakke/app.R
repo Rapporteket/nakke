@@ -194,7 +194,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Antibiotika' = 'Antibiotika', 'Arbeidstaus før operasjon' = 'ArbeidstausPreOp','Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
                                               'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd', 'ASA-grad' = 'ASAgrad',
                                               'BMI' = 'BMI', 'Angst (EQ5D) før operasjon' = 'EqAngstPreOp',
-                                              'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                               'Fornoydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
                                               'Fornoydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd' ,
                                               'Komorbiditet' = 'Komorbiditet',
@@ -215,6 +214,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Smertestill, bruk preoperativt' = 'SmertestillBrukPreOp',
                                               'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                               'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                                              'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                               'Tidligere operert' = 'TidlOpr',
                                               'Tidligere operert, antall' = 'TidlOprAntall',
                                               'Uforetrygdet før operasjon' = 'UforetrygdPreOp',
@@ -247,6 +247,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                       br(),
                       plotOutput("fordelinger")),
              tabPanel('Tabell',
+			  uiOutput("tittelFord"),
                     br(),
                     tableOutput('fordelingTab'),
                     br(),
@@ -267,27 +268,27 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
                                      'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
                                      'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
-                                     'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
-                                     'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                      'Fornøydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
                                      'Fornøydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
-                                     'Misfornøyd, 3 mnd. etter' = 'Misfor3mnd',
-                                     'Misforøyd, 12 mnd. etter' = 'Misfor12mnd',
+                                     'Forverring, 3 mnd. etter' = 'Verre3mnd',
+                                     'Forverring, 12 mnd. etter' = 'Verre12mnd',
                                      'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
                                      'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
                                      'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
                                      'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
+                                     'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
+                                     'Misfornøyd, 3 mnd. etter' = 'Misfor3mnd',
+                                     'Misforøyd, 12 mnd. etter' = 'Misfor12mnd',
                                      'NDIendring over 30%, 12 mnd. etter' = 'NDIendr12mnd30pst',
                                      'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
                                      'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
                                      'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
-                                     'Forverring, 3 mnd. etter' = 'Verre3mnd',
-                                     'Forverring, 12 mnd. etter' = 'Verre12mnd',
                                      'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
                                      'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
                                      'Smertestillende, preoperativt' = 'SmertestillPreOp',
                                      'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                      'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                                     'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                      'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
                                      'Utdanning' = 'Utdanning')
              ),
@@ -396,10 +397,24 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                   til venstre. Man kan også gjøre ulike filtreringer."),
            br(),
-           #h3('Utvikling over tid'),
-           plotOutput("gjsnTid"),
-           #h3('Sykehusvise resultater'),
-           plotOutput("gjsnGrVar"))
+             tabsetPanel(
+               tabPanel("Figurer",
+                        plotOutput("gjsnTid"),
+                        plotOutput("gjsnGrVar")),
+               tabPanel("Tabeller",
+                        uiOutput("tittelGjsn"),
+                        br(),
+                        column(width = 3,
+                               h3("Sykehusvise resultater"),
+                               tableOutput("gjsnGrVarTab"),
+                               downloadButton(outputId = 'lastNed_tabGjsnGrVar', label='Last ned tabell')),
+                        column(width = 1),
+                        column(width = 5,
+                               h3("Utvikling over tid"),
+                               tableOutput("gjsnTidTab"),
+                               downloadButton(outputId = 'lastNed_gjsnTidTab', label='Last ned tabell')) )
+             )
+           )
 ) #tab, gjsn
 ) #fluidpage, dvs. alt som vises på skjermen
 
@@ -657,13 +672,18 @@ server <- function(input, output) {
     )}) #, align='center'
   #output$fordelingTab <- renderTable(tabFord, rownames = T)
 
+  #tittelKolGr <- c(UtDataFord$hovedgrTxt, UtDataFord$smltxt)
+  kolGruppering <- c(1,3,3)
+  names(kolGruppering) <- c(' ', UtDataFord$hovedgrTxt, UtDataFord$smltxt)
   output$fordelingTab <- function() { #gr1=UtDataFord$hovedgrTxt, gr2=UtDataFord$smltxt renderTable(
     antKol <- ncol(tabFord)
     kableExtra::kable(tabFord, format = 'html'
                       , full_width=F
                       , digits = c(0,0,1,0,0,1)[1:antKol]
     ) %>%
-      add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+      add_header_above(kolGruppering[1:(2+UtDataFord$medSml)]) %>%
+      #add_header_above(kolGruppering[1:(2+UtDataFord$medSml)]) %>%
+      #add_header_above(c(" "=1, tittelKolGr[1] = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
       column_spec(column = 1, width='5em') %>% #width_min = '3em', width_max = '10em') %>%
       column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
       row_spec(0, bold = T)

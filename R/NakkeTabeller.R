@@ -115,14 +115,21 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
               )}
 
   if (figurtype %in% c('andeler', 'andelTid')) {
-    colnames(tab) <- c(paste0(hovedgrTxt,', Antall (n)'),
-                       paste0(hovedgrTxt,', Antall (N)'),
-                     paste0(hovedgrTxt, ', Andel (%)'),
+    colnames(tab) <- c(paste0('Antall', c(' (n)',
+                                          ' (N)')),
+                       'Andel (%)',
                      if (medSml==1) {
-                       cbind(paste0(smltxt,', Antall (n)'),
-                             paste0(smltxt,', Antall (N)'),
-                             paste0(smltxt, ', Andel (%)'))}
-                 )}
+                       c(paste0('Antall', c(' (n)',
+                                            ' (N)')),
+                         'Andel (%)')})
+    # colnames(tab) <- c(paste0(hovedgrTxt,', Antall (n)'),
+    #                    paste0(hovedgrTxt,', Antall (N)'),
+    #                  paste0(hovedgrTxt, ', Andel (%)'),
+    #                  if (medSml==1) {
+    #                    cbind(paste0(smltxt,', Antall (n)'),
+    #                          paste0(smltxt,', Antall (N)'),
+    #                          paste0(smltxt, ', Andel (%)'))})
+                 }
 
   if (figurtype == 'gjsnTid'){
     tab <- AggVerdier
