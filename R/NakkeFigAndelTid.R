@@ -65,7 +65,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
 
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelTid')
   RegData <- NakkeVarSpes$RegData
-  sortAvtagende <- NakkeVarSpes$sortAvtagende
+  #sortAvtagende <- NakkeVarSpes$sortAvtagende
   varTxt <- NakkeVarSpes$varTxt
   KImaal <- NakkeVarSpes$KImaal
   KImaaltxt <- NakkeVarSpes$KImaaltxt
@@ -137,7 +137,8 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
       xAkseTxt <- paste0(c('Innleggelsesår', 'Innleggelsesår', 'Innleggelseskvartal', 'Innleggelsesmåned')
                          [which(tidsenhet==vektor)])
 
-
+      hovedgrTxt <- NakkeUtvalg$hovedgrTxt
+      smltxt <- NakkeUtvalg$smltxt
       FigDataParam <- list(AggVerdier=AggVerdier,
                            N=N,
                            Ngr=Ngr,
@@ -152,9 +153,9 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                            yAkseTxt=yAkseTxt,
                            utvalgTxt=NakkeUtvalg$utvalgTxt,
                            fargepalett=NakkeUtvalg$fargepalett,
-                           medSml=NakkeUtvalg$medSml
-                           #hovedgrTxt=hovedgrTxt,
-                           #smltxt=RyggUtvalg$smltxt
+                           medSml=NakkeUtvalg$medSml,
+                           hovedgrTxt=NakkeUtvalg$hovedgrTxt,
+                           smltxt=NakkeUtvalg$smltxt
 						   )
 
 }
@@ -263,8 +264,8 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                   Ttxt <- paste0('(Tall ved punktene angir antall ', varTxt, ')')
                   if (NakkeUtvalg$medSml == 1) {
                         text(tidNum, AggVerdier$Rest, pos=3, Ngr$Rest, cex=0.9, col=fargeRest)
-                        legend('topleft', border=NA, c(paste0(NakkeUtvalg$hovedgrTxt, ' (N=', N$Hoved, ')'),
-                                                       paste0(NakkeUtvalg$smltxt, ' (N=', N$Rest, ')'), Ttxt), bty='n', ncol=1,
+                        legend('topleft', border=NA, c(paste0(hovedgrTxt, ' (N=', N$Hoved, ')'),
+                                                       paste0(smltxt, ' (N=', N$Rest, ')'), Ttxt), bty='n', ncol=1,
                                col=c(fargeHoved, fargeRest, NA), lwd=3, cex=cexleg)
                   } else {
                         legend('top', c(paste0(NakkeUtvalg$hovedgrTxt, ' (N=', N$Hoved, ')'), Ttxt),

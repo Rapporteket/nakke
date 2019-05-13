@@ -682,7 +682,6 @@ server <- function(input, output) {
                       , digits = c(0,0,1,0,0,1)[1:antKol]
     ) %>%
       add_header_above(kolGruppering[1:(2+UtDataFord$medSml)]) %>%
-      #add_header_above(kolGruppering[1:(2+UtDataFord$medSml)]) %>%
       #add_header_above(c(" "=1, tittelKolGr[1] = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
       column_spec(column = 1, width='5em') %>% #width_min = '3em', width_max = '10em') %>%
       column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
@@ -734,13 +733,16 @@ server <- function(input, output) {
                                    enhetsUtvalg = input$enhetsUtvalgAndelTid) #,lagFig=0)
     tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
+    kolGruppering <- c(1,3,3)
+    names(kolGruppering) <- c(' ', AndelerTid$hovedgrTxt, AndelerTid$smltxt)
     output$andelTidTab <- function() {
       antKol <- ncol(tabAndelTid)
       kableExtra::kable(tabAndelTid, format = 'html'
                          , full_width=F
                          , digits = c(0,0,1,0,0,1)[1:antKol]
        ) %>%
-         add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+       #  add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+        add_header_above(kolGruppering[1:(2+AndelerTid$medSml)]) %>%
         column_spec(column = 1, width_min = '7em') %>%
         column_spec(column = 2:(antKol+1), width = '7em') %>%
         row_spec(0, bold = T)
@@ -878,13 +880,14 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
   navnKol <- colnames(tabGjsnTid)
   if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
 
+  kolGruppering <- c(1,3,3)
+  names(kolGruppering) <- c(' ', UtDataGjsnTid$hovedgrTxt, UtDataGjsnTid$smltxt)
   output$gjsnTidTab <- function() {
     kableExtra::kable(tabGjsnTid, format = 'html'
                       , full_width=F
                       , digits = 1 #c(0,1,1,1)[1:antKol]
     ) %>%
-      add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-      #add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+      add_header_above(kolGruppering[1:(2+UtDataGjsnTid$medSml)]) %>%
       column_spec(column = 1, width_min = '7em') %>%
       column_spec(column = 2:(antKol+1), width = '7em') %>%
       row_spec(0, bold = T)

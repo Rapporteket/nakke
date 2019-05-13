@@ -109,7 +109,7 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
               Ngr$Hoved,
               AggVerdier$Hoved,
               if (medSml==1){cbind(
-                Nvar$Hoved,
+                Nvar$Rest,
                 Ngr$Rest,
                 AggVerdier$Rest)}
               )}
