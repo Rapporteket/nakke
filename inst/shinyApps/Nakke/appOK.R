@@ -97,8 +97,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = "2018-01-01"),
              selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
                          choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-             selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
-                         choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+             # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
+             #             choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
              br(),
              helpText('Følgende valg gjelder bare tidsfigur:'),
              selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
@@ -194,7 +194,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Antibiotika' = 'Antibiotika', 'Arbeidstaus før operasjon' = 'ArbeidstausPreOp','Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
                                               'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd', 'ASA-grad' = 'ASAgrad',
                                               'BMI' = 'BMI', 'Angst (EQ5D) før operasjon' = 'EqAngstPreOp',
-                                              'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                               'Fornoydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
                                               'Fornoydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd' ,
                                               'Komorbiditet' = 'Komorbiditet',
@@ -215,6 +214,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Smertestill, bruk preoperativt' = 'SmertestillBrukPreOp',
                                               'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                               'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                                              'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                               'Tidligere operert' = 'TidlOpr',
                                               'Tidligere operert, antall' = 'TidlOprAntall',
                                               'Uforetrygdet før operasjon' = 'UforetrygdPreOp',
@@ -247,8 +247,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                       br(),
                       plotOutput("fordelinger")),
              tabPanel('Tabell',
+			  uiOutput("tittelFord"),
                     br(),
                     tableOutput('fordelingTab'),
+                    br(),
                     downloadButton(outputId = 'lastNed_tabFord', label='Last ned tabell')
                     )
           ))#main
@@ -266,27 +268,27 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
                                      'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
                                      'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
-                                     'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
-                                     'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                      'Fornøydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
                                      'Fornøydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
-                                     'Misfornøyd, 3 mnd. etter' = 'Misfor3mnd',
-                                     'Misforøyd, 12 mnd. etter' = 'Misfor12mnd',
+                                     'Forverring, 3 mnd. etter' = 'Verre3mnd',
+                                     'Forverring, 12 mnd. etter' = 'Verre12mnd',
                                      'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
                                      'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
                                      'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
                                      'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
+                                     'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
+                                     'Misfornøyd, 3 mnd. etter' = 'Misfor3mnd',
+                                     'Misforøyd, 12 mnd. etter' = 'Misfor12mnd',
                                      'NDIendring over 30%, 12 mnd. etter' = 'NDIendr12mnd30pst',
                                      'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
                                      'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
                                      'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
-                                     'Forverring, 3 mnd. etter' = 'Verre3mnd',
-                                     'Forverring, 12 mnd. etter' = 'Verre12mnd',
                                      'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
                                      'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
                                      'Smertestillende, preoperativt' = 'SmertestillPreOp',
                                      'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                      'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                                     'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                      'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
                                      'Utdanning' = 'Utdanning')
              ),
@@ -333,11 +335,13 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                column(width = 3,
                       h3("Sykehusvise resultater"),
                       tableOutput("andelerGrVarTab"),
+                      br(),
                       downloadButton(outputId = 'lastNed_tabAndelGrVar', label='Last ned tabell')),
                column(width = 1),
                column(width = 5,
                       h3("Utvikling over tid"),
                       tableOutput("andelTidTab"),
+                      br(),
                       downloadButton(outputId = 'lastNed_tabAndelTid', label='Last ned tabell'))
                #DT::DTOutput("andelerGrVarTab")
       ))
@@ -393,10 +397,24 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                   til venstre. Man kan også gjøre ulike filtreringer."),
            br(),
-           #h3('Utvikling over tid'),
-           plotOutput("gjsnTid"),
-           #h3('Sykehusvise resultater'),
-           plotOutput("gjsnGrVar"))
+             tabsetPanel(
+               tabPanel("Figurer",
+                        plotOutput("gjsnTid"),
+                        plotOutput("gjsnGrVar")),
+               tabPanel("Tabeller",
+                        uiOutput("tittelGjsn"),
+                        br(),
+                        column(width = 3,
+                               h3("Sykehusvise resultater"),
+                               tableOutput("gjsnGrVarTab"),
+                               downloadButton(outputId = 'lastNed_tabGjsnGrVar', label='Last ned tabell')),
+                        column(width = 1),
+                        column(width = 5,
+                               h3("Utvikling over tid"),
+                               tableOutput("gjsnTidTab"),
+                               downloadButton(outputId = 'lastNed_gjsnTidTab', label='Last ned tabell')) )
+             )
+           )
 ) #tab, gjsn
 ) #fluidpage, dvs. alt som vises på skjermen
 
@@ -416,7 +434,7 @@ server <- function(input, output) {
   #fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
   #RegData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
   context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+  if (context == "DEV" | context == "TEST" | context == "QA" | context == "PRODUCTION") {
     RegData <- NakkeRegDataSQL() #datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
     querySD <- paste0('
@@ -613,15 +631,16 @@ server <- function(input, output) {
     NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshIDdummy,
                      valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
                      myelopati = as.numeric(input$myelopatiKvalInd),
-                     fremBak = as.numeric(input$fremBakKvalInd),
+                     #fremBak = as.numeric(input$fremBakKvalInd),
                      enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd), tidsenhet = input$tidsenhetKvalInd)
   }, height=300, width=1000)
 
   output$kvalIndFig2 <- renderPlot(
     NakkeFigAndelerGrVar(RegData=RegData, preprosess=0,
                          valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                         myelopati = as.numeric(input$myelopatiKvalInd),
-                         fremBak = as.numeric(input$fremBakKvalInd))
+                         #fremBak = as.numeric(input$fremBakKvalInd),
+                         myelopati = as.numeric(input$myelopatiKvalInd)
+                         )
     , height=600, width=500
   )
 
@@ -653,14 +672,18 @@ server <- function(input, output) {
     )}) #, align='center'
   #output$fordelingTab <- renderTable(tabFord, rownames = T)
 
+  #tittelKolGr <- c(UtDataFord$hovedgrTxt, UtDataFord$smltxt)
+  kolGruppering <- c(1,3,3)
+  names(kolGruppering) <- c(' ', UtDataFord$hovedgrTxt, UtDataFord$smltxt)
   output$fordelingTab <- function() { #gr1=UtDataFord$hovedgrTxt, gr2=UtDataFord$smltxt renderTable(
     antKol <- ncol(tabFord)
     kableExtra::kable(tabFord, format = 'html'
                       , full_width=F
-                      , digits = c(0,1,0,1)[1:antKol]
+                      , digits = c(0,0,1,0,0,1)[1:antKol]
     ) %>%
-      add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
-      column_spec(column = 1, width_min = '7em') %>%
+      add_header_above(kolGruppering[1:(2+UtDataFord$medSml)]) %>%
+      #add_header_above(c(" "=1, tittelKolGr[1] = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+      column_spec(column = 1, width='5em') %>% #width_min = '3em', width_max = '10em') %>%
       column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
       row_spec(0, bold = T)
   }
@@ -710,14 +733,16 @@ server <- function(input, output) {
                                    enhetsUtvalg = input$enhetsUtvalgAndelTid) #,lagFig=0)
     tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
-
+    kolGruppering <- c(1,3,3)
+    names(kolGruppering) <- c(' ', AndelerTid$hovedgrTxt, AndelerTid$smltxt)
     output$andelTidTab <- function() {
       antKol <- ncol(tabAndelTid)
       kableExtra::kable(tabAndelTid, format = 'html'
-                        , full_width=F
-                        , digits = c(0,1,0,1)[1:antKol]
-      ) %>%
-        add_header_above(c(" "=1, 'Egen enhet/gruppe' = 2, 'Resten' = 2)[1:(antKol/2+1)]) %>%
+                         , full_width=F
+                         , digits = c(0,0,1,0,0,1)[1:antKol]
+       ) %>%
+       #  add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+        add_header_above(kolGruppering[1:(2+AndelerTid$medSml)]) %>%
         column_spec(column = 1, width_min = '7em') %>%
         column_spec(column = 2:(antKol+1), width = '7em') %>%
         row_spec(0, bold = T)
@@ -737,13 +762,14 @@ server <- function(input, output) {
                                         datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
                                         minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
                                         erMann=as.numeric(input$erMannAndelGrVar), myelopati = as.numeric(input$myelopatiAndelGrVar)) #, lagFig = 0))
-    tabAndelerShus <- cbind(Antall=AndelerShus$Ngr,
-                            Andeler = AndelerShus$AggVerdier$Hoved)
+    tabAndelerShus <- cbind('Antall (n)' = AndelerShus$Nvar,
+                            'Antall (N)' = AndelerShus$Ngr,
+                            'Andel (%)' = AndelerShus$AggVerdier$Hoved)
     output$andelerGrVarTab <- function() {
       antKol <- ncol(tabAndelerShus)
       kableExtra::kable(tabAndelerShus, format = 'html'
                         #, full_width=T
-                        , digits = c(0,1) #,0,1)[1:antKol]
+                        , digits = c(0,0,1) #,0,1)[1:antKol]
       ) %>%
         column_spec(column = 1, width_min = '5em') %>%
         column_spec(column = 2:(antKol+1), width = '4em') %>%
@@ -854,13 +880,14 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
   navnKol <- colnames(tabGjsnTid)
   if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
 
+  kolGruppering <- c(1,3,3)
+  names(kolGruppering) <- c(' ', UtDataGjsnTid$hovedgrTxt, UtDataGjsnTid$smltxt)
   output$gjsnTidTab <- function() {
     kableExtra::kable(tabGjsnTid, format = 'html'
                       , full_width=F
                       , digits = 1 #c(0,1,1,1)[1:antKol]
     ) %>%
-      add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-      #add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+      add_header_above(kolGruppering[1:(2+UtDataGjsnTid$medSml)]) %>%
       column_spec(column = 1, width_min = '7em') %>%
       column_spec(column = 2:(antKol+1), width = '7em') %>%
       row_spec(0, bold = T)
