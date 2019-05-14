@@ -101,7 +101,6 @@ return(tab)
 lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
 
   attach(UtDataFraFig, warn.conflicts = F)
-  #medSml==1
 
   if (figurtype %in% c('andeler','gjsnGrVar', 'andelTid')){
 
@@ -155,6 +154,8 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
               UtDataFraFig$AggVerdier$Hoved
   )
   colnames(tab) <- c('Antall (N)', UtDataFraFig$SentralmaalTxt)
+  detach(UtDataFraFig)
+
   return(tab)
 }
 
