@@ -21,7 +21,14 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
   '%i%' <- intersect
 
-  #Enhetsutvalg:
+  #Gruppenavn
+  indEgen1 <- match(reshID, RegData$ReshId)
+  if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
+    hovedgrTxt <- as.character(RegData$ShNavn[indEgen1])
+  } else {
+    hovedgrTxt <-'Hele landet'
+  }
+
   #Når bare skal sammenlikne med sykehusgruppe eller region, eller ikke sammenlikne,
   #trengs ikke data for hele landet:
   if (enhetsUtvalg == 2) {
@@ -40,17 +47,13 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
                        '1' = which(RegData$OprMetodeTilgangFremre==1),
                        '2' = which(RegData$OprMetodeTilgangBakre==1))
     } else {1:Ninn}
-  # indFremBak <- switch(as.character(fremBak),
-  #                      '0' = 1:Ninn,
-  #                      '1' = which(RegData$OprMetodeTilgangFremre==1),
-  #                      '2' = which(RegData$OprMetodeTilgangBakre==1))
 
   #indTidlOp <- if (tidlOp %in% 1:4) {which(RegData$TidlOpr==tidlOp)} else {indTidlOp <- 1:Ninn}
   indMed <- indAld %i% indDato %i% indAar %i% indKj %i% indMyelo %i% indFremBak
   RegData <- RegData[indMed,]
 
 
-  TidlOprtxt <-	c('Tidl. operert samme nivå', 'Tidl. operert annet nivå', 'Tidl. operert annet og sm. nivå', 'Primæroperasjon')
+ # TidlOprtxt <-	c('Tidl. operert samme nivå', 'Tidl. operert annet nivå', 'Tidl. operert annet og sm. nivå', 'Primæroperasjon')
 
   N <- dim(RegData)[1]
 
@@ -68,13 +71,6 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
 
   #Enhetsutvalg:
-  indEgen1 <- match(reshID, RegData$ReshId)
-  if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-    hovedgrTxt <- as.character(RegData$ShNavn[indEgen1])
-  } else {
-    hovedgrTxt <-'Hele landet'
-  }
-
 
   ind <- list(Hoved=0, Rest=NULL)
   if (enhetsUtvalg %in% c(0,2)) {		#Ikke sammenlikning

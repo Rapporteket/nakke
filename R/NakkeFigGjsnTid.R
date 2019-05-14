@@ -47,20 +47,15 @@ NakkeFigGjsnTid <- function(RegData, outfile='', valgtVar, erMann='',
 
 
 #----------- Figurparametre ------------------------------
-# grtxt <- ''		#Spesifiseres for hver enkelt variabel
-# grtxt2 <- ''	#Spesifiseres evt. for hver enkelt variabel
 # subtxt <- ''	#Benevning
-# flerevar <- 0
 # antDes <- 1
-#!!!Alt av utvalg basert på enhetsUtvalg kan evt. inngå i NakkeLibUtvalg. Må da returnere to datasett...
 
 NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnTid')
 RegData <- NakkeVarSpes$RegData
-sortAvtagende <- NakkeVarSpes$sortAvtagende
-varTxt <- NakkeVarSpes$varTxt
+#varTxt <- NakkeVarSpes$varTxt
 KIekstrem <- NakkeVarSpes$KIekstrem
-KImaal <- NakkeVarSpes$KImaal
-KImaaltxt <- NakkeVarSpes$KImaaltxt
+# KImaal <- NakkeVarSpes$KImaal
+# KImaaltxt <- NakkeVarSpes$KImaaltxt
 ytxt1 <- NakkeVarSpes$ytxt1
 
 #Gjør utvalg
@@ -73,24 +68,21 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 medSml <- NakkeUtvalg$medSml
 
 t1 <-ifelse(valgtMaal=='Med', 'Median', 'Gjennomsnittlig')
-tleg <- ifelse(valgtMaal=='Med', 'Median', 'Gjennomsnitt')
+#tleg <- ifelse(valgtMaal=='Med', 'Median', 'Gjennomsnitt')
 tittel <-  c(paste(t1, NakkeVarSpes$deltittel, sep=' '), hovedgrTxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), hovedgrTxt)
 #if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
 
 #------------------------Klargjøre tidsenhet--------------
 N <- list(Hoved = dim(RegData)[1], Rest=0)
+Ngr <- list(Hoved=N, Rest=NULL)
+grtxt <- NULL
+ResData <- NA
+
 if (N$Hoved>9) {
   RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
   RegData <- RegDataFunk$RegData
   #tidtxt <- RegDataFunk$tidtxt
   tidNum <- min(RegData$TidsEnhetSort, na.rm=T):max(RegData$TidsEnhetSort, na.rm = T) #as.numeric(levels(RegData$TidsEnhetSort))
-
-
-  #--------------------------------
-  #Aartxt <- min(RegData$Aar):max(RegData$Aar)
-  #RegData$Aar <- factor(RegData$Aar, levels=Aartxt)
-  #AntAar <- length(Aartxt)
-
 
   #Resultat for hovedgruppe
   N <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'TidsEnhet'], length)
@@ -113,6 +105,7 @@ if (N$Hoved>9) {
   }
   Konf <- replace(Konf, which(Konf < KIekstrem[1]), KIekstrem[1])
   Konf <- replace(Konf, which(Konf > KIekstrem[2]), KIekstrem[2])
+  Ngr$Hoved <- N
 
   #Resten (gruppa det sammenliknes mot)
   MidtRest <- NULL
@@ -131,34 +124,34 @@ if (N$Hoved>9) {
     }
     KonfRest <- replace(KonfRest, which(KonfRest < KIekstrem[1]), KIekstrem[1])
     KonfRest <- replace(KonfRest, which(KonfRest > KIekstrem[2]), KIekstrem[2])
-    KonfRest[ ,which(is.na(KonfRest[1,]))] <- KIekstrem
-  }
+    indDum <- which(is.na(KonfRest[1,]))
+    if (length(indDum)>0) {KonfRest[,indDum] <- KIekstrem}
+    Ngr$Rest <- NRest
+    }
 
-}
-Ngr <- list(Hoved=N, Rest=NRest)
+grtxt <- levels(RegData$TidsEnhet)
 ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 1)
 rownames(ResData) <- c('Midt', 'KIned', 'KIopp', 'MidtRest', 'KIRestned', 'KIRestopp')[1:(3*(medSml+1))]
-
+}
 UtData <- list(AggVerdier=ResData,
                      N=N,
                      Ngr=Ngr,
-                     #KImaal <- KImaal,
-                     #KImaaltxt <- KImaaltxt,
-                     #soyletxt=soyletxt,
-                     grtxt=levels(RegData$TidsEnhet),
-                     #grtxt2=grtxt2,
-                     #varTxt=varTxt,
-                     #tidtxt=tidtxt, #NakkeVarSpes$grtxt,
+                     grtxt=grtxt,
                      tittel=NakkeVarSpes$tittel,
-                     # xAkseTxt=xAkseTxt,
-                     #yAkseTxt=yAkseTxt,
                      utvalgTxt=utvalgTxt,
                      fargepalett=NakkeUtvalg$fargepalett,
                      medSml=medSml,
                      hovedgrTxt=NakkeUtvalg$hovedgrTxt,
                      smltxt=NakkeUtvalg$smltxt)
-
 #-----------Figur---------------------------------------
+#Plottspesifikke parametre:
+FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
+farger <- FigTypUt$farger
+fargeHovedRes <- farger[1]
+fargeRestRes <- farger[4]
+NutvTxt <- length(utvalgTxt)
+#Tilpasse marger for å kunne skrive utvalgsteksten
+par('fig'=c(0, 1, 0, 1-0.02*(max((NutvTxt-1),0))))
 
 if (length(ind$Hoved)<5 | ((medSml == 1) & (length(ind$Rest) < 5))) {
     #-----------Figur---------------------------------------
@@ -167,8 +160,12 @@ figtype(outfile)
 	plot.new()
 	title(main=tittel)
 	text(0.5, 0.5, tekst,cex=1.2)	#, family="sans")
+	#Tekst som angir hvilket utvalg som er gjort
+	mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
+
 	if ( outfile != '') {dev.off()}
-} else {
+
+	} else {
 
 #xskala <- 1:length(tidtxt)
 xmax <- max(tidNum) # max(xskala)
@@ -178,15 +175,6 @@ ymax <- 1.1*max(KonfRest, Konf, na.rm=TRUE)	#ymax1 + 2*h
 if (valgtMaal=='Med') {maaltxt <- 'Median ' } else {maaltxt <- 'Gjennomsnitt '}
 ytxt <- paste0(maaltxt, ytxt1)
 
-#Plottspesifikke parametre:
-FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
-#Tilpasse marger for å kunne skrive utvalgsteksten
-NutvTxt <- length(utvalgTxt)
-par('fig'=c(0, 1, 0, 1-0.02*(max((NutvTxt-1),0))))
-
-farger <- FigTypUt$farger
-fargeHovedRes <- farger[1]
-fargeRestRes <- farger[4]
 
 plot(tidNum, Midt,  xlim=c(0.9,xmax+0.1), ylim=c(ymin,ymax), type='n', frame.plot=FALSE, col='white',
      ylab=c(ytxt,'med 95% konfidensintervall'),
@@ -225,7 +213,7 @@ title(tittel, line=1, font.main=1, cex.main=1.3)
 
 if ( outfile != '') {dev.off()}
 
-return(invisible(UtData))
-
 }	#end if statement for 0 observations
+
+return(invisible(UtData))
 }	#end function

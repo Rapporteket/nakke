@@ -160,8 +160,9 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
 
 
   #-----------Figur---------------------------------------
-
-  if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
+  #print(Ngr)
+  #print(Ngrense)
+  if 	(max(Ngr, na.rm = T) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
     FigTypUt <- figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()

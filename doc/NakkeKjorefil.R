@@ -60,19 +60,19 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 	RegData <- NakkeData
-	#RegData$SykehusNavn <- enc2native(as.character(RegData$SykehusNavn))
-	RegData <- NakkePreprosess(RegData=RegData)
-	NakkeData <- RegData[which(RegData$Aar<2018),]
-	save(NakkeData, file=paste0('A:/Nakke/','NakkeAarsrapp2017','.Rdata'))
+	#?RegData$SykehusNavn <- enc2native(as.character(RegData$SykehusNavn))
+	# RegData <- NakkePreprosess(RegData=RegData)
+	# NakkeData <- RegData[which(RegData$Aar<2018),]
+	# save(NakkeData, file=paste0('A:/Nakke/','NakkeAarsrapp2017','.Rdata'))
 	#load(paste0(fil,".Rdata")) #RegData
 	#load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
-	datoFra='2016-01-01'
+	datoFra='2017-01-01'
 	datoTil='3000-12-31'
 	reshID <- 601161 #De tre med flest reg:
-	enhetsUtvalg=0
+	enhetsUtvalg=1
 	minald=0
-	maxald=110
+	maxald=30
 	erMann=9
 	myelopati=9
 	fremBak=0
@@ -246,10 +246,10 @@ valgtVar <- 'NRSsmerteArmEndr3mnd'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5De
 
 outfile <- '' #paste(valgtVar, '.png', sep='')	#''	#Navn angis av Jasper
 utdata <-
-  NakkeFigGjsnTid(RegData=RegData, datoFra='2017-03-01', valgtVar=valgtVar, valgtMaal='',
-           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Halvaar',
-           fremBak = 1, myelopati = 0,
-           reshID=reshID, enhetsUtvalg=0, outfile=outfile)
+  NakkeFigGjsnTid(RegData=RegData, datoFra='2018-01-01', valgtVar=valgtVar, valgtMaal='',
+           datoTil=datoTil, minald=minald, maxald=36, erMann=erMann, tidsenhet='Mnd',
+           fremBak = 9, myelopati = 0,
+           reshID=reshID, enhetsUtvalg=1, outfile=outfile)
 
 variable <- c('EMSendr12mnd', 'EMSendr3mnd', 'EQ5Dendr12mnd', 'EQ5Dendr3mnd', 'Eq5DScorePreOp',
               'KnivtidTotalMin', 'LiggeDognPostop', 'LiggeDognTotalt',
@@ -266,8 +266,6 @@ for (valgtVar in variable) {
 #------------------------------ Gjsn/med per enhet --------------------------
 #-----------------------------------------------------------------------------------
 rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
-RegData <- NakkeData
 # Inndata til funksjon:
 valgtVar <- 'Alder'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
           #NDIscorePreOp, NRSsmerteArmPreOp, NRSsmerteNakkePreOp
@@ -275,7 +273,8 @@ valgtVar <- 'Alder'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidT
 
 outfile <- '' #paste0(valgtVar, '_', valgtMaal, '.pdf')	#''	#Navn angis av Jasper
 
-utdata <- NakkeFigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
+#utdata <-
+  NakkeFigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
             datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
             reshID=reshID, outfile=outfile)
 

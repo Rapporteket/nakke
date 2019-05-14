@@ -89,6 +89,8 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
       grtxt <- c('0-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90+')	#c(levels(RegData$VariabelGr)[-length(gr)], '90+')	#c(names(AndelLand)[-length(gr)], '90+')
       xAkseTxt <- 'Aldersgrupper (år)'}
     sortAvtagende <- FALSE
+    KIekstrem <- c(0,110)
+
   }
 
   if (valgtVar=='AndreRelSykdommer') { #AndelGrVar #AndelTid
@@ -223,6 +225,8 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
 	RegData$Variabel <- RegData[ ,valgtVar]
 	deltittel <- 'EMS hos myelopatipasienter før operasjon'
 	xAkseTxt <- ''
+	KIekstrem <- c(0,18)
+
 	}
 
   if (valgtVar=='EnhverKompl3mnd') { #AndelGrVar  #AndelTid
