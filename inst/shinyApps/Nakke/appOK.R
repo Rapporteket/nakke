@@ -407,7 +407,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         column(width = 3,
                                h3("Sykehusvise resultater"),
                                tableOutput("gjsnGrVarTab"),
-                               downloadButton(outputId = 'lastNed_tabGjsnGrVar', label='Last ned tabell')),
+                               downloadButton(outputId = 'lastNed_gjsnGrVarTab', label='Last ned tabell')),
                         column(width = 1),
                         column(width = 5,
                                h3("Utvikling over tid"),
