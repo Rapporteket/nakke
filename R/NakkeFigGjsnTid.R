@@ -78,7 +78,7 @@ Ngr <- list(Hoved=N, Rest=NULL)
 grtxt <- NULL
 ResData <- NA
 
-if (N$Hoved>9) {
+if (N$Hoved>4) {
   RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
   RegData <- RegDataFunk$RegData
   #tidtxt <- RegDataFunk$tidtxt
