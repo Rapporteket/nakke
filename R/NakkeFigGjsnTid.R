@@ -135,7 +135,7 @@ if (N$Hoved>9) {
   }
 
 }
-
+Ngr <- list(Hoved=N, Rest=NRest)
 ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 1)
 rownames(ResData) <- c('Midt', 'KIned', 'KIopp', 'MidtRest', 'KIRestned', 'KIRestopp')[1:(3*(medSml+1))]
 
