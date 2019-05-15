@@ -6,9 +6,9 @@ Description: Alle R-baserte resultattjenester på Rapporteket for Degenerativ
     Nakke. Dette inkluderer R-funksjoner for analyse og visualisering, noweb-
     filer (generere LaTeX-dokumenter) og evt. logofiler o.l. Kan også inkludere
     kjørefiler og eksempeldatasett. Pakken inneholder også en Shiny-app. for 
-    registeret.
-Version: 1.9
-Date: 2019-04-10
+    registeret, samt figurer og tabeller til årsrapport.
+Version: 1.9.1
+Date: 2019-05-15
 Author: Lena Ringstad Olsen, Nasjonalt Servicemiljo for Kvalitetsregistre, SKDE
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Depends:

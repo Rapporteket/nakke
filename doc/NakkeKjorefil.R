@@ -89,7 +89,7 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 #-------------------------------Månedsrapport---------------------------
 	library(knitr)
 	library(devtools)
-	dato <- '2018-12-06'
+	dato <- Sys.Date()#'2018-12-06'
 	SkjemaData <- read.table(paste0('A:/Nakke/SkjemaOversikt',dato,'.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
 	RegData <- read.table(paste0('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
 
@@ -327,6 +327,7 @@ write.table(RegData[ind,variable], file='A:/NakkeTilOffSvelg.csv', sep=';', row.
 #Kode 0,1: Nei, Ja +tomme
 #    OppFolgStatus3mnd == 1, KomplinfekDyp3mnd eller KomplinfekOverfl3mnd %in% 0:1
 #    tittel <- 'Komplikasjoner (totalt) 3 mnd. etter operasjon'
+#valgtVar = Komplinfek
 ind <- intersect(which(RegData$OppFolgStatus3mnd == 1),
   union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1)))
 RegData <- RegData[ind, ]

@@ -129,9 +129,12 @@ if (N$Hoved>4) {
     Ngr$Rest <- NRest
     }
 
-grtxt <- levels(RegData$TidsEnhet)
+  if (valgtMaal=='Med') {maaltxt <- 'Median ' } else {maaltxt <- 'Gjennomsnitt '}
+  grtxt <- levels(RegData$TidsEnhet)
 ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 1)
-rownames(ResData) <- c('Midt', 'KIned', 'KIopp', 'MidtRest', 'KIRestned', 'KIRestopp')[1:(3*(medSml+1))]
+rownames(ResData) <- c(maaltxt, 'KImin', 'KImaks',
+                       paste0(maaltxt, 'Resten'), 'KImin, Resten', 'KImaks, Resten')[1:(3*(medSml+1))]
+#rownames(ResData) <- c('Midt', 'KIned', 'KIopp', 'MidtRest', 'KIRestned', 'KIRestopp')[1:(3*(medSml+1))]
 }
 UtData <- list(AggVerdier=ResData,
                      N=N,
@@ -172,7 +175,6 @@ xmax <- max(tidNum) # max(xskala)
 cexgr <- 0.9	#Kan endres for enkeltvariable
 ymin <- 0.9*min(KonfRest, Konf, na.rm=TRUE)	#ymin1 - 2*h
 ymax <- 1.1*max(KonfRest, Konf, na.rm=TRUE)	#ymax1 + 2*h
-if (valgtMaal=='Med') {maaltxt <- 'Median ' } else {maaltxt <- 'Gjennomsnitt '}
 ytxt <- paste0(maaltxt, ytxt1)
 
 
