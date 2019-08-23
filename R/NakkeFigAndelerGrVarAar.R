@@ -209,7 +209,7 @@ smltxt <- NakkeUtvalg$smltxt
       #-----------Figur---------------------------------------
       # Lager ikke figur hvis ALLE N er mindre enn grensa eller hvis ugyldig parameterkombinasjon.
       if 	( max(Ngr) < Ngrense) {
-            FigTypUt <- rapbase::figtype(outfile)
+            FigTypUt <- rapFigurer::figtype(outfile)
             farger <- FigTypUt$farger
             plot.new()
             if (dim(RegData)[1]>0) {
@@ -227,7 +227,7 @@ smltxt <- NakkeUtvalg$smltxt
             #----------- Figurparametre ------------------------------
             cexShNavn <- 1 #0.85
             hoyde <- ifelse(grVar=='BoHF', 3*600, 3*800)
-            FigTypUt <- rapbase::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
+            FigTypUt <- rapFigurer::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
             farger <- FigTypUt$farger
             soyleFarger <- farger[4] #rep(farger[3], AntGrNgr)
             prikkFarge <- farger[3]

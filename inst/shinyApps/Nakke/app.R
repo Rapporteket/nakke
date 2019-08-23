@@ -17,6 +17,7 @@ library(knitr)
 library(lubridate)
 #ibrary(shinyBS) # Additional Bootstrap Controls
 library(kableExtra)
+library(rapFigurer)
 #library(zoo)
 
 # ui <- shinyUI(basicPage(

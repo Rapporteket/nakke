@@ -30,7 +30,8 @@ NakkePreprosess <- function(RegData=RegData)
 	names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
 	class(RegData$ReshId) <- 'numeric'
 	#names(RegData)[which(names(RegData) == 'SykehusNavn')] <- 'ShNavn'
-	RegData$ShNavn <- RegData$SykehusNavn
+
+	RegData$ShNavn <- as.character(RegData$SykehusNavn) #Får bort tomme navn
 
   return(invisible(RegData))
 }

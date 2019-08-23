@@ -51,7 +51,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
   #indEgen1 <- match(reshID, RegData$ReshId)
   #smltxt <- 'alle enheter'
 
-  grVar <- 'SykehusNavn'
+  grVar <- 'ShNavn'
   RegData[ ,grVar] <- factor(RegData[ ,grVar])
 
 

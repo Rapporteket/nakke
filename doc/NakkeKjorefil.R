@@ -67,12 +67,15 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 	#load(paste0(fil,".Rdata")) #RegData
 	#load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
-	datoFra='2017-01-01'
-	datoTil='3000-12-31'
+	load('A:/Nakke/NakkeAarsrapp2018.Rdata')
+RegData <- NakkeData
+
+	datoFra='2018-01-01'
+	datoTil='2018-12-31'
 	reshID <- 601161 #De tre med flest reg:
-	enhetsUtvalg=1
+	enhetsUtvalg=0
 	minald=0
-	maxald=30
+	maxald=110
 	erMann=9
 	myelopati=9
 	fremBak=0
@@ -80,7 +83,7 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 	grVar='ShNavn'
 	ktr=0
 	aar=2015:2016
-	tidlAar=2013:2014
+	tidlAar=2015:2016
 	tidsenhet <- 'Mnd'
 	valgtMaal <- 'Gjsn'
 	hentData=0
@@ -201,17 +204,7 @@ NakkeData <- read.table('A:/Nakke/AlleVarNum2018-06-21.csv', sep=';', header=T, 
 RegData <- NakkeData
 setwd("C:/ResultattjenesteGIT/Nakke/")
 
-# Inndata til funksjon:
-#...NB: SkjemaID
-reshID <- 601161 #De tre med flest reg:
-minald <- 0	#alder, fra og med
-maxald <- 110	#alder, til og med
-datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2017-12-31'
-erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-tittel=1
-enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'KomplSvelging3mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'Alder'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
@@ -220,7 +213,7 @@ valgtVar <- 'KomplSvelging3mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiot
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 outfile <- paste0(valgtVar, '_ShusSyn.pdf')	#''	#Navn angis av Jasper
 outfile <- '' #paste0(valgtVar, '_ShusSyn.png')	#''	#Navn angis av Jasper
-NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, fremBak = 1, myelopati = 0,
+NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, fremBak = fremBak, myelopati = myelopati,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, outfile=outfile)
 
@@ -386,17 +379,11 @@ library(shinyapps)
 ??shinyappsProxies
 ?shinyappsOptions
 #Publisere:
-httr::set_config(httr::use_proxy(url="http://www-proxy.helsenord.no", port=8080))
-httr::set_config(httr::use_proxy(url="http://flex-proxy.nhn.no", port=8080))
-Sys.setenv(http_proxy="http://www-proxy.helsenord.no:8080")
-#httr::set_config(use_proxy(url="18.91.12.23", port=8080))
-options(RCurlOptions = list(proxy = "http://www-proxy.helsenord.no:8080"))
-options(shinyapps.http = "rcurl")
-
+- Sette proxy
 
 library(rsconnect)
 rsconnect::setAccountInfo(name='lenatest',
-                          token='00581594B2D659880FFB21E82C8ED3A3',
-                          secret='lvlAX2DFawjnMtrr0nFxANa7ARaRDOE2AROkYU+C')
+                          token='..',
+                          secret='..')
 rsconnect::deployApp('C:/ResultattjenesteGIT/Nakke/inst/shinyApps')
 #options(rpubs.upload.method = "internal")

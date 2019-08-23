@@ -66,7 +66,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      #----------- Figurparametre ------------------------------
      cexShNavn <- 1 #0.85
 
-     grVar <- 'SykehusNavn'
+     grVar <- 'ShNavn'
      RegData[ ,grVar] <- factor(RegData[ ,grVar])
      #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
@@ -105,7 +105,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
   #AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
   AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
      #	GrNavnSort <- paste(names(Ngr)[sortInd], ', ',Ngrtxt[sortInd], sep='')
-     GrNavnSort <- paste0(names(Ngr)[sortInd], Ngrtxt[sortInd]) #names(Ngr)[sortInd]
+     GrNavnSort <- paste0(names(Ngr), Ngrtxt[sortInd]) #names(Ngr)[sortInd]
 
      andeltxt <- paste0(sprintf('%.1f',AndelerGrSort), '%') 	#round(as.numeric(AndelerGrSort),1)
      if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
@@ -167,7 +167,6 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
                  legend=paste0('Hele landet', ' (', sprintf('%.1f',AggVerdier$Tot), '%), ', 'N=', N),
                  bty='o', bg='white', box.col='white')
           mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
-          #text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),
           title(tittel, line=1, font.main=1, cex.main=1.3)
 
           text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
