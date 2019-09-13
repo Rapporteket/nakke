@@ -282,9 +282,10 @@ for (valgtVar in variable) {
 }
 
 
-#------------------Kvalitetsindikatorer-----------------------
+#------------------Kvalitetsindikatorer, Resultatportalen -----------------------
+rm(list=ls())
 library(Nakke)
-NakkeData <- read.table('A:/Nakke/AlleVarNum2018-10-04.csv', sep=';', header=T, encoding = 'UTF-8') #
+NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
 RegData <- NakkePreprosess(NakkeData)
 RegData <- RegData[RegData$Aar>=2014,]
 # Stemmevansker, 3 mnd.'
@@ -297,7 +298,7 @@ RegData <- RegData[RegData$Aar>=2014,]
 variable <- c('ReshId','SykehusNavn','Aar','KomplStemme3mnd') #
 ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplStemme3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
-write.table(RegData[ind,variable], file='A:/NakkeTilOffStemme.csv', sep=';', row.names = F)
+write.table(RegData[ind,variable], file='A:/ind2_Stemmevansker_Nakke.csv', sep=';', row.names = F)
 
 # 'Svelgvansker, 3 mnd.'
 #Mål: lavt
@@ -312,7 +313,7 @@ write.table(RegData[ind,variable], file='A:/NakkeTilOffStemme.csv', sep=';', row
 variable <- c('ReshId','SykehusNavn','Aar','KomplSvelging3mnd') #
 ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplSvelging3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
-write.table(RegData[ind,variable], file='A:/NakkeTilOffSvelg.csv', sep=';', row.names = F)
+write.table(RegData[ind,variable], file='A:/ind1_Svelgvansker_Nakke.csv', sep=';', row.names = F)
 
 #Komplikasjoner (endret fra overfladisk, bakre til dyp og overfladisk, alle)
 #Pasientskjema. Alle komplikasjoner (dype og overfladiske), 3mnd.
@@ -327,29 +328,69 @@ RegData <- RegData[ind, ]
 RegData$KomplInfek <- 0
 RegData$KomplInfek[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
 variable <- c('ReshId', 'SykehusNavn', 'Aar', 'KomplInfek')
-write.table(RegData[ ,variable], file='A:/NakkeTilOffKomplInfek.csv', sep=';', row.names = F)
+write.table(RegData[ ,variable], file='A:/ind3_Sårinfeksjon_Nakke.csv', sep=';', row.names = F)
+
+#--------Nøkkeltall, Resultatportalen
+rm(list=ls())
+library(Nakke)
+NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
+RegData <- NakkePreprosess(NakkeData)
+NakkeData <- RegData[RegData$Aar>=2014,]
+
+# Antall sykehusavdelinger	?	9
+# Antall operasjoner 2018	5302	1091
+# Andel >70 år	27%	6%
+# Gjennomsnittsalder	57	52
+# Andel kvinner operert	47,5%	44%
+# Fornøyd med behandlingen de fikk på sykehuset 3 mnd. etter kirurgi	91%	91%
+# Suksess: «helt restituert» etter «mye bedre» 3 mnd. etter kirurgi	65%	61%* (Fremre nakkekirurgi)
+# Andel som angir at de er verre 3 mnd. etter kirurgi	3%	3%* (Fremre nakkekirurgi)
+
+antSh <- colSums(table(as.character(NakkeData$ShNavn),NakkeData$Aar)>0)
+antOp <- table(NakkeData$Aar)
+NakkeData$over70 <- 0
+NakkeData$over70[NakkeData$Alder>=70] <- 1
+andel70aar <- tapply(NakkeData$over70,NakkeData$Aar, FUN='mean', na.rm=T)
+alderGjsn <- tapply(NakkeData$Alder,NakkeData$Aar, FUN='mean', na.rm=T)
+alderMedian <- tapply(NakkeData$Alder,NakkeData$Aar, FUN='median', na.rm=T)
+andelKvinner <- 1-tapply(NakkeData$ErMann,NakkeData$Aar, FUN='mean', na.rm=T)
+
+#datoTil <- min(datoTil, as.character(Sys.Date()-100))
+NakkeData$Fornoyd <- 0
+NakkeDataForn <- NakkeData[intersect(which(NakkeData$OppFolgStatus3mnd==1), which(NakkeData$FornoydBeh3mnd %in% 1:5)),
+                         c('FornoydBeh3mnd', 'Fornoyd', 'Aar')]
+NakkeDataForn$Fornoyd[NakkeDataForn$FornoydBeh3mnd %in% 1:2] <- 1
+andelFornoyd <- tapply(NakkeDataForn$Fornoyd, NakkeDataForn$Aar, FUN='mean', na.rm=T)
+
+#datoTil <- min(datoTil, as.character(Sys.Date()-100))
+NakkeData$Bedre <- 0
+NakkeData$Verre <- 0
+NakkeDataEndring <-  NakkeData[intersect(intersect(which(NakkeData$OppFolgStatus3mnd==1),
+                                         which(NakkeData$NytteOpr3mnd %in% 1:7)),
+                               which(NakkeData$OprMetodeTilgangFremre==1)),
+                             c('NytteOpr3mnd', 'Bedre', 'Verre','Aar')]
+NakkeDataEndring$Bedre[NakkeDataEndring$NytteOpr3mnd %in% 1:2] <- 1
+NakkeDataEndring$Verre[NakkeDataEndring$NytteOpr3mnd %in% 6:7] <- 1
+
+andelSuksess <- tapply(NakkeDataEndring$Bedre, NakkeDataEndring$Aar, FUN='mean', na.rm=T)
+andelVerre <- tapply(NakkeDataEndring$Verre, NakkeDataEndring$Aar, FUN='mean', na.rm=T)
+
+NokkeltallNakke <- rbind(
+  'Antall avdelinger' = antSh,
+  'Antall operasjoner' = antOp,
+  'Andel over 70 år'	= andel70aar,
+  'Gjennomsnittsalder' = alderGjsn,
+  #   'Medianalder' = alderMedian,
+  'Andel kvinner' = andelKvinner,
+  'Fornøyd med behandlingen, 3 mnd. etter' = andelFornoyd,
+  'Helt restituert/mye bedre, 3 mnd. etter fremre kir.' = andelSuksess,
+  'Verre 3 mnd. etter fremre kir.' = andelVerre
+)
+tabNokkeltallNakke <- cbind(row.names(NokkeltallNakke),NokkeltallNakke)
+
+write.table(tabNokkeltallNakke, file = 'A:/Resultatportalen/NokkeltallNakke.csv', row.names=F, sep=';', fileEncoding = 'UTF-8' )
 
 
-#Ett datasett for alle
-variable <- c('ReshId', 'SykehusNavn', 'ErMann', 'Aar', 'OprIndikMyelopati',
-    'OprMetodeTilgangBakre', 'OprMetodeTilgangFremre', 'EnhverKompl3mnd',
-    'KomplSvelging3mnd', 'KomplStemme3mnd')
-# Kanskje: 'OprDato',
-
-ind <- which(RegData$OppFolgStatus3mnd==1)
-write.table(RegData[ind,variable], file='A:/NakkeTilOff.csv', sep=';', row.names = F)
-
-#!!!!!!!!!FASET UT:
-#3MndSkjema. Andel med KomplinfekOverfl3mnd=1
-#Mål: lavt
-#Kode 0,1: Nei, Ja +tomme
-# OppFolgStatus3mnd == 1, KomplinfekOverfl3mnd %in% 0:1
-#variable <- c('ReshId', 'SykehusNavn', 'ErMann', 'Aar', 'KomplinfekOverfl3mnd')
-#ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangBakre==1)
-#             & (RegData$KomplinfekOverfl3mnd %in% 0:1))
-# TittelUt <- 'Overfladisk infeksjon, 3 mnd.'
-#Utvalg, bakre tilgang: OprMetodeTilgangBakre==1
-#Variable: OppFolgStatus3mnd, KomplinfekOverfl3mnd, OprMetodeTilgangBakre,
 
 #------------------ Data til NPR, Dekningsgradsanalyse
 'SELECT ForlopsID, Alder, Kjonn, Organisasjon, AvdRESH, SykehusNavn,
