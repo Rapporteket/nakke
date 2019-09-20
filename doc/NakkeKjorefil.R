@@ -339,6 +339,7 @@ NakkeData <- RegData[RegData$Aar>=2014,]
 
 # Antall sykehusavdelinger	?	9
 # Antall operasjoner 2018	5302	1091
+# Andel som svarer på oppfølging 3 og 12 mnd.
 # Andel >70 år	27%	6%
 # Gjennomsnittsalder	57	52
 # Andel kvinner operert	47,5%	44%
@@ -348,6 +349,8 @@ NakkeData <- RegData[RegData$Aar>=2014,]
 
 antSh <- colSums(table(as.character(NakkeData$ShNavn),NakkeData$Aar)>0)
 antOp <- table(NakkeData$Aar)
+andelSvart3mnd <- tapply(NakkeData$OppFolgStatus3mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
+andelSvart12mnd <- tapply(NakkeData$OppFolgStatus12mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
 NakkeData$over70 <- 0
 NakkeData$over70[NakkeData$Alder>=70] <- 1
 andel70aar <- tapply(NakkeData$over70,NakkeData$Aar, FUN='mean', na.rm=T)
@@ -378,6 +381,8 @@ andelVerre <- tapply(NakkeDataEndring$Verre, NakkeDataEndring$Aar, FUN='mean', n
 NokkeltallNakke <- rbind(
   'Antall avdelinger' = antSh,
   'Antall operasjoner' = antOp,
+  'Svart på oppfølging, 3 mnd.' = andelSvart3mnd,
+  'Svart på oppfølging, 12 mnd.' = andelSvart12mnd,
   'Andel over 70 år'	= andel70aar,
   'Gjennomsnittsalder' = alderGjsn,
   #   'Medianalder' = alderMedian,
