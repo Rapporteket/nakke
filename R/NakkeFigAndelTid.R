@@ -164,7 +164,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
   #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & medSml == 1)) {
   if (length(ind$Hoved) < 10 | (NakkeUtvalg$medSml ==1 & length(ind$Rest)<10)) {
     #-----------Figur---------------------------------------
-    FigTypUt <- figtype(outfile)
+    FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     title(main=paste('variabel: ', valgtVar, sep=''))	#, line=-6)
@@ -177,7 +177,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
     #-----------Figur---------------------------------------
 
     #Plottspesifikke parametre:
-    # FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
+    # FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
     # farger <- FigTypUt$farger
     # fargeHoved <- farger[3]
     # fargeRest <- farger[1]
@@ -222,7 +222,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
     # if ( outfile != '') {dev.off()}
     #------------------------------------------------------------------------------
                  #Plottspesifikke parametre:
-                  FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
+                  FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
                   farger <- FigTypUt$farger
                   fargeHoved <- farger[3]
                   fargeRest <- farger[1]

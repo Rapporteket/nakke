@@ -181,7 +181,7 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 #Hvis for få observasjoner..
 #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & egenavd==1)) {
 if ( Nfig$Hoved %in% 1:5 | 	(NakkeUtvalg$medSml ==1 & Nfig$Rest<10)) {	#(valgtVar=='Underkat' & all(hovedkat != c(1,2,5,7))) |
-FigTypUt <- figtype(outfile)
+FigTypUt <- rapFigurer::figtype(outfile)
 farger <- FigTypUt$farger
 	plot.new()
 	title(tittel)	#, line=-6)
@@ -197,7 +197,7 @@ cexgr <- 1	#Kan endres for enkeltvariable
 
 
 #Plottspesifikke parametre:
-FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
+FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
 #Tilpasse marger for å kunne skrive utvalgsteksten
 vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.7))
 par('fig'=c(vmarg, 1, 0, 1-0.025*(NutvTxt-1)))	#Har alltid datoutvalg med

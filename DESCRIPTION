@@ -13,7 +13,8 @@ Author: Lena Ringstad Olsen, Nasjonalt Servicemiljo for Kvalitetsregistre, SKDE
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Depends:
     R (>= 3.1.3),
-    rapbase
+    rapbase,
+    rapFigurer
 License: GPL-2
 LazyData: TRUE
 Imports:
@@ -25,6 +26,7 @@ Imports:
     zoo
 Remotes:
     Rapporteket/rapbase@rel
+    Rapporteket/rapFigurer
 Suggests:
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1

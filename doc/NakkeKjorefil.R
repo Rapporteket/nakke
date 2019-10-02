@@ -110,9 +110,6 @@ RegData <- NakkeData
 #	knit2pdf('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 
 
-#------------------------------ Andeler flere var --------------------------
-#------------------------------ (Fordelinger) --------------------------
-
 #---------------Offentliggjøring fra 2016----------------
 setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp/2016')
 
@@ -130,10 +127,17 @@ FigAndelerGrVarAar(RegData=RegData, valgtVar='KomplSvelging3mnd',
 FigAndelerGrVarAar(RegData=RegData, valgtVar='Komplinfek',
                    fremBak=2, Ngrense=30,
                    ktr=0,aar=2015:2016,tidlAar=2013:2014, outfile='OffKomplinfek.png')
-setwd("C:/ResultattjenesteGIT/Nakke/")
 
-valgtVar <- 'OprIndikSmerter' #OprIndikSmerter'
-outfile <- '' #paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
+#------------------------------ Andeler flere var --------------------------
+#------------------------------ (Fordelinger) --------------------------
+
+
+valgtVar <- 'NytteOpr12mndAlleKat' #OprIndikSmerter'
+outfile <- paste0(valgtVar, '.png')	#''
+
+utdata <- NakkeFigAndeler(RegData=RegData, valgtVar=valgtVar,
+                          datoFra='2017-01-01', datoTil='2017-12-31', outfile=outfile)
+                          #myelopati = myelopati, fremBak = 1)
 
 utdata <- NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,myelopati = myelopati,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, fremBak = 1,
@@ -282,6 +286,14 @@ for (valgtVar in variable) {
 }
 
 
+load('A:/Nakke/NakkeAarsrapp2018.Rdata') #IKKE preprossessert
+
+#Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
+NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=1, valgtVar='KomplStemme3mnd',
+                     myelopati=0, fremBak=1, Ngrense=20, outfile='')
+
+NakkeFigAndeler(NakkeData, valgtVar)
+
 #------------------Kvalitetsindikatorer, Resultatportalen -----------------------
 rm(list=ls())
 library(Nakke)
@@ -333,7 +345,8 @@ write.table(RegData[ ,variable], file='A:/ind3_Sårinfeksjon_Nakke.csv', sep=';'
 #--------Nøkkeltall, Resultatportalen
 rm(list=ls())
 library(Nakke)
-NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
+#NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
+load('A:/Nakke/NakkeAarsrapp2018.Rdata')
 RegData <- NakkePreprosess(NakkeData)
 NakkeData <- RegData[RegData$Aar>=2014,]
 
@@ -359,24 +372,49 @@ alderMedian <- tapply(NakkeData$Alder,NakkeData$Aar, FUN='median', na.rm=T)
 andelKvinner <- 1-tapply(NakkeData$ErMann,NakkeData$Aar, FUN='mean', na.rm=T)
 
 #datoTil <- min(datoTil, as.character(Sys.Date()-100))
+#Fornøydhet
 NakkeData$Fornoyd <- 0
 NakkeDataForn <- NakkeData[intersect(which(NakkeData$OppFolgStatus3mnd==1), which(NakkeData$FornoydBeh3mnd %in% 1:5)),
                          c('FornoydBeh3mnd', 'Fornoyd', 'Aar')]
 NakkeDataForn$Fornoyd[NakkeDataForn$FornoydBeh3mnd %in% 1:2] <- 1
 andelFornoyd <- tapply(NakkeDataForn$Fornoyd, NakkeDataForn$Aar, FUN='mean', na.rm=T)
 
-#datoTil <- min(datoTil, as.character(Sys.Date()-100))
-NakkeData$Bedre <- 0
-NakkeData$Verre <- 0
-NakkeDataEndring <-  NakkeData[intersect(intersect(which(NakkeData$OppFolgStatus3mnd==1),
-                                         which(NakkeData$NytteOpr3mnd %in% 1:7)),
-                               which(NakkeData$OprMetodeTilgangFremre==1)),
-                             c('NytteOpr3mnd', 'Bedre', 'Verre','Aar')]
-NakkeDataEndring$Bedre[NakkeDataEndring$NytteOpr3mnd %in% 1:2] <- 1
-NakkeDataEndring$Verre[NakkeDataEndring$NytteOpr3mnd %in% 6:7] <- 1
+andelForn <- function(Data, ktr=1){
+  Data$Variabel <- 0
+  Data$Utfylt <- switch(ktr, Data$OppFolgStatus3mnd, Data$OppFolgStatus12mnd)
+  Data$Fornoyd <- switch(ktr, Data$FornoydBeh3mnd, Data$FornoydBeh12mnd)
+  ind <- intersect(which(Data$Utfylt==1), which(Data$Fornoyd %in% 1:5))
+  DataDum <- Data[ind, c('Fornoyd', 'Variabel', 'Aar')]
+  DataDum$Variabel[DataDum$Fornoyd %in% 1:2] <- 1
+  andelFornoyd <- tapply(DataDum$Variabel, DataDum$Aar, FUN='mean', na.rm=T)
+}
+andelForn3mnd <- andelForn(NakkeData,ktr = 1)
+andelForn12mnd <- andelForn(NakkeData,ktr = 2)
 
-andelSuksess <- tapply(NakkeDataEndring$Bedre, NakkeDataEndring$Aar, FUN='mean', na.rm=T)
-andelVerre <- tapply(NakkeDataEndring$Verre, NakkeDataEndring$Aar, FUN='mean', na.rm=T)
+#Betydelig endring
+andelEndring <- function(Data, ktr=2){
+  Data$Bedre <- 0
+  Data$Verre <- 0
+  Data$Utfylt <- switch(ktr, Data$OppFolgStatus3mnd, Data$OppFolgStatus12mnd)
+  Data$NytteOpr <- switch(ktr, Data$NytteOpr3mnd, Data$NytteOpr12mnd)
+  DataEndring <-  Data[intersect(intersect(which(Data$Utfylt==1),
+                                           which(Data$NytteOpr %in% 1:7)),
+                                 which(Data$OprMetodeTilgangFremre==1)),
+                       c('NytteOpr3mnd', 'Bedre', 'Verre','Aar')]
+  DataEndring$Bedre[DataEndring$NytteOpr %in% 1:2] <- 1
+  DataEndring$Verre[DataEndring$NytteOpr %in% 6:7] <- 1
+
+  andelSuksess <- tapply(DataEndring$Bedre, DataEndring$Aar, FUN='mean', na.rm=T)
+  andelVerre <- tapply(DataEndring$Verre, DataEndring$Aar, FUN='mean', na.rm=T)
+  return(list('Suksess'= andelSuksess,  'Verre' = andelVerre))
+}
+endring <- andelEndring(NakkeData, ktr=1)
+andelSuksess3mnd <- andelEndring(NakkeData, ktr=1)$Suksess
+andelSuksess12mnd <- andelEndring(NakkeData, ktr=2)$Suksess
+andelVerre3mnd <- andelEndring(NakkeData, ktr=1)$Verre
+andelVerre12mnd <- andelEndring(NakkeData, ktr=2)$Verre
+
+
 
 NokkeltallNakke <- rbind(
   'Antall avdelinger' = antSh,
@@ -387,12 +425,15 @@ NokkeltallNakke <- rbind(
   'Gjennomsnittsalder' = alderGjsn,
   #   'Medianalder' = alderMedian,
   'Andel kvinner' = andelKvinner,
-  'Fornøyd med behandlingen, 3 mnd. etter' = andelFornoyd,
-  'Helt restituert/mye bedre, 3 mnd. etter fremre kir.' = andelSuksess,
-  'Verre 3 mnd. etter fremre kir.' = andelVerre
+  'Fornøyd med behandlingen, 3 mnd. etter' = andelForn3mnd,
+  'Fornøyd med behandlingen, 12 mnd. etter' = andelForn12mnd,
+  'Helt restituert/mye bedre, 3 mnd. etter fremre kir.' = andelSuksess3mnd,
+  'Helt restituert/mye bedre, 12 mnd. etter fremre kir.' = andelSuksess12mnd,
+  'Verre 3 mnd. etter fremre kir.' = andelVerre3mnd,
+  'Verre 12 mnd. etter fremre kir.' = andelVerre12mnd
 )
 tabNokkeltallNakke <- cbind(row.names(NokkeltallNakke),NokkeltallNakke)
-
+tabNokkeltallNakke[ ,c('2017','2018')]
 write.table(tabNokkeltallNakke, file = 'A:/Resultatportalen/NokkeltallNakke.csv', row.names=F, sep=';', fileEncoding = 'UTF-8' )
 
 

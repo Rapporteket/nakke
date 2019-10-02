@@ -148,7 +148,7 @@ UtData <- list(AggVerdier=ResData,
                      smltxt=NakkeUtvalg$smltxt)
 #-----------Figur---------------------------------------
 #Plottspesifikke parametre:
-FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
+FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
 farger <- FigTypUt$farger
 fargeHovedRes <- farger[1]
 fargeRestRes <- farger[4]
@@ -158,7 +158,7 @@ par('fig'=c(0, 1, 0, 1-0.02*(max((NutvTxt-1),0))))
 
 if (length(ind$Hoved)<5 | ((medSml == 1) & (length(ind$Rest) < 5))) {
     #-----------Figur---------------------------------------
-figtype(outfile)
+rapFigurer::figtype(outfile)
 	tekst <- 'Færre enn 5 registreringer i egen eller sammenligningsgruppa'
 	plot.new()
 	title(main=tittel)

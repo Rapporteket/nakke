@@ -29,23 +29,23 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
   flerevar <- 0
   grtxt <- ''		#Spesifiseres for hver enkelt variabel
   grtxt2 <- ''	#Spesifiseres evt. for hver enkelt variabel
-  grNavn <- ''
+  #grNavn <- ''
   varTxt <- ''
   xAkseTxt <- ''	#Benevning
   if (figurtype == 'andelGrVar') {xAkseTxt <- 'Andel operasjoner (%)'}
-  yAkseTxt <- ''
+  #yAkseTxt <- ''
   ytxt1 <- ''
-  pktTxt <- '' #(evt. søyletekst)
-  txtEtiketter  <- ''	#legend
-  verdier <- ''	#AggVerdier, gjennomsnitt, ...
-  verdiTxt <- '' 	#pstTxt, ...
-  strIfig <- ''		#cex
+  #pktTxt <- '' #(evt. søyletekst)
+  #txtEtiketter  <- ''	#legend
+  #verdier <- ''	#AggVerdier, gjennomsnitt, ...
+  #verdiTxt <- '' 	#pstTxt, ...
+  #strIfig <- ''		#cex
   sortAvtagende <- TRUE  #Sortering av resultater
-  KImaal <- NA
   tittel <- 'Mangler tittel'
   deltittel <- ''
   variable <- 'Ingen'
   KIekstrem <- NULL
+  KImaalGrenser <- NA
   #deltittel <- ''
   RegData$Variabel <- 0
   #Kan her definere opp alle aktuelle grupperingsvariable og deres tekst, eller
@@ -362,7 +362,8 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
     RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
     varTxt <- 'infeksjoner'
     tittel <- 'Pasientrapportert dyp eller overfladisk infeksjon, 3 mnd.'
-  }
+    KImaalGrenser <- c(0,2)
+    }
 
   if (valgtVar=='KomplStemme3mnd') { #AndelTid, #AndelGrVar
     #3MndSkjema. Andel med KomplStemme3mnd=1
@@ -373,6 +374,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
     RegData$Variabel <- RegData[ ,valgtVar]
     varTxt <- 'med stemmevansker'
     tittel <- 'Stemmevansker, fremre tilgang, 3 mnd.'
+    KImaalGrenser <- c(0,10)
   }
   if (valgtVar=='KomplStemme12mnd') { #AndelGrVar,
     #3MndSkjema. Andel med KomplStemme12mnd=1
@@ -404,6 +406,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
     RegData$Variabel <- RegData[ ,valgtVar]
     varTxt <- 'med svelgevansker'
     tittel <- 'Svelgevansker, fremre tilgang, 3 mnd.'
+    KImaalGrenser <- c(0,17)
   }
   if (valgtVar=='LiggeDognPostop') { #Andeler #GjsnTid #GjsnGrVar
     #Legeskjema.
@@ -608,6 +611,27 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
                        NytteOpr12mnd = 'Helt bra eller mye bedre, 12 mnd.')
 
     }
+  }
+  if (valgtVar %in% c('NytteOpr3mndAlleKat', 'NytteOpr12mndAlleKat')) { #Andeler
+    #3/12mndSkjema. Andel med helt bra/mye bedre (1:2)
+    #Kode 1:7,9: ''Helt bra', 'Mye bedre', 'Litt bedre', 'Uendret', 'Litt verre', 'Mye verre',
+    #				'Verre enn noen gang', 'Ukjent')
+    grtxt <- c('Helt bra', 'Mye bedre', 'Litt bedre', 'Uendret', 'Litt verre', 'Mye verre',
+               				'Verre enn noen gang', 'Ukjent')
+    RegData$Nytte <- switch(valgtVar,
+                            'NytteOpr3mndAllekat' = RegData$NytteOpr3mnd,
+                            'NytteOpr12mndAlleKat' =RegData$NytteOpr12mnd)
+    tittel <- switch(valgtVar,
+                     'NytteOpr3mndAlleKat' = 'Nytte av operasjon, 3 mnd. etter',
+                     'NytteOpr12mndAlleKat' = 'Nytte av operasjon, 12 mnd. etter')
+    RegData$VariabelGr <- 9
+    ind <- switch(valgtVar,
+                  'NytteOpr3mndAlleKat' = which(RegData$OppFolgStatus3mnd==1),
+                  'NytteOpr12mndAlleKat' = which(RegData$OppFolgStatus12mnd==1))
+    RegData <- RegData[ind, ]
+    retn <- 'H'
+    indDum <- which(RegData$Nytte %in% 1:7)
+    RegData$VariabelGr[indDum] <- RegData$Nytte[indDum]
   }
 
   if (valgtVar %in% c('Verre3mnd','Verre12mnd')) { #AndelTid  #AndelGrVar
@@ -971,8 +995,9 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
 
 
 
-    UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt, KImaal=KImaal,
-                 tittel=tittel, varTxt=varTxt, flerevar=flerevar, variable=variable, sortAvtagende=sortAvtagende,
+    UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt,
+                   KImaalGrenser=KImaalGrenser, tittel=tittel, varTxt=varTxt, flerevar=flerevar,
+                   variable=variable, sortAvtagende=sortAvtagende,
                  retn=retn, ytxt1=ytxt1, deltittel=deltittel, KIekstrem=KIekstrem)
   #RegData inneholder nå variablene 'Variabel' og 'VariabelGr'
   return(invisible(UtData))

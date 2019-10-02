@@ -163,7 +163,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
   #print(Ngr)
   #print(Ngrense)
   if 	(max(Ngr, na.rm = T) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
-    FigTypUt <- figtype(outfile)
+    FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
     plot.new()
     if (dim(RegData)[1]>0) {
@@ -178,7 +178,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012
 
 
     #--------------------------FIGUR---------------------------------------------------
-    FigTypUt <- figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett) #, res=96
+    FigTypUt <- rapFigurer::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett) #, res=96
     farger <- FigTypUt$farger
     #Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)

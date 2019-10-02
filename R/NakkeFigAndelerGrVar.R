@@ -75,6 +75,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      RegData <- NakkeVarSpes$RegData
      sortAvtagende <- NakkeVarSpes$sortAvtagende
      tittel <- NakkeVarSpes$tittel
+     KImaalGrenser <- NakkeVarSpes$KImaalGrenser
 
      #Gjør utvalg
      NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
@@ -115,7 +116,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
                           N=N,
                           Ngr=Ngr,
                           Nvar=Nvar,
-                          #KImaal <- KImaal,
+                          KImaalGrenser <- KImaalGrenser,
                           #soyletxt=soyletxt,
                           #grtxt2=grtxt2,
                           tittel=tittel,
@@ -131,7 +132,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
 
      #-----------Figur---------------------------------------
      if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
-          FigTypUt <- figtype(outfile)
+          FigTypUt <- rapFigurer::figtype(outfile)
           farger <- FigTypUt$farger
           plot.new()
           if (dim(RegData)[1]>0) {
@@ -148,7 +149,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           #Innparametre: ...
 
 
-          FigTypUt <- figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
+          FigTypUt <- rapFigurer::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
                   #Påvirker ikke filtype ''
           farger <- FigTypUt$farger
           #Tilpasse marger for å kunne skrive utvalgsteksten
@@ -160,10 +161,28 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           xmax <- min(max(AndelerGrSort),100)*1.15
           pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
                          xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=cexShNavn*0.9)
+          overPos <- max(pos)+0.4*log(max(pos))
+          if (!is.na(KImaalGrenser[1])) {
+            antMaalNivaa <- length(KImaalGrenser)-1
+            rekkef <- 1:antMaalNivaa
+            if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
+            fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
+            maalOppTxt <- c('Høy', 'Moderat', 'Lav')[rekkef]
+            rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
+                 ytop=max(pos)+(pos[2]-pos[1])/3, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+            legend(x=0, y=overPos, yjust=0.5, pch=c(NA,rep(15, antMaalNivaa)), #x=0, y=-4,
+                   col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+                   ncol=antMaalNivaa+1,
+                   xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
+                   legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
+          }
+          pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
+                         xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)',
+                         las=1, cex.names=cexShNavn*0.9, add = T)
           ybunn <- 0.1
           ytopp <- pos[AntGr]+1	#-length(indGrUt)]
           lines(x=rep(AggVerdier$Tot, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
-          legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
+          legend('topright', xjust=1, yjust = 0.5, cex=1, lwd=2, col=farger[2],
                  legend=paste0('Hele landet', ' (', sprintf('%.1f',AggVerdier$Tot), '%), ', 'N=', N),
                  bty='o', bg='white', box.col='white')
           mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
