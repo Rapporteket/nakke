@@ -47,14 +47,11 @@ addResourcePath('rap', system.file('www', package='rapbase'))
 regTitle = 'Norsk kvalitetsregister for Ryggkirurgi: Degenerativ Nakke med FIKTIVE data'
 
 
-#----------Hente data og evt. parametre som er statistke i appen----------
-context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
-  registryName <- "nakke"
-  dbType <- "mysql"
-  query <- paste0('SELECT  ...')
-  RegData <- rapbase::LoadRegData(registryName, qLivs, dbType)
-} #hente data på server
+# #----------Hente data og evt. parametre som er statistke i appen----------
+# context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+# if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+#   RegData <- NakkeRegDataSQL()
+# } #hente data på server
 
 #Definere innhold i felles rullegardinmenyer:
 kjonn <- c("Begge"=2, "Menn"=1, "Kvinner"=0)
@@ -468,7 +465,7 @@ server <- function(input, output) {
 
 
   RegData <- NakkePreprosess(RegData = RegData)
-  datoTil <- as.POSIXlt(Sys.Date())
+ # datoTil <- as.POSIXlt(Sys.Date())
   #AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
   # Nye variable:
   #aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')

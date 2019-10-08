@@ -257,7 +257,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                   points(tidNum, AggVerdier$Rest, pch="'", cex=2, col=fargeRest)
 
                   #KImål
-                  lines(tidNum,rep(KImaal,length(tidNum)), col= '#FF7260', lwd=3)
+                  lines(tidNum,rep(KImaal[2],length(tidNum)), col= '#FF7260', lwd=3)
                   #mtext(text=paste0('Mål:',KImaaltxt), at=50, side=4, las=1, adj=1,  cex=0.9, col='#FF7260')
                   #text(max(tidNum), KImaal, pos=4, paste0('Mål:',KImaaltxt), cex=0.9, col='#FF7260')
 

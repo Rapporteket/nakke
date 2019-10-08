@@ -71,7 +71,7 @@ write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names =
 RegData <- NakkeData
 
 	datoFra='2018-01-01'
-	datoTil='2018-12-31'
+	datoTil='2019-12-31'
 	reshID <- 601161 #De tre med flest reg:
 	enhetsUtvalg=0
 	minald=0
@@ -168,7 +168,7 @@ for (valgtVar in variable) {
 #-----------------------------------------------------------------------------------
 # Inndata til funksjon:
 #...NB: SkjemaID
-valgtVar <- 'Komplinfek'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'KomplStemme3mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, ErstatningPreOp,
 		  #Fornoyd12mnd, FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, , NytteOpr3mnd, NytteOpr12mnd
@@ -177,7 +177,7 @@ valgtVar <- 'Komplinfek'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
 
 outfile <- '' #paste0(valgtVar, 'Syn.png')	#''	#Navn angis av Jasper
 AndelerTid <- NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
-                 datoTil=datoTil, enhetsUtvalg=0, outfile=outfile)
+                 datoTil=datoTil, enhetsUtvalg=0, tidsenhet = 'Kvartal', outfile=outfile)
 
 lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
@@ -400,7 +400,7 @@ andelEndring <- function(Data, ktr=2){
   DataEndring <-  Data[intersect(intersect(which(Data$Utfylt==1),
                                            which(Data$NytteOpr %in% 1:7)),
                                  which(Data$OprMetodeTilgangFremre==1)),
-                       c('NytteOpr3mnd', 'Bedre', 'Verre','Aar')]
+                       c('NytteOpr', 'Bedre', 'Verre','Aar')]
   DataEndring$Bedre[DataEndring$NytteOpr %in% 1:2] <- 1
   DataEndring$Verre[DataEndring$NytteOpr %in% 6:7] <- 1
 
