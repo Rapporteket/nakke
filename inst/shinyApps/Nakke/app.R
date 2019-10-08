@@ -433,7 +433,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
 
 #----------------- Define server logic required  -----------------------
-server <- function(input, output) {
+server <- function(input, output,session) {
 
   library(Nakke)
   library(lubridate)
@@ -458,6 +458,7 @@ server <- function(input, output) {
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
     reshId <- rapbase::getUserReshId(session)
+    rolle <- rapbase::getShinyUserRole(shinySession=session)
 
     } #hente data på server
 
