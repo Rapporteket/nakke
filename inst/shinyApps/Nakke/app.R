@@ -78,6 +78,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   #------------ Viktigste resultater-----------------
   tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og månedsrapport'),
+
            h2('Velkommen til ny versjon av Rapporteket for Degenerativ Nakke!', align='center'),
 
            #br(),
@@ -109,6 +110,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            ),
 
            mainPanel(
+             appNavbarUserWidget(user = uiOutput("appUserName"),
+                                 organization = uiOutput("appOrgName"),
+                                 addUserInfo = TRUE),
              h4('Her kan man finne visualiseringer og oppsummeringer av de fleste variable som registreres
                   i registeret. I hver fane kan man velge hvilken variabel man vil se resultat for og om man vil gjøre
                 filtreringer. Hold musepekeren over fanen for å se hvilke variable/tema som er visualisert i fanen.
@@ -480,6 +484,10 @@ server <- function(input, output,session) {
   SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
   SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
 
+
+  # widget
+  output$appUserName <- renderText(getUserFullName(session))
+  output$appOrgName <- renderText(getUserReshId(session))
 
   #-------Samlerapporter--------------------
 
