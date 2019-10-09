@@ -457,8 +457,8 @@ server <- function(input, output,session) {
     knitr::opts_chunk$set(fig.path='')
 
     #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
-    reshId <- rapbase::getUserReshId(session)
-    rolle <- rapbase::getShinyUserRole(shinySession=session)
+    reshID <- rapbase::getUserReshId(session)
+    #rolle <- rapbase::getShinyUserRole(shinySession=session)
 
     } #hente data på server
 
