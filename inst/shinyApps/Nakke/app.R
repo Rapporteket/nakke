@@ -44,7 +44,16 @@ sluttDato <- idag
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
+
 regTitle = 'Norsk kvalitetsregister for Ryggkirurgi: Degenerativ Nakke med FIKTIVE data'
+
+logo <- includeHTML(system.file('www/logo.svg', package='rapbase'))
+logoCode <- paste0("var header = $('.navbar> .container-fluid');\n",
+                   "header.append('<div class=\"navbar-brand\" style=\"float:left;font-size:75%\">",
+                   logo,
+                   "</div>');\n",
+                   "console.log(header)")
+logoWidget <- tags$script(shiny::HTML(logoCode))
 
 
 # #----------Hente data og evt. parametre som er statistke i appen----------
@@ -62,7 +71,7 @@ tidsenhetValg <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
                        'Kvartal'='Kvartal', 'Måned'='Mnd'))
 
 
-# Define UI for application
+#----Define UI for application------
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   theme = "bootstrap.css",
 
@@ -443,6 +452,8 @@ server <- function(input, output,session) {
   library(lubridate)
   library(zoo)
   library(tools)
+
+  raplog::appLogger(session)
   system.file('NakkeMndRapp.Rnw', package='Nakke')
 
   #-------Hente Data-------
