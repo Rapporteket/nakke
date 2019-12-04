@@ -5,7 +5,7 @@
 #e.g. using enc2native(); x <- readLines('foo.txt', encoding = 'UTF-8')
 #         x <- enc2native(x)
 #Do not set options(encoding) $encoding: [1] "native.enc". Tester
-
+#test
 #--------------------------------------SAMLERAPPORT-----------------------------------
 setwd("C:/ResultattjenesteGIT/Nakke/inst")
 knitr::knit('NakkeAarsRapp.Rnw')
