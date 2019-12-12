@@ -10,42 +10,43 @@
 #I "tabPanel" viser man fram figurer/tabeller
 #I "server"-delen gjøres alle beregninger og legges i "output"
 
-library(shiny)
-library(knitr)
 #library(magrittr)
 library(knitr)
 library(lubridate)
-#ibrary(shinyBS) # Additional Bootstrap Controls
 library(kableExtra)
+library(rapbase)
 library(rapFigurer)
-#library(zoo)
+library(raplog)
+library(shiny)
+library(shinyalert)
+#ibrary(shinyBS) # Additional Bootstrap Controls
+library(zoo)
+library(Nakke)
+#library(tools)
 
 # ui <- shinyUI(basicPage(
 #   downloadButton('report')
 # ))
-#
-# server <- function(input, output) {
-#   output$report = downloadHandler(
-#     filename = 'MndRapp.pdf',
-#     content = function(file) {
-#       out = knit2pdf('C:/ResultattjenesteGIT/Nakke/inst/NakkeMndRapp.Rnw', encoding = 'UTF-8', clean = TRUE)
-#       file.rename(out, file) # move pdf to file for downloading
-#     },
-#     contentType = 'application/pdf'
-#   )
-#
-# }
 
 
-startDato <- '2018-01-01' #Sys.Date()-364
+context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+paaServer <- context %in% c("DEV", "TEST", "QA", "PRODUCTION")
+options(knitr.table.format = "html")
+
 idag <- Sys.Date()
+datoFra <- paste0(as.numeric(format(idag-150, "%Y")), '-01-01') #paste0(1900+as.POSIXlt(idag)$year, '-01-01')
+#AarNaa <- as.numeric(format(idag, "%Y"))
+datoTil <- as.POSIXlt(idag)
 sluttDato <- idag
+aarFra <- paste0(1900+as.POSIXlt(idag)$year-5, '-01-01')
+
+regTitle <- ifelse(paaServer,
+                   'NKR: Degenerativ Nakke',
+                   'Degenerativ Nakke med FIKTIVE data')
+
 
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
-
-
-regTitle = 'Norsk kvalitetsregister for Ryggkirurgi: Degenerativ Nakke med FIKTIVE data'
 
 logo <- includeHTML(system.file('www/logo.svg', package='rapbase'))
 logoCode <- paste0("var header = $('.navbar> .container-fluid');\n",
@@ -57,7 +58,6 @@ logoWidget <- tags$script(shiny::HTML(logoCode))
 
 
 # #----------Hente data og evt. parametre som er statistke i appen----------
-# context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 # if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
 #   RegData <- NakkeRegDataSQL()
 # } #hente data på server
@@ -88,14 +88,16 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   #------------ Viktigste resultater-----------------
   tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og månedsrapport'),
 
-           h2('Velkommen til ny versjon av Rapporteket for Degenerativ Nakke!', align='center'),
+           h2('Velkommen til Rapporteket for Degenerativ Nakke!', align='center'),
 
-           #br(),
            sidebarPanel(width=3,
-             h2("Kvartalsrapport"), #),
-             downloadButton(outputId = 'mndRapp.pdf', label='Last ned rapport (Tar litt tid)', class = "butt"),
-             tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
-             br(),
+                        h3("Månedsrapport"), #),
+                        h5('Denne kan man få regelmessig tilsendt på e-post.
+                        Gå til fanen "Abonnement" for å bestille dette.'),
+                        br(),
+                        downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
+                        tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
+            br(),
              br(),
              br(),
              br(),
@@ -104,7 +106,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                          choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
                                      'Komplikasjon, svelging' = 'KomplSvelging3mnd',
                                      'Komplikasjon, sårinfeksjon' = 'Komplinfek')),
-             dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = "2018-01-01"),
+             dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = datoFra),
              # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
              #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
              # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
@@ -119,9 +121,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            ),
 
            mainPanel(
+             shinyalert::useShinyalert(),
              appNavbarUserWidget(user = uiOutput("appUserName"),
                                  organization = uiOutput("appOrgName"),
                                  addUserInfo = TRUE),
+             tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
+
              h4('Her kan man finne visualiseringer og oppsummeringer av de fleste variable som registreres
                   i registeret. I hver fane kan man velge hvilken variabel man vil se resultat for og om man vil gjøre
                 filtreringer. Hold musepekeren over fanen for å se hvilke variable/tema som er visualisert i fanen.
@@ -152,7 +157,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                       choices = rev(c('År'= 'Aar', 'Måned'='Mnd')))),
                         conditionalPanel(
                           condition = "input.ark == 'Antall skjema'",
-                          dateRangeInput(inputId = 'datovalgReg', start = startDato, end = Sys.Date(),
+                          dateRangeInput(inputId = 'datovalgReg', start = datoFra, end = Sys.Date(),
                                          label = "Tidsperiode", separator="t.o.m.", language="nb"),
                           selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
                                       choices = c("Ferdigstilt"=1,
@@ -240,7 +245,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Uforetrygdet før operasjon' = 'UforetrygdPreOp',
                                               'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
                       ),
-                      dateRangeInput(inputId = 'datovalg', start = "2018-01-01", end = Sys.Date(),
+                      dateRangeInput(inputId = 'datovalg', start = datoFra, end = Sys.Date(),
                                      label = "Tidsperiode", separator="t.o.m.", language="nb"),
                       selectInput(inputId = "erMann", label="Kjønn",
                                   choices = kjonn
@@ -314,7 +319,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
                                      'Utdanning' = 'Utdanning')
              ),
-             dateRangeInput(inputId = 'datovalgAndelGrVar', start = "2018-01-01", end = Sys.Date(),
+             dateRangeInput(inputId = 'datovalgAndelGrVar', start = datoFra, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
              selectInput(inputId = "erMannAndelGrVar", label="Kjønn",
                          choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
@@ -391,7 +396,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Total knivtid' = 'KnivtidTotalMin'
                          )
              ),
-             dateRangeInput(inputId = 'datovalgGjsn', start = "2018-01-01", end = Sys.Date(),
+             dateRangeInput(inputId = 'datovalgGjsn', start = datoFra, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
              selectInput(inputId = "erMannGjsn", label="Kjønn",
                          choices = kjonn
@@ -439,7 +444,35 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                downloadButton(outputId = 'lastNed_gjsnTidTab', label='Last ned tabell')) )
              )
            )
-) #tab, gjsn
+), #tab, gjsn
+
+#------------------Abonnement-------------------------
+
+tabPanel(p("Abonnement",
+           title='Bestill automatisk utsending av rapporter på e-post'),
+         sidebarLayout(
+           sidebarPanel(width = 3,
+                        selectInput("subscriptionRep", "Rapport:",
+                                    c("Månedsrapport")), #, "Samlerapport", "Influensaresultater")),
+                        selectInput("subscriptionFreq", "Frekvens:",
+                                    list(Årlig="Årlig-year",
+                                          Kvartalsvis="Kvartalsvis-quarter",
+                                          Månedlig="Månedlig-month",
+                                          Ukentlig="Ukentlig-week",
+                                          Daglig="Daglig-DSTday"),
+                                    selected = "Månedlig-month"),
+                        #selectInput("subscriptionFileFormat", "Format:",
+                        #            c("html", "pdf")),
+                        actionButton("subscribe", "Bestill!")
+           ),
+           mainPanel(
+             uiOutput("subscriptionContent")
+           )
+         )
+)
+
+
+#-------tab'er-------------------------
 ) #fluidpage, dvs. alt som vises på skjermen
 
 
@@ -448,17 +481,35 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 #----------------- Define server logic required  -----------------------
 server <- function(input, output,session) {
 
-  library(Nakke)
-  library(lubridate)
-  library(zoo)
-  library(tools)
+
 
   raplog::appLogger(session)
   system.file('NakkeMndRapp.Rnw', package='Nakke')
+  #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
 
-  #-------Hente Data-------
-  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
+  # reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)})
+  # rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
+  # brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(shinySession=session), 'tullebukk')})
+  reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)
+  rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
+  brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(shinySession=session), 'tullebukk')})
+
+  # widget
+  if (paaServer) {
+    output$appUserName <- renderText(rapbase::getUserFullName(session))
+    output$appOrgName <- renderText(paste0('rolle: ', rolle(), '<br> ReshID: ', reshID) )}
+
+  # User info in widget
+  userInfo <- rapbase::howWeDealWithPersonalData(session)
+  observeEvent(input$userInfo, {
+    shinyalert::shinyalert("Dette vet Rapporteket om deg:", userInfo,
+                           type = "", imageUrl = "rap/logo.svg",
+                           closeOnEsc = TRUE, closeOnClickOutside = TRUE,
+                           html = TRUE, confirmButtonText = rapbase::noOptOutOk())
+  })
+
+  #context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+  if (paaServer == TRUE) {
     RegData <- NakkeRegDataSQL() #datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
     querySD <- paste0('
@@ -471,9 +522,6 @@ server <- function(input, output,session) {
     knitr::opts_knit$set(root.dir = './')
     knitr::opts_chunk$set(fig.path='')
 
-    #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
-    reshID <- rapbase::getUserReshId(session)
-    #rolle <- rapbase::getShinyUserRole(shinySession=session)
 
     } #hente data på server
 
@@ -502,70 +550,14 @@ server <- function(input, output,session) {
 
   #-------Samlerapporter--------------------
 
-  # output$mndRapp.pdf = downloadHandler(
-  #   filename = function(){'MndRapp.pdf'},
-  #   #content = function(file) file.copy(system.file('NakkeMndRapp.pdf', package = 'Nakke'), file, overwrite = TRUE),
-  #   content = function(file) {
-  #     # permission to the current working directory
-  #     src <- normalizePath(system.file('NakkeMndRapp.Rnw', package='Nakke'))
-  #     owd <- setwd(tempdir())
-  #     on.exit(setwd(owd))
-  #     file.copy(src, 'NakkeMndRapp.Rnw', overwrite = TRUE)
-  #
-  #     texfil <- knitr::knit(system.file('NakkeMndRapp.Rnw', package='Nakke'), encoding = 'UTF-8')
-  #     #print(texfil)
-  #     tools::texi2pdf(system.file(texfil, package='Nakke'),clean = TRUE) #"NakkeMndRapp.tex"
-  #     # #help(render_latex)
-  #     #       out = system.file('NakkeMndRapp.pdf', package = 'Nakke')
-  #     #knit2pdf(system.file('NakkeMndRapp.Rnw', package='Nakke'), clean = TRUE, encoding = 'UTF-8')
-  #     #      file.rename(out, file) # move pdf to file for downloading
-  #     #file.copy(system.file('NakkeMndRapp.pdf', package='Nakke'), file)
-  #     file.copy('NakkeMndRapp.pdf', file)
-  #   }
-  #   , contentType = 'application/pdf' )
-  # #  If you already have made the PDF file, you can just copy it to file, i.e.
-  # #  content = function(file) file.copy('your_existing.pdf', file, overwrite = TRUE)
-
-  # funksjon for å kjøre Rnw-filer (render file funksjon)
-  contentFile <- function(file, srcFil, tmpFil, datoFra=startDato, datoTil=Sys.Date()) {
-    src <- normalizePath(system.file(srcFil, package="Nakke"))
-
-    # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
-    owd <- setwd(tempdir())
-    on.exit(setwd(owd))
-    file.copy(src, tmpFil, overwrite = TRUE)
-
-    texfil <- knitr::knit(tmpFil, encoding = 'UTF-8')
-    tools::texi2pdf(texfil, clean = TRUE)
-
-    gc() #Opprydning gc-"garbage collection"
-    file.copy(paste0(substr(tmpFil, 1, nchar(tmpFil)-3), 'pdf'), file)
-  }
-
   output$mndRapp.pdf <- downloadHandler(
     filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')},
-    content = function(file){contentFile(file, srcFil="NakkeMndRapp.Rnw", tmpFil="tmpNakkeMndRapp.Rnw")})
+    content = function(file){
+      henteSamlerapporter(file, rnwFil="NakkeMndRapp.Rnw",
+                          reshID = reshID, datoFra = datoFra)
+    }
+  )
 
-  #   contentFile <- function(file, srcFil, tmpFile) {
-  #   src <- normalizePath(system.file(srcFil, package="intensiv"))
-  #
-  #   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
-  #   owd <- setwd(tempdir())
-  #   on.exit(setwd(owd))
-  #   file.copy(src, tmpFile, overwrite = TRUE)
-  #
-  #   texfil <- knitr::knit(tmpFile, encoding = 'UTF-8')
-  #   tools::texi2pdf(texfil, clean = TRUE)
-  #
-  #   gc() #Opprydning gc-"garbage collection"
-  #   file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
-  #   # file.rename(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
-  # }
-  #
-  # output$mndRapp.pdf <- downloadHandler(
-  #   filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')}, #'MndRapp.pdf',
-  #   content = function(file){contentFile(file, srcFil="NIRmndRapp.Rnw", tmpFile="tmpNIRmndRapp.Rnw")}
-  # )
 
 
   #----------Tabeller, registreringsoversikter ----------------------
@@ -621,7 +613,6 @@ server <- function(input, output,session) {
     datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
 
     #datoFra12 <- '2017-03-01'
-    #SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt('2018-04-30')
     SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(input$datoTil)
                                         & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
     LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, 'Sykehusnavn'])

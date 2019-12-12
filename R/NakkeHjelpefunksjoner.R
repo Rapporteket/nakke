@@ -1,33 +1,12 @@
-# Hjelpefunksjoner for Nakke
-#---------------------------------------------
-
-#' Hjelpefunksjoner. Group of functions page title
-#'
-#' Fil med div hjelpefunksjoner.Group of functions Description section
-#'
-#' Detaljer. kommer senereGroup of functions Details paragraph.
-#'
-#' @section Finne reinnleggelser After function section:
-#' Despite its location, this actually comes after the function section.
+#' Hjelpefunksjoner for Nakke
+#' Detaljer. kommer senere
 #' Fil som inneholder hjelpefunksjoner.
-#' Lage tulledata for åpen publisering
-#' SorterOgNavngiTidsEnhet Legger til tidsenhetene Aar, Halvaar, Mnd og Kvartal
 #'
+#'  Tilrettelegge tidsenhetvariabel. Legger til tidsenhetene Aar, Halvaar, Mnd og Kvartal
+#' @param RegData dataramme
+#' @param tidsenhet valgt tidsenhet for visninga
+#' @param tab Hmmm
 #'
-#' @param RegData data
-#' @param PasientID Variabelen som angir pasientidentifikasjon
-# @inheritParams NakkeFigAndeler
-#' @return Div hjelpefunksjoner
-#' @name hjelpeFunksjoner
-NULL
-#' @rdname hjelpeFunksjoner
-#' @export
-
-
-#' @section Tilrettelegge tidsenhetvariabel:
-#' Probably better if all sections come first, uless have one section per function. Makes it easier to
-#' see the information flow.
-#' @rdname hjelpeFunksjoner
 #' @export
 SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
       #Lager sorteringsvariabel for tidsenhet:
@@ -40,8 +19,8 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
                                       Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
                                             (RegData$Aar-min(RegData$Aar))*2
       )
-      format.Date(seq(from=as.Date('2018-01-01'),
-                      to=as.Date('2018-09-01'), by='month'), format = '%b%y')
+      # format.Date(seq(from=as.Date('2018-01-01'),
+      #                 to=as.Date('2018-09-01'), by='month'), format = '%b%y')
 
       tidtxt <- switch(tidsenhet,
                        #Mnd = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
@@ -73,9 +52,7 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
 }
 
 
-#' @section Lage tulledata (simulerte data)
-# Probably better if all sections come first, uless have one section per function(?)
-#' @rdname hjelpeFunksjoner
+#' Lage tulledata (simulerte data) for åpen publisering
 #' @export
 lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
   #Må også legge på resh som svarer til sykehusnavn.
@@ -98,4 +75,61 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 	  return(RegData)
 }
 
+
+#' Funksjon som produserer rapporten som skal sendes til mottager.
+#'
+#' @param rnwFil Navn på fila som skal kjøres. Angis uten ending, dvs. (\emph{ uten ".Rnw"})
+#' @param reshID Brukerens reshid
+#' @param filnavn brukes av downloadHandler
+#' @param datoFra startdato
+#' @param datoTil sluttdato
+#' @return Filsti til pdf-rapporten.
+#' @export
+henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
+                                datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
+  tmpFile <- paste0('tmp',rnwFil)
+  src <- normalizePath(system.file(rnwFil, package='Nakke'))
+  # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
+  setwd(tempdir())
+  file.copy(src, tmpFile, overwrite = TRUE)
+
+  knitr::knit2pdf(tmpFile)
+
+  gc() #Opprydning gc-"garbage collection"
+  file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), filnavn)
+  # file.rename(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
+}
+
+
+#' Funksjon som produserer rapporten som skal sendes til mottager.
+#' (The actual call to this function is made through do.call and
+#' has the effect of providing the parameters as class
+#' \emph{list}. Verdier gis inn som listeparametre
+#'
+#' @param rnwFil Navn på fila som skal kjøres. Angis MED filending (\emph{dvs "filnavn.Rnw"})
+#' @param reshID Aktuell reshid
+#' @param datoFra startdato
+#' @param datoTil sluttdato
+#'
+#' @return Full path of file produced
+#' @export
+abonnement <- function(rnwFil, brukernavn='tullebukk', reshID=0,
+                       datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
+
+  raplog::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
+                    reshId = reshID[[1]], msg = "Abonnement: månedsrapport")
+  filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
+  tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
+  src <- normalizePath(system.file(rnwFil, package='Nakke'))
+  # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
+  setwd(tempdir())
+  dir <- getwd()
+  file.copy(dir, tmpFile, overwrite = TRUE)
+  knitr::knit2pdf(input=tmpFile)
+
+  #gc() #Opprydning gc-"garbage collection"
+  utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
+
+  return(utfil)
+}
 

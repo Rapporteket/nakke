@@ -22,6 +22,7 @@ Imports:
     raplog,
     rapFigurer,
     shiny,
+    shinyalert,
     tidyverse,
     xtable,
     zoo
@@ -31,4 +32,4 @@ Remotes:
     Rapporteket/rapFigurer
 Suggests:
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

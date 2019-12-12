@@ -24,6 +24,7 @@ library(knitr)
 library(tools)
 library(lubridate)
 library(zoo)
+
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 #Henter data to år tilbake:
@@ -32,7 +33,7 @@ datoFra <- as.Date(paste0(1900+dato$year-1-ifelse(dato$mon==11, 0, 1),'-', ifels
 #--------------------HENTE DATA--------------------
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
+if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
   RegData <- NakkeRegDataSQL(datoFra = '2017-01-01') #datoFra = datoFra, datoTil = datoTil)
 
   querySD <- paste0('

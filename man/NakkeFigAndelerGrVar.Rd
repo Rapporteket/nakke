@@ -4,10 +4,22 @@
 \alias{NakkeFigAndelerGrVar}
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
-NakkeFigAndelerGrVar(RegData, valgtVar, datoFra = "2012-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, erMann = "",
-  myelopati = 99, fremBak = 0, Ngrense = 10, hentData = 0,
-  preprosess = TRUE, reshID = 0, outfile = "")
+NakkeFigAndelerGrVar(
+  RegData,
+  valgtVar,
+  datoFra = "2012-01-01",
+  datoTil = "3000-12-31",
+  minald = 0,
+  maxald = 130,
+  erMann = "",
+  myelopati = 99,
+  fremBak = 0,
+  Ngrense = 10,
+  hentData = 0,
+  preprosess = TRUE,
+  reshID = 0,
+  outfile = ""
+)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}

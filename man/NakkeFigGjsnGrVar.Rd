@@ -4,11 +4,24 @@
 \alias{NakkeFigGjsnGrVar}
 \title{Søylediagram som viser sentralmål (gj.sn./median) for hvert sykehus}
 \usage{
-NakkeFigGjsnGrVar(RegData, valgtVar, valgtMaal = "Gjsn",
-  datoFra = "2012-01-01", datoTil = "2050-12-31", myelopati = 99,
-  fremBak = 0, Ngrense = 10, medKI = 1, minald = 0, maxald = 130,
-  erMann = "", reshID = 0, outfile = "", hentData = 0,
-  preprosess = TRUE)
+NakkeFigGjsnGrVar(
+  RegData,
+  valgtVar,
+  valgtMaal = "Gjsn",
+  datoFra = "2012-01-01",
+  datoTil = "2050-12-31",
+  myelopati = 99,
+  fremBak = 0,
+  Ngrense = 10,
+  medKI = 1,
+  minald = 0,
+  maxald = 130,
+  erMann = "",
+  reshID = 0,
+  outfile = "",
+  hentData = 0,
+  preprosess = TRUE
+)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
