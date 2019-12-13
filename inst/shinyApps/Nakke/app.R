@@ -84,27 +84,27 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         br(),
                         downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
                         tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
-            br(),
-             br(),
-             br(),
-             br(),
-             h3('Gjør utvalg i figurene'),
-             selectInput(inputId = "valgtVarKvalInd", label="Velg variabel",
-                         choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
-                                     'Komplikasjon, svelging' = 'KomplSvelging3mnd',
-                                     'Komplikasjon, sårinfeksjon' = 'Komplinfek')),
-             dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = datoFra),
-             # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
-             #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-             # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
-             #             choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-             br(),
-             helpText('Følgende valg gjelder bare tidsfigur:'),
-             selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
-                         choices = tidsenhetValg),
-             selectInput(inputId = 'enhetsUtvalgKvalInd', label='Egen enhet og/eller landet',
-                         choices = enhetsUtvalg
-             )
+                        br(),
+                        br(),
+                        br(),
+                        br(),
+                        h3('Gjør utvalg i figurene'),
+                        selectInput(inputId = "valgtVarKvalInd", label="Velg variabel",
+                                    choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
+                                                'Komplikasjon, svelging' = 'KomplSvelging3mnd',
+                                                'Komplikasjon, sårinfeksjon' = 'Komplinfek')),
+                        dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = datoFra),
+                        # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
+                        #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
+                        # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
+                        #             choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+                        br(),
+                        helpText('Følgende valg gjelder bare tidsfigur:'),
+                        selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
+                                    choices = tidsenhetValg),
+                        selectInput(inputId = 'enhetsUtvalgKvalInd', label='Egen enhet og/eller landet',
+                                    choices = enhetsUtvalg
+                        )
            ),
 
            mainPanel(
@@ -124,7 +124,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              br(),
              h2("Kvalitetsindikatorer", align='center' ),
              #h3(em("Utvikling over tid")),
-                       plotOutput("kvalIndFig1")),
+             plotOutput("kvalIndFig1")),
            plotOutput("kvalIndFig2")
 
   ), #tab
@@ -471,7 +471,7 @@ server <- function(input, output,session) {
 
 
   raplog::appLogger(session)
-  system.file('NakkeMndRapp.Rnw', package='Nakke')
+  #system.file('NakkeMndRapp.Rnw', package='Nakke')
   #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
 
   # reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)})
@@ -484,7 +484,7 @@ server <- function(input, output,session) {
   # widget
   if (paaServer) {
     output$appUserName <- renderText(rapbase::getUserFullName(session))
-    output$appOrgName <- renderText(paste0('rolle: ', rolle(), '<br> ReshID: ', reshID) )}
+    output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> reshID: ', reshID) )}
 
   # User info in widget
   userInfo <- rapbase::howWeDealWithPersonalData(session)
@@ -531,11 +531,7 @@ server <- function(input, output,session) {
   SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
 
 
-  # widget
-  output$appUserName <- renderText(getUserFullName(session))
-  output$appOrgName <- renderText(getUserReshId(session))
-
-  #-------Samlerapporter--------------------
+    #-------Samlerapporter--------------------
 
   output$mndRapp.pdf <- downloadHandler(
     filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')},
@@ -955,7 +951,7 @@ observeEvent (input$subscribe, { #MÅ HA
 
   fun <- "abonnement"  #"henteSamlerapporter"
   paramNames <- c('rnwFil', 'brukernavn', "reshID", 'datoTil')
-  paramValues <- c(rnwFil, brukernavn(), reshID(), Sys.Date()) #input$subscriptionFileFormat)
+  paramValues <- c(rnwFil, brukernavn(), reshID, Sys.Date()) #input$subscriptionFileFormat)
   #abonnement('NIRmndRapp.Rnw')
 
   rapbase::createAutoReport(synopsis = synopsis, package = package,

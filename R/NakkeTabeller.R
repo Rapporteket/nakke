@@ -1,27 +1,10 @@
-#' Funksjoner for å lage tabeller Group of functions page title
+#'  Antall opphold siste X (antMnd) mnd
 #'
-#' Fil som beregner div tabeller.Group of functions Description section
+#' @param RegData dataramme med alle dato
+#' @param datoTil sluttdato
+#' @param antMnd antall måneder som skal vises
+#' @param reshID reshID for filtrering
 #'
-#' Detaljer. kommer senereGroup of functions Details paragraph.
-#'
-#' Fil som inneholder funksjoner for å lage tabeller, i første rekke tellinger av personer
-#' RegData må inneholde InnDato og Aar.
-#' Aktuelle tabeller:
-#' -tabAntOpphSh12mnd: Antall opphold per måned og enhet siste 12 måneder fram til datoTil.
-#' -tabAntOpphSh5Aar:Antall opphold per år og enhet siste 5 år (inkl. inneværende år) fram til datoTil.
-#'
-#' @param RegData data
-#' @param personIDvar Variabelen som angir pasientidentifikasjon
-#' @param datoTil sluttdato. Brukes i tabellene AntOpph per 12 mnd og Belegg
-# @inheritParams NakkeFigAndeler
-#' @return Div tabeller
-#' @name Nakketabeller
-NULL
-#' @rdname Nakketabeller
-#' @export
-
-#' @section Antall opphold siste X (antMnd) mnd
-#' @rdname Nakketabeller
 #' @export
 tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
       #RegData må inneholde ..
@@ -40,10 +23,12 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
       tabAvdMnd1 <- xtable::xtable(tabAvdMnd1, digits=0)
 	return(tabAvdMnd1)
 }
-#tabAntOpphShMnd(RegData, datoTil=Sys.Date(), antMnd=3)
 
-#' @section Antall opphold siste 5 år
-#' @rdname Nakketabeller
+
+#'  Antall opphold siste 5 år
+#' @param RegData dataramme med alle data
+#' @param datoTil sluttdato
+#'
 #' @export
 tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date()){
       AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
@@ -58,8 +43,13 @@ tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date()){
 }
 
 
-#' @section Hvor mange skjema av hver type
-#' @rdname Nakketabeller
+#' Hvor mange skjema av hver type
+#'
+#' @param SkjemaOversikt tabellen skjemaoversikt fra QReg
+#' @param datoFra startdato
+#' @param datoTil til og med dato
+#' @param skjemastatus status på registreringsskjemaet
+#'
 #' @export
 tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1){
   #tabAntSkjema(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1)
@@ -80,24 +70,11 @@ return(tab)
 }
 
 
-#' @section Vise figurdata som tabell
-#' @rdname Nakketabeller
+#'  Vise figurdata som tabell
+#'
+#' @param UtDataFraFig Liste med beregnede verdier++ fra "figurforberedelse"
+#' @param figurtype figurtype, standard 'andeler'
 #' @export
-# lagTabavFig <- function(UtDataFraFig){
-#       tab <-cbind(UtDataFraFig$Ngr$Hoved,
-#                   UtDataFraFig$AggVerdier$Hoved,
-#                   UtDataFraFig$Ngr$Rest,
-#                   UtDataFraFig$AggVerdier$Rest)
-#       grtxt <- UtDataFraFig$grtxt
-#       if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
-#             grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
-#       rownames(tab) <- grtxt
-#       kolnavn <- c('Antall' , 'Andel (%)')
-#       colnames(tab) <- c(kolnavn, if(!is.null(UtDataFraFig$Ngr$Rest)){kolnavn})
-#
-# return(tab)
-# }
-
 lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
 
   attach(UtDataFraFig, warn.conflicts = F)
@@ -146,8 +123,10 @@ lagTabavFig <- function(UtDataFraFig, figurtype='andeler'){ #lagTabavFigAndeler
 }
 
 
-#' @section Vise figurdata som tabell, sentralmål per sykshus
-#' @rdname Nakketabeller
+#' Vise figurdata som tabell, sentralmål per sykshus
+#'
+#' @param UtDataFraFig Liste med beregnede verdier ++ fra GjsnGrVar
+#'
 #' @export
 lagTabavFigGjsnGrVar <- function(UtDataFraFig){
   tab <-cbind(UtDataFraFig$Ngr,
@@ -161,8 +140,11 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 
 
 
-#' @section Vise figurdata som tabell, sentralmål per sykshus
-#' @rdname Nakketabeller
+#' Vise figurdata som tabell, sentralmål per sykshus
+#' @param RegData dataramme
+#' @param ant antall diagnoser/prosedyrer
+#' @param prosdiag vise prosedyrer ('pros', standard) eller diagnoser ('diag')
+#'
 #' @export
 visVanligsteProcDiag <- function(RegData, ant=20, prosdiag='pros'){
 
