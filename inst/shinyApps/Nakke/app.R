@@ -62,8 +62,6 @@ tidsenhetValg <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
 
 #----Define UI for application------
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
-  theme = "bootstrap.css",
-
   # lag logo og tittel som en del av navbar. - Funker det med fluidPage?
   title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
   # sett inn tittle ogsÃ¥ i browser-vindu
