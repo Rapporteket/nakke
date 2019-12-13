@@ -1,14 +1,3 @@
-#Videre, 26.april:
-# NEDLASTING AV MNDRAPP VIRKER. - PUBLISERT, virker ikke på Shinyapps.io
-#LEGG TIL MULIGHET FOR NEDLASTING AV TABELLER. lEGG TIL BARE EN EL TO OG PUBLISER
-#HVA FORKLUDRER PUBLISERING?
-
-
-# Find out more about building applications with Shiny here:
-#    http://shiny.rstudio.com/
-#
-#I "tabPanel" viser man fram figurer/tabeller
-#I "server"-delen gjøres alle beregninger og legges i "output"
 
 #library(magrittr)
 library(knitr)
@@ -80,7 +69,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   # sett inn tittle ogsÃ¥ i browser-vindu
   windowTitle = regTitle,
   # velg css (forelÃ¸pig den eneste bortsett fra "naken" utgave)
-  #theme = "rap/bootstrap.css",
+  theme = "rap/bootstrap.css",
 
   # Application title #titlePanel("Testing testing, Nakke"),
 
@@ -915,6 +904,82 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
     })
 
 }) #observe gjsnGrVar
+
+
+
+
+#------------------ Abonnement ----------------------------------------------
+## reaktive verdier for å holde rede på endringer som skjer mens
+## applikasjonen kjører
+rv <- reactiveValues(
+  subscriptionTab = rapbase::makeUserSubscriptionTab(session))
+
+## lag tabell over gjeldende status for abonnement
+output$activeSubscriptions <- DT::renderDataTable(
+  rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',
+  rownames = FALSE, options = list(dom = 't')
+)
+
+## lag side som viser status for abonnement, også når det ikke finnes noen
+output$subscriptionContent <- renderUI({
+  fullName <- rapbase::getUserFullName(session)
+  if (length(rv$subscriptionTab) == 0) {
+    p(paste("Ingen aktive abonnement for", fullName))
+  } else {
+    tagList(
+      p(paste("Aktive abonnement for", fullName, "som sendes per epost til ",
+              rapbase::getUserEmail(session), ":")),
+      DT::dataTableOutput("activeSubscriptions")
+    )
+  }
+})
+
+## nye abonnement
+observeEvent (input$subscribe, { #MÅ HA
+  package <- "Nakke"
+  owner <- rapbase::getUserName(session)
+  interval <- strsplit(input$subscriptionFreq, "-")[[1]][2]
+  intervalName <- strsplit(input$subscriptionFreq, "-")[[1]][1]
+  organization <- rapbase::getUserReshId(session)
+  runDayOfYear <- rapbase::makeRunDayOfYearSequence(
+    interval = interval
+  )
+  email <- rapbase::getUserEmail(session)
+  if (input$subscriptionRep == "Månedsrapport") {
+    synopsis <- "Nakke/Rapporteket: månedsrapport"
+    rnwFil <- "NakkeMndRapp.Rnw" #Navn på fila
+    #print(rnwFil)
+  }
+  # if (input$subscriptionRep == "Samlerapport") {
+  #   synopsis <- "Nakke/Rapporteket: Samlerapport"
+  #   rnwFil <- "NakkeSamleRapp.Rnw" #Navn på fila
+  # }
+
+  fun <- "abonnement"  #"henteSamlerapporter"
+  paramNames <- c('rnwFil', 'brukernavn', "reshID", 'datoTil')
+  paramValues <- c(rnwFil, brukernavn(), reshID(), Sys.Date()) #input$subscriptionFileFormat)
+  #abonnement('NIRmndRapp.Rnw')
+
+  rapbase::createAutoReport(synopsis = synopsis, package = package,
+                            fun = fun, paramNames = paramNames,
+                            paramValues = paramValues, owner = owner,
+                            email = email, organization = organization,
+                            runDayOfYear = runDayOfYear, interval = interval,
+                            intervalName = intervalName)
+  rv$subscriptionTab <- rapbase::makeUserSubscriptionTab(session)
+})
+
+## slett eksisterende abonnement
+observeEvent(input$del_button, {
+  selectedRepId <- strsplit(input$del_button, "_")[[1]][2]
+  rapbase::deleteAutoReport(selectedRepId)
+  rv$subscriptionTab <- rapbase::makeUserSubscriptionTab(session)
+})
+
+
+
+
+
 
 } #server
 # Run the application

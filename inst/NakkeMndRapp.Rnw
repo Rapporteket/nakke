@@ -1,4 +1,5 @@
-\documentclass[presentation,xcolor=pdftex,dvipsnames,table]{beamer}
+\documentclass[handout, xcolor=pdftex,dvipsnames,table]{beamer}  %presentation,
+%\documentclass[presentation,xcolor=pdftex,dvipsnames,table]{beamer}
 \usetheme{Hannover}
 
 \usepackage[utf8]{inputenc}
@@ -8,12 +9,11 @@
 \usepackage{booktabs}
 \usepackage{rotating}
 \usepackage{graphicx}
-\setbeamerfont{caption}{size=\scriptsize}
-%usepackage{framed}
+
+%\setbeamerfont{caption}{size=\scriptsize}
 
 
 <<'initOpts', include=FALSE>>=
-
 knitr::opts_chunk$set(warnings=FALSE, echo=FALSE, encoding = "UTF-8") #, encoded_text_to_latex="UTF-8") #, )
 knitr::opts_knit$set(root.dir = './')
 @
@@ -23,6 +23,7 @@ library(Nakke)
 library(knitr)
 library(tools)
 library(lubridate)
+library(xtable)
 library(zoo)
 
 datoTil <- Sys.Date()
