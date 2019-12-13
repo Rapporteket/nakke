@@ -37,13 +37,13 @@ regTitle <- ifelse(paaServer,
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
 addResourcePath('rap', system.file('www', package='rapbase'))
 
-logo <- includeHTML(system.file('www/logo.svg', package='rapbase'))
-logoCode <- paste0("var header = $('.navbar> .container-fluid');\n",
-                   "header.append('<div class=\"navbar-brand\" style=\"float:left;font-size:75%\">",
-                   logo,
-                   "</div>');\n",
-                   "console.log(header)")
-logoWidget <- tags$script(shiny::HTML(logoCode))
+# logo <- includeHTML(system.file('www/logo.svg', package='rapbase'))
+# logoCode <- paste0("var header = $('.navbar> .container-fluid');\n",
+#                    "header.append('<div class=\"navbar-brand\" style=\"float:left;font-size:75%\">",
+#                    logo,
+#                    "</div>');\n",
+#                    "console.log(header)")
+# logoWidget <- tags$script(shiny::HTML(logoCode))
 
 
 # #----------Hente data og evt. parametre som er statistke i appen----------
@@ -62,11 +62,9 @@ tidsenhetValg <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
 
 #----Define UI for application------
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
-  # lag logo og tittel som en del av navbar. - Funker det med fluidPage?
-  title = div(img(src="rap/logo.svg", alt="Rapporteket", height="26px"), regTitle),
-  # sett inn tittle ogsÃ¥ i browser-vindu
+  title = div(a(includeHTML(system.file('www/logo.svg', package='rapbase'))),
+              regTitle),
   windowTitle = regTitle,
-  # velg css (forelÃ¸pig den eneste bortsett fra "naken" utgave)
   theme = "rap/bootstrap.css",
 
   # Application title #titlePanel("Testing testing, Nakke"),
@@ -949,10 +947,11 @@ observeEvent (input$subscribe, { #MÅ HA
   #   rnwFil <- "NakkeSamleRapp.Rnw" #Navn på fila
   # }
 
-  fun <- "abonnement"  #"henteSamlerapporter"
+  fun <- "abonnementNakke"  #"henteSamlerapporter"
   paramNames <- c('rnwFil', 'brukernavn', "reshID", 'datoTil')
   paramValues <- c(rnwFil, brukernavn(), reshID, Sys.Date()) #input$subscriptionFileFormat)
-  #abonnement('NIRmndRapp.Rnw')
+
+  abonnementNakke(rnwFil = 'NakkeMndRapp.Rnw', brukernavn='hei', reshID=601161, datoTil=Sys.Date())
 
   rapbase::createAutoReport(synopsis = synopsis, package = package,
                             fun = fun, paramNames = paramNames,

@@ -113,7 +113,7 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 #'
 #' @return Full path of file produced
 #' @export
-abonnement <- function(rnwFil, brukernavn='tullebukk', reshID=0,
+abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
                        datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
   raplog::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
@@ -124,7 +124,7 @@ abonnement <- function(rnwFil, brukernavn='tullebukk', reshID=0,
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
   setwd(tempdir())
   dir <- getwd()
-  file.copy(dir, tmpFile, overwrite = TRUE)
+  file.copy(src, tmpFile, overwrite = TRUE)
   knitr::knit2pdf(input=tmpFile)
 
   #gc() #Opprydning gc-"garbage collection"
