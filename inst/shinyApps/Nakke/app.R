@@ -948,10 +948,10 @@ observeEvent (input$subscribe, { #MÅ HA
   # }
 
   fun <- "abonnementNakke"  #"henteSamlerapporter"
-  paramNames <- c('rnwFil', 'brukernavn', "reshID", 'datoTil')
-  paramValues <- c(rnwFil, brukernavn(), reshID, Sys.Date()) #input$subscriptionFileFormat)
+  paramNames <- c('rnwFil', 'brukernavn', "reshID")
+  paramValues <- c(rnwFil, brukernavn(), reshID) #input$subscriptionFileFormat)
 
-  abonnementNakke(rnwFil = 'NakkeMndRapp.Rnw', brukernavn='hei', reshID=601161, datoTil=Sys.Date())
+  #abonnementNakke(rnwFil = 'NakkeMndRapp.Rnw', brukernavn='hei', reshID=601161, datoTil=Sys.Date())
 
   rapbase::createAutoReport(synopsis = synopsis, package = package,
                             fun = fun, paramNames = paramNames,
