@@ -928,7 +928,6 @@ output$subscriptionContent <- renderUI({
 
 ## nye abonnement
 observeEvent (input$subscribe, { #MÅ HA
-  package <- "Nakke"
   owner <- rapbase::getUserName(session)
   interval <- strsplit(input$subscriptionFreq, "-")[[1]][2]
   intervalName <- strsplit(input$subscriptionFreq, "-")[[1]][1]
@@ -942,10 +941,6 @@ observeEvent (input$subscribe, { #MÅ HA
     rnwFil <- "NakkeMndRapp.Rnw" #Navn på fila
     #print(rnwFil)
   }
-  # if (input$subscriptionRep == "Samlerapport") {
-  #   synopsis <- "Nakke/Rapporteket: Samlerapport"
-  #   rnwFil <- "NakkeSamleRapp.Rnw" #Navn på fila
-  # }
 
   fun <- "abonnementNakke"  #"henteSamlerapporter"
   paramNames <- c('rnwFil', 'brukernavn', "reshID")
@@ -953,7 +948,7 @@ observeEvent (input$subscribe, { #MÅ HA
 
   #abonnementNakke(rnwFil = 'NakkeMndRapp.Rnw', brukernavn='hei', reshID=601161, datoTil=Sys.Date())
 
-  rapbase::createAutoReport(synopsis = synopsis, package = package,
+  rapbase::createAutoReport(synopsis = synopsis, package = 'Nakke',
                             fun = fun, paramNames = paramNames,
                             paramValues = paramValues, owner = owner,
                             email = email, organization = organization,
