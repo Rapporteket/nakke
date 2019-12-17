@@ -7,7 +7,7 @@
 NakkeFigGjsnTid(
   RegData,
   outfile = "",
-  valgtVar,
+  valgtVar = "Alder",
   erMann = "",
   minald = 0,
   maxald = 130,
@@ -19,8 +19,9 @@ NakkeFigGjsnTid(
   valgtMaal = "",
   enhetsUtvalg = 0,
   hentData = 0,
-  preprosess = TRUE,
-  reshID = 0
+  preprosess = 0,
+  reshID = 0,
+  ...
 )
 }
 \arguments{

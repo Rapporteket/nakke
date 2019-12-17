@@ -118,6 +118,7 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
 
   raplog::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
                     reshId = reshID[[1]], msg = "Abonnement: månedsrapport")
+
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
   src <- normalizePath(system.file(rnwFil, package='Nakke'))
@@ -129,7 +130,8 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
 
   #gc() #Opprydning gc-"garbage collection"
   utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
-
+  raplog::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
+                    reshId = reshID[[1]], msg = paste("Sendt: ", utfil))
   return(utfil)
 }
 

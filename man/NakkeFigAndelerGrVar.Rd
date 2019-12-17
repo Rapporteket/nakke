@@ -5,20 +5,21 @@
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
 NakkeFigAndelerGrVar(
-  RegData,
-  valgtVar,
-  datoFra = "2012-01-01",
-  datoTil = "3000-12-31",
+  RegData = 0,
+  valgtVar = "Alder",
   minald = 0,
   maxald = 130,
+  datoFra = "2012-01-01",
+  datoTil = "3000-12-31",
   erMann = "",
   myelopati = 99,
   fremBak = 0,
   Ngrense = 10,
   hentData = 0,
-  preprosess = TRUE,
+  preprosess = 0,
   reshID = 0,
-  outfile = ""
+  outfile = "",
+  ...
 )
 }
 \arguments{
@@ -61,13 +62,13 @@ Utdanning: Andel høyskole-/universitetsutdannede
 Verre12mnd: Klart verre, 12 mnd.
 Verre3mnd. Klart verre, 3 mnd.}
 
-\item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
-
-\item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
-
 \item{minald}{Alder, fra og med}
 
 \item{maxald}{Alder, til og med}
+
+\item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
+
+\item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
 

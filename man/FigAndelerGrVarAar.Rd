@@ -22,7 +22,7 @@ FigAndelerGrVarAar(
   tidlAar = 0,
   tidsenhet = "aar",
   hentData = 0,
-  preprosess = TRUE,
+  preprosess = 0,
   tittel = 1,
   outfile = ""
 )

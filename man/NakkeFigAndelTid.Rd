@@ -18,8 +18,9 @@ NakkeFigAndelTid(
   reshID = 0,
   outfile = "",
   enhetsUtvalg = 0,
-  preprosess = TRUE,
-  hentData = 0
+  preprosess = 0,
+  hentData = 0,
+  ...
 )
 }
 \arguments{

@@ -49,7 +49,12 @@
 
 NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31', tidsenhet='Aar',
                              minald=0, maxald=130, erMann='', myelopati=99, fremBak=0,
-                             reshID=0, outfile='', enhetsUtvalg=0, preprosess=TRUE, hentData=0) {
+                             reshID=0, outfile='', enhetsUtvalg=0, preprosess=0,
+                             hentData=0,...) {
+
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelTid: ',valgtVar))
+  }
 
 
   if (hentData == 1) {
@@ -57,7 +62,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
   }
 
   # Preprosessere data
-  if (preprosess){
+  if (preprosess==1){
     RegData <- NakkePreprosess(RegData=RegData)
   }
 
@@ -251,7 +256,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
 
                   lines(tidNum, AggVerdier$Hoved, col=fargeHoved, lwd=3)
                   points(tidNum, AggVerdier$Hoved, pch="'", cex=2, col=fargeHoved)
-                  text(tidNum, AggVerdier$Hoved, pos=3, Ngr$Hoved, cex=0.9, col=fargeHoved)
+                  text(tidNum, AggVerdier$Hoved, pos=3, Nvar$Hoved, cex=0.9, col=fargeHoved)
 
                   lines(tidNum, AggVerdier$Rest, col=fargeRest, lwd=3)
                   points(tidNum, AggVerdier$Rest, pch="'", cex=2, col=fargeRest)
@@ -263,7 +268,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
 
                   Ttxt <- paste0('(Tall ved punktene angir antall ', varTxt, ')')
                   if (NakkeUtvalg$medSml == 1) {
-                        text(tidNum, AggVerdier$Rest, pos=3, Ngr$Rest, cex=0.9, col=fargeRest)
+                        text(tidNum, AggVerdier$Rest, pos=3, Nvar$Rest, cex=0.9, col=fargeRest)
                         legend('topleft', border=NA, c(paste0(hovedgrTxt, ' (N=', N$Hoved, ')'),
                                                        paste0(smltxt, ' (N=', N$Rest, ')'), Ttxt), bty='n', ncol=1,
                                col=c(fargeHoved, fargeRest, NA), lwd=3, cex=cexleg)

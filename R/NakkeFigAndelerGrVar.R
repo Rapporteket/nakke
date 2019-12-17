@@ -49,16 +49,21 @@
 #'
 #' @export
 
-NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31',
-                            minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, Ngrense=10,
-                            hentData=0, preprosess=TRUE, reshID=0, outfile='') { #tittel=1,
+NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=130,
+                                 datoFra='2012-01-01', datoTil='3000-12-31',
+                            erMann='', myelopati=99, fremBak=0, Ngrense=10,
+                            hentData=0, preprosess=0, reshID=0, outfile='',...) { #tittel=1,
+
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelGrVar: ',valgtVar))
+  }
 
      if (hentData == 1) {
           RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
      }
 
      # Preprosessere data
-     if (preprosess){
+     if (preprosess==1){
           RegData <- NakkePreprosess(RegData=RegData)
      }
 

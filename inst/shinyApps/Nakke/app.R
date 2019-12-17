@@ -468,7 +468,7 @@ server <- function(input, output,session) {
 
 
 
-  raplog::appLogger(session)
+  raplog::appLogger(session, msg='Starter Rapporteket-Nakke')
   #system.file('NakkeMndRapp.Rnw', package='Nakke')
   #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
 
@@ -627,40 +627,42 @@ server <- function(input, output,session) {
 #--------------Viktigste resultater-------------------------
   output$kvalIndFig1 <- renderPlot({
 
-    NakkeFigAndelTid(RegData=RegData, preprosess=0, reshID = reshID,
+    NakkeFigAndelTid(RegData=RegData, reshID = reshID,
                      valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
                      #myelopati = as.numeric(input$myelopatiKvalInd),
                      #fremBak = as.numeric(input$fremBakKvalInd),
-                     enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd), tidsenhet = input$tidsenhetKvalInd)
+                     enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd),
+                     tidsenhet = input$tidsenhetKvalInd,
+                     session = session)
   }, height=300, width=1000)
 
   output$kvalIndFig2 <- renderPlot(
-    NakkeFigAndelerGrVar(RegData=RegData, preprosess=0,
+    NakkeFigAndelerGrVar(RegData=RegData,
                          valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
                          #fremBak = as.numeric(input$fremBakKvalInd),
                          #myelopati = as.numeric(input$myelopatiKvalInd)
-                         )
+                         ,session=session)
     , height=600, width=500
   )
 
 #-----------Fordelinger---------------------
   output$fordelinger <- renderPlot({
-    NakkeFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
+    NakkeFigAndeler(RegData=RegData,  valgtVar=input$valgtVar,
                     reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                     minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                     erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                    fremBak = as.numeric(input$fremBak))
+                    fremBak = as.numeric(input$fremBak), session=session)
    }, height=700, width=600)
 
 
   observe({
-    UtDataFord <-  NakkeFigAndeler(RegData=RegData, preprosess = 0, valgtVar=input$valgtVar,
+    UtDataFord <-  NakkeFigAndeler(RegData=RegData,  valgtVar=input$valgtVar,
                                    reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                                    datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                                    minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                                    erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                                   fremBak = as.numeric(input$fremBak))
+                                   fremBak = as.numeric(input$fremBak), session=session)
 
     #Følgende kan være likt for fordelingsfigurer i alle registre:
   tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
@@ -698,17 +700,21 @@ server <- function(input, output,session) {
 
   output$andelerGrVar <- renderPlot({
 
-    NakkeFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndelGrVar,
+    NakkeFigAndelerGrVar(RegData=RegData,
+                         valgtVar=input$valgtVarAndelGrVar,
                          reshID=reshID,
-                         datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
-                         minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
-                         erMann=as.numeric(input$erMannAndelGrVar), myelopati = as.numeric(input$myelopatiAndelGrVar),
-                         fremBak = as.numeric(input$fremBakAndelGrVar))
+                         datoFra=input$datovalgAndelGrVar[1],
+                         datoTil=input$datovalgAndelGrVar[2],
+                         minald=as.numeric(input$alderAndelGrVar[1]),
+                         maxald=as.numeric(input$alderAndelGrVar[2]),
+                         erMann=as.numeric(input$erMannAndelGrVar),
+                         myelopati = as.numeric(input$myelopatiAndelGrVar),
+                         fremBak = as.numeric(input$fremBakAndelGrVar), session=session)
   }, height=700, width=600)
 
   output$andelTid <- renderPlot({
 
-    NakkeFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndelGrVar,
+    NakkeFigAndelTid(RegData=RegData, valgtVar=input$valgtVarAndelGrVar,
                      reshID=reshID,
                      datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
                      minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
@@ -716,12 +722,13 @@ server <- function(input, output,session) {
                      myelopati = as.numeric(input$myelopatiAndelGrVar),
                      fremBak = as.numeric(input$fremBakAndelGrVar),
                      tidsenhet = input$tidsenhetAndelTid,
-                     enhetsUtvalg = input$enhetsUtvalgAndelTid)
+                     enhetsUtvalg = input$enhetsUtvalgAndelTid,
+                     session=session)
   }, height=300, width=1000)
 
   observe({
     #AndelTid
-    AndelerTid <- NakkeFigAndelTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndelGrVar,
+    AndelerTid <- NakkeFigAndelTid(RegData=RegData,  valgtVar=input$valgtVarAndelGrVar,
                                    reshID=reshID,
                                    datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
                                    minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
@@ -729,7 +736,8 @@ server <- function(input, output,session) {
                                    myelopati = as.numeric(input$myelopatiAndelGrVar),
                                    fremBak = as.numeric(input$fremBakAndelGrVar),
                                    tidsenhet = input$tidsenhetAndelTid,
-                                   enhetsUtvalg = input$enhetsUtvalgAndelTid) #,lagFig=0)
+                                   enhetsUtvalg = input$enhetsUtvalgAndelTid,
+                                   session=session) #,lagFig=0)
     tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
     kolGruppering <- c(1,3,3)
@@ -756,11 +764,16 @@ server <- function(input, output,session) {
 
 
     #AndelGrVar
-    AndelerShus <- NakkeFigAndelerGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarAndelGrVar,
+    AndelerShus <- NakkeFigAndelerGrVar(RegData=RegData,
+                                        valgtVar=input$valgtVarAndelGrVar,
                                         reshID=reshID,
-                                        datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
-                                        minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
-                                        erMann=as.numeric(input$erMannAndelGrVar), myelopati = as.numeric(input$myelopatiAndelGrVar)) #, lagFig = 0))
+                                        datoFra=input$datovalgAndelGrVar[1],
+                                        datoTil=input$datovalgAndelGrVar[2],
+                                        minald=as.numeric(input$alderAndelGrVar[1]),
+                                        maxald=as.numeric(input$alderAndelGrVar[2]),
+                                        erMann=as.numeric(input$erMannAndelGrVar),
+                                        myelopati = as.numeric(input$myelopatiAndelGrVar),
+                                        session=session) #, lagFig = 0))
     tabAndelerShus <- cbind('Antall (n)' = AndelerShus$Nvar,
                             'Antall (N)' = AndelerShus$Ngr,
                             'Andel (%)' = AndelerShus$AggVerdier$Hoved)
@@ -791,17 +804,18 @@ server <- function(input, output,session) {
 
 #------------ Gjennomsnitt--------------------------
   output$gjsnGrVar <- renderPlot({
-    NakkeFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
+    NakkeFigGjsnGrVar(RegData=RegData,  valgtVar=input$valgtVarGjsn,
                       reshID=reshID,
                       datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                       minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                       erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
                       fremBak = as.numeric(input$fremBakGjsn),
-                      valgtMaal = input$sentralmaal)
+                      valgtMaal = input$sentralmaal,
+                      session=session)
   }, height=600, width=500)
 
   output$gjsnTid <- renderPlot({
-    NakkeFigGjsnTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
+    NakkeFigGjsnTid(RegData=RegData,  valgtVar=input$valgtVarGjsn,
                     reshID=reshID,
                     datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                     minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
@@ -809,18 +823,24 @@ server <- function(input, output,session) {
                     fremBak = as.numeric(input$fremBakGjsn),
                     valgtMaal = input$sentralmaal,
                     tidsenhet = input$tidsenhetGjsn,
-                    enhetsUtvalg = input$enhetsUtvalgGjsn)
+                    enhetsUtvalg = input$enhetsUtvalgGjsn,
+                    session = session)
   }, height=300, width=1000)
 
 
 observe({ #Sykehusvise gjennomsnitt, figur og tabell
-  UtDataGjsnGrVar <- NakkeFigGjsnGrVar(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
+  UtDataGjsnGrVar <- NakkeFigGjsnGrVar(RegData=RegData,
+                                       valgtVar=input$valgtVarGjsn,
                                        reshID=reshID,
-                                       datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-                                       minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                                       erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
+                                       datoFra=input$datovalgGjsn[1],
+                                       datoTil=input$datovalgGjsn[2],
+                                       minald=as.numeric(input$alderGjsn[1]),
+                                       maxald=as.numeric(input$alderGjsn[2]),
+                                       erMann=as.numeric(input$erMannGjsn),
+                                       myelopati = as.numeric(input$myelopatiGjsn),
                                        fremBak = as.numeric(input$fremBakGjsn),
-                                       valgtMaal = input$sentralmaal)
+                                       valgtMaal = input$sentralmaal,
+                                       session = session)
   output$tittelGjsn <- renderUI({
     tagList(
       h3(UtDataGjsnGrVar$tittel),
@@ -854,15 +874,20 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
 
   #------gjsnTid
 
-  UtDataGjsnTid <- NakkeFigGjsnTid(RegData=RegData, preprosess = 0, valgtVar=input$valgtVarGjsn,
+  UtDataGjsnTid <- NakkeFigGjsnTid(RegData=RegData,
+                                   valgtVar=input$valgtVarGjsn,
                                    reshID=reshID,
-                                   datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
-                                   minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
-                                   erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
+                                   datoFra=input$datovalgGjsn[1],
+                                   datoTil=input$datovalgGjsn[2],
+                                   minald=as.numeric(input$alderGjsn[1]),
+                                   maxald=as.numeric(input$alderGjsn[2]),
+                                   erMann=as.numeric(input$erMannGjsn),
+                                   myelopati = as.numeric(input$myelopatiGjsn),
                                    fremBak = as.numeric(input$fremBakGjsn),
                                    valgtMaal = input$sentralmaal,
                                    tidsenhet = input$tidsenhetGjsn,
-                                   enhetsUtvalg = input$enhetsUtvalgGjsn)
+                                   enhetsUtvalg = input$enhetsUtvalgGjsn,
+                                   session = session)
 
   tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
   grtxt <-UtDataGjsnTid$grtxt

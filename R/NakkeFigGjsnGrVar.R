@@ -29,17 +29,22 @@
 #' @export
 
 
-NakkeFigGjsnGrVar <- function(RegData, valgtVar, valgtMaal='Gjsn', datoFra='2012-01-01', datoTil='2050-12-31',
+NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
+                              datoFra='2012-01-01', datoTil='2050-12-31',
                               myelopati=99, fremBak=0, Ngrense=10, medKI=1,
-                              minald=0, maxald=130, erMann='', reshID=0, outfile='', hentData=0, preprosess=TRUE) {
+                              minald=0, maxald=130, erMann='', reshID=0, outfile='',
+                              hentData=0, preprosess=0,...) {
 
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigGjsnTid: ',valgtVar))
+  }
 
   if (hentData == 1) {
     RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
   }
 
   # Preprosessere data
-  if (preprosess){
+  if (preprosess==1){
     RegData <- NakkePreprosess(RegData=RegData)
   }
 

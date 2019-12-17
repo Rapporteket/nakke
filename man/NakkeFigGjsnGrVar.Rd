@@ -6,7 +6,7 @@
 \usage{
 NakkeFigGjsnGrVar(
   RegData,
-  valgtVar,
+  valgtVar = "Alder",
   valgtMaal = "Gjsn",
   datoFra = "2012-01-01",
   datoTil = "2050-12-31",
@@ -20,7 +20,8 @@ NakkeFigGjsnGrVar(
   reshID = 0,
   outfile = "",
   hentData = 0,
-  preprosess = TRUE
+  preprosess = 0,
+  ...
 )
 }
 \arguments{
