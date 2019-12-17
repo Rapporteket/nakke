@@ -931,6 +931,8 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
 rv <- reactiveValues(
   subscriptionTab = rapbase::makeUserSubscriptionTab(session))
 
+#observe(print(rv$subscriptionTab))
+
 ## lag tabell over gjeldende status for abonnement
 output$activeSubscriptions <- DT::renderDataTable(
   rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',
