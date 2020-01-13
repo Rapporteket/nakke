@@ -477,7 +477,7 @@ server <- function(input, output,session) {
   # brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(shinySession=session), 'tullebukk')})
   reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)
   rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
-  brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(shinySession=session), 'tullebukk')})
+  brukernavn <- ifelse(paaServer, rapbase::getUserName(shinySession=session), 'BrukerNavn')
 
   # widget
   if (paaServer) {
@@ -570,9 +570,10 @@ server <- function(input, output,session) {
   output$undertittelReg <- renderUI({
     br()
     t1 <- 'Tabellen viser operasjoner '
+    valgtAar <- as.numeric(format.Date(input$sluttDatoReg, "%Y"))
     h4(HTML(switch(input$tidsenhetReg, #undertittel <-
                    Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                   Aar = paste0(t1, 'siste 5 år før ', input$sluttDatoReg, '<br />'))
+                   Aar = paste0(t1, 'siste 5 år til og med ', valgtAar, '<br />'))
     ))})
   #RegData som har tilknyttede skjema av ulik type. Fra NGER!
   AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
@@ -642,7 +643,7 @@ server <- function(input, output,session) {
                          #fremBak = as.numeric(input$fremBakKvalInd),
                          #myelopati = as.numeric(input$myelopatiKvalInd)
                          ,session=session)
-    , height=600, width=500
+    , height=700, width=600 #height=600, width=500
   )
 
 #-----------Fordelinger---------------------
@@ -931,7 +932,18 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
 rv <- reactiveValues(
   subscriptionTab = rapbase::makeUserSubscriptionTab(session))
 
-#observe(print(rv$subscriptionTab))
+
+# print(getUserGroups(session))
+#       print(getUserName(session))
+#       print(getUserReshId(session))
+#       . <- ""
+#       l <- list()
+#       autoRep <- readAutoReportData() %>%
+#         selectByReg(., reg = getUserGroups(session)) %>%
+#         selectByOwner(., owner = getUserName(session)) %>%
+#         selectByOrganization(., organization = getUserReshId(session))
+#       print(l)
+#       print(autoRep)
 
 ## lag tabell over gjeldende status for abonnement
 output$activeSubscriptions <- DT::renderDataTable(
@@ -952,16 +964,13 @@ output$subscriptionContent <- renderUI({
     )
   }
 })
-
 ## nye abonnement
 observeEvent (input$subscribe, { #MÅ HA
   owner <- rapbase::getUserName(session)
   interval <- strsplit(input$subscriptionFreq, "-")[[1]][2]
   intervalName <- strsplit(input$subscriptionFreq, "-")[[1]][1]
   organization <- rapbase::getUserReshId(session)
-  runDayOfYear <- rapbase::makeRunDayOfYearSequence(
-    interval = interval
-  )
+  runDayOfYear <- rapbase::makeRunDayOfYearSequence(interval = interval)
   email <- rapbase::getUserEmail(session)
   if (input$subscriptionRep == "Månedsrapport") {
     synopsis <- "Nakke/Rapporteket: månedsrapport"
@@ -971,7 +980,7 @@ observeEvent (input$subscribe, { #MÅ HA
 
   fun <- "abonnementNakke"  #"henteSamlerapporter"
   paramNames <- c('rnwFil', 'brukernavn', "reshID")
-  paramValues <- c(rnwFil, brukernavn(), reshID) #input$subscriptionFileFormat)
+  paramValues <- c(rnwFil, brukernavn, reshID) #input$subscriptionFileFormat)
 
   #abonnementNakke(rnwFil = 'NakkeMndRapp.Rnw', brukernavn='hei', reshID=601161, datoTil=Sys.Date())
 
