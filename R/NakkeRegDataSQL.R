@@ -10,7 +10,7 @@
 #'
 NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 
-  registryName <- "Nakke"
+  registryName <- "nakke"
   dbType <- "mysql"
 
   query <- paste0('SELECT

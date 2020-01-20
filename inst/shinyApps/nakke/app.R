@@ -10,7 +10,7 @@ library(shiny)
 library(shinyalert)
 #ibrary(shinyBS) # Additional Bootstrap Controls
 library(zoo)
-library(Nakke)
+library(nakke)
 #library(tools)
 
 # ui <- shinyUI(basicPage(
@@ -973,7 +973,7 @@ observeEvent (input$subscribe, { #MÅ HA
   runDayOfYear <- rapbase::makeRunDayOfYearSequence(interval = interval)
   email <- rapbase::getUserEmail(session)
   if (input$subscriptionRep == "Månedsrapport") {
-    synopsis <- "Nakke/Rapporteket: månedsrapport"
+    synopsis <- "nakke/Rapporteket: månedsrapport"
     rnwFil <- "NakkeMndRapp.Rnw" #Navn på fila
     #print(rnwFil)
   }
@@ -984,7 +984,7 @@ observeEvent (input$subscribe, { #MÅ HA
 
   #abonnementNakke(rnwFil = 'NakkeMndRapp.Rnw', brukernavn='hei', reshID=601161, datoTil=Sys.Date())
 
-  rapbase::createAutoReport(synopsis = synopsis, package = 'Nakke',
+  rapbase::createAutoReport(synopsis = synopsis, package = 'nakke',
                             fun = fun, paramNames = paramNames,
                             paramValues = paramValues, owner = owner,
                             email = email, organization = organization,
