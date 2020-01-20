@@ -23,7 +23,7 @@ This will add local configuration after the package has been installed
 Install this package:
 
 ```r
-devtools::install_github("Rapporteket/Nakke")
+devtools::install_github("Rapporteket/nakke")
 ```
 ### Note
 Communicating through a proxy might cause the above install commands to
