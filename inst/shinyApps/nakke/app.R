@@ -503,7 +503,7 @@ server <- function(input, output,session) {
            FROM SkjemaOversikt
            WHERE HovedDato >= "2014-01-01" ')
 
-    SkjemaData <- rapbase::LoadRegData(registryName="Nakke", query=querySD, dbType="mysql")
+    SkjemaData <- rapbase::LoadRegData(registryName="nakke", query=querySD, dbType="mysql")
     knitr::opts_knit$set(root.dir = './')
     knitr::opts_chunk$set(fig.path='')
 
@@ -512,8 +512,8 @@ server <- function(input, output,session) {
 
   if (!exists('RegData')){
     #Funker:
-    data('NakkeRegDataSyn', package = 'Nakke')
-    data('SkjemaDataSyn', package = 'Nakke')
+    data('NakkeRegDataSyn', package = 'nakke')
+    data('SkjemaDataSyn', package = 'nakke')
     reshID <- 601161
   }
 
