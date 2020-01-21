@@ -88,7 +88,7 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
                                 datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
   tmpFile <- paste0('tmp',rnwFil)
-  src <- normalizePath(system.file(rnwFil, package='Nakke'))
+  src <- normalizePath(system.file(rnwFil, package='nakke'))
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
   setwd(tempdir())
   file.copy(src, tmpFile, overwrite = TRUE)
@@ -121,7 +121,7 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
-  src <- normalizePath(system.file(rnwFil, package='Nakke'))
+  src <- normalizePath(system.file(rnwFil, package='nakke'))
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
   setwd(tempdir())
   dir <- getwd()

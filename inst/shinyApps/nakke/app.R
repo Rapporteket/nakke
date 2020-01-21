@@ -48,7 +48,7 @@ addResourcePath('rap', system.file('www', package='rapbase'))
 
 # #----------Hente data og evt. parametre som er statistke i appen----------
 # if (context == "TEST" | context == "QA" | context == "PRODUCTION") {
-#   RegData <- NakkeRegDataSQL()
+#   RegData <- Nakke RegDataSQL()
 # } #hente data på server
 
 #Definere innhold i felles rullegardinmenyer:
