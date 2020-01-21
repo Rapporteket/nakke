@@ -455,8 +455,8 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
     RegData$Variabel[indVar] <- 1
     varTxt <- 'misfornøyde'
     tittel <- switch(valgtVar,
-                     Misfor3mnd = 'Misfornøyde pasienter, 3 mnd' ,
-                     Misfor12mnd = 'Misfornøyde pasienter, 12 mnd')
+                     Misfor3mnd = 'Misfornøyd med behandlinga på sykehuset, 3 mnd' ,
+                     Misfor12mnd = 'Misfornøyd med behandlinga på sykehuset, 12 mnd')
   }
   if (valgtVar == 'Morsmal') { #Andeler
     RegData <- RegData[which(RegData$PasientSkjemaStatus == 1), ]
@@ -828,7 +828,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
     #PasientSkjema. Andel med UforetrygdPreOp 1 og 3
     #Kode 1:4,9: 'Ja', 'Nei', 'Planlegger søknad', 'Innvilget', 'Ukjent')
     grtxt <- c('Ja', 'Nei', 'Planlegger søknad', 'Innvilget', 'Ukjent')
-    tittel <- 'Søkt/planlegger å søke uføretrygd før operasjon?'
+    tittel <- 'Søkt/planlegger å søke uføretrygd før operasjon'
     RegData <- RegData[which(RegData$PasientSkjemaStatus ==1), ]
     indDum <- which(RegData$UforetrygdPreOp %in% 1:4)
     RegData$VariabelGr <- 9
@@ -838,7 +838,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
       RegData <- RegData[indDum,]
       RegData$Variabel[which(RegData[ ,valgtVar] %in% c(1,3))] <- 1
       varTxt <- 'søkt/planlagt å søke'
-      tittel <- 'Søkt eller planlegger å søke uføretrygd?'
+      tittel <- 'Søkt / planlegger å søke uføretrygd før operasjon'
       retn <- 'H'
     }
   }
