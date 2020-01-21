@@ -99,7 +99,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
     RegData <- RegData[which(RegData[,valgtVar] %in% 0:1), ]
     RegData$Variabel <- RegData[ ,valgtVar]
     varTxt <- 'med andre sykdommer'
-    tittel <- 'Andre sykdommer'
+    tittel <- 'Pasienter med komorbiditet ved operasjon'
   }
   if (valgtVar=='AntallNivaaOpr') { #Andeler
     gr <- c(0:5,1000)
@@ -112,7 +112,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
     #Fått antibiotikaprofylakse
     grtxt <- c('Nei', 'Ja', 'Ukjent')	#Ukjent= Ikke utfylt og evt. manglende
     varTxt <- 'som har fått antibiotika'
-    tittel <- 'Fått antibiotika'
+    tittel <- 'Fått antibiotikaprofylakse'
     indDum <- RegData$Antibiotika %in% 0:1
     if (figurtype %in% c('andelGrVar', 'andelTid' )) {
       RegData <- RegData[indDum,]}
@@ -168,7 +168,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
       RegData$VariabelGr <- 99
       RegData$VariabelGr[indDum] <- RegData[indDum, valgtVar]
       RegData$VariabelGr <- factor(RegData$VariabelGr, levels = c(1:5,99))
-      tittel <-  'ASA-grad'
+      tittel <-  'ASA-grad (komorbiditet)'
     }
     xAkseTxt <- 'Sykdomsgrad'
   }
@@ -282,7 +282,7 @@ if (valgtVar=='Eq5DScorePreOp') { #gjsnTid, gjsnGrVar
     RegData$VariabelGr[indDum] <- RegData$EqAngstPreOp[indDum]
     RegData$VariabelGr <- factor(RegData$VariabelGr, levels = c(1:3,9))
     xAkseTxt <- 'Grad av engstelighet/deprimerthet'	#Tilstand i forhold til angst'
-    tittel <-  'Helsetilstand: Angst'
+    tittel <-  'Problemer med angst/depresjon'
   }
   if (valgtVar=='ErstatningPreOp') { #Andeler #AndelGrVar #AndelTid
     #Pasientskjema. Andel med ErstatningPreOp 1 el 3
@@ -318,12 +318,12 @@ if (valgtVar=='Eq5DScorePreOp') { #gjsnTid, gjsnGrVar
       RegData$Variabel[which(RegData[ ,valgtVar] %in% 1:2)] <- 1
       varTxt <- 'fornøyde'
       tittel <- switch(valgtVar,
-                       FornoydBeh3mnd = 'Fornøyde pasienter, 3 mnd' ,
-                       FornoydBeh12mnd = 'Fornøyde pasienter, 12 mnd')
+                       FornoydBeh3mnd = 'Fornøyd med behandlinga på sykehuset, 3 mnd' ,
+                       FornoydBeh12mnd = 'Fornøyd med behandlinga på sykehuset, 12 mnd')
     }
     tittel <- switch(valgtVar,
-                     FornoydBeh3mnd = 'Fornøydhet med behandlinga på sykehuset, 3 mnd' ,
-                     FornoydBeh12mnd = 'Fornøydhet med behandlinga på sykehuset, 12 mnd')
+                     FornoydBeh3mnd = 'Fornøyd med behandlinga på sykehuset, 3 mnd' ,
+                     FornoydBeh12mnd = 'Fornøyd med behandlinga på sykehuset, 12 mnd')
   }
 if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
 		#Legeskjema.
@@ -767,7 +767,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
     indDum <- RegData$Snuser %in% 0:1
     RegData$VariabelGr[indDum] <- RegData$Snuser[indDum]
     RegData$VariabelGr <- factor(RegData$VariabelGr, levels = c(0,1,9))
-    tittel <- 'Snuser pasienten?'
+    tittel <- 'Bruker pasienten snus?'
   }
   if (valgtVar == 'SymptVarighetArmer') { #Andeler #AndelTid  #AndelGrVar
     #PasientSkjema. Andel med SymptVarighetArmer 4 el 5
@@ -828,7 +828,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
     #PasientSkjema. Andel med UforetrygdPreOp 1 og 3
     #Kode 1:4,9: 'Ja', 'Nei', 'Planlegger søknad', 'Innvilget', 'Ukjent')
     grtxt <- c('Ja', 'Nei', 'Planlegger søknad', 'Innvilget', 'Ukjent')
-    tittel <- 'Søkt uføretrygd før operasjon?'
+    tittel <- 'Søkt/planlegger å søke uføretrygd før operasjon?'
     RegData <- RegData[which(RegData$PasientSkjemaStatus ==1), ]
     indDum <- which(RegData$UforetrygdPreOp %in% 1:4)
     RegData$VariabelGr <- 9
@@ -848,7 +848,7 @@ if (valgtVar=='NDIendr12mnd30pst') { #AndelGrVar, AndelTid
     #PasientSkjema. Andel med Utdanning 4 el 5
     #Kode 1:5,9: 'Grunnskole++, 7-10år','Real-, yrkes- el vg skole', 'Allmennfaglig vg skole',
     #Høyskole/universitet, <4 år', 'Høyskole/universitet, 4år+', 'Ukjent'
-    grtxt <- c('Grunnskole++, 7-10år','Real-, yrkes- el vg skole',
+    grtxt <- c('Grunnskole, 7-10år','Real-, yrkes- el vg skole',
                'Allmennfaglig vg skole','Høyskole/universitet, <4 år','Høyskole/universitet, 4år+', 'Ukjent')
     tittel <- 'Utdanningsnivå'
     RegData <- RegData[which(RegData$PasientSkjemaStatus ==1), ]

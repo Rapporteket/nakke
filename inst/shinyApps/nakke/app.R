@@ -73,14 +73,14 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   #------------ Viktigste resultater-----------------
   tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og månedsrapport'),
 
-           h2('Velkommen til Rapporteket for Degenerativ Nakke!', align='center'),
+           h2('Velkommen til Rapporteket for NKR Degenerativ Nakke!', align='center'),
 
            sidebarPanel(width=3,
-                        h3("Månedsrapport"), #),
-                        h5('Denne kan man få regelmessig tilsendt på e-post.
+                        h3("Rapport med månedsresultater"), #),
+                        h5('Rapporten kan man også få regelmessig på e-post.
                         Gå til fanen "Abonnement" for å bestille dette.'),
                         br(),
-                        downloadButton(outputId = 'mndRapp.pdf', label='Last ned MÅNEDSRAPPORT', class = "butt"),
+                        downloadButton(outputId = 'mndRapp.pdf', label='Last ned månedsrapport', class = "butt"),
                         tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
                         br(),
                         br(),
@@ -112,13 +112,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                  addUserInfo = TRUE),
              tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
 
-             h4('Her kan man finne visualiseringer og oppsummeringer av de fleste variable som registreres
-                  i registeret. I hver fane kan man velge hvilken variabel man vil se resultat for og om man vil gjøre
-                filtreringer. Hold musepekeren over fanen for å se hvilke variable/tema som er visualisert i fanen.
-                Fanene er i hovedsak organisert ut fra hvordan resultatene er visualisert. F.eks.
-                finner man under "Andeler" resultater av typen "andel under 80 år" og
-                "andel som fikk komplikasjon". Under "gjennomsnitt" finner man eksempelvis beregninger av
-                "gjennomsnittsalder" eller gjennomsnittlig knivtid.'),
+             h4('Her kan man finne resultater fra NKR. Under hver fane kan man velge hva man
+                vil se på og filtrere ut resultater, for eksempel for ulike operasjonstyper
+                og/eller tidsperioder. Man kan også sammenlikne ulike sykehus. Hold musepekeren
+                over fanen for å se hvilke data som er tilgjengelig. Fanene er i hovedsak organisert
+                ut fra hvordan resultatene er presentert, det vil si "andeler" (%) eller
+                «gjennomsnitt» (eksempelvis andel som fikk en komplikasjon eller gjennomsnittlig knivtid)'),
              br(),
              h2("Kvalitetsindikatorer", align='center' ),
              #h3(em("Utvikling over tid")),
@@ -201,9 +200,13 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
           sidebarPanel(width = 3,
                       selectInput(inputId = "valgtVar", label="Velg variabel",
                                   choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr',
-                                              'Antibiotika' = 'Antibiotika', 'Arbeidstaus før operasjon' = 'ArbeidstausPreOp','Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
-                                              'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd', 'ASA-grad' = 'ASAgrad',
-                                              'BMI' = 'BMI', 'Angst (EQ5D) før operasjon' = 'EqAngstPreOp',
+                                              'Antibiotika' = 'Antibiotika',
+                                              'Arbeidsstatus før operasjon' = 'ArbeidstausPreOp',
+                                              'Arbeidsstatus 3 mnd. etter' = 'Arbeidstaus3mnd',
+                                              'Arbeidsstatus 12 mnd. etter' = 'Arbeidstaus12mnd',
+                                              'ASA-grad' = 'ASAgrad',
+                                              'BMI' = 'BMI',
+                                              'Angst (EQ5D) før operasjon' = 'EqAngstPreOp',
                                               'Fornoydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
                                               'Fornoydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd' ,
                                               'Komorbiditet' = 'Komorbiditet',
@@ -214,20 +217,20 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Morsmål' = 'Morsmal',
                                               'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
                                               'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
-                                              'Operasjonskategori' = 'OperasjonsKategori',
+                                              'Hastegrad kirurgi' = 'OperasjonsKategori',
                                               'Operasjonsindikasjon' = 'OprIndik',
                                               'Operasjonsindiaksjon, paresegrad' = 'OprIndikPareseGrad',
                                               'Operasjonsindiaksjon, myelopati' = 'OprIndikMyelopati',
                                               'Operasjonsindiaksjon, smerter' = 'OprIndikSmerter',
                                               'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
-                                              'Snuser' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
+                                              'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
                                               'Smertestill, bruk preoperativt' = 'SmertestillBrukPreOp',
                                               'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                               'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
                                               'Søkt erstatning før operasjon' = 'ErstatningPreOp',
+                                              'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
                                               'Tidligere operert' = 'TidlOpr',
                                               'Tidligere operert, antall' = 'TidlOprAntall',
-                                              'Uforetrygdet før operasjon' = 'UforetrygdPreOp',
                                               'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
                       ),
                       dateRangeInput(inputId = 'datovalg', start = datoFra, end = Sys.Date(),
@@ -280,8 +283,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
                                      'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
                                      'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
-                                     'Fornøydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
-                                     'Fornøydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
+                                     'Fornøyd med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
+                                     'Fornøyd med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
                                      'Forverring, 3 mnd. etter' = 'Verre3mnd',
                                      'Forverring, 12 mnd. etter' = 'Verre12mnd',
                                      'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
@@ -289,8 +292,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
                                      'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
                                      'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
-                                     'Misfornøyd, 3 mnd. etter' = 'Misfor3mnd',
-                                     'Misforøyd, 12 mnd. etter' = 'Misfor12mnd',
+                                     'Misfornøyd med behandlinga, 3 mnd.' = 'Misfor3mnd',
+                                     'Misfornøyd med behandlinga, 12 mnd.' = 'Misfor12mnd',
                                      'NDIendring over 30%, 12 mnd. etter' = 'NDIendr12mnd30pst',
                                      'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
                                      'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
