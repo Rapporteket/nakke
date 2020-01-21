@@ -90,7 +90,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
   if (valgtMaal=='Med') {
     t1 <- 'Median'
     tleg <- t1} else {
-      t1 <- 'Gjennomsnittlig'
+      t1 <- 'Gj.sn.'
       tleg <- 'Gjennomsnitt'}
 
   tittel <- paste(t1, deltittel, sep=' ')
@@ -129,7 +129,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
 
   AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
   soyletxt <- c(sprintf('%.1f',Midt[1:AntGr]), rep('',length(Ngr)-AntGr))	#	#round(Midt[1:AntGr],1)
-  xmax <-  min(1.1*max(c(Midt, KIned, KIopp), na.rm = T), 1.4*max(Midt, na.rm = T), na.rm = T)
+  xmax <-  min(1.1*max(c(Midt, KIned, KIopp), na.rm = T), 1.5*max(Midt, na.rm = T), na.rm = T)
   xmin <- min(c(0,c(Midt, KIned, KIopp)), na.rm=T)
   Ngr <- Ngr[sortInd]
   GrNavnSort <- names(Ngr)

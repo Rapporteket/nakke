@@ -145,7 +145,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                          label = "Tidsperiode", separator="t.o.m.", language="nb"),
                           selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
                                       choices = c("Ferdigstilt"=1,
-                                                  "Kladd"=0,
+                                                  "Kladd (/oppf.skjema ikke besvart)"=0,
                                                   "Åpen"=-1)
                           )
 
@@ -219,9 +219,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
                                               'Hastegrad kirurgi' = 'OperasjonsKategori',
                                               'Operasjonsindikasjon' = 'OprIndik',
-                                              'Operasjonsindiaksjon, paresegrad' = 'OprIndikPareseGrad',
-                                              'Operasjonsindiaksjon, myelopati' = 'OprIndikMyelopati',
-                                              'Operasjonsindiaksjon, smerter' = 'OprIndikSmerter',
+                                              'Operasjonsindikasjon, paresegrad' = 'OprIndikPareseGrad',
+                                              'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
+                                              'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
                                               'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
                                               'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
                                               'Smertestill, bruk preoperativt' = 'SmertestillBrukPreOp',

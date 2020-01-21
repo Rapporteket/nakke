@@ -223,7 +223,7 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
 	indVar <- which(RegData[ ,valgtVar] >-1)
 	RegData <- RegData[intersect(intersect(indPas, indMye),indVar), ]
 	RegData$Variabel <- RegData[ ,valgtVar]
-	deltittel <- 'EMS hos myelopatipasienter før operasjon'
+	deltittel <- 'EMS hos myelopatipas. før operasjon'
 	xAkseTxt <- ''
 	KIekstrem <- c(0,18)
 
