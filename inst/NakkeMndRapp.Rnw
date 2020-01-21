@@ -19,7 +19,7 @@ knitr::opts_knit$set(root.dir = './')
 @
 
 <<'dataOgParam', include=FALSE>>=
-library(Nakke)
+library(nakke)
 library(knitr)
 library(tools)
 library(lubridate)
@@ -45,14 +45,14 @@ if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
 
   #kb <- les_oqr_kb(system.file("SmerteReg_klokeboken.05.10.2017.csv", package = "smertereg"))
 
-  SkjemaData <- rapbase::LoadRegData(registryName="Nakke", query=querySD, dbType="mysql")
+  SkjemaData <- rapbase::LoadRegData(registryName="nakke", query=querySD, dbType="mysql")
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
 } #hente data på server
       if (!exists('RegData')){
   #Funker:
-  data('NakkeRegDataSyn', package = 'Nakke')
-  data('SkjemaDataSyn', package = 'Nakke')
+  data('NakkeRegDataSyn', package = 'nakke')
+  data('SkjemaDataSyn', package = 'nakke')
      }
 
 
