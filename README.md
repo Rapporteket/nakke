@@ -23,7 +23,7 @@ This will add local configuration after the package has been installed
 Install this package:
 
 ```r
-devtools::install_github("Rapporteket/Nakke")
+devtools::install_github("Rapporteket/nakke")
 ```
 ### Note
 Communicating through a proxy might cause the above install commands to
@@ -32,7 +32,7 @@ fail. If so, try the following prior to the above install commands:
 ```r
 library(httr)
 set_config(
-  use_proxy(url="18.91.12.23", port=8080, username="user",password="passwd")
+  use_proxy(url=IPadr, port=portnr, username="user",password="passwd")
 )
 ```
 

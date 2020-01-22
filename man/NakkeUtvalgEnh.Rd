@@ -4,9 +4,20 @@
 \alias{NakkeUtvalgEnh}
 \title{Funksjon som gjør utvalg i datagrunnlaget til registreringene for Nakke}
 \usage{
-NakkeUtvalgEnh(RegData, datoFra = "2012-01-01", datoTil = "3000-01-01",
-  minald = 0, maxald = 130, erMann = "", aar = 0, myelopati = 99,
-  fremBak = 0, enhetsUtvalg = 0, reshID = 0, fargepalett = "BlaaOff")
+NakkeUtvalgEnh(
+  RegData,
+  datoFra = "2012-01-01",
+  datoTil = "3000-01-01",
+  minald = 0,
+  maxald = 110,
+  erMann = "",
+  aar = 0,
+  myelopati = 99,
+  fremBak = 0,
+  enhetsUtvalg = 0,
+  reshID = 0,
+  fargepalett = "BlaaOff"
+)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -20,6 +31,10 @@ NakkeUtvalgEnh(RegData, datoFra = "2012-01-01", datoTil = "3000-01-01",
 \item{maxald}{Alder, til og med}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
+
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
 
 \item{enhetsUtvalg}{Sammenlikning eller ikke: 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet}
 

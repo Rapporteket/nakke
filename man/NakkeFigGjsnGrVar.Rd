@@ -4,10 +4,25 @@
 \alias{NakkeFigGjsnGrVar}
 \title{Søylediagram som viser sentralmål (gj.sn./median) for hvert sykehus}
 \usage{
-NakkeFigGjsnGrVar(RegData, valgtVar, valgtMaal = "Gjsn",
-  datoFra = "2012-01-01", datoTil = "2050-12-31", myelopati = 99,
-  fremBak = 0, Ngrense = 10, minald = 0, maxald = 130, erMann = "",
-  reshID = 0, outfile = "", hentData = 0, preprosess = TRUE)
+NakkeFigGjsnGrVar(
+  RegData,
+  valgtVar = "Alder",
+  valgtMaal = "Gjsn",
+  datoFra = "2012-01-01",
+  datoTil = "2050-12-31",
+  myelopati = 99,
+  fremBak = 0,
+  Ngrense = 10,
+  medKI = 1,
+  minald = 0,
+  maxald = 130,
+  erMann = "",
+  reshID = 0,
+  outfile = "",
+  hentData = 0,
+  preprosess = 0,
+  ...
+)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -32,6 +47,14 @@ NRSsmerteNakkePreOp: NSR, nakke før operasjon}
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
+
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
+
+\item{Ngrense}{nedre grense for antall observasjoner for at et resultat (ei søyle) skal vises}
+
+\item{medKI}{vise konfidensintervall? 0-nei, 1-ja}
 
 \item{minald}{Alder, fra og med}
 

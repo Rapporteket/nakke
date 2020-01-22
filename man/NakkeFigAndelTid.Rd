@@ -4,10 +4,24 @@
 \alias{NakkeFigAndelTid}
 \title{Tidstrend (år) av andel for en gitt variabel.}
 \usage{
-NakkeFigAndelTid(RegData, valgtVar, datoFra = "2013-01-01",
-  datoTil = "3000-12-31", tidsenhet = "Aar", minald = 0, maxald = 130,
-  erMann = "", myelopati = 99, fremBak = 0, reshID = 0, outfile = "",
-  enhetsUtvalg = 0, preprosess = TRUE, hentData = 0)
+NakkeFigAndelTid(
+  RegData,
+  valgtVar = "Alder",
+  datoFra = "2013-01-01",
+  datoTil = "3000-12-31",
+  tidsenhet = "Aar",
+  minald = 0,
+  maxald = 130,
+  erMann = "",
+  myelopati = 99,
+  fremBak = 0,
+  reshID = 0,
+  outfile = "",
+  enhetsUtvalg = 0,
+  preprosess = 0,
+  hentData = 0,
+  ...
+)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -57,6 +71,10 @@ Verre3mnd. Klart verre, 3 mnd.}
 \item{maxald}{Alder, til og med}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
+
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
 
 \item{reshID}{Avdelingsid (reshID) for egen avdeling,}
 

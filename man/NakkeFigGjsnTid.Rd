@@ -4,10 +4,25 @@
 \alias{NakkeFigGjsnTid}
 \title{Tidsutvikling av gjennomsnitt/median for en gitt variabel}
 \usage{
-NakkeFigGjsnTid(RegData, outfile = "", valgtVar, erMann = "", minald = 0,
-  maxald = 130, datoFra = "2007-01-01", datoTil = "3000-01-01",
-  myelopati = 99, fremBak = 0, tidsenhet = "Aar", valgtMaal = "",
-  enhetsUtvalg = 0, hentData = 0, preprosess = TRUE, reshID = 0)
+NakkeFigGjsnTid(
+  RegData,
+  outfile = "",
+  valgtVar = "Alder",
+  erMann = "",
+  minald = 0,
+  maxald = 130,
+  datoFra = "2007-01-01",
+  datoTil = "3000-01-01",
+  myelopati = 99,
+  fremBak = 0,
+  tidsenhet = "Aar",
+  valgtMaal = "",
+  enhetsUtvalg = 0,
+  hentData = 0,
+  preprosess = 0,
+  reshID = 0,
+  ...
+)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -15,6 +30,7 @@ NakkeFigGjsnTid(RegData, outfile = "", valgtVar, erMann = "", minald = 0,
 \item{outfile}{Navn på fil figuren skrives ned til}
 
 \item{valgtVar}{- Variabelen det skal vises resultat for.
+Alder: alder (år)
 EMSendr12mnd: Forbedring av EMS hos myelopati-pasienter, 12 mnd.
 EMSendr3mnd: Forbedring av EMS hos myelopati-pasienter, 3 mnd.
 EQ5Dendr12mnd: Forbedring av EQ5D, 12 mnd.
@@ -36,6 +52,10 @@ NDIendr12mnd: Forbedring av NDI, 12 mnd. etter operasjon}
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
+
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
 
 \item{valgtMaal}{Sentralmål: 'Med' gir median, alt annet gir gjennomsnitt}
 

@@ -4,10 +4,23 @@
 \alias{NakkeFigAndeler}
 \title{Søylediagram, horisontalt eller vertikalt, som viser andeler av valgt variabel.}
 \usage{
-NakkeFigAndeler(RegData, valgtVar, datoFra = "2012-01-01",
-  datoTil = "3000-12-31", minald = 0, maxald = 130, erMann = "",
-  myelopati = 99, fremBak = 0, outfile = "", hentData = 0,
-  preprosess = TRUE, reshID = 0, enhetsUtvalg = 0)
+NakkeFigAndeler(
+  RegData = 0,
+  valgtVar = "Alder",
+  erMann = "",
+  datoFra = "2012-01-01",
+  datoTil = "3000-12-31",
+  minald = 0,
+  maxald = 110,
+  myelopati = 99,
+  fremBak = 0,
+  outfile = "",
+  hentData = 0,
+  preprosess = 0,
+  reshID = 0,
+  enhetsUtvalg = 0,
+  ...
+)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -46,6 +59,8 @@ NakkeFigAndeler(RegData, valgtVar, datoFra = "2012-01-01",
 
 Detajer...:}
 
+\item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
+
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
@@ -54,7 +69,9 @@ Detajer...:}
 
 \item{maxald}{Alder, til og med}
 
-\item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
 
 \item{outfile}{Navn på fil figuren skrives ned til}
 

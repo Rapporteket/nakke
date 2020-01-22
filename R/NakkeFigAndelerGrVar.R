@@ -6,6 +6,7 @@
 #'
 #'
 #' @inheritParams NakkeFigAndeler
+#' @inheritParams NakkeUtvalgEnh
 #' @param Ngrense Minste antall registreringer for at ei gruppe skal bli vist
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling
@@ -48,16 +49,21 @@
 #'
 #' @export
 
-NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31',
-                            minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, Ngrense=10,
-                            hentData=0, preprosess=TRUE, reshID=0, outfile='') { #tittel=1,
+NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=130,
+                                 datoFra='2012-01-01', datoTil='3000-12-31',
+                            erMann='', myelopati=99, fremBak=0, Ngrense=10,
+                            hentData=0, preprosess=0, reshID=0, outfile='',...) { #tittel=1,
+
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelGrVar: ',valgtVar))
+  }
 
      if (hentData == 1) {
           RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
      }
 
      # Preprosessere data
-     if (preprosess){
+     if (preprosess==1){
           RegData <- NakkePreprosess(RegData=RegData)
      }
 
@@ -65,7 +71,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      #----------- Figurparametre ------------------------------
      cexShNavn <- 1 #0.85
 
-     grVar <- 'SykehusNavn'
+     grVar <- 'ShNavn'
      RegData[ ,grVar] <- factor(RegData[ ,grVar])
      #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
 
@@ -74,6 +80,7 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      RegData <- NakkeVarSpes$RegData
      sortAvtagende <- NakkeVarSpes$sortAvtagende
      tittel <- NakkeVarSpes$tittel
+     KImaalGrenser <- NakkeVarSpes$KImaalGrenser
 
      #Gjør utvalg
      NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
@@ -95,24 +102,46 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
      sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
      Ngrtxt <- paste0('\n(N=', as.character(Ngr),')')	#
      Ngrtxt[indGrUt] <- paste0('\n(<', Ngrense,')')	#paste(' (<', Ngrense,')',sep='')	#
+	Ngr <- Ngr[sortInd]
+	Nvar <- Nvar[sortInd]
 
-     AndelerGrSort <- AndelerGr[sortInd]
-     AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
+   AggVerdier <- list(Hoved = NULL, Tot =NULL)
+    AndelerGrSort <- AndelerGr[sortInd]
+  AggVerdier$Hoved <- AndelerGrSort
+  #AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
+  AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
      #	GrNavnSort <- paste(names(Ngr)[sortInd], ', ',Ngrtxt[sortInd], sep='')
-     GrNavnSort <- paste0(names(Ngr)[sortInd], Ngrtxt[sortInd]) #names(Ngr)[sortInd]
+     GrNavnSort <- paste0(names(Ngr), Ngrtxt[sortInd]) #names(Ngr)[sortInd]
 
      andeltxt <- paste0(sprintf('%.1f',AndelerGrSort), '%') 	#round(as.numeric(AndelerGrSort),1)
      if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
 
      #if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
+     FigDataParam <- list(AggVerdier=AggVerdier,
+                          N=N,
+                          Ngr=Ngr,
+                          Nvar=Nvar,
+                          KImaalGrenser <- KImaalGrenser,
+                          #soyletxt=soyletxt,
+                          #grtxt2=grtxt2,
+                          tittel=tittel,
+                          andeltxt=andeltxt,
+                          #xAkseTxt=xAkseTxt,
+                          #yAkseTxt=yAkseTxt,
+                          utvalgTxt=NakkeUtvalg$utvalgTxt,
+                          fargepalett=NakkeUtvalg$fargepalett
+                          #medSml=NakkeUtvalg$medSml
+                          #hovedgrTxt=hovedgrTxt,
+                          #smltxt=RyggUtvalg$smltxt
+     )
 
      #-----------Figur---------------------------------------
      if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
-          FigTypUt <- figtype(outfile)
+          FigTypUt <- rapFigurer::figtype(outfile)
           farger <- FigTypUt$farger
           plot.new()
           if (dim(RegData)[1]>0) {
-               tekst <- paste('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene', sep='')
+               tekst <- paste0('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene')
           } else {tekst <- 'Ingen registrerte data for dette utvalget'}
           title(main=tittel)
           text(0.5, 0.6, tekst, cex=1.2)
@@ -125,7 +154,8 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           #Innparametre: ...
 
 
-          FigTypUt <- figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
+          FigTypUt <- rapFigurer::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
+                  #Påvirker ikke filtype ''
           farger <- FigTypUt$farger
           #Tilpasse marger for å kunne skrive utvalgsteksten
           NutvTxt <- length(utvalgTxt)
@@ -136,14 +166,31 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           xmax <- min(max(AndelerGrSort),100)*1.15
           pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
                          xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=cexShNavn*0.9)
+          overPos <- max(pos)+0.4*log(max(pos))
+          if (!is.na(KImaalGrenser[1])) {
+            antMaalNivaa <- length(KImaalGrenser)-1
+            rekkef <- 1:antMaalNivaa
+            if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
+            fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
+            maalOppTxt <- c('Høy', 'Moderat', 'Lav')[rekkef]
+            rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
+                 ytop=max(pos)+(pos[2]-pos[1])/3, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+            legend(x=0, y=overPos, yjust=0.5, pch=c(NA,rep(15, antMaalNivaa)), #x=0, y=-4,
+                   col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+                   ncol=antMaalNivaa+1,
+                   xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
+                   legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
+          }
+          pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
+                         xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)',
+                         las=1, cex.names=cexShNavn*0.9, add = T)
           ybunn <- 0.1
           ytopp <- pos[AntGr]+1	#-length(indGrUt)]
-          lines(x=rep(AndelHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
-          legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
-                 legend=paste0('Hele landet', ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N),
+          lines(x=rep(AggVerdier$Tot, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
+          legend('topright', xjust=1, yjust = 0.5, cex=1, lwd=2, col=farger[2],
+                 legend=paste0('Hele landet', ' (', sprintf('%.1f',AggVerdier$Tot), '%), ', 'N=', N),
                  bty='o', bg='white', box.col='white')
           mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
-          #text(x=0.005*xmax, y=pos, Ngrtxt[sortInd], las=1, cex=cexShNavn, adj=0, col=farger[4], lwd=3)	#c(Nshtxt[sortInd],''),
           title(tittel, line=1, font.main=1, cex.main=1.3)
 
           text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
@@ -152,11 +199,13 @@ NakkeFigAndelerGrVar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTi
           #mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
 
           #Tekst som angir hvilket utvalg som er gjort
-          mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+          mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
+          #mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
 
 
           par('fig'=c(0, 1, 0, 1))
           if ( outfile != '') {dev.off()}
           #----------------------------------------------------------------------------------
      }
+     return(invisible(FigDataParam))
 }

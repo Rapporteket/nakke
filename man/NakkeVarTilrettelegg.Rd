@@ -9,39 +9,10 @@ NakkeVarTilrettelegg(RegData, valgtVar, ktr = 0, figurtype = "andeler")
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
 
-\item{valgtVar}{Variabelen det skal vises resultat for.
-            Alder: Aldersfordeling
-            AntallNivaaOpr: Antall nivå operert
-            Antibiotika: Er det gitt antibiotikaprofylakse?
-            Arbeidstaus12mnd: Arbeidsstatus 12 mnd. etter operasjon
-            Arbeidstaus3mnd: Arbeidsstatus 3 mnd. etter operasjon
-            ArbeidstausPreOp: Arbeidsstatus før operasjon
-            ASAgrad: ASA-grad
-            BMI: Pasientenes BMI (Body Mass Index)
-            EqAngstPreOp: Helsetilstand, Angst
-            ErstatningPreOp: Søkt erstatning?
-            FornoydBeh12mnd: Fornøydhet med behandlinga på sykehuset, 12 mnd
-            FornoydBeh3mnd: Fornøydhet med behandlinga på sykehuset, 3 mnd
-            OperasjonsKategori: Hastegrad
-            LiggeDognPostop: Antall liggedøgn postoperativt
-            LiggeDognTotalt: Totalt antall liggedøgn
-            Morsmal: Morsmål
-            NytteOpr12mnd: Nytte av operasjon, 12 mnd
-            NytteOpr3mnd: Nytte av operasjon, 3 mnd
-            OprIndikPareseGrad: Paresegrad før operasjon
-            Roker: Røyker pasienten?
-            Saardren: Har pasienten fått sårdren?
-            SivilStatus: Sivilstatus
-            SmertestillBrukPreOp: Hyppighet av smertestillende før operasjonen
-            Snuser: Snuser pasienten?
-            SymptVarighetArmer: Varighet av utstrålende armsmerter
-            SymptVarighetNakkeHode: Varighet av nakke-/hodesmerter
-            TidlOpr: Er pasienten tidligere operert?
-            TidlOprAntall: Antall tidligere operasjoner
-            UforetrygdPreOp: Søkt uføretrygd?
-            Utdanning: Utdanningsnivå
+\item{valgtVar}{parameter som angir hvilke(n) variabel man ønsker å tilrettelegge for videre
+beregning.}
 
-Detajer...:}
+\item{ktr}{Angir om 3 eller 12 mnd kontroll. 0-ikke valgt (standard), 1-3mnd., 2-12mnd.,}
 
 \item{figurtype}{Hvilken figurtype det skal tilrettelegges variable for:
 'andeler', 'andelGrVar', 'andelTid', 'gjsnGrVar', 'gjsnTid'}

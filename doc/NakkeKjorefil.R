@@ -5,7 +5,7 @@
 #e.g. using enc2native(); x <- readLines('foo.txt', encoding = 'UTF-8')
 #         x <- enc2native(x)
 #Do not set options(encoding) $encoding: [1] "native.enc". Tester
-
+#test
 #--------------------------------------SAMLERAPPORT-----------------------------------
 setwd("C:/ResultattjenesteGIT/Nakke/inst")
 knitr::knit('NakkeAarsRapp.Rnw')
@@ -22,17 +22,17 @@ tools::texi2pdf('NakkeAarsRapp.tex')
 
 	library(synthpop)
 library(dplyr)
-varBort <- c('FodselsDato', 'SykehusNavn3mnd', 'SykehusNavn12mnd', 'ForlopsID')
 ForlopsID <- RegData$ForlopsID
+varBort <- c('FodselsDato', 'SykehusNavn3mnd', 'SykehusNavn12mnd', 'ForlopsID')
 RegData <- RegData[,-which(names(RegData) %in% varBort)]
 sykehus <- paste('Sykehus', LETTERS[1:10])
-mengdePasienter <- c(0.3, 4, 10, 3, 7, 5, 1, 8, 9.5, 6)
+mengdePasienter <- c(0.3, 4, 10, 3, 7, 5, 1, 8, 9.5, 6) #For å få ulikt antall pasienter på de fiktive sykehusene
 RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter), size=dim(RegData)[1], replace=T)
 	RegDataSyn <- synthpop::syn(RegData, method = "sample", seed = 500) #Trekker med tilbakelegging
 	RegData <- data.frame(RegDataSyn$syn, ForlopsID)
 	write.table(RegData, file='C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataTest.csv', sep = ';', row.names = F, col.names = T)
 	save(RegData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.RData'))
-	load('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.Rdata')
+	load('C:/ResultattjenesteGIT/Nakke/data/NakkeRegDataSyn.RData')
 
 	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
 	SkjemaData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
@@ -41,39 +41,49 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	SkjemaData <- dplyr::left_join(SkjemaDataRed, RegData[,c('ForlopsID','SykehusNavn')], by = "ForlopsID", copy=FALSE)
 	names(SkjemaData)[which(names(SkjemaData) == 'SykehusNavn')] <- 'Sykehusnavn'
 	save(SkjemaData, file=paste0('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData'))
-	load('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.Rdata')
+	load('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData')
+
+#--------------Koble med fødselsnr-------------------------------
+  dato <- '2018-12-06'
+	PersNr <- read.table(paste0('A:/Nakke/PersNrNakke',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
+	AlleVarNum <- read.table(paste0('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
+	AlleVarNumRed <- AlleVarNum[which(AlleVarNum$SykehusNavn == 'Haukeland USH') ,c('OprDato','PasientID', 'SykehusNavn', 'ForlopsID')]
+KobletFil <- merge(x=AlleVarNumRed, y=PersNr, by='ForlopsID', all.x = T, all.y = F)
+write.table(KobletFil, file='A:/Nakke/HaukelandPers.csv', sep = ';', row.names = F, col.names = T)
 
 #----------------------------Laste data og parametre----------------------------------------
-	load('A:/Nakke/NakkeAarsrapp2016.Rdata')
 	library(nkr)
 
 	rm(list=ls())
 	library(Nakke)
-	dato <- '2018-05-08'
+	dato <- '2019-04-25'
 	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
 	RegData <- NakkeData
-	#RegData$SykehusNavn <- enc2native(as.character(RegData$SykehusNavn))
-	#RegData <- NakkePreprosess(RegData=RegData)
-	#RegData <- RegData[which(RegData$Aar<2017),]
-	#save(RegData, file=paste0('A:/Nakke/','NakkeAarsrapp2016','.Rdata'))
+	#?RegData$SykehusNavn <- enc2native(as.character(RegData$SykehusNavn))
+	# RegData <- NakkePreprosess(RegData=RegData)
+	# NakkeData <- RegData[which(RegData$Aar<2018),]
+	# save(NakkeData, file=paste0('A:/Nakke/','NakkeAarsrapp2017','.Rdata'))
 	#load(paste0(fil,".Rdata")) #RegData
-	load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
+	#load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
-	datoFra='2017-03-01'
-	datoTil='3000-12-31'
+	load('A:/Nakke/NakkeAarsrapp2018.Rdata')
+RegData <- NakkeData
+
+	datoFra='2018-01-01'
+	datoTil='2019-12-31'
 	reshID <- 601161 #De tre med flest reg:
-	enhetsUtvalg=1
+	enhetsUtvalg=0
 	minald=0
-	maxald=130
-	erMann=''
-	myelopati=0
-	fremBak=1
+	maxald=110
+	erMann=9
+	myelopati=9
+	fremBak=0
 	Ngrense=10
 	grVar='ShNavn'
 	ktr=0
 	aar=2015:2016
-	tidlAar=2013:2014
+	tidlAar=2015:2016
 	tidsenhet <- 'Mnd'
 	valgtMaal <- 'Gjsn'
 	hentData=0
@@ -82,9 +92,9 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 #-------------------------------Månedsrapport---------------------------
 	library(knitr)
 	library(devtools)
-	fil <- paste0('A:/Nakke/SkjemaOversikt',dato,'.csv')
-	SkjemaData <- read.table(fil, sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
-	RegData <- read.table('A:/Nakke/AlleVarNum2018-03-16.csv', sep=';', header=T, encoding = 'UTF-8')
+	dato <- Sys.Date()#'2018-12-06'
+	SkjemaData <- read.table(paste0('A:/Nakke/SkjemaOversikt',dato,'.csv'), sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
+	RegData <- read.table(paste0('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
 
 	#SkjemaData$Sykehusnavn <- enc2native(as.character(SkjemaData$Sykehusnavn))
 	#SkjemaData$Sykehusnavn <- iconv(SkjemaData$Sykehusnavn, from = 'UTF-8', to = '')
@@ -97,13 +107,10 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	#options(encoded_text_to_latex= 'UTF-8')
 	knit('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 	texi2pdf(file='NakkeMndRapp.tex')
-	knit2pdf('NakkeMndRapp.Rnw', encoding = 'UTF-8')
+#	knit2pdf('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 
 
-#------------------------------ Andeler flere var --------------------------
-#------------------------------ (Fordelinger) --------------------------
-
-#Offentliggjøring fra 2016
+#---------------Offentliggjøring fra 2016----------------
 setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp/2016')
 
 #Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
@@ -120,13 +127,20 @@ FigAndelerGrVarAar(RegData=RegData, valgtVar='KomplSvelging3mnd',
 FigAndelerGrVarAar(RegData=RegData, valgtVar='Komplinfek',
                    fremBak=2, Ngrense=30,
                    ktr=0,aar=2015:2016,tidlAar=2013:2014, outfile='OffKomplinfek.png')
-setwd("C:/ResultattjenesteGIT/Nakke/")
 
-valgtVar <- 'OprIndikSmerter' #OprIndikSmerter'
-outfile <- '' #paste0(valgtVar, '.png')	#''	#Navn angis av Jasper
+#------------------------------ Andeler flere var --------------------------
+#------------------------------ (Fordelinger) --------------------------
 
-NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
-           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
+
+valgtVar <- 'NytteOpr12mndAlleKat' #OprIndikSmerter'
+outfile <- paste0(valgtVar, '.png')	#''
+
+utdata <- NakkeFigAndeler(RegData=RegData, valgtVar=valgtVar,
+                          datoFra='2017-01-01', datoTil='2017-12-31', outfile=outfile)
+                          #myelopati = myelopati, fremBak = 1)
+
+utdata <- NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,myelopati = myelopati,
+           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, fremBak = 1,
            reshID=reshID, enhetsUtvalg=0, hentData=0, outfile=outfile)
 
 variable <- c('Komorbiditet', 'KomplOpr', 'Kompl3mnd', 'OprIndik', 'OprIndikSmerter',
@@ -154,18 +168,7 @@ for (valgtVar in variable) {
 #-----------------------------------------------------------------------------------
 # Inndata til funksjon:
 #...NB: SkjemaID
-reshID <- 601161 #De tre med flest reg:
-minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
-datoFra <- '2017-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2018-04-01'
-erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-tittel=1
-myelopati <- 2
-fremBak <- 0
-enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-tidsenhet <- 'Mnd'
-valgtVar <- ''	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'KomplStemme3mnd'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, ErstatningPreOp,
 		  #Fornoyd12mnd, FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, , NytteOpr3mnd, NytteOpr12mnd
@@ -173,6 +176,11 @@ valgtVar <- ''	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 
 outfile <- '' #paste0(valgtVar, 'Syn.png')	#''	#Navn angis av Jasper
+AndelerTid <- NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+                 datoTil=datoTil, enhetsUtvalg=0, tidsenhet = 'Kvartal', outfile=outfile)
+
+lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
+
 NakkeFigAndelTid(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, tidsenhet=tidsenhet,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, enhetsUtvalg=1, outfile=outfile)
@@ -196,21 +204,11 @@ for (valgtVar in variable) {
 #------------------------------ Andel, per enhet --------------------------
 #-----------------------------------------------------------------------------------
 rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/AlleVarNum2016-10-03.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
+NakkeData <- read.table('A:/Nakke/AlleVarNum2018-06-21.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
 RegData <- NakkeData
 setwd("C:/ResultattjenesteGIT/Nakke/")
 
-# Inndata til funksjon:
-#...NB: SkjemaID
-reshID <- 601161 #De tre med flest reg:
-minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
-datoFra <- '2016-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2016-12-31'
-erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-tittel=1
-enhetsUtvalg <- 1	#1-Eget sykehus mot resten (standard), 0-Hele landet, 2-Eget sykehus
-valgtVar <- 'ErstatningPreOp'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'Alder'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
@@ -219,7 +217,7 @@ valgtVar <- 'ErstatningPreOp'	#Må velge... Alder, AndreRelSykdommer, Antibiotik
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 outfile <- paste0(valgtVar, '_ShusSyn.pdf')	#''	#Navn angis av Jasper
 outfile <- '' #paste0(valgtVar, '_ShusSyn.png')	#''	#Navn angis av Jasper
-NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,
+NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, fremBak = fremBak, myelopati = myelopati,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, outfile=outfile)
 
@@ -244,9 +242,10 @@ valgtVar <- 'NRSsmerteArmEndr3mnd'	#Må velges: EMSendr12mnd, EMSendr3mnd, EQ5De
                #NDIendr12mnd, NDIendr3mnd, NDIscorePreOp
 
 outfile <- '' #paste(valgtVar, '.png', sep='')	#''	#Navn angis av Jasper
-utdata <- NakkeFigGjsnTid(RegData=RegData, datoFra='2017-03-01', valgtVar=valgtVar, valgtMaal='',
-           datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, tidsenhet='Mnd',
-           fremBak = 1, myelopati = 0,
+utdata <-
+  NakkeFigGjsnTid(RegData=RegData, datoFra='2018-01-01', valgtVar=valgtVar, valgtMaal='',
+           datoTil=datoTil, minald=minald, maxald=36, erMann=erMann, tidsenhet='Mnd',
+           fremBak = 9, myelopati = 0,
            reshID=reshID, enhetsUtvalg=1, outfile=outfile)
 
 variable <- c('EMSendr12mnd', 'EMSendr3mnd', 'EQ5Dendr12mnd', 'EQ5Dendr3mnd', 'Eq5DScorePreOp',
@@ -264,25 +263,15 @@ for (valgtVar in variable) {
 #------------------------------ Gjsn/med per enhet --------------------------
 #-----------------------------------------------------------------------------------
 rm(list=ls())
-NakkeData <- read.table('C:/Registre/Nakke/data/AlleVarNum2016-04-13.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
-RegData <- NakkeData
 # Inndata til funksjon:
-#...NB: SkjemaID
-reshID <- 601161 #De tre med flest reg:
-minald <- 0	#alder, fra og med
-maxald <- 130	#alder, til og med
-datoFra <- '2012-01-01'	 # min og max dato i utvalget vises alltid i figuren.
-datoTil <- '2018-06-01'
-erMann <- ''			#kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-tittel=1
-valgtMaal = 'Gjsn'
 valgtVar <- 'Alder'	#Må velge... Alder, EMSscorePreOp, LiggeDognPostop,KnivtidTotalMin, LiggeDognTotalt,
           #NDIscorePreOp, NRSsmerteArmPreOp, NRSsmerteNakkePreOp
           #EMSendr12mnd, EMSendr3mnd, EQ5Dendr12mnd, EQ5Dendr3mnd
 
 outfile <- '' #paste0(valgtVar, '_', valgtMaal, '.pdf')	#''	#Navn angis av Jasper
 
-NakkeFigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
+#utdata <-
+  NakkeFigGjsnGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, valgtMaal=valgtMaal,
             datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
             reshID=reshID, outfile=outfile)
 
@@ -297,8 +286,20 @@ for (valgtVar in variable) {
 }
 
 
-#------------------Kvalitetsindikatorer-----------------------
+load('A:/Nakke/NakkeAarsrapp2018.Rdata') #IKKE preprossessert
 
+#Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
+NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=1, valgtVar='KomplStemme3mnd',
+                     myelopati=0, fremBak=1, Ngrense=20, outfile='')
+
+NakkeFigAndeler(NakkeData, valgtVar)
+
+#------------------Kvalitetsindikatorer, Resultatportalen -----------------------
+rm(list=ls())
+library(Nakke)
+NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
+RegData <- NakkePreprosess(NakkeData)
+RegData <- RegData[RegData$Aar>=2014,]
 # Stemmevansker, 3 mnd.'
 # Mål: lavest
 #   #Kode 0,1: Nei, Ja +tomme
@@ -306,10 +307,10 @@ for (valgtVar in variable) {
 # Andel med KomplStemme3mnd=1
 # Utvalg, ikke-myelopati, fremre tilgang: OprIndikMyelopati=0, OprMetodeTilgangFremre=1
 #Variable: OppFolgStatus3mnd, KomplStemme3mnd, OprMetodeTilgangFremre, OprIndikMyelopati
-variable <- c('ReshId', 'SykehusNavn', 'ErMann', 'Aar', 'KomplStemme3mnd')
+variable <- c('ReshId','SykehusNavn','Aar','KomplStemme3mnd') #
 ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplStemme3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
-write.table(RegData[ind,variable], file='A:/NakkeTilOffStemme.csv', sep=';', row.names = F)
+write.table(RegData[ind,variable], file='A:/ind2_Stemmevansker_Nakke.csv', sep=';', row.names = F)
 
 # 'Svelgvansker, 3 mnd.'
 #Mål: lavt
@@ -321,37 +322,138 @@ write.table(RegData[ind,variable], file='A:/NakkeTilOffStemme.csv', sep=';', row
 # Utvalg, ikke-myelopati, fremre tilgang: OprIndikMyelopati=0, OprMetodeTilgangFremre=1
 #Variable: OppFolgStatus3mnd, KomplSvelging3mnd, OprMetodeTilgangFremre,
 #OprIndikMyelopati
-variable <- c('ReshId', 'SykehusNavn', 'ErMann', 'Aar', 'KomplSvelging3mnd')
+variable <- c('ReshId','SykehusNavn','Aar','KomplSvelging3mnd') #
 ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplSvelging3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
-write.table(RegData[ind,variable], file='A:/NakkeTilOffSvelg.csv', sep=';', row.names = F)
+write.table(RegData[ind,variable], file='A:/ind1_Svelgvansker_Nakke.csv', sep=';', row.names = F)
 
-
-#3MndSkjema. Andel med KomplinfekOverfl3mnd=1
+#Komplikasjoner (endret fra overfladisk, bakre til dyp og overfladisk, alle)
+#Pasientskjema. Alle komplikasjoner (dype og overfladiske), 3mnd.
 #Mål: lavt
 #Kode 0,1: Nei, Ja +tomme
-# OppFolgStatus3mnd == 1, KomplinfekOverfl3mnd %in% 0:1
-# TittelUt <- 'Overfladisk infeksjon, 3 mnd.'
-#Utvalg, bakre tilgang: OprMetodeTilgangBakre==1
-#Variable: OppFolgStatus3mnd, KomplinfekOverfl3mnd, OprMetodeTilgangBakre,
-variable <- c('ReshId', 'SykehusNavn', 'ErMann', 'Aar', 'KomplinfekOverfl3mnd')
+#    OppFolgStatus3mnd == 1, KomplinfekDyp3mnd eller KomplinfekOverfl3mnd %in% 0:1
+#    tittel <- 'Komplikasjoner (totalt) 3 mnd. etter operasjon'
+#valgtVar = Komplinfek
+ind <- intersect(which(RegData$OppFolgStatus3mnd == 1),
+  union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1)))
+RegData <- RegData[ind, ]
+RegData$KomplInfek <- 0
+RegData$KomplInfek[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
+variable <- c('ReshId', 'SykehusNavn', 'Aar', 'KomplInfek')
+write.table(RegData[ ,variable], file='A:/ind3_Sårinfeksjon_Nakke.csv', sep=';', row.names = F)
 
-ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangBakre==1)
-             & (RegData$KomplinfekOverfl3mnd %in% 0:1))
-write.table(RegData[ind,variable], file='A:/NakkeTilOffInfOverfl.csv', sep=';', row.names = F)
+#--------Nøkkeltall, Resultatportalen
+rm(list=ls())
+library(Nakke)
+#NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
+load('A:/Nakke/NakkeAarsrapp2018.Rdata')
+RegData <- NakkePreprosess(NakkeData)
+NakkeData <- RegData[RegData$Aar>=2014,]
 
-#Andre variable: ErMann, ShNavn, ReshId, Aar
+# Antall sykehusavdelinger	?	9
+# Antall operasjoner 2018	5302	1091
+# Andel som svarer på oppfølging 3 og 12 mnd.
+# Andel >70 år	27%	6%
+# Gjennomsnittsalder	57	52
+# Andel kvinner operert	47,5%	44%
+# Fornøyd med behandlingen de fikk på sykehuset 3 mnd. etter kirurgi	91%	91%
+# Suksess: «helt restituert» etter «mye bedre» 3 mnd. etter kirurgi	65%	61%* (Fremre nakkekirurgi)
+# Andel som angir at de er verre 3 mnd. etter kirurgi	3%	3%* (Fremre nakkekirurgi)
 
-#Ett datasett for alle
-variable <- c('ReshId', 'SykehusNavn', 'ErMann', 'Aar', 'OprIndikMyelopati',
-    'OprMetodeTilgangBakre', 'OprMetodeTilgangFremre', 'KomplinfekOverfl3mnd',
-    'KomplSvelging3mnd', 'KomplStemme3mnd')
-# Kanskje: 'OprDato',
+antSh <- colSums(table(as.character(NakkeData$ShNavn),NakkeData$Aar)>0)
+antOp <- table(NakkeData$Aar)
+andelSvart3mnd <- tapply(NakkeData$OppFolgStatus3mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
+andelSvart12mnd <- tapply(NakkeData$OppFolgStatus12mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
+NakkeData$over70 <- 0
+NakkeData$over70[NakkeData$Alder>=70] <- 1
+andel70aar <- tapply(NakkeData$over70,NakkeData$Aar, FUN='mean', na.rm=T)
+alderGjsn <- tapply(NakkeData$Alder,NakkeData$Aar, FUN='mean', na.rm=T)
+alderMedian <- tapply(NakkeData$Alder,NakkeData$Aar, FUN='median', na.rm=T)
+andelKvinner <- 1-tapply(NakkeData$ErMann,NakkeData$Aar, FUN='mean', na.rm=T)
 
-ind <- which(RegData$OppFolgStatus3mnd==1)
-write.table(RegData[ind,variable], file='A:/NakkeTilOff.csv', sep=';', row.names = F)
+#datoTil <- min(datoTil, as.character(Sys.Date()-100))
+#Fornøydhet
+NakkeData$Fornoyd <- 0
+NakkeDataForn <- NakkeData[intersect(which(NakkeData$OppFolgStatus3mnd==1), which(NakkeData$FornoydBeh3mnd %in% 1:5)),
+                         c('FornoydBeh3mnd', 'Fornoyd', 'Aar')]
+NakkeDataForn$Fornoyd[NakkeDataForn$FornoydBeh3mnd %in% 1:2] <- 1
+andelFornoyd <- tapply(NakkeDataForn$Fornoyd, NakkeDataForn$Aar, FUN='mean', na.rm=T)
+
+andelForn <- function(Data, ktr=1){
+  Data$Variabel <- 0
+  Data$Utfylt <- switch(ktr, Data$OppFolgStatus3mnd, Data$OppFolgStatus12mnd)
+  Data$Fornoyd <- switch(ktr, Data$FornoydBeh3mnd, Data$FornoydBeh12mnd)
+  ind <- intersect(which(Data$Utfylt==1), which(Data$Fornoyd %in% 1:5))
+  DataDum <- Data[ind, c('Fornoyd', 'Variabel', 'Aar')]
+  DataDum$Variabel[DataDum$Fornoyd %in% 1:2] <- 1
+  andelFornoyd <- tapply(DataDum$Variabel, DataDum$Aar, FUN='mean', na.rm=T)
+}
+andelForn3mnd <- andelForn(NakkeData,ktr = 1)
+andelForn12mnd <- andelForn(NakkeData,ktr = 2)
+
+#Betydelig endring
+andelEndring <- function(Data, ktr=2){
+  Data$Bedre <- 0
+  Data$Verre <- 0
+  Data$Utfylt <- switch(ktr, Data$OppFolgStatus3mnd, Data$OppFolgStatus12mnd)
+  Data$NytteOpr <- switch(ktr, Data$NytteOpr3mnd, Data$NytteOpr12mnd)
+  DataEndring <-  Data[intersect(intersect(which(Data$Utfylt==1),
+                                           which(Data$NytteOpr %in% 1:7)),
+                                 which(Data$OprMetodeTilgangFremre==1)),
+                       c('NytteOpr', 'Bedre', 'Verre','Aar')]
+  DataEndring$Bedre[DataEndring$NytteOpr %in% 1:2] <- 1
+  DataEndring$Verre[DataEndring$NytteOpr %in% 6:7] <- 1
+
+  andelSuksess <- tapply(DataEndring$Bedre, DataEndring$Aar, FUN='mean', na.rm=T)
+  andelVerre <- tapply(DataEndring$Verre, DataEndring$Aar, FUN='mean', na.rm=T)
+  return(list('Suksess'= andelSuksess,  'Verre' = andelVerre))
+}
+endring <- andelEndring(NakkeData, ktr=1)
+andelSuksess3mnd <- andelEndring(NakkeData, ktr=1)$Suksess
+andelSuksess12mnd <- andelEndring(NakkeData, ktr=2)$Suksess
+andelVerre3mnd <- andelEndring(NakkeData, ktr=1)$Verre
+andelVerre12mnd <- andelEndring(NakkeData, ktr=2)$Verre
 
 
+
+NokkeltallNakke <- rbind(
+  'Antall avdelinger' = antSh,
+  'Antall operasjoner' = antOp,
+  'Svart på oppfølging, 3 mnd.' = andelSvart3mnd,
+  'Svart på oppfølging, 12 mnd.' = andelSvart12mnd,
+  'Andel over 70 år'	= andel70aar,
+  'Gjennomsnittsalder' = alderGjsn,
+  #   'Medianalder' = alderMedian,
+  'Andel kvinner' = andelKvinner,
+  'Fornøyd med behandlingen, 3 mnd. etter' = andelForn3mnd,
+  'Fornøyd med behandlingen, 12 mnd. etter' = andelForn12mnd,
+  'Helt restituert/mye bedre, 3 mnd. etter fremre kir.' = andelSuksess3mnd,
+  'Helt restituert/mye bedre, 12 mnd. etter fremre kir.' = andelSuksess12mnd,
+  'Verre 3 mnd. etter fremre kir.' = andelVerre3mnd,
+  'Verre 12 mnd. etter fremre kir.' = andelVerre12mnd
+)
+tabNokkeltallNakke <- cbind(row.names(NokkeltallNakke),NokkeltallNakke)
+tabNokkeltallNakke[ ,c('2017','2018')]
+write.table(tabNokkeltallNakke, file = 'A:/Resultatportalen/NokkeltallNakke.csv', row.names=F, sep=';', fileEncoding = 'UTF-8' )
+
+
+
+#------------------ Data til NPR, Dekningsgradsanalyse
+'SELECT ForlopsID, Alder, Kjonn, Organisasjon, AvdRESH, SykehusNavn,
+OprDato, OprKode, InngrepType, Dagkirurgi
+FROM AlleVarNum
+WHERE (OprDato >= '2017-01-01' AND OprDato <= '2017-12-31')'
+variable <- c('ForlopsID', 'Alder', 'FodselsDato', 'Kjonn',
+              'AvdRESH', 'Avdeling', 'OprDato', 'OprKode', 'InngrepType', 'Dagkirurgi')
+Har ikke: RHF_RESH, RHF, ORG_RESH, Organisasjon,ORG_RESH
+Endret: AVD_RESH -> AvdRESH, Avdeling->SykehusNavn,
+
+NakkeNPR2017data <- read.table('A:/Nakke/NakkeNPR2017data.csv', sep=';', header=T, encoding = 'UTF-8', stringsAsFactors = FALSE)  # na.strings = "NULL",
+NakkeNPR2017data$OprDato <- as.Date(NakkeNPR2017data$OprDato, format='%Y-%m-%d')
+NakkeNPR2017data$FodselsDato <- as.Date(NakkeNPR2017data$FodselsDato, format='%Y-%m-%d')
+write.table(NakkeNPR2017data, file="A:/Nakke/NakkeNPR2017data.csv", sep=';')
+
+NakkeNPR2017data <- read.table('A:/Nakke/NakkeNPR2017persnr.csv', sep=';', header=T, encoding = 'UTF-8', stringsAsFactors = FALSE)  # na.strings = "NULL",
 
 
 #------------------------------ Shiny --------------------------
@@ -364,17 +466,11 @@ library(shinyapps)
 ??shinyappsProxies
 ?shinyappsOptions
 #Publisere:
-httr::set_config(httr::use_proxy(url="http://www-proxy.helsenord.no", port=8080))
-httr::set_config(httr::use_proxy(url="http://flex-proxy.nhn.no", port=8080))
-Sys.setenv(http_proxy="http://www-proxy.helsenord.no:8080")
-#httr::set_config(use_proxy(url="18.91.12.23", port=8080))
-options(RCurlOptions = list(proxy = "http://www-proxy.helsenord.no:8080"))
-options(shinyapps.http = "rcurl")
-
+- Sette proxy
 
 library(rsconnect)
 rsconnect::setAccountInfo(name='lenatest',
-                          token='00581594B2D659880FFB21E82C8ED3A3',
-                          secret='lvlAX2DFawjnMtrr0nFxANa7ARaRDOE2AROkYU+C')
+                          token='..',
+                          secret='..')
 rsconnect::deployApp('C:/ResultattjenesteGIT/Nakke/inst/shinyApps')
 #options(rpubs.upload.method = "internal")

@@ -6,6 +6,7 @@
 #'
 #'
 #' @inheritParams NakkeFigAndeler
+#' @inheritParams NakkeUtvalgEnh
 #' @param Ngrense Minste antall registreringer for at ei gruppe skal bli vist
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling
@@ -51,14 +52,14 @@
 FigAndelerGrVarAar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31', enhetsUtvalg=0,
                             minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, Ngrense=10,
                             grVar='ShNavn', ktr=0, aar=0, tidlAar=0, tidsenhet='aar',
-                            hentData=0, preprosess=TRUE, tittel=1, outfile='') {
+                            hentData=0, preprosess=0, tittel=1, outfile='') {
 
      if (hentData == 1) {
           RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
      }
 
      # Preprosessere data
-     if (preprosess){
+     if (preprosess==1){
           RegData <- NakkePreprosess(RegData=RegData)
      }
 
@@ -208,7 +209,7 @@ smltxt <- NakkeUtvalg$smltxt
       #-----------Figur---------------------------------------
       # Lager ikke figur hvis ALLE N er mindre enn grensa eller hvis ugyldig parameterkombinasjon.
       if 	( max(Ngr) < Ngrense) {
-            FigTypUt <- rapbase::figtype(outfile)
+            FigTypUt <- rapFigurer::figtype(outfile)
             farger <- FigTypUt$farger
             plot.new()
             if (dim(RegData)[1]>0) {
@@ -226,7 +227,7 @@ smltxt <- NakkeUtvalg$smltxt
             #----------- Figurparametre ------------------------------
             cexShNavn <- 1 #0.85
             hoyde <- ifelse(grVar=='BoHF', 3*600, 3*800)
-            FigTypUt <- rapbase::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
+            FigTypUt <- rapFigurer::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
             farger <- FigTypUt$farger
             soyleFarger <- farger[4] #rep(farger[3], AntGrNgr)
             prikkFarge <- farger[3]
@@ -291,7 +292,8 @@ smltxt <- NakkeUtvalg$smltxt
                  las=1, cex=0.8, adj=0, col=farger[1])	#Andeler, hvert sykehus
 
             #Tekst som angir hvilket utvalg som er gjort
-            mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+            mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
+            #            mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
 
 
             par('fig'=c(0, 1, 0, 1))

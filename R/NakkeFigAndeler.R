@@ -11,12 +11,7 @@
 #'					1: kjør
 #' @param preprosess Skal data preprosesseres, dvs. gjøre standard omregning av variable og beregne nye.
 #'						TRUE (standard) / FALSE
-#' @param datoFra Operasjonsdato, fra og med. Standard: '2012-01-01'
-#' @param datoTil Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)
-#' @param minald Alder, fra og med
-#' @param maxald Alder, til og med
-#' @param erMann Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge
-#' @param enhetsUtvalg Sammenlikning eller ikke: 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet
+#' @inheritParams NakkeUtvalgEnh
 #' @param valgtVar Variabelen det skal vises resultat for.
 #'             Alder: Aldersfordeling
 #'             AntallNivaaOpr: Antall nivå operert
@@ -50,22 +45,28 @@
 #'             Utdanning: Utdanningsnivå
 #'
 #' Detajer...:
+#' @inheritParams NakkeUtvalgEnh
 #'
 #' @return En figur med søylediagram (fordeling) av ønsket variabel
 #'
 #' @export
 
-NakkeFigAndeler  <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31',
-		minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, outfile='',
-		hentData=0, preprosess=TRUE, reshID=0, enhetsUtvalg=0)
+NakkeFigAndeler  <- function(RegData=0, valgtVar='Alder', erMann='',
+                             datoFra='2012-01-01', datoTil='3000-12-31',
+                             minald=0, maxald=110, myelopati=99, fremBak=0, outfile='',
+                             hentData=0, preprosess=0, reshID=0, enhetsUtvalg=0, ...)
 {
+
+  if ("session" %in% names(list(...))) {
+    raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndeler: ',valgtVar))
+  }
 
 	if (hentData == 1) {
 		RegData <- NakkeRegDataSQL(datoFra=datoFra, datoTil=datoTil)
 	  }
 
 # Preprosessere data
-     if (preprosess){
+     if (preprosess==1){
        RegData <- NakkePreprosess(RegData=RegData)
      }
 
@@ -162,12 +163,30 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
       txtpst <- paste0(' (', sprintf(antDesTxt, AggVerdier$Hoved), '%)')
       grtxtpst <- paste0(rev(grtxt),  rev(txtpst))   #sprintf("%.3f", pi)
 
-#SKILLE UT FIGURDELEN SOM EGEN FUNKSJON???????
+      FigDataParam <- list(AggVerdier=AggVerdier,
+                           N=Nfig,
+                           Ngr=Nfig,
+                           Nvar=Ngr,
+                           #KImaal <- NIRVarSpes$KImaal,
+                           #grtxt2=grtxt2,
+                           grtxt=grtxt,
+                           #grTypeTxt=grTypeTxt,
+                           tittel=tittel,
+                           retn=retn,
+                           #subtxt=subtxt,
+                           yAkseTxt=yAkseTxt,
+                           utvalgTxt=utvalgTxt,
+                           fargepalett=NakkeUtvalg$fargepalett,
+                           medSml=medSml,
+                           hovedgrTxt=hovedgrTxt,
+                           smltxt=smltxt)
+
+
 #-----------Figur---------------------------------------
 #Hvis for få observasjoner..
 #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & egenavd==1)) {
 if ( Nfig$Hoved %in% 1:5 | 	(NakkeUtvalg$medSml ==1 & Nfig$Rest<10)) {	#(valgtVar=='Underkat' & all(hovedkat != c(1,2,5,7))) |
-FigTypUt <- figtype(outfile)
+FigTypUt <- rapFigurer::figtype(outfile)
 farger <- FigTypUt$farger
 	plot.new()
 	title(tittel)	#, line=-6)
@@ -183,10 +202,10 @@ cexgr <- 1	#Kan endres for enkeltvariable
 
 
 #Plottspesifikke parametre:
-FigTypUt <- figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
+FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
 #Tilpasse marger for å kunne skrive utvalgsteksten
 vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.7))
-par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
+par('fig'=c(vmarg, 1, 0, 1-0.025*(NutvTxt-1)))	#Har alltid datoutvalg med
 
 farger <- FigTypUt$farger
 fargeHoved <- farger[1]
@@ -239,23 +258,23 @@ if (NakkeUtvalg$medSml == 1) {
 	}
 }
 
-title(tittel, line=1, font.main=1)
+title(tittel, line=1, font.main=1, cex.main=1.3)
 
 #Tekst som angir hvilket utvalg som er gjort
-mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
 
 par('fig'=c(0, 1, 0, 1))
 if ( outfile != '') {dev.off()}
 }
 
 #Beregninger som returneres fra funksjonen.
-AggVerdierUt <- rbind(AggVerdier$Hoved, AggVerdier$Rest)
-rownames(AggVerdierUt) <- c('Hoved', 'Rest')
-AntallUt <- rbind(N$Hoved, N$Rest)
-rownames(AntallUt) <- c('Hoved', 'Rest')
-
-UtData <- list(paste0(toString(tittel),'.'), AggVerdierUt, AntallUt, grtxt )
-names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
-return(invisible(UtData))
+# AggVerdierUt <- rbind(AggVerdier$Hoved, AggVerdier$Rest)
+# rownames(AggVerdierUt) <- c('Hoved', 'Rest')
+# AntallUt <- rbind(N$Hoved, N$Rest)
+# rownames(AntallUt) <- c('Hoved', 'Rest')
+#
+# UtData <- list(paste0(toString(tittel),'.'), AggVerdierUt, AntallUt, grtxt )
+# names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
+return(invisible(FigDataParam))
 
 }

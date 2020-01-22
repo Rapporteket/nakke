@@ -4,11 +4,28 @@
 \alias{FigAndelerGrVarAar}
 \title{Søylediagram med andeler for hver grupperingsenhet (sykehus, RHF, ...)}
 \usage{
-FigAndelerGrVarAar(RegData, valgtVar, datoFra = "2012-01-01",
-  datoTil = "3000-12-31", enhetsUtvalg = 0, minald = 0, maxald = 130,
-  erMann = "", myelopati = 99, fremBak = 0, Ngrense = 10,
-  grVar = "ShNavn", ktr = 0, aar = 0, tidlAar = 0, tidsenhet = "aar",
-  hentData = 0, preprosess = TRUE, tittel = 1, outfile = "")
+FigAndelerGrVarAar(
+  RegData,
+  valgtVar,
+  datoFra = "2012-01-01",
+  datoTil = "3000-12-31",
+  enhetsUtvalg = 0,
+  minald = 0,
+  maxald = 130,
+  erMann = "",
+  myelopati = 99,
+  fremBak = 0,
+  Ngrense = 10,
+  grVar = "ShNavn",
+  ktr = 0,
+  aar = 0,
+  tidlAar = 0,
+  tidsenhet = "aar",
+  hentData = 0,
+  preprosess = 0,
+  tittel = 1,
+  outfile = ""
+)
 }
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
@@ -61,6 +78,10 @@ Utdanning: Andel høyskole-/universitetsutdannede}
 \item{maxald}{Alder, til og med}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
+
+\item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
+
+\item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
 
 \item{Ngrense}{Minste antall registreringer for at ei gruppe skal bli vist}
 
