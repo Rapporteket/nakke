@@ -147,9 +147,32 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                       choices = c("Ferdigstilt"=1,
                                                   "Kladd (/oppf.skjema ikke besvart)"=0,
                                                   "Åpen"=-1)
-                          )
+                          )),
+                        br(),
+                        br(),
+                        h4('Nedlasting av data til Resultatportalen:'),
 
-                        )
+                        selectInput(inputId = "valgtVarRes", label="Velg variabel",
+                                    choices = c('Lite beinsmerte før operasjon' = 'beinsmLavPre',
+                                                'Durarift' = 'peropKompDura',
+                                                'Utstrålende smerter i mer enn ett år' = 'sympVarighUtstr')
+                        ),
+                        selectInput(inputId = 'hastegradRes', label='Operasjonskategori (hastegrad)',
+                                    choices = hastegradvalg
+                        ),
+                        selectInput(inputId = 'tidlOpRes', label='Tidligere operert? VIRKER IKKE. MANGLER VARIABEL',
+                                    choices = tidlOprvalg
+                        ),
+                        # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
+                        #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
+                        #                ),
+                        sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
+                                    max = as.numeric(year(idag)), value = c(2018, year(idag), step=1, sep="")
+                        ),
+                        br(),
+                        downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data'),
+
+
                         # sidebarPanel( width = 3,
                         #               #side(column(width = 3, #Første kolonne. Alternativ til sidebarLayout(sidebarPanel())
                         #               dateInput(inputId = 'datoTil', value = Sys.Date(), min = '2012-01-01',
@@ -649,6 +672,20 @@ server <- function(input, output,session) {
     , height=700, width=600 #height=600, width=500
   )
 
+
+  #-----------Registeradministrasjon-----------
+
+  if (rolle=='SC') {
+    observe({
+      tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtVar = input$valgtVarRes,
+                                          aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
+                                          hastegrad = input$hastegradRes, tidlOp = input$tidlOpRes)
+
+      output$lastNed_dataTilResPort <- downloadHandler(
+        filename = function(){'dataTilResPort.csv'},
+        content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = T, na = '')})
+    })
+  }
 #-----------Fordelinger---------------------
   output$fordelinger <- renderPlot({
     NakkeFigAndeler(RegData=RegData,  valgtVar=input$valgtVar,

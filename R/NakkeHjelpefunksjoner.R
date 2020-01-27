@@ -76,7 +76,33 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 }
 
 
-#' Funksjon som produserer rapporten som skal sendes til mottager.
+
+
+#' Generere data til Resultatportalen
+#'
+#' @param filUt tilnavn for utdatatabell (fjern?)
+#' @param valgtVar - beinsmLavPre, peropKompDura, sympVarighUtstr
+#' @inheritParams NakkeFigAndeler
+#' @inheritParams NakkeUtvalgEnh
+#' @return Datafil til Resultatportalen
+#' @export
+
+dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2011-01-01', aar=0,
+                           hovedkat=99, hastegrad=99, tidlOp='', filUt='dummy'){
+
+  filUt <- paste0('NakkeTilRes', ifelse(filUt=='dummy',  valgtVar, filUt), '.csv')
+  NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
+  NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar, hastegrad = hastegrad, tidlOp=tidlOp) #datoFra = datoFra) #, hovedkat=hovedkat) # #, datoTil=datoTil)
+  RegData <- NakkeUtvalg$RegData
+  NakkeTilResvalgtVar <- RegData[,c('Aar', "ShNavn", "ReshId", "Variabel")]
+  info <- c(NakkeVarSpes$tittel, NakkeUtvalg$utvalgTxt)
+  NakkeTilResvalgtVar$info <- c(info, rep(NA, dim(NakkeTilResvalgtVar)[1]-length(info)))
+  #write.table(NakkeTilResvalgtVar, file = paste0('A:/Resultatportalen/', filUt), sep = ';', row.names = F) #, fileEncoding = 'UTF-8')
+  return(invisible(NakkeTilResvalgtVar))
+}
+
+
+#' Funksjon som produserer rapporten som skal lastes ned av mottager.
 #'
 #' @param rnwFil Navn på fila som skal kjøres. Angis uten ending, dvs. (\emph{ uten ".Rnw"})
 #' @param reshID Brukerens reshid
