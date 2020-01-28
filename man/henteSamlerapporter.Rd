@@ -2,7 +2,7 @@
 % Please edit documentation in R/NakkeHjelpefunksjoner.R
 \name{henteSamlerapporter}
 \alias{henteSamlerapporter}
-\title{Funksjon som produserer rapporten som skal sendes til mottager.}
+\title{Funksjon som produserer rapporten som skal lastes ned av mottager.}
 \usage{
 henteSamlerapporter(
   filnavn,
@@ -27,5 +27,5 @@ henteSamlerapporter(
 Filsti til pdf-rapporten.
 }
 \description{
-Funksjon som produserer rapporten som skal sendes til mottager.
+Funksjon som produserer rapporten som skal lastes ned av mottager.
 }

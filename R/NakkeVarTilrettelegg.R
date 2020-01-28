@@ -370,7 +370,8 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
     #Kode 0,1: Nei, Ja +tomme
     RegData <- RegData[which(RegData$OppFolgStatus3mnd == 1) %i%
                          which(RegData$KomplStemme3mnd %in% 0:1) %i%
-                         which(RegData$OprMetodeTilgangFremre==1), ]
+                         which(RegData$OprMetodeTilgangFremre==1) # %i%which(RegData$OprIndikMyelopati==0)
+                       , ]
     RegData$Variabel <- RegData[ ,valgtVar]
     varTxt <- 'med stemmevansker'
     tittel <- 'Stemmevansker, fremre tilgang, 3 mnd.'

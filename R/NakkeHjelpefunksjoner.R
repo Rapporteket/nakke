@@ -87,14 +87,17 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 #' @return Datafil til Resultatportalen
 #' @export
 
-dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2011-01-01', aar=0,
-                           hovedkat=99, hastegrad=99, tidlOp='', filUt='dummy'){
+dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', aar=0,
+                           myelopati=99, fremBak=0, filUt='dummy'){ #hovedkat=99,
+
+  if (valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd')) {myelopati <- 0}
 
   filUt <- paste0('NakkeTilRes', ifelse(filUt=='dummy',  valgtVar, filUt), '.csv')
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
-  NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar, hastegrad = hastegrad, tidlOp=tidlOp) #datoFra = datoFra) #, hovedkat=hovedkat) # #, datoTil=datoTil)
-  RegData <- NakkeUtvalg$RegData
-  NakkeTilResvalgtVar <- RegData[,c('Aar', "ShNavn", "ReshId", "Variabel")]
+  NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar, datoFra = datoFra,
+                                myelopati=myelopati, fremBak=fremBak) #, hovedkat=hovedkat) # #, datoTil=datoTil)
+  #RegData <- NakkeUtvalg$RegData
+  NakkeTilResvalgtVar <- NakkeUtvalg$RegData[ ,c('Aar', "ShNavn", "ReshId", "Variabel")]
   info <- c(NakkeVarSpes$tittel, NakkeUtvalg$utvalgTxt)
   NakkeTilResvalgtVar$info <- c(info, rep(NA, dim(NakkeTilResvalgtVar)[1]-length(info)))
   #write.table(NakkeTilResvalgtVar, file = paste0('A:/Resultatportalen/', filUt), sep = ';', row.names = F) #, fileEncoding = 'UTF-8')

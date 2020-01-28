@@ -58,7 +58,8 @@ enhetsUtvalg <- c("Egen mot resten av landet"=1,
                   "Egen enhet"=2)
 tidsenhetValg <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
                        'Kvartal'='Kvartal', 'Måned'='Mnd'))
-
+myelopatiValg <- c("Ikke valgt"=2, "Ja"=1, "Nei"=0)
+fremBakValg <- c("Alle"=0, "Fremre"=1, "Bakre"=2)
 
 #----Define UI for application------
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
@@ -68,6 +69,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   theme = "rap/bootstrap.css",
 
   # Application title #titlePanel("Testing testing, Nakke"),
+
+
 
 
   #------------ Viktigste resultater-----------------
@@ -126,6 +129,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   ), #tab
 
+
   #------------- Tabeller (vise antall)--------------------
 
   tabPanel(p('Registreringsoversikter',title="Tabeller med registreringsoversikter"),
@@ -148,31 +152,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                   "Kladd (/oppf.skjema ikke besvart)"=0,
                                                   "Åpen"=-1)
                           )),
-                        br(),
-                        br(),
-                        h4('Nedlasting av data til Resultatportalen:'),
-
-                        selectInput(inputId = "valgtVarRes", label="Velg variabel",
-                                    choices = c('Lite beinsmerte før operasjon' = 'beinsmLavPre',
-                                                'Durarift' = 'peropKompDura',
-                                                'Utstrålende smerter i mer enn ett år' = 'sympVarighUtstr')
-                        ),
-                        selectInput(inputId = 'hastegradRes', label='Operasjonskategori (hastegrad)',
-                                    choices = hastegradvalg
-                        ),
-                        selectInput(inputId = 'tidlOpRes', label='Tidligere operert? VIRKER IKKE. MANGLER VARIABEL',
-                                    choices = tidlOprvalg
-                        ),
-                        # dateRangeInput(inputId = 'aarRes', start = startDato, end = Sys.Date(),
-                        #                label = "Operasjonaår", separator="t.o.m.", language="nb", format = 'yyyy'
-                        #                ),
-                        sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2016),
-                                    max = as.numeric(year(idag)), value = c(2018, year(idag), step=1, sep="")
-                        ),
-                        br(),
-                        downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data'),
-
-
+                        br()
                         # sidebarPanel( width = 3,
                         #               #side(column(width = 3, #Første kolonne. Alternativ til sidebarLayout(sidebarPanel())
                         #               dateInput(inputId = 'datoTil', value = Sys.Date(), min = '2012-01-01',
@@ -213,7 +193,36 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                            # tableOutput("tabAvdSkjema12"))
              )))
            ), #tab
+  #------Registeradministrasjon-----------------------
+  tabPanel(p('Registeradministrasjon', title="Verktøy for SC-bruker"),
+           sidebarPanel(width=4,
+                        h4('Nedlasting av data til Resultatportalen:'),
 
+                        selectInput(inputId = "valgtVarRes", label="Velg variabel",
+                                    choices = c('Stemmevansker u/myelopati, 3 mnd.' = 'KomplStemme3mnd',
+                                                'Svelgvansker, 3 mnd.' = 'KomplSvelging3mnd',
+                                                'Infeksjon, 3 mnd.' = 'Komplinfek')
+                        ),
+                        selectInput(inputId = 'myelopatiRes', label='Myelopati',
+                                    choices = myelopatiValg
+                        ),
+                        selectInput(inputId = 'fremBakRes', label='Tilgang',
+                                    choices = fremBakValg
+                        ),
+                        sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2014),
+                                    max = as.numeric(year(idag)), value = c(2014, year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
+                        ),
+                        # sliderInput("years", "Years",
+                        #             min(gapminder$year), max(gapminder$year),
+                           #         value = c(1977, 2002))
+                        br(),
+                        downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data')
+
+
+  ),
+
+  mainPanel('Her er det fritt fram å komme med ønsker')
+  ),
 #------------- Fordelingsfigurer--------------------
 
  tabPanel(p("Fordelinger", title='Her finner du resultater for: Alder, antibiotika, arbeidsstatus, BMI, erstatning, fornøydhet, komorbiditet,
@@ -265,9 +274,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                   max = 110, value = c(0, 110)
                       ),
                       selectInput(inputId = "myelopati", label="Myelopati",
-                                  choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
+                                  choices = myelopatiValg),
                       selectInput(inputId = "fremBak", label="Tilgang ",
-                                  choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+                                  choices = fremBakValg),
                       selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
                                   choices = enhetsUtvalg
                       )
@@ -679,10 +688,24 @@ server <- function(input, output,session) {
     observe({
       tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtVar = input$valgtVarRes,
                                           aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
-                                          hastegrad = input$hastegradRes, tidlOp = input$tidlOpRes)
+                                          myelopati=input$myelopatiRes, fremBak = input$fremBakRes)
+      tab <- dataTilResPort(RegData=RegData, valgtVar = 'Komplinfek', aar=2015:2018)
+      # ReshId=OrgID
+      # 114288=4000020              Stavanger USH
+      # 109820=974589095           OUS, Ullevål USH
+      # 105783=974749025        Trondheim, St. Olav
+      # 103469=874716782                  OUS, RH
+      # 601161=974795787                Tromsø, UNN
+      # 999920=913705440    Oslofjordklinikken Vest
+      # 105588=974557746              Haukeland USH
+      # 999998=999998        Oslofjordklinikken
+      # 110771=973129856                     Volvat
+      # 4212372=4212372      Aleris Colosseum Oslo
+      # 4211880=999999003             Aleris Nesttun
+      # 4211879=813381192 Aleris Colosseum Stavanger
 
       output$lastNed_dataTilResPort <- downloadHandler(
-        filename = function(){'dataTilResPort.csv'},
+        filename = function(){paste0('dataTilResPort_',input$valgtVar, '.csv')},
         content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = T, na = '')})
     })
   }
