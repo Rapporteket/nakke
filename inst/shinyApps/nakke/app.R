@@ -93,12 +93,14 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         selectInput(inputId = "valgtVarKvalInd", label="Velg variabel",
                                     choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
                                                 'Komplikasjon, svelging' = 'KomplSvelging3mnd',
-                                                'Komplikasjon, sårinfeksjon' = 'Komplinfek')),
+                                                'Komplikasjon, sårinfeksjon' = 'Komplinfek',
+                                                'NDI-endr >35%' = 'NDIendr3mnd35pstKI')),
                         dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = datoFra),
                         # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
                         #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
                         # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
                         #             choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+                        #if (input$valgtVarKvalInd == 'NDIendr12mnd35pstKI'){...}
                         br(),
                         helpText('Følgende valg gjelder bare tidsfigur:'),
                         selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
@@ -201,14 +203,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         selectInput(inputId = "valgtVarRes", label="Velg variabel",
                                     choices = c('Stemmevansker u/myelopati, 3 mnd.' = 'KomplStemme3mnd',
                                                 'Svelgvansker, 3 mnd.' = 'KomplSvelging3mnd',
-                                                'Infeksjon, 3 mnd.' = 'Komplinfek')
+                                                'Infeksjon, 3 mnd.' = 'Komplinfek',
+                                                'NDI-endring 12mnd > 35%' = 'NDIendr12mnd35pst')
                         ),
-                        selectInput(inputId = 'myelopatiRes', label='Myelopati',
-                                    choices = myelopatiValg
-                        ),
-                        selectInput(inputId = 'fremBakRes', label='Tilgang',
-                                    choices = fremBakValg
-                        ),
+                        # selectInput(inputId = 'myelopatiRes', label='Myelopati',
+                        #             choices = myelopatiValg
+                        # ),
+                        # selectInput(inputId = 'fremBakRes', label='Tilgang',
+                        #             choices = fremBakValg
+                        # ),
                         sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2014),
                                     max = as.numeric(year(idag)), value = c(2014, year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
                         ),
@@ -326,7 +329,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
                                      'Misfornøyd med behandlinga, 3 mnd.' = 'Misfor3mnd',
                                      'Misfornøyd med behandlinga, 12 mnd.' = 'Misfor12mnd',
-                                     'NDIendring over 30%, 12 mnd. etter' = 'NDIendr12mnd30pst',
+                                     'NDIendring over 35%, 12 mnd. etter' = 'NDIendr12mnd35pst',
                                      'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
                                      'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
                                      'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
@@ -687,25 +690,13 @@ server <- function(input, output,session) {
   if (rolle=='SC') {
     observe({
       tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtVar = input$valgtVarRes,
-                                          aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
-                                          myelopati=input$myelopatiRes, fremBak = input$fremBakRes)
-      tab <- dataTilResPort(RegData=RegData, valgtVar = 'Komplinfek', aar=2015:2018)
-      # ReshId=OrgID
-      # 114288=4000020              Stavanger USH
-      # 109820=974589095           OUS, Ullevål USH
-      # 105783=974749025        Trondheim, St. Olav
-      # 103469=874716782                  OUS, RH
-      # 601161=974795787                Tromsø, UNN
-      # 999920=913705440    Oslofjordklinikken Vest
-      # 105588=974557746              Haukeland USH
-      # 999998=999998        Oslofjordklinikken
-      # 110771=973129856                     Volvat
-      # 4212372=4212372      Aleris Colosseum Oslo
-      # 4211880=999999003             Aleris Nesttun
-      # 4211879=813381192 Aleris Colosseum Stavanger
+                                          #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
+                                          aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2])
+                                          )
+      #tab <- dataTilResPort(RegData=RegData, valgtVar = 'KomplStemme3mnd', aar=2015:2018)
 
       output$lastNed_dataTilResPort <- downloadHandler(
-        filename = function(){paste0('dataTilResPort_',input$valgtVar, '.csv')},
+        filename = function(){paste0('dataTilResPort_',input$valgtVarRes, '.csv')},
         content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = T, na = '')})
     })
   }
