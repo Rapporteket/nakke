@@ -94,7 +94,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
                                                 'Komplikasjon, svelging' = 'KomplSvelging3mnd',
                                                 'Komplikasjon, sårinfeksjon' = 'Komplinfek',
-                                                'NDI-endr >35%' = 'NDIendr3mnd35pstKI')),
+                                                'NDI-endr >35%' = 'NDIendr12mnd35pstKI')),
                         dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = datoFra),
                         # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
                         #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),

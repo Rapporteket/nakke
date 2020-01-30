@@ -37,7 +37,6 @@ NakkePreprosess <- function(RegData=RegData)
 	# OprMetodeDiskektomi OprMetodeKirDekompresjon OprMetodeAnnenBakreDekompr OprMetodeKorpektomi
 	# OprMetodeAndre OprMetodeBakreFusjon
 
-	attach(RegData)
 	RegData$OpKat <- 0
 	RegData$OpKat[RegData$OprMetodeAndre > 0] <- 6
 
@@ -53,7 +52,6 @@ NakkePreprosess <- function(RegData=RegData)
 	                            & OprMetodeBakreFusjon == 0
 	                            & OprMetodeKorpektomi == 0))
 	RegData$OpKat[ind1] <- 1
-
 
 	ind2 <- with(RegData, which(OpKat == 0
 	                            & (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0)
@@ -73,34 +71,30 @@ RegData$OpKat[ind2] <- 2
 	                                 OprMetodeAnnenBakreDekompr < 1 )
 	                            & OprMetodeBakreFusjon == 0 & OprMetodeKorpektomi == 0))
 RegData$OpKat[ind3] <- 3
-#
-	# RegData$OpKat[OprMetodeKorpektomi == 1] <- 4
-	# DO IF RegData$OpKat == 0  & (OprMetodeDiskektomi == 0 or OprMetodeTilgangFremre == 0)  & OprMetodeBakreFusjon == 1 & (OprMetodeTilgangBakre == 1 or OprMetodeAndre == 0 or BakreFusjonWire == 1 or BakreFusjonSkruer == 1
-	#                                                                                                                    or BakreFusjonStag= 1) & OprMetodeKorpektomi == 0 .
-	# RECODE RegData$OpKat  (0 == 4).
-	#
-	# RegData$OpKat[...] <- 5
-	# DO IF RegData$OpKat == 0  & OprMetodeKorpektomi == 1.
-	# RECODE RegData$OpKat  (0 == 5).
-	#
-	# RegData$OpKat[...] <- 3
-	# OprMetodeKorpektomi == 1 DO IF RegData$OpKat == 0 & (OprMetodeDiskektomi == 1 or OprMetodeTilgangFremre == 1  or OprMetodeDiskektomiCage == 1 or OprMetodeDiskektomiSkiveprotese =1 )
-	# & RtgFunnProlaps == 0.
-	# RECODE RegData$OpKat  (0 == 3).
-	#
-	# RegData$OpKat[...] <- 1
-	# DO IF RegData$OpKat == 0 & (OprMetodeDiskektomi == 1 or OprMetodeTilgangFremre == 1  or OprMetodeDiskektomiCage == 1 or OprMetodeDiskektomiSkiveprotese =1 )
-	# & RtgFunnProlaps == 0.
-	# RECODE RegData$OpKat  (0 == 1).
-	#
-	# RegData$OpKat[RegData$OpKat == 0  & OprMetodeBakreFusjon > 0] <- 4
-	# DO IF RegData$OpKat == 0  & OprMetodeBakreFusjon > 0.
-	# RECODE RegData$OpKat  (0 == 4).
-	#
-	# grtxt <- c('Ikke klassifiserbar operasjon', 'Fremre diketomi for prolaps', 'Bakre dekompresjon',
-	#            'Fremre dekompresjon sp st.uten prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep') #for verdiene 0:6
-	# VARIABLE LABELS RegData$OpKat 'Type operasjon'.
-	# VALUE LABELS	RegData$OpKat
+
+	ind4 <- with(RegData, which(OpKat == 0
+	                            & (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0)
+	                            & OprMetodeBakreFusjon == 1
+	                            & (OprMetodeTilgangBakre == 1 | OprMetodeAndre == 0 | BakreFusjonWire == 1
+	                               | BakreFusjonSkruer == 1 | BakreFusjonStag == 1)
+	                            & OprMetodeKorpektomi == 0))
+	RegData$OpKat[ind4] <- 4 	#DO IF
+
+	RegData$OpKat[RegData$OprMetodeKorpektomi == 1] <- 5
+
+	ind3_2 <- with(RegData, which(OpKat == 0 & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1
+	                                      | OprMetodeDiskektomiCage == 1 | OprMetodeDiskektomiSkiveprotese == 1 )
+	               & RtgFunnProlaps == 0))
+	RegData$OpKat[ind3_2] <- 3
+	ind1_2 <- with(RegData, which(OpKat == 0
+	                              & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1
+	                                 | OprMetodeDiskektomiCage == 1 | OprMetodeDiskektomiSkiveprotese == 1 )
+	                              & RtgFunnProlaps == 0))
+	RegData$OpKat[ind1_2] <- 1
+	RegData$OpKat[RegData$OpKat == 0  & RegData$OprMetodeBakreFusjon > 0] <- 4
+
+	grtxt <- c('Ikke klassifiserbar operasjon', 'Fremre diketomi for prolaps', 'Bakre dekompresjon',
+	           'Fremre dekompresjon sp st.uten prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep') #for verdiene 0:6
 	# 0 'Ikke klassifiserbar operasjon'
 	# 1 'Fremre diketomi for prolaps'
 	# 2 'Bakre dekompresjon'
@@ -108,8 +102,8 @@ RegData$OpKat[ind3] <- 3
 	# 4 'Bakre fusjon'
 	# 5 'Korporektomi'
 	# 6 'Andre inngrep'.
-	#
-	#
+
+
 
 
 
