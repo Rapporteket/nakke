@@ -18,13 +18,20 @@ NakkePreprosess <- function(RegData=RegData)
 	#names(which(names(RegData) == 'ErMann')) <- 'erMann'
 
 	#Riktig datoformat og hoveddato
-	RegData$InnDato <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")
-	RegData$Mnd <- RegData$InnDato$mon +1
-	RegData$MndNum <- RegData$InnDato$mon +1
-	RegData$MndAar <- format(RegData$InnDato, '%b%y')
+	# RegData$InnDato <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")
+	# RegData$Mnd <- RegData$InnDato$mon +1
+	# RegData$MndNum <- RegData$InnDato$mon +1
+	# RegData$MndAar <- format(RegData$InnDato, '%b%y')
+	# RegData$Kvartal <- ceiling(RegData$MndNum/3)
+	# RegData$Halvaar <- ceiling(RegData$MndNum/6)
+	# RegData$Aar <- 1900 + RegData$InnDato$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+
+	RegData$InnDato <- as.Date(RegData$OprDato, format="%Y-%m-%d")
+	RegData$MndNum <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")$mon +1
 	RegData$Kvartal <- ceiling(RegData$MndNum/3)
 	RegData$Halvaar <- ceiling(RegData$MndNum/6)
-	RegData$Aar <- 1900 + RegData$InnDato$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+	RegData$Aar <- 1900 + as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+	RegData$MndAar <- format(RegData$InnDato, '%b%y')
 
 	#Variabel som identifiserer avdelingas resh
 	names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
