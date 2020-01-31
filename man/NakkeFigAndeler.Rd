@@ -10,6 +10,7 @@ NakkeFigAndeler(
   erMann = "",
   datoFra = "2012-01-01",
   datoTil = "3000-12-31",
+  inngrep = 99,
   minald = 0,
   maxald = 110,
   myelopati = 99,
@@ -64,6 +65,10 @@ Detajer...:}
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
+
+\item{inngrep}{Inngrepstype     0-'Ikke klassifiserbar operasjon', 1-'Fremre diketomi for prolaps',
+2-'Bakre dekompresjon', 3-'Fremre dekompresjon sp st.uten prolaps', 4-'Bakre fusjon',
+5-'Korporektomi', 6-'Andre inngrep', 99-alle (standard)}
 
 \item{minald}{Alder, fra og med}
 

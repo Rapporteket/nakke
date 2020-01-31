@@ -100,8 +100,6 @@ RegData$Inngrep[ind3] <- 3
 	RegData$Inngrep[ind1_2] <- 1
 	RegData$Inngrep[RegData$Inngrep == 0  & RegData$OprMetodeBakreFusjon > 0] <- 4
 
-	grtxt <- c('Ikke klassifiserbar operasjon', 'Fremre diketomi for prolaps', 'Bakre dekompresjon',
-	           'Fremre dekompresjon sp st.uten prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep') #for verdiene 0:6
 	# 0 'Ikke klassifiserbar operasjon'
 	# 1 'Fremre diketomi for prolaps'
 	# 2 'Bakre dekompresjon'

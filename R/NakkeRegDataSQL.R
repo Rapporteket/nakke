@@ -48,6 +48,7 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	Erstatning12mnd,
 	Erstatning3mnd,
 	ErstatningPreOp,
+	-- FirstTimeClosed,
 	ForlopsID,
 	FornoydBeh12mnd,
 	FornoydBeh3mnd,

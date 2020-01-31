@@ -54,7 +54,8 @@
 NakkeFigAndeler  <- function(RegData=0, valgtVar='Alder', erMann='',
                              datoFra='2012-01-01', datoTil='3000-12-31', inngrep=99,
                              minald=0, maxald=110, myelopati=99, fremBak=0, outfile='',
-                             hentData=0, preprosess=0, reshID=0, enhetsUtvalg=0, ...)
+                             hentData=0, preprosess=0, reshID=0, enhetsUtvalg=0,
+                             lagFig=1, ...)
 {
 
   if ("session" %in% names(list(...))) {
@@ -89,6 +90,7 @@ flerevar <- NakkeVarSpes$flerevar
 
 
 #------------Gjøre utvalg-------------------------
+NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData)
 NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann,
                               minald=minald, maxald=maxald, inngrep=inngrep,
 		myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg, reshID = reshID)
@@ -181,101 +183,97 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
                            medSml=medSml,
                            hovedgrTxt=hovedgrTxt,
                            smltxt=smltxt)
-
-
-#-----------Figur---------------------------------------
-#Hvis for få observasjoner..
-#if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & egenavd==1)) {
-if ( Nfig$Hoved %in% 1:5 | 	(NakkeUtvalg$medSml ==1 & Nfig$Rest<10)) {	#(valgtVar=='Underkat' & all(hovedkat != c(1,2,5,7))) |
-FigTypUt <- rapFigurer::figtype(outfile)
-farger <- FigTypUt$farger
-	plot.new()
-	title(tittel)	#, line=-6)
-	legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-	text(0.5, 0.6, 'Færre enn 5 registreringer i egen- eller sammenlikningsgruppa', cex=1.2)
-	if ( outfile != '') {dev.off()}
-
-} else {
-
-#-----------Figur---------------------------------------
-#Innparametre: xaksetxt, grtxt, grtxt2, tittel, AggVerdier, utvalgTxt, retn, cexgr
-cexgr <- 1	#Kan endres for enkeltvariable
-
-
-#Plottspesifikke parametre:
-FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
-#Tilpasse marger for å kunne skrive utvalgsteksten
-vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.7))
-par('fig'=c(vmarg, 1, 0, 1-0.025*(NutvTxt-1)))	#Har alltid datoutvalg med
-
-farger <- FigTypUt$farger
-fargeHoved <- farger[1]
-fargeRest <- farger[3]
-antGr <- length(grtxt)
-lwdRest <- 3	#tykkelse på linja som repr. landet
-cexleg <- 1	#Størrelse på legendtekst
-
-#Horisontale søyler
-if (NakkeVarSpes$retn == 'H') {
-	xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
-	xmax <- min(xmax, 100)
-	ymin <- 0.3 #0.5/cexgr^4	#0.05*antGr #Fordi avstand til x-aksen av en eller annen grunn øker når antall sykehus øker
-	ymax <- 0.4+1.25*length(AggVerdier$Hoved) #c(0.3/xkr^4,  0.3+1.25*length(Midt)), 0.2+1.2*length(AggVerdier$Hoved)
-
-	pos <- barplot(rev(as.numeric(AggVerdier$Hoved)), horiz=TRUE, las=1, xlab="Andel pasienter (%)", #beside=TRUE, main=tittel,
-		col=fargeHoved, border='white', font.main=1, xlim=c(0, xmax), ylim=c(ymin,ymax))	#
-    #Intensiv: pos <- rev(barplot(rev(as.numeric(AggVerdier$Hoved)), xlim=c(0,xmax), ylim=c(ymin, ymax), #, plot=FALSE)
-	#				   xlab=xAkseTxt, horiz=T, border=NA, col=fargeHoved)) #, col.axis='white', col='white'))
-	if (Nfig$Hoved>0) {mtext(at=pos+0.05, text=grtxtpst, side=2, las=1, cex=cexgr, adj=1, line=0.25)}
-
-	if (NakkeUtvalg$medSml == 1) {
-		points(as.numeric(rev(AggVerdier$Rest)), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
-		legend('top', c(paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
-						paste0(smltxt, ' (N=', Nfig$Rest,')')),
-			border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2,
-			lwd=lwdRest,	lty=NA, ncol=1, cex=cexleg)
-		} else {
-		legend('top', paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
-			border=NA, fill=fargeHoved, bty='n', ncol=1, cex=cexleg)
-		}
-}
-
-if (NakkeVarSpes$retn == 'V' ) {
-#Vertikale søyler eller linje
-	ymax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
-	pos <- barplot(as.numeric(AggVerdier$Hoved), beside=TRUE, las=1, ylab="Andel pasienter (%)",
-		xlab=xaksetxt, col=fargeHoved, border='white', ylim=c(0, ymax))	#sub=xaksetxt,
-	#if (length(grtxt2) == 1) {grtxt2 <- txtpst}
-	mtext(at=pos, grtxt, side=1, las=1, cex=cexgr, adj=0.5, line=0.5)
-	mtext(at=pos, txtpst, side=1, las=1, cex=0.9*cexgr, adj=0.5, line=1.5)
-if (NakkeUtvalg$medSml == 1) {
-	points(pos, as.numeric(AggVerdier$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
-	legend('top', c(paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'), paste0(smltxt, ' (N=', Nfig$Rest,')')),
-		border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2, lty=c(NA,NA),
-		lwd=lwdRest, ncol=2, cex=cexleg)
-	} else {
-	legend('top', paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
-		border=NA, fill=fargeHoved, bty='n', ncol=1, cex=cexleg)
-	}
-}
-
-title(tittel, line=1, font.main=1, cex.main=1.3)
-
-#Tekst som angir hvilket utvalg som er gjort
-mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
-
-par('fig'=c(0, 1, 0, 1))
-if ( outfile != '') {dev.off()}
-}
-
-#Beregninger som returneres fra funksjonen.
-# AggVerdierUt <- rbind(AggVerdier$Hoved, AggVerdier$Rest)
-# rownames(AggVerdierUt) <- c('Hoved', 'Rest')
-# AntallUt <- rbind(N$Hoved, N$Rest)
-# rownames(AntallUt) <- c('Hoved', 'Rest')
+      if (lagFig == 1) {
+        rapFigurer::FigFordeling(AggVerdier, tittel=tittel, hovedgrTxt=hovedgrTxt,
+                                 smltxt=smltxt, N=Nfig, retn=retn, utvalgTxt=utvalgTxt,
+                                 grtxt=grtxt, medSml=medSml, #grtxt2=grtxt2,
+                                 outfile=outfile) #pstTxt=pstTxt, subtxt=subtxt,
+      }
+# #-----------Figur---------------------------------------
+# #Hvis for få observasjoner..
+# #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & egenavd==1)) {
+# if ( Nfig$Hoved %in% 1:5 | 	(NakkeUtvalg$medSml ==1 & Nfig$Rest<10)) {	#(valgtVar=='Underkat' & all(hovedkat != c(1,2,5,7))) |
+# FigTypUt <- rapFigurer::figtype(outfile)
+# farger <- FigTypUt$farger
+# 	plot.new()
+# 	title(tittel)	#, line=-6)
+# 	legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
+# 	text(0.5, 0.6, 'Færre enn 5 registreringer i egen- eller sammenlikningsgruppa', cex=1.2)
+# 	if ( outfile != '') {dev.off()}
 #
-# UtData <- list(paste0(toString(tittel),'.'), AggVerdierUt, AntallUt, grtxt )
-# names(UtData) <- c('tittel', 'AggVerdier', 'Antall', 'GruppeTekst')
+# } else {
+#
+# #-----------Figur---------------------------------------
+# #Innparametre: xaksetxt, grtxt, grtxt2, tittel, AggVerdier, utvalgTxt, retn, cexgr
+# cexgr <- 1	#Kan endres for enkeltvariable
+#
+#
+# #Plottspesifikke parametre:
+# FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
+# #Tilpasse marger for å kunne skrive utvalgsteksten
+# vmarg <- switch(retn, V=0, H=max(0, strwidth(grtxtpst, units='figure', cex=cexgr)*0.7))
+# par('fig'=c(vmarg, 1, 0, 1-0.025*(NutvTxt-1)))	#Har alltid datoutvalg med
+#
+# farger <- FigTypUt$farger
+# fargeHoved <- farger[1]
+# fargeRest <- farger[3]
+# antGr <- length(grtxt)
+# lwdRest <- 3	#tykkelse på linja som repr. landet
+# cexleg <- 1	#Størrelse på legendtekst
+#
+# #Horisontale søyler
+# if (NakkeVarSpes$retn == 'H') {
+# 	xmax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
+# 	xmax <- min(xmax, 100)
+# 	ymin <- 0.3 #0.5/cexgr^4	#0.05*antGr #Fordi avstand til x-aksen av en eller annen grunn øker når antall sykehus øker
+# 	ymax <- 0.4+1.25*length(AggVerdier$Hoved) #c(0.3/xkr^4,  0.3+1.25*length(Midt)), 0.2+1.2*length(AggVerdier$Hoved)
+#
+# 	pos <- barplot(rev(as.numeric(AggVerdier$Hoved)), horiz=TRUE, las=1, xlab="Andel pasienter (%)", #beside=TRUE, main=tittel,
+# 		col=fargeHoved, border='white', font.main=1, xlim=c(0, xmax), ylim=c(ymin,ymax))	#
+#     #Intensiv: pos <- rev(barplot(rev(as.numeric(AggVerdier$Hoved)), xlim=c(0,xmax), ylim=c(ymin, ymax), #, plot=FALSE)
+# 	#				   xlab=xAkseTxt, horiz=T, border=NA, col=fargeHoved)) #, col.axis='white', col='white'))
+# 	if (Nfig$Hoved>0) {mtext(at=pos+0.05, text=grtxtpst, side=2, las=1, cex=cexgr, adj=1, line=0.25)}
+#
+# 	if (NakkeUtvalg$medSml == 1) {
+# 		points(as.numeric(rev(AggVerdier$Rest)), pos, col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
+# 		legend('top', c(paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
+# 						paste0(smltxt, ' (N=', Nfig$Rest,')')),
+# 			border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2,
+# 			lwd=lwdRest,	lty=NA, ncol=1, cex=cexleg)
+# 		} else {
+# 		legend('top', paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
+# 			border=NA, fill=fargeHoved, bty='n', ncol=1, cex=cexleg)
+# 		}
+# }
+#
+# if (NakkeVarSpes$retn == 'V' ) {
+# #Vertikale søyler eller linje
+# 	ymax <- max(c(AggVerdier$Hoved, AggVerdier$Rest),na.rm=T)*1.15
+# 	pos <- barplot(as.numeric(AggVerdier$Hoved), beside=TRUE, las=1, ylab="Andel pasienter (%)",
+# 		xlab=xaksetxt, col=fargeHoved, border='white', ylim=c(0, ymax))	#sub=xaksetxt,
+# 	#if (length(grtxt2) == 1) {grtxt2 <- txtpst}
+# 	mtext(at=pos, grtxt, side=1, las=1, cex=cexgr, adj=0.5, line=0.5)
+# 	mtext(at=pos, txtpst, side=1, las=1, cex=0.9*cexgr, adj=0.5, line=1.5)
+# if (NakkeUtvalg$medSml == 1) {
+# 	points(pos, as.numeric(AggVerdier$Rest), col=fargeRest,  cex=2, pch=18) #c("p","b","o"),
+# 	legend('top', c(paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'), paste0(smltxt, ' (N=', Nfig$Rest,')')),
+# 		border=c(fargeHoved,NA), col=c(fargeHoved,fargeRest), bty='n', pch=c(15,18), pt.cex=2, lty=c(NA,NA),
+# 		lwd=lwdRest, ncol=2, cex=cexleg)
+# 	} else {
+# 	legend('top', paste0(hovedgrTxt, ' (N=', Nfig$Hoved,')'),
+# 		border=NA, fill=fargeHoved, bty='n', ncol=1, cex=cexleg)
+# 	}
+# }
+#
+# title(tittel, line=1, font.main=1, cex.main=1.3)
+#
+# #Tekst som angir hvilket utvalg som er gjort
+# mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
+#
+# par('fig'=c(0, 1, 0, 1))
+# if ( outfile != '') {dev.off()}
+# }
+#
 return(invisible(FigDataParam))
 
 }

@@ -77,6 +77,8 @@ tidsenhetValg <- rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
                        'Kvartal'='Kvartal', 'Måned'='Mnd'))
 myelopatiValg <- c("Ikke valgt"=2, "Ja"=1, "Nei"=0)
 fremBakValg <- c("Alle"=0, "Fremre"=1, "Bakre"=2)
+inngrepValg <- c('Alle'=99, 'Ikke klassifiserbar operasjon'=0, 'Fremre diketomi for prolaps'=1, 'Bakre dekompresjon'=2,
+                 'Fremre dekompresjon sp st.uten prolaps'=3, 'Bakre fusjon'=4, 'Korporektomi'=5, 'Andre inngrep'=6)
 
 sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
 sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
@@ -278,6 +280,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Angst (EQ5D) før operasjon' = 'EqAngstPreOp',
                                               'Fornoydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
                                               'Fornoydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd' ,
+                                              'Inngrepstyper' = 'Inngrep',
                                               'Komorbiditet' = 'Komorbiditet',
                                               'Komplikasjoner, pas.rapp. 3 mnd. etter' = 'Kompl3mnd',
                                               'Komplikasjoner ved operasjon' = 'KomplOpr',
@@ -310,6 +313,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                       sliderInput(inputId="alder", label = "Alder", min = 0,
                                   max = 110, value = c(0, 110)
                       ),
+                      selectInput(inputId = "inngrep", label="Inngrepstype",
+                                  choices = inngrepValg),
                       selectInput(inputId = "myelopati", label="Myelopati",
                                   choices = myelopatiValg),
                       selectInput(inputId = "fremBak", label="Tilgang ",
@@ -719,17 +724,19 @@ server <- function(input, output,session) {
                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                     minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                     erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                    fremBak = as.numeric(input$fremBak), session=session)
+                    fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep), session=session)
    }, height=700, width=600)
 
 
   observe({
+    #UtDataFord <-  NakkeFigAndeler(RegData=RegData,  valgtVar=valgtVar, enhetsUtvalg = 1, reshID = 601161)
     UtDataFord <-  NakkeFigAndeler(RegData=RegData,  valgtVar=input$valgtVar,
                                    reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                                    datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                                    minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                                    erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                                   fremBak = as.numeric(input$fremBak), session=session)
+                                   fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
+                                   session=session)
 
     #Følgende kan være likt for fordelingsfigurer i alle registre:
   tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler

@@ -325,8 +325,15 @@ if (valgtVar=='Eq5DScorePreOp') { #gjsnTid, gjsnGrVar
                      FornoydBeh3mnd = 'Fornøyd med behandlinga på sykehuset, 3 mnd' ,
                      FornoydBeh12mnd = 'Fornøyd med behandlinga på sykehuset, 12 mnd')
   }
-if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar
-		#Legeskjema.
+  if (valgtVar == 'Inngrep'){
+    grtxt <- c('Ikke klassifiserbar', 'Fremre diketomi, prolaps', 'Bakre dekompresjon',
+               'Fremre dekomp. SS u/prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep') #for verdiene 0:6
+    RegData <- RegData[which(RegData$Inngrep %in% 0:6),]
+    RegData$VariabelGr <- RegData$Inngrep
+    tittel <- 'Inngrepstyper'
+    retn <- 'H'
+  }
+if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
 		RegData <- RegData[which(RegData[ ,valgtVar]>0), ]
 		RegData$Variabel <- RegData[ ,valgtVar]
 		KIekstrem <- c(0, 500)
