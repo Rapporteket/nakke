@@ -62,7 +62,9 @@ tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Dat
   indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
   SkjemaOversikt <- SkjemaOversikt[intersect(indDato, indSkjemastatus),]
 
-  tab <-table(SkjemaOversikt[,c('ShNavn', 'SkjemaRekkeflg')])
+  tab <- table(SkjemaOversikt[,c('ShNavn', 'SkjemaRekkeflg')])
+  tab <- rbind(tab,
+               'TOTALT, alle enheter:'=colSums(tab))
   colnames(tab) <- skjemanavn
   tab <- xtable::xtable(tab)
 

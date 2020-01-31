@@ -62,7 +62,7 @@ RegData <- NakkePreprosess(RegData = RegData)
 
 #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
 SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus > -1, ]
-SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
+SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato) #as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
 SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
 SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
