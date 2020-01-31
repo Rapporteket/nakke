@@ -252,8 +252,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         br(),
                         downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data til Resultatportalen'),
                         br()
-
-
   ),
 
   mainPanel(
@@ -687,7 +685,7 @@ server <- function(input, output,session) {
 
       output$lastNed_dataTilResPort <- downloadHandler(
         filename = function(){paste0('dataTilResPort_',input$valgtVarRes, '.csv')},
-        content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = T, na = '')})
+        content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
     })
   }
      observe({

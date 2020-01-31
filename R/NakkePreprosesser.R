@@ -44,10 +44,10 @@ NakkePreprosess <- function(RegData=RegData)
 	# OprMetodeDiskektomi OprMetodeKirDekompresjon OprMetodeAnnenBakreDekompr OprMetodeKorpektomi
 	# OprMetodeAndre OprMetodeBakreFusjon
 
-	RegData$OpKat <- 0
-	RegData$OpKat[RegData$OprMetodeAndre > 0] <- 6
+	RegData$Inngrep <- 0
+	RegData$Inngrep[RegData$OprMetodeAndre > 0] <- 6
 
-	ind1 <- with(RegData, which(OpKat == 0
+	ind1 <- with(RegData, which(Inngrep == 0
 	                            & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1 |
 	                                 OprMetodeTilgangFremreH == 1 | OprMetodeTilgangFremreV == 1 |
 	                                 OprMetodeDiskektomiBenblokk == 1 | OprMetodeDiskektomiPlate == 1 |
@@ -58,18 +58,18 @@ NakkePreprosess <- function(RegData=RegData)
 	                                 OprMetodeAnnenBakreDekompr < 1 )
 	                            & OprMetodeBakreFusjon == 0
 	                            & OprMetodeKorpektomi == 0))
-	RegData$OpKat[ind1] <- 1
+	RegData$Inngrep[ind1] <- 1
 
-	ind2 <- with(RegData, which(OpKat == 0
+	ind2 <- with(RegData, which(Inngrep == 0
 	                            & (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0)
 	                            & (OprMetodeTilgangBakre == 1 | OprMetodeAndre == 0 |
 	                                 OprMetodeKirDekompresjon == 1 | OprMetodeForamenotomiBakreUniLat == 1 |
 	                                 OprMetodeForamenotomiBakreBiLat == 1 | OprMetodeAnnenBakreDekompr > 0 )
 	                            & OprMetodeBakreFusjon == 0
 	                            & OprMetodeKorpektomi == 0))
-RegData$OpKat[ind2] <- 2
+RegData$Inngrep[ind2] <- 2
 
-	ind3 <- with(RegData, which(OpKat == 0
+	ind3 <- with(RegData, which(Inngrep == 0
 	                            & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1)
 	                            & RtgFunnProlaps == 0
 	                            & (RtgFunnRotkanalstenose == 1 | RtgFunnCervicalSpStenose == 1 | RtgFunnDegnerasjonNakke == 1)
@@ -77,28 +77,28 @@ RegData$OpKat[ind2] <- 2
 	                                 OprMetodeForamenotomiBakreUniLat == 0| OprMetodeForamenotomiBakreBiLat == 0 |
 	                                 OprMetodeAnnenBakreDekompr < 1 )
 	                            & OprMetodeBakreFusjon == 0 & OprMetodeKorpektomi == 0))
-RegData$OpKat[ind3] <- 3
+RegData$Inngrep[ind3] <- 3
 
-	ind4 <- with(RegData, which(OpKat == 0
+	ind4 <- with(RegData, which(Inngrep == 0
 	                            & (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0)
 	                            & OprMetodeBakreFusjon == 1
 	                            & (OprMetodeTilgangBakre == 1 | OprMetodeAndre == 0 | BakreFusjonWire == 1
 	                               | BakreFusjonSkruer == 1 | BakreFusjonStag == 1)
 	                            & OprMetodeKorpektomi == 0))
-	RegData$OpKat[ind4] <- 4 	#DO IF
+	RegData$Inngrep[ind4] <- 4 	#DO IF
 
-	RegData$OpKat[RegData$OprMetodeKorpektomi == 1] <- 5
+	RegData$Inngrep[RegData$OprMetodeKorpektomi == 1] <- 5
 
-	ind3_2 <- with(RegData, which(OpKat == 0 & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1
+	ind3_2 <- with(RegData, which(Inngrep == 0 & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1
 	                                      | OprMetodeDiskektomiCage == 1 | OprMetodeDiskektomiSkiveprotese == 1 )
 	               & RtgFunnProlaps == 0))
-	RegData$OpKat[ind3_2] <- 3
-	ind1_2 <- with(RegData, which(OpKat == 0
+	RegData$Inngrep[ind3_2] <- 3
+	ind1_2 <- with(RegData, which(Inngrep == 0
 	                              & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1
 	                                 | OprMetodeDiskektomiCage == 1 | OprMetodeDiskektomiSkiveprotese == 1 )
 	                              & RtgFunnProlaps == 0))
-	RegData$OpKat[ind1_2] <- 1
-	RegData$OpKat[RegData$OpKat == 0  & RegData$OprMetodeBakreFusjon > 0] <- 4
+	RegData$Inngrep[ind1_2] <- 1
+	RegData$Inngrep[RegData$Inngrep == 0  & RegData$OprMetodeBakreFusjon > 0] <- 4
 
 	grtxt <- c('Ikke klassifiserbar operasjon', 'Fremre diketomi for prolaps', 'Bakre dekompresjon',
 	           'Fremre dekompresjon sp st.uten prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep') #for verdiene 0:6
