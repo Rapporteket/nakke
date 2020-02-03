@@ -53,7 +53,7 @@ NakkePreprosess <- function(RegData=RegData)
 	                                 OprMetodeDiskektomiBenblokk == 1 | OprMetodeDiskektomiPlate == 1 |
 	                                 OprMetodeDiskektomiCage == 1 & OprMetodeDiskektomiSkiveprotese ==1 )
 	                            & RtgFunnProlaps == 1
-	                            & (OprMetodeTilgangBakre == 0 | OprMetodeAndre == 0 |
+	                            & (OprMetodeTilgangBakre == 0 | is.na(OprMetodeAndre) |
 	                                 OprMetodeForamenotomiBakreUniLat == 0 | OprMetodeForamenotomiBakreBiLat == 0 |
 	                                 OprMetodeAnnenBakreDekompr < 1 )
 	                            & OprMetodeBakreFusjon == 0
@@ -62,7 +62,7 @@ NakkePreprosess <- function(RegData=RegData)
 
 	ind2 <- with(RegData, which(Inngrep == 0
 	                            & (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0)
-	                            & (OprMetodeTilgangBakre == 1 | OprMetodeAndre == 0 |
+	                            & (OprMetodeTilgangBakre == 1 | is.na(OprMetodeAndre) |
 	                                 OprMetodeKirDekompresjon == 1 | OprMetodeForamenotomiBakreUniLat == 1 |
 	                                 OprMetodeForamenotomiBakreBiLat == 1 | OprMetodeAnnenBakreDekompr > 0 )
 	                            & OprMetodeBakreFusjon == 0
@@ -73,7 +73,7 @@ RegData$Inngrep[ind2] <- 2
 	                            & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1)
 	                            & RtgFunnProlaps == 0
 	                            & (RtgFunnRotkanalstenose == 1 | RtgFunnCervicalSpStenose == 1 | RtgFunnDegnerasjonNakke == 1)
-	                            & (OprMetodeTilgangBakre == 0 | OprMetodeAndre == 0 |
+	                            & (OprMetodeTilgangBakre == 0 | is.na(OprMetodeAndre) |
 	                                 OprMetodeForamenotomiBakreUniLat == 0| OprMetodeForamenotomiBakreBiLat == 0 |
 	                                 OprMetodeAnnenBakreDekompr < 1 )
 	                            & OprMetodeBakreFusjon == 0 & OprMetodeKorpektomi == 0))
@@ -82,7 +82,7 @@ RegData$Inngrep[ind3] <- 3
 	ind4 <- with(RegData, which(Inngrep == 0
 	                            & (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0)
 	                            & OprMetodeBakreFusjon == 1
-	                            & (OprMetodeTilgangBakre == 1 | OprMetodeAndre == 0 | BakreFusjonWire == 1
+	                            & (OprMetodeTilgangBakre == 1 | is.na(OprMetodeAndre) | BakreFusjonWire == 1
 	                               | BakreFusjonSkruer == 1 | BakreFusjonStag == 1)
 	                            & OprMetodeKorpektomi == 0))
 	RegData$Inngrep[ind4] <- 4 	#DO IF
@@ -109,6 +109,28 @@ RegData$Inngrep[ind3] <- 3
 	# 6 'Andre inngrep'.
 
 
+	# RegData$OpFremBak <- 0
+	# RegData$OpFremBak[RegData$OprMetodeTilgangFremre==1] <- 1
+	# RegData$OpFremBak[RegData$OprMetodeTilgangBakre==1] <- 2
+
+	RegData$OpTilgfrembak<-0
+	RegData$OpTilgfrembak[RegData$OprMetodeAndre > 0] <- 3
+	with(RegData, OpTilgfrembak[OpTilgfrembak == 0 & (OprMetodeTilgangFremre == 1 & OprMetodeTilgangBakre == 1)] <- 4)
+	ind1 <- with(RegData, which(OpTilgfrembak == 0
+	                            & is.na(OprMetodeAndre)
+	                            & (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1 | OprMetodeTilgangFremreH == 1 |
+	                                 OprMetodeTilgangFremreV == 1 | OprMetodeDiskektomiBenblokk == 1 |
+	                                 OprMetodeDiskektomiPlate == 1 | OprMetodeDiskektomiCage == 1 & OprMetodeDiskektomiSkiveprotese==1
+	                               |  OprMetodeKorpektomi == 1)  ))
+	RegData$OpTilgfrembak[ind1] <- 1
+	ind2 <- with(RegData, which(OpTilgfrembak == 0 & is.na(OprMetodeAndre)
+	                            & (OprMetodeTilgangBakre == 1 | OprMetodeForamenotomiBakreUniLat == 1
+	                               | OprMetodeForamenotomiBakreBiLat == 1)
+	                            | (OprMetodeAnnenBakreDekompr > 0 & OprMetodeAnnenBakreDekompr < 9 )
+	                            | OprMetodeBakreFusjon == 1))
+	RegData$OpTilgfrembak[ind2] <- 2
+	grtxt <- c('Ikke klassifiserbar', 'Fremre tilgang', 'Bakre tilgang', 'Andre inngrep', 'Kombinert bakre fremre')
+	#               VARIABLE LABELS OpTilgfrembak 'Type tilgang'.
 
 
 

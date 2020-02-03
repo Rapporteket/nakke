@@ -52,6 +52,12 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
                        '2' = which(RegData$OprMetodeTilgangBakre==1))
     } else {1:Ninn}
 
+  #--------------- Definisjoner av tilganger--------------------
+
+#-----------------------------------------------------------------------------
+
+
+
   #indTidlOp <- if (tidlOp %in% 1:4) {which(RegData$TidlOpr==tidlOp)} else {indTidlOp <- 1:Ninn}
   indMed <- indAld %i% indDato %i% indAar %i% indKj %i% indMyelo %i% indFremBak %i% indOpKat
   RegData <- RegData[indMed,]
