@@ -593,7 +593,7 @@ server <- function(input, output,session) {
     output$tabAntOpphSh <- renderTable(tabAntOpphSh, rownames = T, digits=0, spacing="xs")
     output$lastNed_tabAntOpphSh <- downloadHandler(
       filename = function(){'tabAntOpphSh.csv'},
-      content = function(file, filename){write.csv2(tabAntOpphSh, file, row.names = T, na = '')})
+      content = function(file, filename){write.csv2(tabAntOpphSh, file, row.names = T, fileEncoding = 'latin1', na = '')})
 
   output$undertittelReg <- renderUI({
     br()
@@ -610,7 +610,7 @@ server <- function(input, output,session) {
                                      ,rownames = T, digits=0, spacing="xs" )
   output$lastNed_tabAntSkjema <- downloadHandler(
     filename = function(){'tabAntSkjema.csv'},
-    content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, na = '')})
+    content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, fileEncoding = 'latin1', na = '')})
     })
 
 
@@ -690,7 +690,7 @@ server <- function(input, output,session) {
 
       output$lastNed_dataTilResPort <- downloadHandler(
         filename = function(){paste0('dataTilResPort_',input$valgtVarRes, '.csv')},
-        content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, na = '')})
+        content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})
     })
   }
      observe({
@@ -714,7 +714,7 @@ server <- function(input, output,session) {
 
       output$lastNed_dataDump <- downloadHandler(
         filename = function(){'dataDumpNakke.csv'},
-        content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, na = '')})
+        content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
      })
 
 #-----------Fordelinger---------------------
@@ -765,7 +765,7 @@ server <- function(input, output,session) {
 
   output$lastNed_tabFord <- downloadHandler(
     filename = function(){paste0(input$valgtVar, '_fordeling.csv')},
-    content = function(file, filename){write.csv2(tabFord, file, row.names = T, na = '')
+    content = function(file, filename){write.csv2(tabFord, file, row.names = T, fileEncoding = 'latin1', na = '')
     })
 
   }) #observe, fordelinger
@@ -833,7 +833,7 @@ server <- function(input, output,session) {
         paste0(input$valgtVar, '_andelTid.csv')
       },
       content = function(file, filename){
-        write.csv2(tabAndelTid, file, row.names = T, na = '')
+        write.csv2(tabAndelTid, file, row.names = T, fileEncoding = 'latin1', na = '')
       })
 
 
@@ -866,7 +866,7 @@ server <- function(input, output,session) {
         paste0(input$valgtVar, '_andelGrVar.csv')
       },
       content = function(file, filename){
-        write.csv2(tabAndelerShus, file, row.names = T, na = '')
+        write.csv2(tabAndelerShus, file, row.names = T, fileEncoding = 'latin1', na = '')
       })
 
     output$tittelAndel <- renderUI({
@@ -943,7 +943,7 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
       paste0(input$valgtVarGjsn, '_tabGjsnSh .csv')
     },
     content = function(file, filename){
-      write.csv2(tabGjsnGrVar, file, row.names = T, na = '')
+      write.csv2(tabGjsnGrVar, file, row.names = T, fileEncoding = 'latin1', na = '')
     })
 
   #------gjsnTid
@@ -991,7 +991,7 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
       paste0(input$valgtVarGjsn, '_tabGjsnTid .csv')
     },
     content = function(file, filename){
-      write.csv2(tabGjsnTid, file, row.names = T, na = '')
+      write.csv2(tabGjsnTid, file, row.names = T, fileEncoding = 'latin1', na = '')
     })
 
 }) #observe gjsnGrVar

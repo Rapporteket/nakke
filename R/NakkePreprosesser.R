@@ -43,7 +43,12 @@ NakkePreprosess <- function(RegData=RegData)
 	#Lage hovekategorier
 	# OprMetodeDiskektomi OprMetodeKirDekompresjon OprMetodeAnnenBakreDekompr OprMetodeKorpektomi
 	# OprMetodeAndre OprMetodeBakreFusjon
+variable <- c('OprMetodeDiskektomi', 'OprMetodeKirDekompresjon', 'OprMetodeAnnenBakreDekompr',
+              'OprMetodeKorpektomi', 'OprMetodeAndre', 'OprMetodeBakreFusjon')
+ind <- which(is.na(RegData[ ,variable]), arr.ind = T)
+RegData[,variable][ind] <- 0
 
+#table(RegData$OprMetodeDiskektomi, useNA = 'a')
 	RegData$Inngrep <- 0
 	RegData$Inngrep[RegData$OprMetodeAndre > 0] <- 6
 
@@ -55,8 +60,8 @@ NakkePreprosess <- function(RegData=RegData)
 	                            & RtgFunnProlaps == 1
 	                            & (OprMetodeTilgangBakre == 0 | is.na(OprMetodeAndre) |
 	                                 OprMetodeForamenotomiBakreUniLat == 0 | OprMetodeForamenotomiBakreBiLat == 0 |
-	                                 OprMetodeAnnenBakreDekompr < 1 )
-	                            & OprMetodeBakreFusjon == 0
+	                                 OprMetodeAnnenBakreDekompr == 1 | is.na(OprMetodeAnnenBakreDekompr) )
+	                            & (OprMetodeBakreFusjon == 0)
 	                            & OprMetodeKorpektomi == 0))
 	RegData$Inngrep[ind1] <- 1
 
@@ -109,9 +114,9 @@ RegData$Inngrep[ind3] <- 3
 	# 6 'Andre inngrep'.
 
 
-	# RegData$OpFremBak <- 0
-	# RegData$OpFremBak[RegData$OprMetodeTilgangFremre==1] <- 1
-	# RegData$OpFremBak[RegData$OprMetodeTilgangBakre==1] <- 2
+	RegData$OpFremBak <- 0
+	RegData$OpFremBak[RegData$OprMetodeTilgangFremre==1] <- 1
+	RegData$OpFremBak[RegData$OprMetodeTilgangBakre==1] <- 2
 
 	RegData$OpTilgfrembak<-0
 	RegData$OpTilgfrembak[RegData$OprMetodeAndre > 0] <- 3
