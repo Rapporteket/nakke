@@ -987,7 +987,7 @@ antDesFormat <- paste0("%.", antDes, "f")
     grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
   rownames(tabGjsnTid) <- grtxt
 
-  print(tabGjsnTid)
+  #print(tabGjsnTid)
 
   antKol <- ncol(tabGjsnTid)
   navnKol <- colnames(tabGjsnTid)
@@ -996,7 +996,7 @@ antDesFormat <- paste0("%.", antDes, "f")
   kolGruppering <- c(1,3,3)
   names(kolGruppering) <- c(' ', UtDataGjsnTid$hovedgrTxt, UtDataGjsnTid$smltxt)
   output$gjsnTidTab <- function() { #kableExtra::kable
-    knitr::kable(tabGjsnTid, format = 'html'
+    kableExtra::kable(tabGjsnTid, format = 'html'
                       , full_width=F
                       , digits = antDes #c(0,1,1,1)[1:antKol]
     ) %>%
