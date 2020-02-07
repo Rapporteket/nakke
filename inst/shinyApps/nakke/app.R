@@ -303,6 +303,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
                                               'Tidligere operert' = 'TidlOpr',
                                               'Tidligere operert, antall' = 'TidlOprAntall',
+                                              'Tilgang ved operasjon' = 'OpTilgfrembak',
                                               'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
                       ),
                       dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),

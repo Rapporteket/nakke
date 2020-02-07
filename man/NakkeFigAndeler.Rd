@@ -20,6 +20,7 @@ NakkeFigAndeler(
   preprosess = 0,
   reshID = 0,
   enhetsUtvalg = 0,
+  lagFig = 1,
   ...
 )
 }

@@ -718,6 +718,14 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     tittel <- 'Komplikasjoner (alle) ved operasjon'
   }
 
+  if (valgtVar=='OpTilgfrembak') { #Andeler
+    #LegeSkjema. Andel med PerOpEnhverKompl=1
+    #Kode 0,1: Nei, Ja +tomme
+    grtxt <- c('Ikke klassifiserbar', 'Fremre tilgang', 'Bakre tilgang', 'Andre inngrep', 'Kombinert bakre fremre')
+    RegData$VariabelGr <- RegData$OpTilgfrembak
+    #varTxt <- 'med komplikasjoner'
+    tittel <- 'Operasjonstilgang'
+  }
   if (valgtVar=='Roker') { #Andeler #AndelTid #AndelGrVar
     #PasientSkjema. Andel med Roker=1
     #Kode 0,1,9: Nei, Ja Ukjent
