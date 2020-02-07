@@ -458,8 +458,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'NDI-forbedring, 12 mnd.' = 'NDIendr12mnd',
                                      'NSR, arm før operasjon' = 'NRSsmerteArmPreOp',
                                      'NSR, arm, endring 3 mnd.' = 'NRSsmerteArmEndr3mnd',
+                                     'NSR, arm, endring 12 mnd.' = 'NRSsmerteArmEndr12mnd',
                                      'NSR, nakke før operasjon' = 'NRSsmerteNakkePreOp',
                                      'NSR, nakke, endring 3 mnd.' = 'NRSsmerteNakkeEndr3mnd',
+                                     'NSR, nakke, endring 12 mnd.' = 'NRSsmerteNakkeEndr12mnd',
                                      'Total knivtid' = 'KnivtidTotalMin'
                          )
              ),
