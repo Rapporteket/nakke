@@ -32,7 +32,7 @@
 
 NakkeFigGjsnTid <- function(RegData, outfile='', valgtVar='Alder', erMann='',
 		minald=0, maxald=130, datoFra='2007-01-01', datoTil='3000-01-01',
-		myelopati=99, fremBak=0, tidsenhet='Aar',
+		myelopati=99, fremBak=0, tidsenhet='Aar', inngrep=99,
 		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=0, reshID=0,...){ #tittel=1,
 
   if ("session" %in% names(list(...))) {
@@ -62,8 +62,9 @@ KIekstrem <- NakkeVarSpes$KIekstrem
 ytxt1 <- NakkeVarSpes$ytxt1
 
 #Gjør utvalg
-NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-		erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg, reshID = reshID)	#, tidlOp=tidlOp
+NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, inngrep = inngrep,
+                              minald=minald, maxald=maxald, erMann=erMann, myelopati=myelopati,
+                              fremBak=fremBak, enhetsUtvalg=enhetsUtvalg, reshID = reshID)	#, tidlOp=tidlOp
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 ind <- NakkeUtvalg$ind
@@ -134,7 +135,7 @@ if (N$Hoved>4) {
 
   if (valgtMaal=='Med') {maaltxt <- 'Median ' } else {maaltxt <- 'Gjennomsnitt '}
   grtxt <- levels(RegData$TidsEnhet)
-ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 1)
+ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 2)
 rownames(ResData) <- c(maaltxt, 'KImin', 'KImaks',
                        paste0(maaltxt, 'Resten'), 'KImin, Resten', 'KImaks, Resten')[1:(3*(medSml+1))]
 #rownames(ResData) <- c('Midt', 'KIned', 'KIopp', 'MidtRest', 'KIRestned', 'KIRestopp')[1:(3*(medSml+1))]

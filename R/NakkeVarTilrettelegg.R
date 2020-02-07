@@ -510,7 +510,7 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     RegData$Variabel[RegData$NDIEndr>=35] <- 1
     tittel <- 'Minst 35% forb. av NDI, 12 mnd., fremre, ikke-myelopati'
     varTxt <- 'med NDI>35%'
-    KImaalGrenser <- c(0,70)
+    KImaalGrenser <- c(70,100)
   }
 	if (valgtVar=='NDIendr12mnd') { #GjsnTid, GjsnGrVar
 		#Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
@@ -721,8 +721,8 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
   if (valgtVar=='OpTilgfrembak') { #Andeler
     #LegeSkjema. Andel med PerOpEnhverKompl=1
     #Kode 0,1: Nei, Ja +tomme
-    grtxt <- c('Ikke klassifiserbar', 'Fremre tilgang', 'Bakre tilgang', 'Andre inngrep', 'Kombinert bakre fremre')
-    RegData$VariabelGr <- RegData$OpTilgfrembak
+    grtxt <- c('Ikke klassifiserbar', 'Fremre tilgang', 'Bakre tilgang', 'Andre inngrep', 'Bakre og fremre')
+    RegData$VariabelGr <- factor(RegData$OpTilgfrembak, levels=0:4)
     #varTxt <- 'med komplikasjoner'
     tittel <- 'Operasjonstilgang'
   }

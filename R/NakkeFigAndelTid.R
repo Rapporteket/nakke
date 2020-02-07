@@ -48,7 +48,7 @@
 
 
 NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31', tidsenhet='Aar',
-                             minald=0, maxald=130, erMann='', myelopati=99, fremBak=0,
+                             minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, inngrep=99,
                              reshID=0, outfile='', enhetsUtvalg=0, preprosess=0,
                              hentData=0,...) {
 
@@ -77,7 +77,8 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
   tittel <- NakkeVarSpes$tittel
 
   #Gjør utvalg
-  NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+  NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
+                                minald=minald, maxald=maxald, inngrep = inngrep,
                                 erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg,
                                 reshID=reshID)
   RegData <- NakkeUtvalg$RegData
