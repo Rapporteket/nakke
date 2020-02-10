@@ -16,8 +16,10 @@ Depends:
 License: GPL-2
 LazyData: TRUE
 Imports:
+    dplyr,
     kableExtra,
     knitr, 
+    lubridate,
     rapbase,
     raplog,
     rapFigurer,

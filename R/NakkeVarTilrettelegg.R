@@ -329,7 +329,7 @@ if (valgtVar=='Eq5DScorePreOp') { #gjsnTid, gjsnGrVar
     grtxt <- c('Ikke klassifiserbar', 'Fremre diketomi, prolaps', 'Bakre dekompresjon',
                'Fremre dekomp. SS u/prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep') #for verdiene 0:6
     RegData <- RegData[which(RegData$Inngrep %in% 0:6),]
-    RegData$VariabelGr <- RegData$Inngrep
+    RegData$VariabelGr <- factor(RegData$Inngrep, levels = 0:6)
     tittel <- 'Inngrepstyper'
     retn <- 'H'
   }
