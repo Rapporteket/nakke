@@ -118,7 +118,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
                                                 'Komplikasjon, svelging' = 'KomplSvelging3mnd',
                                                 'Komplikasjon, sårinfeksjon' = 'Komplinfek',
-                                                'NDI-endr >35%' = 'NDIendr12mnd35pstKI')),
+                                                'NDI-endr >35%, ett år etter operasjon' = 'NDIendr12mnd35pstKI')),
                         dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = startDato),
                         # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
                         #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
@@ -303,6 +303,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
                                               'Tidligere operert' = 'TidlOpr',
                                               'Tidligere operert, antall' = 'TidlOprAntall',
+                                              'Tilgang ved operasjon' = 'OpTilgfrembak',
                                               'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
                       ),
                       dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
@@ -389,6 +390,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              sliderInput(inputId="alderAndelGrVar", label = "Alder", min = 0,
                          max = 110, value = c(0, 110)
              ),
+             selectInput(inputId = "inngrepAndeler", label="Inngrepstype",
+                         choices = inngrepValg),
              selectInput(inputId = "myelopatiAndelGrVar", label="Myelopati",
                          choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
              selectInput(inputId = "fremBakAndelGrVar", label="Tilgang ",
@@ -454,7 +457,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'NDI-forbedring, 3 mnd.' = 'NDIendr3mnd',
                                      'NDI-forbedring, 12 mnd.' = 'NDIendr12mnd',
                                      'NSR, arm før operasjon' = 'NRSsmerteArmPreOp',
+                                     'NSR, arm, endring 3 mnd.' = 'NRSsmerteArmEndr3mnd',
+                                     'NSR, arm, endring 12 mnd.' = 'NRSsmerteArmEndr12mnd',
                                      'NSR, nakke før operasjon' = 'NRSsmerteNakkePreOp',
+                                     'NSR, nakke, endring 3 mnd.' = 'NRSsmerteNakkeEndr3mnd',
+                                     'NSR, nakke, endring 12 mnd.' = 'NRSsmerteNakkeEndr12mnd',
                                      'Total knivtid' = 'KnivtidTotalMin'
                          )
              ),
@@ -466,6 +473,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              sliderInput(inputId="alderGjsn", label = "Alder", min = 0,
                          max = 110, value = c(0, 110)
              ),
+             selectInput(inputId = "inngrepGjsn", label="Inngrepstype",
+                         choices = inngrepValg),
              selectInput(inputId = "myelopatiGjsn", label="Myelopati",
                          choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
              selectInput(inputId = "fremBakGjsn", label="Tilgang ",
@@ -737,7 +746,6 @@ server <- function(input, output,session) {
                                    erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
                                    fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
                                    session=session)
-
     #Følgende kan være likt for fordelingsfigurer i alle registre:
   tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
   output$tittelFord <- renderUI({
@@ -783,7 +791,8 @@ server <- function(input, output,session) {
                          maxald=as.numeric(input$alderAndelGrVar[2]),
                          erMann=as.numeric(input$erMannAndelGrVar),
                          myelopati = as.numeric(input$myelopatiAndelGrVar),
-                         fremBak = as.numeric(input$fremBakAndelGrVar), session=session)
+                         fremBak = as.numeric(input$fremBakAndelGrVar),
+                         inngrep=as.numeric(input$inngrepAndeler), session=session)
   }, height=700, width=600)
 
   output$andelTid <- renderPlot({
@@ -797,6 +806,7 @@ server <- function(input, output,session) {
                      fremBak = as.numeric(input$fremBakAndelGrVar),
                      tidsenhet = input$tidsenhetAndelTid,
                      enhetsUtvalg = input$enhetsUtvalgAndelTid,
+                     inngrep=as.numeric(input$inngrepAndeler),
                      session=session)
   }, height=300, width=1000)
 
@@ -811,6 +821,7 @@ server <- function(input, output,session) {
                                    fremBak = as.numeric(input$fremBakAndelGrVar),
                                    tidsenhet = input$tidsenhetAndelTid,
                                    enhetsUtvalg = input$enhetsUtvalgAndelTid,
+                                   inngrep=as.numeric(input$inngrepAndeler),
                                    session=session) #,lagFig=0)
     tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
@@ -847,6 +858,7 @@ server <- function(input, output,session) {
                                         maxald=as.numeric(input$alderAndelGrVar[2]),
                                         erMann=as.numeric(input$erMannAndelGrVar),
                                         myelopati = as.numeric(input$myelopatiAndelGrVar),
+                                        inngrep=as.numeric(input$inngrepAndeler),
                                         session=session) #, lagFig = 0))
     tabAndelerShus <- cbind('Antall (n)' = AndelerShus$Nvar,
                             'Antall (N)' = AndelerShus$Ngr,
@@ -884,6 +896,7 @@ server <- function(input, output,session) {
                       minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                       erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
                       fremBak = as.numeric(input$fremBakGjsn),
+                      inngrep=as.numeric(input$inngrepGjsn),
                       valgtMaal = input$sentralmaal,
                       session=session)
   }, height=600, width=500)
@@ -895,6 +908,7 @@ server <- function(input, output,session) {
                     minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
                     erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
                     fremBak = as.numeric(input$fremBakGjsn),
+                    inngrep=as.numeric(input$inngrepGjsn),
                     valgtMaal = input$sentralmaal,
                     tidsenhet = input$tidsenhetGjsn,
                     enhetsUtvalg = input$enhetsUtvalgGjsn,
@@ -908,6 +922,7 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
                                        reshID=reshID,
                                        datoFra=input$datovalgGjsn[1],
                                        datoTil=input$datovalgGjsn[2],
+                                       inngrep=as.numeric(input$inngrepGjsn),
                                        minald=as.numeric(input$alderGjsn[1]),
                                        maxald=as.numeric(input$alderGjsn[2]),
                                        erMann=as.numeric(input$erMannGjsn),
@@ -920,11 +935,13 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
       h3(UtDataGjsnGrVar$tittel),
       h5(HTML(paste0(UtDataGjsnGrVar$utvalgTxt, '<br />')))
     )}) #, align='center'
-
+antDes <- ifelse(input$valgtVarGjsn %in%
+                   c('Eq5DScorePreOp', 'EQ5Dendr3mnd', 'EQ5Dendr12mnd'), 2, 1)
+antDesFormat <- paste0("%.", antDes, "f")
   tabGjsnGrVar <- cbind(Antall = UtDataGjsnGrVar$Ngr, #$Hoved,
-                        Sentralmål = sprintf("%.1f",UtDataGjsnGrVar$AggVerdier$Hoved),
-                        Konf.int. = paste0(sprintf("%.1f",UtDataGjsnGrVar$AggVerdier$KIned), ' - ',
-                                          sprintf("%.1f",UtDataGjsnGrVar$AggVerdier$KIopp)))
+                        Sentralmål = sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$Hoved),
+                        Konf.int. = paste0(sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIned), ' - ',
+                                          sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIopp)))
   colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
 
   output$gjsnGrVarTab <- function() {
@@ -953,6 +970,7 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
                                    reshID=reshID,
                                    datoFra=input$datovalgGjsn[1],
                                    datoTil=input$datovalgGjsn[2],
+                                   inngrep=as.numeric(input$inngrepGjsn),
                                    minald=as.numeric(input$alderGjsn[1]),
                                    maxald=as.numeric(input$alderGjsn[2]),
                                    erMann=as.numeric(input$erMannGjsn),
@@ -969,16 +987,18 @@ observe({ #Sykehusvise gjennomsnitt, figur og tabell
     grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
   rownames(tabGjsnTid) <- grtxt
 
+  #print(tabGjsnTid)
+
   antKol <- ncol(tabGjsnTid)
   navnKol <- colnames(tabGjsnTid)
   if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
 
   kolGruppering <- c(1,3,3)
   names(kolGruppering) <- c(' ', UtDataGjsnTid$hovedgrTxt, UtDataGjsnTid$smltxt)
-  output$gjsnTidTab <- function() {
+  output$gjsnTidTab <- function() { #kableExtra::kable
     kableExtra::kable(tabGjsnTid, format = 'html'
                       , full_width=F
-                      , digits = 1 #c(0,1,1,1)[1:antKol]
+                      , digits = antDes #c(0,1,1,1)[1:antKol]
     ) %>%
       add_header_above(kolGruppering[1:(2+UtDataGjsnTid$medSml)]) %>%
       column_spec(column = 1, width_min = '7em') %>%

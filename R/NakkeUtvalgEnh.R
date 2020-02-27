@@ -40,7 +40,7 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
   Ninn <- dim(RegData)[1]
   indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
-  indDato <- which(RegData$InnDato >= as.POSIXlt(datoFra) & RegData$InnDato <= as.POSIXlt(datoTil))
+  indDato <- which(RegData$InnDato >= as.Date(datoFra) & RegData$InnDato <= as.Date(datoTil)) #as.POSIXlt(datoFra) & RegData$InnDato <= as.POSIXlt(datoTil))
   indAar <- if (aar[1] > 2000) {which(RegData$Aar %in% as.numeric(aar))} else {1:Ninn}
   indKj <- if (erMann %in% 0:1) {which(RegData$ErMann == erMann)} else {1:Ninn}
   indOpKat <- if (inngrep %in% 0:6) {which(RegData$Inngrep == inngrep)} else {1:Ninn}

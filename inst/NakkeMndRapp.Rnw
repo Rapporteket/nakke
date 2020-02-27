@@ -63,9 +63,9 @@ RegData24mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra), ]
 RegData12mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra12mnd), ]
 AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
 # Nye variable:
-RegData$Mnd <- RegData$InnDato$mon +1
-RegData$Kvartal <- ceiling(RegData$Mnd/3)
-RegData$Halvaar <- ceiling(RegData$Mnd/6)
+RegData$Mnd <- RegData$MndNum #RegData$InnDato$mon +1
+#RegData$Kvartal <- ceiling(RegData$Mnd/3)
+#RegData$Halvaar <- ceiling(RegData$Mnd/6)
 #aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
 SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
 
