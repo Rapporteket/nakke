@@ -87,6 +87,7 @@ names(sykehusValg) <- c('Alle',sykehusNavn$x)
 
 #----Define UI for application------
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
+  id = "tab1nivaa",
   title = div(a(includeHTML(system.file('www/logo.svg', package='rapbase'))),
               regTitle),
   windowTitle = regTitle,
@@ -96,12 +97,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
 
 
-
   #------------ Viktigste resultater-----------------
   tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og månedsrapport'),
-
            h2('Velkommen til Rapporteket for NKR Degenerativ Nakke!', align='center'),
-
+           shinyjs::useShinyjs(),
            sidebarPanel(width=3,
                         h3("Rapport med månedsresultater"), #),
                         h5('Rapporten kan man også få regelmessig på e-post.
@@ -221,6 +220,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            ), #tab
   #------Registeradministrasjon-----------------------
   tabPanel(p('Registeradministrasjon', title="Verktøy for SC-bruker"),
+           value = 'Registeradministrasjon',
            h3('Denne siden skal kun vises for SC-bruker', align='center'),
            sidebarPanel(width=4,
                         h4('Datadump'),
@@ -580,6 +580,18 @@ server <- function(input, output,session) {
   })
 
 
+  observe({if (rolle != 'SC') {
+
+    #NB: Må aktiveres i ui-del også OK
+    #shinyjs::hide(id = 'samleRappLand.pdf')
+    #hideTab(inputId = "toppPaneler", target = "Registeradministrasjon")
+      #shinyjs::hide(id = 'velgReshReg')
+      #shinyjs::hide(id = 'lastNed_dataDump')
+      #hideTab(inputId = "tabs", target = "Foo")
+      shiny::hideTab(inputId = "tab1nivaa",
+                     target = 'Registeradministrasjon') #
+  }
+  })
     #-------Samlerapporter--------------------
 
   output$mndRapp.pdf <- downloadHandler(
