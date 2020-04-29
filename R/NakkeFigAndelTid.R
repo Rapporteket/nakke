@@ -48,7 +48,7 @@
 
 
 NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31', tidsenhet='Aar',
-                             minald=0, maxald=130, erMann='', myelopati=99, fremBak=0,
+                             minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, inngrep=99,
                              reshID=0, outfile='', enhetsUtvalg=0, preprosess=0,
                              hentData=0,...) {
 
@@ -77,7 +77,8 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
   tittel <- NakkeVarSpes$tittel
 
   #Gjør utvalg
-  NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+  NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
+                                minald=minald, maxald=maxald, inngrep = inngrep,
                                 erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg,
                                 reshID=reshID)
   RegData <- NakkeUtvalg$RegData
@@ -88,10 +89,10 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
   NSmlRes <- length(ind$Rest)
 
       #------------------------Klargjøre tidsenhet--------------
-  RegData$Mnd <- RegData$InnDato$mon +1
-  RegData$Kvartal <- ceiling(RegData$Mnd/3)
-  RegData$Halvaar <- ceiling(RegData$Mnd/6)
-  RegData$Aar <- 1900 + RegData$InnDato$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
+  #RegData$Mnd <- RegData$InnDato$mon +1
+  #RegData$Kvartal <- ceiling(RegData$Mnd/3)
+  #RegData$Halvaar <- ceiling(RegData$Mnd/6)
+  #RegData$Aar <- 1900 + RegData$InnDato$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
 
       # #Brukes til sortering
       # RegData$TidsEnhet <- switch(tidsenhet,
@@ -116,7 +117,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
       # RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=1:max(RegData$TidsEnhet)) #evt. levels=tidtxt
 #Legge på tidsenhet
       N <- list(Hoved = dim(RegData)[1], Rest=0)
-      if (N$Hoved>9) {
+      #if (N$Hoved>9) {
         RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
         RegData <- RegDataFunk$RegData
         #tidtxt <- RegDataFunk$tidtxt
@@ -163,7 +164,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                            smltxt=NakkeUtvalg$smltxt
 						   )
 
-}
+#}
   #----------FIGUR------------------------------
   #Hvis for få observasjoner..
   #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & medSml == 1)) {

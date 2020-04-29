@@ -32,8 +32,8 @@
 NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
                               datoFra='2012-01-01', datoTil='2050-12-31',
                               myelopati=99, fremBak=0, Ngrense=10, medKI=1,
-                              minald=0, maxald=130, erMann='', reshID=0, outfile='',
-                              hentData=0, preprosess=0,...) {
+                              minald=0, maxald=130, erMann='', inngrep=99,
+                              reshID=0, outfile='', hentData=0, preprosess=0,...) {
 
   if ("session" %in% names(list(...))) {
     raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigGjsnTid: ',valgtVar))
@@ -72,7 +72,8 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
   #ytxt1 <- NakkeVarSpes$ytxt1
 
   #Gjør utvalg
-  NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+  NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
+                                minald=minald, maxald=maxald, inngrep=inngrep,
                                 erMann=erMann, myelopati=myelopati, fremBak=fremBak)	#, tidlOp=tidlOp
   RegData <- NakkeUtvalg$RegData
   utvalgTxt <- NakkeUtvalg$utvalgTxt

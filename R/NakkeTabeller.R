@@ -62,7 +62,9 @@ tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Dat
   indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
   SkjemaOversikt <- SkjemaOversikt[intersect(indDato, indSkjemastatus),]
 
-  tab <-table(SkjemaOversikt[,c('ShNavn', 'SkjemaRekkeflg')])
+  tab <- table(SkjemaOversikt[,c('ShNavn', 'SkjemaRekkeflg')])
+  tab <- rbind(tab,
+               'TOTALT, alle enheter:'=colSums(tab))
   colnames(tab) <- skjemanavn
   tab <- xtable::xtable(tab)
 
@@ -140,79 +142,3 @@ lagTabavFigGjsnGrVar <- function(UtDataFraFig){
 
 
 
-#' Vise figurdata som tabell, sentralmål per sykshus
-#' @param RegData dataramme
-#' @param ant antall diagnoser/prosedyrer
-#' @param prosdiag vise prosedyrer ('pros', standard) eller diagnoser ('diag')
-#'
-#' @export
-visVanligsteProcDiag <- function(RegData, ant=20, prosdiag='pros'){
-
-ant <- 20
-  ProsHys <- c('HysProsedyre1', 'HysProsedyre2', 'HysProsedyre3')
-  ProsLap <- c('LapProsedyre1', 'LapProsedyre2', 'LapProsedyre3')
-  DiagLap <- c('LapDiagnose1', 'LapDiagnose2', 'LapDiagnose3')
-  DiagHys <- c('HysDiagnose1', 'HysDiagnose2', 'HysDiagnose3')
-
-  variable <- switch(prosdiag,
-                     diag = c(DiagHys, DiagLap),
-                     pros = c(ProsHys, ProsLap))
-
-AlleProsDiag <- as.vector(as.matrix(RegData[ , variable]))
-AllePDsort <- sort(table(AlleProsDiag[which(AlleProsDiag != '')]), decreasing = TRUE)
-
-#AlleProsEget <- as.vector(as.matrix(RegData[indEget, c(ProsHys, ProsLap)]))
-#AlleProsEgetSort <- sort(table(AlleProsEget[which(AlleProsEget != '')]), decreasing = TRUE)
-
-tab <- cbind( #Må fjerne tomme
-  Andel = (AllePDsort[1:ant])/dim(RegData)[1]*100 ,
-  Antall = AllePDsort[1:ant] )
-
-# ProcEget <- cbind( #Må fjerne tomme
-#   Andel = (AlleProsEgetSort[1:ant])/Neget*100 ,
-#   Antall = AlleProsEgetSort[1:ant] )
-
-# AlleDiag <- as.vector(as.matrix(RegData[ , c(DiagHys,DiagLap)]))
-# AlleDiagSort <- sort(table(AlleDiag[which(AlleDiag != '')]), decreasing = TRUE)
-# AlleDiagEget <- as.vector(as.matrix(RegData[indEget , c(DiagHys,DiagLap)]))
-# AlleDiagEgetSort <- sort(table(AlleDiagEget[which(AlleDiagEget != '')]), decreasing = TRUE)
-
-
-# Diag <- cbind( #Må fjerne tomme
-#   Andel = (AlleDiagSort[1:ant])/N*100 ,
-#   Antall = AlleDiagSort[1:ant] )
-
-# DiagEget <- cbind( #Må fjerne tomme
-#   Andel = (AlleDiagEgetSort[1:ant])/Neget*100 ,
-#   Antall = AlleDiagEgetSort[1:ant] )
-
-type <- switch(prosdiag, pros='prosedyr', diag='diagnos')
-tittel <- paste0('Vanligste ', type,'er. Andel angir prosent av utførte
-                 operasjoner hvor ', type, 'en er benyttet.')
-
-tabUt <- xtable(tab, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(tab)), na.rm=T))),
-       caption=tittel,
-       linclude.rownames=TRUE, include.colnames=TRUE)
-
-# xtable(Proc, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Proc)), na.rm=T))),
-#        caption='Vanligste prosedyrer. Andel angir andel av antall utførte
-#        operasjoner hvor prosedyra er benyttet.',
-#        label='tab:Proc', include.rownames=TRUE, include.colnames=TRUE)
-#
-# xtable(ProcEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(ProcEget)), na.rm=T))),
-#        caption='Vanligste prosedyrer, eget sykehus. Andel angir andel av antall utførte
-#        operasjoner hvor prosedyra er benyttet.',
-#        label='tab:ProcEget', include.rownames=TRUE, include.colnames=TRUE)
-#
-# xtable(Diag, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(Diag)), na.rm=T))),
-#        caption='Vanligste diagnoser. Andel angir andel av antall utførte
-#        operasjoner hvor diagnosen er benyttet.',
-#        label='tab:Diag', include.rownames=TRUE, include.colnames=TRUE)
-#
-# xtable(DiagEget, digits=c(0,1,0), align=c('l', rep('r', max(c(1,ncol(DiagEget)), na.rm=T))),
-#        caption='Vanligste diagnoser, eget sykehus. Andel angir andel av antall utførte
-#        operasjoner hvor diagnosen er benyttet.',
-#        label='tab:DiagEget', include.rownames=TRUE, include.colnames=TRUE)
-
-return(tabUt)
-}

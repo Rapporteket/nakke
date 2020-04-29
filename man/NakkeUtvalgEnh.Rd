@@ -14,6 +14,7 @@ NakkeUtvalgEnh(
   aar = 0,
   myelopati = 99,
   fremBak = 0,
+  inngrep = 99,
   enhetsUtvalg = 0,
   reshID = 0,
   fargepalett = "BlaaOff"
@@ -35,6 +36,10 @@ NakkeUtvalgEnh(
 \item{myelopati}{Operert for myelopati. 0-nei, 1-ja, 99-alle (standard)}
 
 \item{fremBak}{Fremre eller bakre tilgang. 0-ikke valgt, 1-fremre, 2-bakre}
+
+\item{inngrep}{Inngrepstype     0-'Ikke klassifiserbar operasjon', 1-'Fremre diketomi for prolaps',
+2-'Bakre dekompresjon', 3-'Fremre dekompresjon sp st.uten prolaps', 4-'Bakre fusjon',
+5-'Korporektomi', 6-'Andre inngrep', 99-alle (standard)}
 
 \item{enhetsUtvalg}{Sammenlikning eller ikke: 0-hele landet, 1-egen enhet mot resten av landet, 2-egen enhet}
 
