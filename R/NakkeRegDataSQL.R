@@ -10,9 +10,6 @@
 #'
 NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 
-  registryName <- "nakke"
-  dbType <- "mysql"
-
   query <- paste0('SELECT
 	Alder,
 	AndreRelSykdommer,
@@ -154,6 +151,22 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 	SnuserPas,
 	StatusKtr12mnd,
 	StatusKtr3mnd,
+	SykdAnnenendokrin,
+	SykdAnnet,
+	SykdCarpalTunnelSyndr,
+	SykdCerebrovaskular,
+  SykdDepresjonAngst,
+  SykdHjertekar,
+  SykdHodepine,
+  SykdHypertensjon,
+	SykDiabetesMellitus,
+	SykdKreft,
+	SykdKroniskLunge,
+	SykdKroniskNevrologisk,
+	SykdKrSmerterMuskelSkjelSyst,
+	SykdOsteoporose,
+	SykdSkulderImpigment,
+	SykdWhiplashNakke,
 	SykehusNavn,
 	SymptVarighetArmer,
 	SymptVarighetNakkeHode,
@@ -177,7 +190,9 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
 FROM AlleVarNum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
 
-RegData <- rapbase::LoadRegData(registryName, query, dbType)
+  #query <-'select * from AlleVarNum'
+
+  RegData <- rapbase::LoadRegData(registryName = "nakke", query = query, dbType = "mysql")
 
 #FROM AlleVarNum INNER JOIN ForlopsOversikt ON AlleVarNum.MCEID = ForlopsOversikt.ForlopsID
 #Tatt ut, mai 2017:

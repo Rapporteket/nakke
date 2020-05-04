@@ -55,7 +55,7 @@ write.table(KobletFil, file=paste0('A:/Nakke/AlleVarNumPersNr', dato, '.csv'), s
 	library(nkr)
 
 	rm(list=ls())
-	library(Nakke)
+	library(nakke)
 	dato <- '2019-04-25'
 	fil <- paste0('A:/Nakke/AlleVarNum',dato,'.csv')
 	NakkeData <- read.table(fil, sep=';', header=T, encoding = 'UTF-8')
@@ -68,12 +68,14 @@ write.table(KobletFil, file=paste0('A:/Nakke/AlleVarNumPersNr', dato, '.csv'), s
 	#load('A:/Nakke/AlleVarNum2017-09-21.csv.Rdata')
 
 	load('A:/Nakke/NakkeAarsrapp2018.Rdata')
-RegData <- NakkeData
+library(nakke)
+RegData <-NakkePreprosess(NakkeRegDataSQL(datoFra = '2018'))
+
 
 	datoFra='2018-01-01'
-	datoTil='2019-12-31'
+	datoTil='2020-12-31'
 	reshID <- 601161 #De tre med flest reg:
-	enhetsUtvalg=0
+	enhetsUtvalg=1
 	minald=0
 	maxald=110
 	erMann=9
@@ -82,12 +84,14 @@ RegData <- NakkeData
 	Ngrense=10
 	grVar='ShNavn'
 	ktr=0
-	aar=2015:2016
-	tidlAar=2015:2016
+	#aar=2015:2016
+	#tidlAar=2015:2016
+	inngrep <- 9
 	tidsenhet <- 'Mnd'
 	valgtMaal <- 'Gjsn'
 	hentData=0
 	outfile=''
+	valgtVar <- 'Komorbiditet'
 
 #-------------------------------Månedsrapport---------------------------
 	library(knitr)
@@ -132,12 +136,12 @@ FigAndelerGrVarAar(RegData=RegData, valgtVar='Komplinfek',
 #------------------------------ (Fordelinger) --------------------------
 
 
-valgtVar <- 'NytteOpr12mndAlleKat' #OprIndikSmerter'
+valgtVar <- 'Komorbiditet' #OprIndikSmerter'
 outfile <- paste0(valgtVar, '.png')	#''
 
-utdata <- NakkeFigAndeler(RegData=RegData, valgtVar=valgtVar,
-                          datoFra='2017-01-01', datoTil='2017-12-31', outfile=outfile)
-                          #myelopati = myelopati, fremBak = 1)
+utdata <- NakkeFigAndeler(RegData=RegData, valgtVar=valgtVar, enhetsUtvalg = 1,
+                          datoFra='2017-01-01', datoTil='2020-12-31', reshID = 601161)
+                          #, outfile=outfile, myelopati = myelopati, fremBak = 1)
 
 utdata <- NakkeFigAndeler(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar,myelopati = myelopati,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann, fremBak = 1,

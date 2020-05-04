@@ -90,7 +90,6 @@ flerevar <- NakkeVarSpes$flerevar
 
 
 #------------Gjøre utvalg-------------------------
-NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData)
 NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann,
                               minald=minald, maxald=maxald, inngrep=inngrep,
 		myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg, reshID = reshID)
