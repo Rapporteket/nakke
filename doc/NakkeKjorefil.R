@@ -91,7 +91,7 @@ RegData <-NakkePreprosess(NakkeRegDataSQL(datoFra = '2018'))
 	valgtMaal <- 'Gjsn'
 	hentData=0
 	outfile=''
-	valgtVar <- 'Komorbiditet'
+	valgtVar <- 'Kompl3mnd'
 
 #-------------------------------Månedsrapport---------------------------
 	library(knitr)
