@@ -71,11 +71,20 @@ write.table(KobletFil, file=paste0('A:/Nakke/AlleVarNumPersNr', dato, '.csv'), s
 library(nakke)
 RegData <-NakkePreprosess(NakkeRegDataSQL(datoFra = '2018'))
 
+variable <- c('KomplDVT3mnd', 'KomplinfekDyp3mnd', 'KomplLungeEmboli3mnd', 'KomplinfekOverfl3mnd',
+              'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd',
+              'EnhverKompl3mnd')
+test <- RegData[,variable]
+test$test <- rowSums(RegData[,variable[1:8]])
+table(test$test)
+colSums(test, na.rm = T)
+RegData[which(test$test==0 & test$EnhverKompl3mnd==1),variable]
+table(RegData[,variable[9]], useNA = 'a')
 
 	datoFra='2018-01-01'
 	datoTil='2020-12-31'
 	reshID <- 601161 #De tre med flest reg:
-	enhetsUtvalg=1
+	enhetsUtvalg=0
 	minald=0
 	maxald=110
 	erMann=9

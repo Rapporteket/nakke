@@ -1003,10 +1003,10 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
         flerevar <- 1
         RegData <- RegData[which(RegData$OppFolgStatus3mnd == 1), ]
         variable <- c('KomplDVT3mnd', 'KomplinfekDyp3mnd', 'KomplLungeEmboli3mnd', 'KomplinfekOverfl3mnd',
-                      'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd',
+                      'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd', 'KomplKraftsvikt3mnd',
                       'EnhverKompl3mnd')
         grtxt <- c('DVT', 'Dyp infeksjon', 'Lungeemboli', 'Overfladisk infeksjon',
-                   'Pneumoni', 'Stemmevansker', 'Svelgevansker', 'UVI', 'Totalt, 3 mnd.')
+                   'Pneumoni', 'Stemmevansker', 'Svelgevansker', 'UVI', 'Kraftsvikt', 'Totalt, 3 mnd.')
       }
 
       if (valgtVar=='OprIndikSmerter') {
