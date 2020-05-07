@@ -69,7 +69,7 @@ write.table(KobletFil, file=paste0('A:/Nakke/AlleVarNumPersNr', dato, '.csv'), s
 
 	load('A:/Nakke/NakkeAarsrapp2018.Rdata')
 library(nakke)
-RegData <-NakkePreprosess(NakkeRegDataSQL(datoFra = '2018'))
+RegData <-NakkePreprosess(NakkeRegDataSQL(datoFra = '2011'))
 
 variable <- c('KomplDVT3mnd', 'KomplinfekDyp3mnd', 'KomplLungeEmboli3mnd', 'KomplinfekOverfl3mnd',
               'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd',
