@@ -276,7 +276,7 @@ if (valgtVar=='Eq5DScorePreOp') { #gjsnTid, gjsnGrVar
 
   if (valgtVar == 'EqAngstPreOp') { #Andeler
     RegData <- RegData[which(RegData$PasientSkjemaStatus == 1), ]
-    grtxt <- c('Ingen', 'Litt', 'Svært', 'Ukjent')
+    grtxt <- c('Ingen', 'Litt', 'Mye', 'Ukjent')
     RegData$VariabelGr <- 9
     indDum <- which(as.numeric(RegData$EqAngstPreOp) %in% 1:3)
     RegData$VariabelGr[indDum] <- RegData$EqAngstPreOp[indDum]
@@ -326,7 +326,7 @@ if (valgtVar=='Eq5DScorePreOp') { #gjsnTid, gjsnGrVar
                      FornoydBeh12mnd = 'Fornøyd med behandlinga på sykehuset, 12 mnd')
   }
   if (valgtVar == 'Inngrep'){
-    grtxt <- c('Ikke klassifiserbar', 'Fremre diketomi, prolaps', 'Bakre dekompresjon',
+    grtxt <- c('Ikke klassifiserbar', 'Fremre diskektomi, prolaps', 'Bakre dekompresjon',
                'Fremre dekomp. SS u/prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep') #for verdiene 0:6
     RegData <- RegData[which(RegData$Inngrep %in% 0:6),]
     RegData$VariabelGr <- factor(RegData$Inngrep, levels = 0:6)
