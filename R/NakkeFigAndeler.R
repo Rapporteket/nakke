@@ -90,7 +90,6 @@ flerevar <- NakkeVarSpes$flerevar
 
 
 #------------Gjøre utvalg-------------------------
-NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData)
 NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann,
                               minald=minald, maxald=maxald, inngrep=inngrep,
 		myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg, reshID = reshID)
@@ -139,6 +138,8 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
             Nfig$Rest <- ifelse(min(N$Rest)==max(N$Rest),
                                 min(N$Rest[1]),
                                 paste0(min(N$Rest),'-',max(N$Rest)))
+            N$Hoved <- max(N$Hoved, na.rm = T)
+            N$Rest <- max(N$Rest, na.rm = T)
       } else {
             Nfig <- N}
 
@@ -167,7 +168,7 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
       grtxtpst <- paste0(rev(grtxt),  rev(txtpst))   #sprintf("%.3f", pi)
 
       FigDataParam <- list(AggVerdier=AggVerdier,
-                           N=Nfig,
+                           N=N,
                            Ngr=Nfig,
                            Nvar=Ngr,
                            #KImaal <- NIRVarSpes$KImaal,
@@ -185,7 +186,7 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
                            smltxt=smltxt)
       if (lagFig == 1) {
         rapFigurer::FigFordeling(AggVerdier, tittel=tittel, hovedgrTxt=hovedgrTxt,
-                                 smltxt=smltxt, N=Nfig, retn=retn, utvalgTxt=utvalgTxt,
+                                 smltxt=smltxt, N=N, Nfig=Nfig, retn=retn, utvalgTxt=utvalgTxt,
                                  grtxt=grtxt, medSml=medSml, #grtxt2=grtxt2,
                                  outfile=outfile) #pstTxt=pstTxt, subtxt=subtxt,
       }

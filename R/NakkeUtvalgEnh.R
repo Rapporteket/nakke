@@ -67,7 +67,7 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
   N <- dim(RegData)[1]
 
-  txtInngrep <- c('Ikke klassifiserbar operasjon', 'Fremre diketomi for prolaps', 'Bakre dekompresjon',
+  txtInngrep <- c('Ikke klassifiserbar operasjon', 'Fremre diskektomi for prolaps', 'Bakre dekompresjon',
              'Fremre dekompresjon sp st.uten prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep')
 
   utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$InnDato, na.rm=T)} else {datoFra},
