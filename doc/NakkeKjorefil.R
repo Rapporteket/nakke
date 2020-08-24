@@ -44,12 +44,12 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	load('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData')
 
 #--------------Koble med fødselsnr-------------------------------
-  dato <- '2020-02-26'
-	PersNr <- read.table(paste0('A:/Nakke/PersNrNakke',dato,'.komma'), sep=',', header=T, encoding = 'UTF-8')
+  dato <- '2020-02-27'
+	PersNrID <- read.table(paste0('A:/Nakke/koblingstabell',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
 	AlleVarNum <- read.table(paste0('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
 	#AlleVarNumRed <- AlleVarNum[which(AlleVarNum$SykehusNavn == 'Haukeland USH') ,c('OprDato','PasientID', 'SykehusNavn', 'ForlopsID')]
-KobletFil <- merge(x=AlleVarNum, y=PersNr, by.x='PasientID',by.y = 'PID', all.x = T, all.y = F)
-write.table(KobletFil, file=paste0('A:/Nakke/AlleVarNumPersNr', dato, '.csv'), sep = ';', row.names = F, col.names = T)
+KobletFil <- merge(x=AlleVarNum, y=PersNrID, by.x='PasientID', by.y = 'ID') #"", all.x = T, all.y = F)
+write.table(KobletFil[ ,-which(names(KobletFil) %in% c('X.x', 'X.y'))], file=paste0('A:/Nakke/AlleVarNumPersNr', dato, '.csv'), sep = ';', row.names = F, col.names = T)
 
 #----------------------------Laste data og parametre----------------------------------------
 	library(nkr)
