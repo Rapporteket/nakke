@@ -357,9 +357,9 @@ write.table(RegData[ ,variable], file='A:/ind3_Sårinfeksjon_Nakke.csv', sep=';'
 
 #--------Nøkkeltall, Resultatportalen
 rm(list=ls())
-library(Nakke)
-#NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
-load('A:/Nakke/NakkeAarsrapp2018.Rdata')
+library(nakke)
+NakkeData <- read.table('A:/Nakke/AlleVarNum2020-08-24.csv', sep=';', header=T) #, encoding = 'UTF-8')
+#load('A:/Nakke/NakkeAarsrapp2018.Rdata')
 RegData <- NakkePreprosess(NakkeData)
 NakkeData <- RegData[RegData$Aar>=2014,]
 
