@@ -783,13 +783,14 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
   if (valgtVar == 'SmertestillBrukPreOp') { #Andeler
     RegData <- RegData[which(RegData$PasientSkjemaStatus ==1), ]
     # 1 - Sjeldnere enn hver uke, 2 - Hver uke, 3 - Daglig, 4 - Flere ganger daglig, 9 - Ikke utfylt
-    grtxt <- c('Aldri', '< Ukentlig', 'Ukentlig', 'Daglig', '> Daglig', 'Ukjent')
+    grtxt <- c('Aldri', 'Sjeldnere enn ukentlig', 'Ukentlig', 'Daglig', 'Flere ganger daglig', 'Ukjent')
     RegData$VariabelGr <- 9
     RegData$VariabelGr[which(RegData$SmertestillPreOp == 0)] <- 0
     indDum <- which(RegData$SmertestillBrukPreOp %in% 1:4)
     RegData$VariabelGr[indDum] <- RegData$SmertestillBrukPreOp[indDum]
     RegData$VariabelGr <- factor(RegData$VariabelGr, levels = c(0:4,9))
     tittel <- 'Hyppighet av smertestillende før operasjonen'
+    retn <- 'H'
   }
   if (valgtVar == 'SmertestillPreOp') { #AndelTid  #AndelGrVar
     #PasientSkjema. Andel med SmertestillPreOp=1
