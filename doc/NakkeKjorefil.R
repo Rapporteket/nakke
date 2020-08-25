@@ -446,10 +446,13 @@ NokkeltallNakke <- rbind(
   'Verre 12 mnd. etter fremre kir.' = andelVerre12mnd
 )
 tabNokkeltallNakke <- cbind(row.names(NokkeltallNakke),NokkeltallNakke)
-tabNokkeltallNakke[ ,c('2017','2018')]
-write.table(tabNokkeltallNakke, file = 'A:/Resultatportalen/NokkeltallNakke.csv', row.names=F, sep=';', fileEncoding = 'UTF-8' )
+#tabNokkeltallNakke[ ,c('2017','2018')]
+write.table(NokkeltallNakke, file = 'A:/Resultatportalen/NokkeltallNakke.csv', row.names=T,
+            sep=';', fileEncoding = 'UTF-8' )
 
-
+tabShResh <- unique(NakkeData[,c("ReshId",'ShNavn')])
+write.table(tabShResh, file = 'P:/Registerinfo og historie/Nakke/ReshNakke.csv', row.names=T,
+            sep=';', fileEncoding = 'UTF-8' )
 
 #------------------ Data til NPR, Dekningsgradsanalyse
 'SELECT ForlopsID, Alder, Kjonn, Organisasjon, AvdRESH, SykehusNavn,
