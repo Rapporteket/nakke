@@ -189,3 +189,15 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
   return(utfil)
 }
 
+#' Automatisk linjebryting av lange tekstetiketter
+#'
+#' @param x En tekststreng eller vektor av tekststrenger
+#' @param len Lengden strengen skal brytes ved
+#' @return automatisk linjebryting
+#' @export
+delTekst <- function(x, len) #x -tekststreng/vektor av tekststrenger, len - Lengden strengen skal brytes ved
+{sapply(x, function(y) paste(strwrap(y, len), collapse = "\n"),
+        USE.NAMES = FALSE)
+}
+
+

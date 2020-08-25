@@ -11,6 +11,7 @@ NakkeFigAndelerGrVar(
   maxald = 130,
   datoFra = "2012-01-01",
   datoTil = "3000-12-31",
+  inngrep = 99,
   erMann = "",
   myelopati = 99,
   fremBak = 0,
@@ -69,6 +70,10 @@ Verre3mnd. Klart verre, 3 mnd.}
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
+
+\item{inngrep}{Inngrepstype     0-'Ikke klassifiserbar operasjon', 1-'Fremre diketomi for prolaps',
+2-'Bakre dekompresjon', 3-'Fremre dekompresjon sp st.uten prolaps', 4-'Bakre fusjon',
+5-'Korporektomi', 6-'Andre inngrep', 99-alle (standard)}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
 

@@ -296,7 +296,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
                                               'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
                                               'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
-                                              'Smertestill, bruk preoperativt' = 'SmertestillBrukPreOp',
+                                              'Smertestillende, hyppighet preoperativt' = 'SmertestillBrukPreOp',
                                               'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                               'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
                                               'Søkt erstatning før operasjon' = 'ErstatningPreOp',
@@ -724,8 +724,10 @@ server <- function(input, output,session) {
        #                           as.Date(OprDato) <= '2020-01-31')
     if (rolle =='SC') {
         valgtResh <- as.numeric(input$velgReshReg)
+        PIDtab <- rapbase::LoadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
+        DataDump <- merge(DataDump, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
         ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-        } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+          } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
         tabDataDump <- DataDump[ind,]
         #output$test <- renderText(valgtResh)
       } else {

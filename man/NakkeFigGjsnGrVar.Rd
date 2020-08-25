@@ -17,6 +17,7 @@ NakkeFigGjsnGrVar(
   minald = 0,
   maxald = 130,
   erMann = "",
+  inngrep = 99,
   reshID = 0,
   outfile = "",
   hentData = 0,
@@ -61,6 +62,10 @@ NRSsmerteNakkePreOp: NSR, nakke før operasjon}
 \item{maxald}{Alder, til og med}
 
 \item{erMann}{Kjønn, 1-menn, 0-kvinner, standard: '' (alt annet enn 0 og 1), dvs. begge}
+
+\item{inngrep}{Inngrepstype     0-'Ikke klassifiserbar operasjon', 1-'Fremre diketomi for prolaps',
+2-'Bakre dekompresjon', 3-'Fremre dekompresjon sp st.uten prolaps', 4-'Bakre fusjon',
+5-'Korporektomi', 6-'Andre inngrep', 99-alle (standard)}
 
 \item{reshID}{Avdelingsid (reshID) for egen avdeling,}
 
