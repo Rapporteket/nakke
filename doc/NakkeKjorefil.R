@@ -318,7 +318,7 @@ RegData <- NakkePreprosess(RegData)
 DataKI <- tilretteleggDataSKDE(RegData = RegData, datoFra = '2014-01-01', aar=0)
 write.table(DataKI, file='data-raw/NakkeKI.csv', sep=';', row.names = F)
 
-
+table(RegData$ReshId)
 
 NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
 RegData <- NakkePreprosess(NakkeData)

@@ -111,9 +111,7 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
   NakkeTilResvalgtVar$ID <- as.character(nyID[as.character(NakkeTilResvalgtVar$ReshId)])
   info <- c(NakkeVarSpes$tittel, NakkeUtvalg$utvalgTxt)
   NakkeTilResvalgtVar$info <- c(info, rep(NA, dim(NakkeTilResvalgtVar)[1]-length(info)))
-  # 114288=4000020, 109820=974589095, 105783=974749025, 103469=874716782, 601161=974795787, 999920=913705440,
-  # 105588=974557746, 999998=999998, 110771=973129856, 4212372=4212372, 4211880=999999003, 4211879=813381192
-  #test <- as.character(nyID[as.character(x)])
+
   # ReshId=OrgID
   # 114288=4000020              Stavanger USH
   # 109820=974589095           OUS, Ullevål USH
@@ -133,9 +131,7 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
 }
 
 
-#--------  FUNKSJONER --------------------------------
-
-#' Degenerativ Nakke: Tilrettelegge data for offentlig visning.
+#' Tilrettelegge data for offentlig visning.
 #'
 #' @param RegData - data
 #' @param valgtVar -
@@ -145,17 +141,18 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
 #' @export
 
 tilretteleggDataSKDE <- function(RegData = RegData, datoFra = '2014-01-01', aar=0){ #valgtVar,
-
+  #4212372, 999999003, NA
+  #103469  105588  105783  109820  110771  114288  601161  999920  999998 4211879 4212372
   nyID <- c('109820'='974589095', '105783'='974749025', '114288'='974703300', #'114288'='4000020',
             '103469'='874716782', '601161'='974795787', '999920'='913705440',
             '105588'='974557746', '999998'='991835083', '110771'='973129856',
             '4212372'='4212372', '4211880'='999999003', '4211879'='813381192')
   RegData$OrgNrShus <- as.character(nyID[as.character(RegData$ReshId)])
-  resultatVariable <- c('KvalIndId', 'Aar', "ShNavn", "ReshId", "OrgNrShus" , "Variabel")
+  resultatVariable <- c('KvalIndId', 'Aar', "OrgNrShus" , "Variabel") #"ShNavn", "ReshId",
   NakkeKvalInd <- data.frame(NULL) #Aar=NULL, ShNavn=NULL)
 
   kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pstKI')
-  indikatorID <- c('nakke1', 'nakke2', 'nakke3', 'nakke4')
+  indikatorID <- c('nakke_komplsvelg3mnd', 'nakke_komplstemme3mnd', 'nakke_komplinfek', 'nakke_ndiendr12mnd35pst')   #c('nakke1', 'nakke2', 'nakke3', 'nakke4')
   #Test <- NakkeUtvalg$RegData
   #Test[ , c('KvalIndId', 'Aar', "ShNavn", "ReshId", "OrgNrShus" , "Variabel")]
 
