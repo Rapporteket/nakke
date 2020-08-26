@@ -714,8 +714,12 @@ server <- function(input, output,session) {
         content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})
     })
   }
+
+  DataAlle <- rapbase::LoadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
+  DataAlle <- NakkePreprosess(DataAlle)
+
      observe({
-      DataDump <- dplyr::filter(RegData,
+      DataDump <- dplyr::filter(DataAlle,
                                 as.Date(OprDato) >= input$datovalgRegKtr[1],
                                 as.Date(OprDato) <= input$datovalgRegKtr[2])
 
@@ -723,9 +727,9 @@ server <- function(input, output,session) {
        #                           as.Date(OprDato) >= '2019-01-01',
        #                           as.Date(OprDato) <= '2020-01-31')
     if (rolle =='SC') {
-        valgtResh <- as.numeric(input$velgReshReg)
+              valgtResh <- as.numeric(input$velgReshReg)
         PIDtab <- rapbase::LoadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
-        DataDump <- merge(DataDump, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
+        DataDump <- merge(DataAlle, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
         ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
           } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
         tabDataDump <- DataDump[ind,]
