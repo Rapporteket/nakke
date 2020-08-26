@@ -313,7 +313,7 @@ library(nakke)
 
 #---Interaktive nettsider
 library(nakke)
-RegData <- NakkeRegDataSQL()
+RegData <- NakkeRegDataSQL(datoFra = '2014-01-01')
 RegData <- NakkePreprosess(RegData)
 DataKI <- tilretteleggDataSKDE(RegData = RegData, datoFra = '2014-01-01', aar=0)
 write.table(DataKI, file='data-raw/NakkeKI.csv', sep=';', row.names = F)
