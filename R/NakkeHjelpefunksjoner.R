@@ -101,10 +101,13 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
   NakkeTilResvalgtVar <- NakkeUtvalg$RegData[ ,c('Aar', "ShNavn", "ReshId", "Variabel")]
 
   ##x <- unique(tab$ReshId)
-  nyID <- c('114288'='4000020', '109820'='974589095', '105783'='974749025',
+  nyID <- c('109820'='974589095', '105783'='974749025', '114288'='974703300', #'114288'='4000020',
             '103469'='874716782', '601161'='974795787', '999920'='913705440',
-            '105588'='974557746', '999998'='999998', '110771'='973129856',
+            '105588'='974557746', '999998'='991835083', '110771'='973129856',
             '4212372'='4212372', '4211880'='999999003', '4211879'='813381192')
+
+  #999998 (Oslofjordklinikken, either Sandnes 913758862 or Sandvika 991835083)
+
   NakkeTilResvalgtVar$ID <- as.character(nyID[as.character(NakkeTilResvalgtVar$ReshId)])
   info <- c(NakkeVarSpes$tittel, NakkeUtvalg$utvalgTxt)
   NakkeTilResvalgtVar$info <- c(info, rep(NA, dim(NakkeTilResvalgtVar)[1]-length(info)))
@@ -119,7 +122,7 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
   # 601161=974795787                Tromsø, UNN
   # 999920=913705440    Oslofjordklinikken Vest
   # 105588=974557746              Haukeland USH
-  # 999998=999998        Oslofjordklinikken
+  # 999998=991835083        Oslofjordklinikken
   # 110771=973129856                     Volvat
   # 4212372=4212372      Aleris Colosseum Oslo
   # 4211880=999999003             Aleris Nesttun
@@ -127,6 +130,59 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
 
 
   return(invisible(NakkeTilResvalgtVar))
+}
+
+
+#--------  FUNKSJONER --------------------------------
+
+#' Degenerativ Nakke: Tilrettelegge data for offentlig visning.
+#'
+#' @param RegData - data
+#' @param valgtVar -
+#' @param datoFra - startdato
+#' @param aar - velge hele år (flervalg)
+#' @return Datafil til Resultatportalen
+#' @export
+
+tilretteleggDataSKDE <- function(RegData = RegData, datoFra = '2014-01-01', aar=0){ #valgtVar,
+
+  nyID <- c('109820'='974589095', '105783'='974749025', '114288'='974703300', #'114288'='4000020',
+            '103469'='874716782', '601161'='974795787', '999920'='913705440',
+            '105588'='974557746', '999998'='991835083', '110771'='973129856',
+            '4212372'='4212372', '4211880'='999999003', '4211879'='813381192')
+  RegData$OrgNrShus <- as.character(nyID[as.character(RegData$ReshId)])
+  resultatVariable <- c('KvalIndId', 'Aar', "ShNavn", "ReshId", "OrgNrShus" , "Variabel")
+  NakkeKvalInd <- data.frame(NULL) #Aar=NULL, ShNavn=NULL)
+
+  kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pstKI')
+  indikatorID <- c('nakke1', 'nakke2', 'nakke3', 'nakke4')
+  #Test <- NakkeUtvalg$RegData
+  #Test[ , c('KvalIndId', 'Aar', "ShNavn", "ReshId", "OrgNrShus" , "Variabel")]
+
+  for (valgtVar in kvalIndParam){
+    #print(valgtVar)
+    NakkeKvalInd1 <- RegData
+    NakkeKvalInd1$KvalIndId <- indikatorID[which(kvalIndParam == valgtVar)]
+    myelopati <- if (valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd')) {0} else {99}
+    fremBak <- if (valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pstKI')) {1} else {0}
+    NakkeVarSpes <- NakkeVarTilrettelegg(RegData=NakkeKvalInd1, valgtVar=valgtVar, figurtype = 'andelGrVar')
+    NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar, datoFra = datoFra,
+                                  myelopati=myelopati, fremBak=fremBak) #, hovedkat=hovedkat) # #, datoTil=datoTil)
+    NakkeKvalInd1 <- NakkeUtvalg$RegData[ , resultatVariable]
+
+    NakkeKvalInd <- rbind(NakkeKvalInd, NakkeKvalInd1)
+    #info <- c(NakkeVarSpes$tittel, NakkeUtvalg$utvalgTxt)
+    #NakkeKvalInd$info <- c(info, rep(NA, dim(NakkeKvalInd)[1]-length(info)))
+  }
+
+  NakkeKvalInd <- dplyr::rename(NakkeKvalInd,
+                orgnr = OrgNrShus,
+                year = Aar,
+                var = Variabel,
+                ind_id = KvalIndId)
+  NakkeKvalInd$denominator <- 1
+
+  return(invisible(NakkeKvalInd))
 }
 
 
