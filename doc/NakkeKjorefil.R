@@ -44,12 +44,12 @@ RegData$SykehusNavn <- sample(sykehus, prob=mengdePasienter/sum(mengdePasienter)
 	load('C:/ResultattjenesteGIT/Nakke/data/SkjemaDataSyn.RData')
 
 #--------------Koble med fødselsnr-------------------------------
-  dato <- '2020-02-26'
-	PersNr <- read.table(paste0('A:/Nakke/PersNrNakke',dato,'.komma'), sep=',', header=T, encoding = 'UTF-8')
+  dato <- '2020-02-27'
+	PersNrID <- read.table(paste0('A:/Nakke/koblingstabell',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
 	AlleVarNum <- read.table(paste0('A:/Nakke/AlleVarNum',dato,'.csv'), sep=';', header=T, encoding = 'UTF-8')
 	#AlleVarNumRed <- AlleVarNum[which(AlleVarNum$SykehusNavn == 'Haukeland USH') ,c('OprDato','PasientID', 'SykehusNavn', 'ForlopsID')]
-KobletFil <- merge(x=AlleVarNum, y=PersNr, by.x='PasientID',by.y = 'PID', all.x = T, all.y = F)
-write.table(KobletFil, file=paste0('A:/Nakke/AlleVarNumPersNr', dato, '.csv'), sep = ';', row.names = F, col.names = T)
+KobletFil <- merge(x=AlleVarNum, y=PersNrID, by.x='PasientID', by.y = 'ID') #"", all.x = T, all.y = F)
+write.table(KobletFil[ ,-which(names(KobletFil) %in% c('X.x', 'X.y'))], file=paste0('A:/Nakke/AlleVarNumPersNr', dato, '.csv'), sep = ';', row.names = F, col.names = T)
 
 #----------------------------Laste data og parametre----------------------------------------
 	library(nkr)
@@ -307,9 +307,19 @@ NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=1, valgtVar='KomplStemme3mnd'
 
 NakkeFigAndeler(NakkeData, valgtVar)
 
-#------------------Kvalitetsindikatorer, Resultatportalen -----------------------
+#------------------Kvalitetsindikatorer, Resultatportalen / Interaktive nettsider -----------------------
 rm(list=ls())
-library(Nakke)
+library(nakke)
+
+#---Interaktive nettsider
+library(nakke)
+RegData <- NakkeRegDataSQL(datoFra = '2014-01-01')
+RegData <- NakkePreprosess(RegData)
+DataKI <- tilretteleggDataSKDE(RegData = RegData, datoFra = '2014-01-01', aar=0)
+write.table(DataKI, file='data-raw/NakkeKI.csv', sep=';', row.names = F)
+
+table(RegData$ReshId)
+
 NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
 RegData <- NakkePreprosess(NakkeData)
 RegData <- RegData[RegData$Aar>=2014,]
@@ -357,9 +367,9 @@ write.table(RegData[ ,variable], file='A:/ind3_Sårinfeksjon_Nakke.csv', sep=';'
 
 #--------Nøkkeltall, Resultatportalen
 rm(list=ls())
-library(Nakke)
-#NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
-load('A:/Nakke/NakkeAarsrapp2018.Rdata')
+library(nakke)
+NakkeData <- read.table('A:/Nakke/AlleVarNum2020-08-24.csv', sep=';', header=T) #, encoding = 'UTF-8')
+#load('A:/Nakke/NakkeAarsrapp2018.Rdata')
 RegData <- NakkePreprosess(NakkeData)
 NakkeData <- RegData[RegData$Aar>=2014,]
 
@@ -446,10 +456,13 @@ NokkeltallNakke <- rbind(
   'Verre 12 mnd. etter fremre kir.' = andelVerre12mnd
 )
 tabNokkeltallNakke <- cbind(row.names(NokkeltallNakke),NokkeltallNakke)
-tabNokkeltallNakke[ ,c('2017','2018')]
-write.table(tabNokkeltallNakke, file = 'A:/Resultatportalen/NokkeltallNakke.csv', row.names=F, sep=';', fileEncoding = 'UTF-8' )
+#tabNokkeltallNakke[ ,c('2017','2018')]
+write.table(NokkeltallNakke, file = 'A:/Resultatportalen/NokkeltallNakke.csv', row.names=T,
+            sep=';', fileEncoding = 'UTF-8' )
 
-
+tabShResh <- unique(NakkeData[,c("ReshId",'ShNavn')])
+write.table(tabShResh, file = 'P:/Registerinfo og historie/Nakke/ReshNakke.csv', row.names=T,
+            sep=';', fileEncoding = 'UTF-8' )
 
 #------------------ Data til NPR, Dekningsgradsanalyse
 'SELECT ForlopsID, Alder, Kjonn, Organisasjon, AvdRESH, SykehusNavn,

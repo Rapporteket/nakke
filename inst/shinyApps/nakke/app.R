@@ -296,7 +296,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
                                               'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
                                               'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
-                                              'Smertestill, bruk preoperativt' = 'SmertestillBrukPreOp',
+                                              'Smertestillende, hyppighet preoperativt' = 'SmertestillBrukPreOp',
                                               'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                               'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
                                               'Søkt erstatning før operasjon' = 'ErstatningPreOp',
@@ -714,18 +714,26 @@ server <- function(input, output,session) {
         content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})
     })
   }
+
+  DataAlle <- rapbase::LoadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
+  DataAlle <- NakkePreprosess(DataAlle)
+
      observe({
-      DataDump <- dplyr::filter(RegData,
+       #print(dim(DataAlle[1]))
+       DataDump <- dplyr::filter(DataAlle,
                                 as.Date(OprDato) >= input$datovalgRegKtr[1],
                                 as.Date(OprDato) <= input$datovalgRegKtr[2])
-
-       # DataDump <- dplyr::filter(RegData,
+#print(input$datovalgRegKtr[1])
+#print(dim(DataDump[1]))
+# DataDump <- dplyr::filter(RegData,
        #                           as.Date(OprDato) >= '2019-01-01',
        #                           as.Date(OprDato) <= '2020-01-31')
     if (rolle =='SC') {
-        valgtResh <- as.numeric(input$velgReshReg)
+              valgtResh <- as.numeric(input$velgReshReg)
+        PIDtab <- rapbase::LoadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
+        DataDump <- merge(DataDump, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
         ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-        } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+          } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
         tabDataDump <- DataDump[ind,]
         #output$test <- renderText(valgtResh)
       } else {

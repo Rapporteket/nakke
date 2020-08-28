@@ -187,7 +187,7 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
       if (lagFig == 1) {
         rapFigurer::FigFordeling(AggVerdier, tittel=tittel, hovedgrTxt=hovedgrTxt,
                                  smltxt=smltxt, N=N, Nfig=Nfig, retn=retn, utvalgTxt=utvalgTxt,
-                                 grtxt=grtxt, medSml=medSml, #grtxt2=grtxt2,
+                                 grtxt=delTekst(grtxt, 12), medSml=medSml, #grtxt2=grtxt2,
                                  outfile=outfile) #pstTxt=pstTxt, subtxt=subtxt,
       }
 # #-----------Figur---------------------------------------
