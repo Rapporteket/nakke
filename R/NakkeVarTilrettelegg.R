@@ -546,8 +546,8 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     RegData$Variabel[which(RegData$NRSEndr >=30)] <- 1
     tittel <- 'Minst 30% forbedring av NRS-arm, 12 mnd.'
 	varTxt <- 'med NRSendr.>30%'
-	if (figurtype == 'gjsnGrVar') {
-		RegData$Variabel <- RegData$NRSEndr}
+	if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
+		RegData$Variabel <- RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm12mnd} #RegData$NRSEndr
 	deltittel <- 'NRS, armsmerte, endring 12 mnd.'
 	xAkseTxt <- 'skåring'
 	}
