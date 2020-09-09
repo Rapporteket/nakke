@@ -49,7 +49,7 @@
 #'
 #' @export
 
-FigAndelerGrVarAar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31', enhetsUtvalg=0,
+NakkeFigAndelerGrVarAar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil='3000-12-31', enhetsUtvalg=0,
                             minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, Ngrense=10,
                             grVar='ShNavn', ktr=0, aar=0, tidlAar=0, tidsenhet='aar',
                             hentData=0, preprosess=0, tittel=1, outfile='') {
@@ -120,7 +120,7 @@ FigAndelerGrVarAar <- function(RegData, valgtVar, datoFra='2012-01-01', datoTil=
 
 
      #Gjør utvalg
-     NakkeUtvalg <- NakkeLibUtvalg(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
+     NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
                                    erMann=erMann, myelopati=myelopati, fremBak=fremBak, aar=as.numeric(c(tidlAar, aar)))
 
      RegData <- NakkeUtvalg$RegData
