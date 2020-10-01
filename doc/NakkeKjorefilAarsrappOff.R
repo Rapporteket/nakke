@@ -39,6 +39,9 @@ format <- 'pdf'
 
 load(paste0('A:/Nakke/NakkeAarsrapp', aarsRappAar, '.Rdata'))
 
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
+                            fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
+
 #----------------------------Kvalitetsindikatorer:
 #---MÅ gås over...
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
