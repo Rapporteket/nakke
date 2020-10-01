@@ -28,24 +28,29 @@ format <- 'pdf'
 # NakkeSkjemaData <- NakkeSkjemaDataRaa[which(as.Date(NakkeSkjemaDataRaa$HovedDato) <= '2019-12-31'), ]
 # write.table(NakkeSkjemaData, file = 'A:/Nakke/NakkeSkjemaDataAarsrapp2019.csv',
 #             sep = ';', row.names = F, fileEncoding = 'UTF-8')
-# 
+#
 # NakkeDataRaa <- read.table(paste0('A:/Nakke/AlleVarNumAarsrapp2019_2020-09-09.csv'),
 #                            sep=';', header=T, encoding = 'UTF-8')
 # NakkeData <- NakkeDataRaa[which(as.Date(NakkeDataRaa$OprDato) <= datoTil), ]
 # NakkeData <- NakkePreprosess(RegData = NakkeData)
 # write.table(NakkeData, file = paste0('A:/Nakke/NakkeDataAarsrapp', aarsRappAar, '.csv'), sep = ';', row.names = F, fileEncoding = 'UTF-8')
-#  
+#
 # save(NakkeSkjemaData, NakkeData, file = 'A:/Nakke/NakkeAarsrapp2019.Rdata')
 
 load(paste0('A:/Nakke/NakkeAarsrapp', aarsRappAar, '.Rdata'))
 
 #----------------------------Kvalitetsindikatorer:
 #---MÅ gås over...
+#NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
+#per sykehus. Her skal gjennomsnittlig forbedring brukes. Det som er over gj.sn blir grønt, resten gult
+NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
+                  datoFra=datoFra2aar, datoTil=datoTil12mnd,
+                  myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
 
 #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
                      Ngrense=20, outfile= 'NakkeKomplinfekSh.pdf')
-#?NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra2aar, datoTil=datoTil, 
+#?NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra2aar, datoTil=datoTil,
 #                            valgtVar='Komplinfek', #fremBak = 2,
 #                            outfile='NakkeKomplinfekSh.pdf')
 
@@ -84,7 +89,7 @@ rownames(tabAvdN5nakke)[dim(tabAvdN5nakke)[1] ]<- 'TOTALT, alle avdelinger:'
 colnames(tabAvdN5nakke)[dim(tabAvdN5nakke)[2] ]<- paste0(min(NakkeData$Aar),'-',aarsRappAar)
 
 xtable(tabAvdN5nakke, digits=0, align=c('l', rep('r', 6)),
-       caption=paste0('Antall registreringer av nakkeoperasjoner ved hver avdeling siste 5 år, samt totalt siden ', 
+       caption=paste0('Antall registreringer av nakkeoperasjoner ved hver avdeling siste 5 år, samt totalt siden ',
                       min(NakkeData$Aar, na.rm=T),'.'), label = 'tab:AntRegNakke')
 
 
@@ -109,20 +114,20 @@ ASA345 <- AndelPst(NakkeData1aar$ASAgrad, 3:5, 1:5)
 #Forekomst av sårinfeksjon (totalt for bakre og fremre nakkekirurgi): 2,2%
 '%i%' <- intersect
 ind <- which(NakkeData1aar$OppFolgStatus3mnd == 1) %i%
-      union(which(NakkeData1aar$KomplinfekDyp3mnd %in% 0:1), 
+      union(which(NakkeData1aar$KomplinfekDyp3mnd %in% 0:1),
             which(NakkeData1aar$KomplinfekOverfl3mnd %in% 0:1))
 NakkeData1aarDum <- NakkeData1aar[ind, ]
-Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1), 
+Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1),
                         which(NakkeData1aarDum$KomplinfekOverfl3mnd==1)))
 AndelSaarinf <- round(Saarinf/dim(NakkeData1aarDum)[1]*100, 1)
 
-      
+
 
 #---Figurer
 
 NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='Alder', outfile='NakkeAlder70Sh.pdf')
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='OprIndikMyelopati', 
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='OprIndikMyelopati',
                             outfile='NakkeOprIndikMyelopatiSh.pdf')
 
 dum <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
@@ -131,25 +136,25 @@ dum <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, mye
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='Saardren', fremBak = 1, myelopati = 0,
                             outfile='NakkeSaardrenUmFSh.pdf')
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd', 
-                            datoFra=datoFra3aar, datoTil = datoTil12mnd, 
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd',
+                            datoFra=datoFra3aar, datoTil = datoTil12mnd,
                             fremBak = 1, myelopati = 0, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd30pst', datoFra = datoFra3aar , datoTil = datoTil12mnd, 
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd30pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
                             fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd', 
-                            datoFra=datoFra3aar, datoTil = datoTil12mnd, 
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd',
+                            datoFra=datoFra3aar, datoTil = datoTil12mnd,
                             fremBak = 1, outfile='NakkeFornoydBeh12mndFremSh.pdf')
 
 
-Stemme <- 
-      NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='KomplStemme3mnd', 
-                           fremBak = 1, myelopati = 0, 
+Stemme <-
+      NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='KomplStemme3mnd',
+                           fremBak = 1, myelopati = 0,
                            outfile='NakkeStemme3mndSh.pdf')
 
-Svelg <- NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='KomplSvelging3mnd', 
-                              fremBak = 1, myelopati = 0, 
+Svelg <- NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='KomplSvelging3mnd',
+                              fremBak = 1, myelopati = 0,
                               outfile='NakkeSvelg3mndSh.pdf')
 
 

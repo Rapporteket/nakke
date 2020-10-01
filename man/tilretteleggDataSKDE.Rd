@@ -2,7 +2,7 @@
 % Please edit documentation in R/NakkeHjelpefunksjoner.R
 \name{tilretteleggDataSKDE}
 \alias{tilretteleggDataSKDE}
-\title{Degenerativ Nakke: Tilrettelegge data for offentlig visning.}
+\title{Tilrettelegge data for offentlig visning.}
 \usage{
 tilretteleggDataSKDE(RegData = RegData, datoFra = "2014-01-01", aar = 0)
 }
@@ -19,5 +19,5 @@ tilretteleggDataSKDE(RegData = RegData, datoFra = "2014-01-01", aar = 0)
 Datafil til Resultatportalen
 }
 \description{
-Degenerativ Nakke: Tilrettelegge data for offentlig visning.
+Tilrettelegge data for offentlig visning.
 }

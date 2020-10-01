@@ -81,7 +81,7 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 #' Generere data til Resultatportalen
 #'
 #' @param filUt tilnavn for utdatatabell (fjern?)
-#' @param valgtVar - beinsmLavPre, peropKompDura, sympVarighUtstr
+#' @param valgtVar - beinsmLavPre, peropKompDura, sympVarighUtstr, NDIendr12mnd35pst
 #' @inheritParams NakkeFigAndeler
 #' @inheritParams NakkeUtvalgEnh
 #' @return Datafil til Resultatportalen

@@ -17,7 +17,7 @@ dataTilResPort(
 \arguments{
 \item{RegData}{Dataramme med alle nødvendige variable fra registeret}
 
-\item{valgtVar}{- beinsmLavPre, peropKompDura, sympVarighUtstr}
+\item{valgtVar}{- beinsmLavPre, peropKompDura, sympVarighUtstr, NDIendr12mnd35pst}
 
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
