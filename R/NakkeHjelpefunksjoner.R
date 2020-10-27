@@ -116,7 +116,7 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
 tilretteleggDataSKDE <- function(RegData = RegData, datoFra = '2014-01-01', aar=0){ #valgtVar,
 
   nyID <- c(# ReshId=OrgID
-    '114288'='4000020',              #Stavanger USH
+    '114288'='974703300',              #Stavanger USH
     '109820'='974589095',           #OUS, Ullevål USH
     '105783'='974749025',        #Trondheim, St. Olav
     '103469'='874716782',                  #OUS, RH
