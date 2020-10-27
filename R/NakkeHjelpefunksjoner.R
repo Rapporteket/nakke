@@ -100,36 +100,7 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
                                 myelopati=myelopati, fremBak=fremBak) #, hovedkat=hovedkat) # #, datoTil=datoTil)
   NakkeTilResvalgtVar <- NakkeUtvalg$RegData[ ,c('Aar', "ShNavn", "ReshId", "Variabel")]
 
-  ##x <- unique(tab$ReshId)
-  nyID <- c('109820'='974589095', '105783'='974749025', '114288'='974703300', #'114288'='4000020',
-            '103469'='874716782', '601161'='974795787', '999920'='913705440',
-            '105588'='974557746', '999998'='991835083', '110771'='973129856',
-            '4212372'='981541499', '4211880'='974518821', '4211879'='813381192',
-            '100407=983975240')
-
-  #999998 (Oslofjordklinikken, either Sandnes 913758862 or Sandvika 991835083)
-
-  NakkeTilResvalgtVar$ID <- as.character(nyID[as.character(NakkeTilResvalgtVar$ReshId)])
-  info <- c(NakkeVarSpes$tittel, NakkeUtvalg$utvalgTxt)
-  NakkeTilResvalgtVar$info <- c(info, rep(NA, dim(NakkeTilResvalgtVar)[1]-length(info)))
-
-  # ReshId=OrgID
-  # 114288=4000020              Stavanger USH
-  # 109820=974589095           OUS, Ullevål USH
-  # 105783=974749025        Trondheim, St. Olav
-  # 103469=874716782                  OUS, RH
-  # 601161=974795787                Tromsø, UNN
-  # 999920=913705440    Oslofjordklinikken Vest
-  # 105588=974557746              Haukeland USH
-  # 999998=991835083        Oslofjordklinikken
-  # 110771=973129856                     Volvat
-  # 4212372=981541499      Aleris Colosseum Oslo #Aleris colosseum nobel
-  # 4211880=974518821             Aleris Nesttun #Aleris sykehus nesttun
-  # 4211879=813381192 Aleris Colosseum Stavanger
-  # 100407=983975240  Sørlandet sykehus
-
-
-  return(invisible(NakkeTilResvalgtVar))
+    return(invisible(NakkeTilResvalgtVar))
 }
 
 
@@ -144,11 +115,20 @@ dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', 
 
 tilretteleggDataSKDE <- function(RegData = RegData, datoFra = '2014-01-01', aar=0){ #valgtVar,
 
-  nyID <- c('109820'='974589095', '105783'='974749025', '114288'='974703300', #'114288'='4000020',
-            '103469'='874716782', '601161'='974795787', '999920'='913705440',
-            '105588'='974557746', '999998'='991835083', '110771'='973129856',
-            '4212372'='981541499', '4211880'='974518821', '4211879'='813381192',
-            '100407'='983975240')
+  nyID <- c(# ReshId=OrgID
+    '114288'='4000020',              #Stavanger USH
+    '109820'='974589095',           #OUS, Ullevål USH
+    '105783'='974749025',        #Trondheim, St. Olav
+    '103469'='874716782',                  #OUS, RH
+    '601161'='974795787',                #Tromsø, UNN
+    '999920'='913758862',    #Oslofjordklinikken Vest
+    '105588'='974557746',              #Haukeland USH
+    '999998'='991835083',        #Oslofjordklinikken
+    '110771'='973129856',                     #Volvat
+    '4212372'='981541499',      #Aleris Colosseum Oslo #Aleris colosseum nobel
+    '4211880'='974518821',             #Aleris Nesttun #Aleris sykehus nesttun
+    '4211879'='813381192', #Aleris Colosseum Stavanger
+    '100407'='983975240')  #Sørlandet sykehus)
 
   RegData$OrgNrShus <- as.character(nyID[as.character(RegData$ReshId)])
   resultatVariable <- c('KvalIndId', 'Aar', "OrgNrShus" , "Variabel") # ,"ShNavn", "ReshId"

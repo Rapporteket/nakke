@@ -314,15 +314,18 @@ library(nakke)
 #---Interaktive nettsider
 RegData <- NakkeRegDataSQL(datoFra = '2014-01-01')
 RegData <- NakkePreprosess(RegData)
+
+#Alle indikatorer i ei fil:
 DataKI <- tilretteleggDataSKDE(RegData = RegData, datoFra = '2014-01-01', aar=0)
 write.table(DataKI, file='data-raw/NakkeKI.csv', sep=';', row.names = F)
 
 table(RegData$ReshId)
 
 
-NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
-RegData <- NakkePreprosess(NakkeData)
-RegData <- RegData[RegData$Aar>=2014,]
+# NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
+# RegData <- NakkePreprosess(NakkeData)
+# RegData <- RegData[RegData$Aar>=2014,]
+
 # Stemmevansker, 3 mnd.'
 # Mål: lavest
 #   #Kode 0,1: Nei, Ja +tomme
