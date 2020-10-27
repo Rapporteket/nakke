@@ -312,13 +312,13 @@ rm(list=ls())
 library(nakke)
 
 #---Interaktive nettsider
-library(nakke)
 RegData <- NakkeRegDataSQL(datoFra = '2014-01-01')
 RegData <- NakkePreprosess(RegData)
 DataKI <- tilretteleggDataSKDE(RegData = RegData, datoFra = '2014-01-01', aar=0)
 write.table(DataKI, file='data-raw/NakkeKI.csv', sep=';', row.names = F)
 
 table(RegData$ReshId)
+
 
 NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
 RegData <- NakkePreprosess(NakkeData)
@@ -365,7 +365,8 @@ RegData$KomplInfek[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$Komp
 variable <- c('ReshId', 'SykehusNavn', 'Aar', 'KomplInfek')
 write.table(RegData[ ,variable], file='A:/ind3_Sårinfeksjon_Nakke.csv', sep=';', row.names = F)
 
-#--------Nøkkeltall, Resultatportalen
+##-------- Nøkkeltall, Resultatportalen---
+
 rm(list=ls())
 library(nakke)
 NakkeData <- read.table('A:/Nakke/AlleVarNum2020-08-24.csv', sep=';', header=T) #, encoding = 'UTF-8')
@@ -481,22 +482,3 @@ write.table(NakkeNPR2017data, file="A:/Nakke/NakkeNPR2017data.csv", sep=';')
 
 NakkeNPR2017data <- read.table('A:/Nakke/NakkeNPR2017persnr.csv', sep=';', header=T, encoding = 'UTF-8', stringsAsFactors = FALSE)  # na.strings = "NULL",
 
-
-#------------------------------ Shiny --------------------------
-library(Nakke)
-setwd('C:/ResultattjenesteGIT/Nakke/R')
-runShinyAppReports()
-
-#Konto
-library(shinyapps)
-??shinyappsProxies
-?shinyappsOptions
-#Publisere:
-- Sette proxy
-
-library(rsconnect)
-rsconnect::setAccountInfo(name='lenatest',
-                          token='..',
-                          secret='..')
-rsconnect::deployApp('C:/ResultattjenesteGIT/Nakke/inst/shinyApps')
-#options(rpubs.upload.method = "internal")
