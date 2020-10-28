@@ -83,18 +83,19 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 #' @param RegData - data
 #' @param valgtVar - 'KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst
 #' @param filUt tilnavn for utdatatabell (fjern?)
+#' @param lagreFil automatisk lagre fila som genereres? 0-nei, 1-ja (standard)
 #' @inheritParams NakkeFigAndeler
 #' @inheritParams NakkeUtvalgEnh
 #' @return Datafil til Resultatportalen
 #' @export
 
 dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', aar=0,
-                           ResPort=1, filUt='dummy'){ #hovedkat=99, myelopati=99, fremBak=0, indID = 'indDummy',
+                           ResPort=1, filUt='dummy', lagreFil=1){ #hovedkat=99, myelopati=99, fremBak=0, indID = 'indDummy',
 
   kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
-  if (valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd')) {myelopati <- 0}
-  if (valgtVar == 'NDIendr12mnd35pst') {myelopati <- 0
-                                        fremBak<-1}
+  myelopati <- ifelse(valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99)
+  fremBak <- ifelse(valgtVar == 'NDIendr12mnd35pst', 1, 0)
+
   filUt <- paste0('Nakke', ifelse(filUt=='dummy',  valgtVar, filUt), c('_SKDE', '_ResPort')[ResPort+1],'.csv')
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
   NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar, datoFra = datoFra,
@@ -141,9 +142,11 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01
     RegDataUt$denominator <- 1
 
     RegDataUt <- RegDataUt[ ,c('year', 'orgnr', 'var', 'denominator', 'ind_id')]
-  }
+}
 
-  write.table(RegDataUt, file = filUt, sep = ';', row.names = F) #, fileEncoding = 'UTF-8')
+  if (lagreFil==1) {
+    write.table(RegDataUt, file = filUt, sep = ';', row.names = F) } #, fileEncoding = 'UTF-8')
+
   return(invisible(RegDataUt))
 }
 

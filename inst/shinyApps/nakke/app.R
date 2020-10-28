@@ -46,7 +46,7 @@ if (paaServer == TRUE) {
             Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
            FROM SkjemaOversikt
            WHERE HovedDato >= "2014-01-01" ')
-  SkjemaData <- rapbase::LoadRegData(registryName="nakke", query=querySD, dbType="mysql")
+  SkjemaData <- rapbase::loadRegData(registryName="nakke", query=querySD, dbType="mysql")
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
 } #hente data på server
@@ -705,15 +705,15 @@ server <- function(input, output,session) {
     observe({
       tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes, ResPort=1,
                                           #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
-                                          aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2])
-                                          )
+                                          aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
+                                          lagreFil=0)
       output$lastNed_dataTilResPort <- downloadHandler(
         filename = function(){paste0('dataTilResPort_',input$valgtVarRes, '.csv')},
         content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})
     })
   }
 
-  DataAlle <- rapbase::LoadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
+  DataAlle <- rapbase::loadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
   DataAlle <- NakkePreprosess(DataAlle)
 
      observe({
@@ -728,7 +728,7 @@ server <- function(input, output,session) {
        #                           as.Date(OprDato) <= '2020-01-31')
     if (rolle =='SC') {
               valgtResh <- as.numeric(input$velgReshReg)
-        PIDtab <- rapbase::LoadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
+        PIDtab <- rapbase::loadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
         DataDump <- merge(DataDump, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
         ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
           } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}

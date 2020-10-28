@@ -10,7 +10,8 @@ dataTilOffVisning(
   datoFra = "2014-01-01",
   aar = 0,
   ResPort = 1,
-  filUt = "dummy"
+  filUt = "dummy",
+  lagreFil = 1
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ dataTilOffVisning(
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{filUt}{tilnavn for utdatatabell (fjern?)}
+
+\item{lagreFil}{automatisk lagre fila som genereres? 0-nei, 1-ja (standard)}
 }
 \value{
 Datafil til Resultatportalen

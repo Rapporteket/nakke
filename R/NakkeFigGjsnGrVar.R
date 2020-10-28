@@ -143,7 +143,9 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
                            gjsn='Gjennomsnitt',
                            med='Median')
 
-  if (valgtVar == 'NDIendr12mnd' & myelopati==0 & fremBak==1) {KImaalGrenser <- c(0, MidtHele, 100)}
+  if (valgtVar == 'NDIendr12mnd' & myelopati==0 & fremBak==1) {
+    KImaalGrenser <- c(0, MidtHele, 100) } else {
+      KImaalGrenser <- NA }
 
   FigDataParam <- list(AggVerdier=AggVerdier, #Endres til Soyleverdi? Evt. AggVerdier
                         AggTot=MidtHele, #Til AggVerdiTot?
