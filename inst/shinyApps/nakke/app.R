@@ -703,12 +703,10 @@ server <- function(input, output,session) {
 
   if (rolle=='SC') {
     observe({
-      tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtVar = input$valgtVarRes,
+      tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes, ResPort=1,
                                           #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
                                           aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2])
                                           )
-      #tab <- dataTilResPort(RegData=RegData, valgtVar = 'KomplStemme3mnd', aar=2015:2018)
-
       output$lastNed_dataTilResPort <- downloadHandler(
         filename = function(){paste0('dataTilResPort_',input$valgtVarRes, '.csv')},
         content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})

@@ -315,11 +315,19 @@ library(nakke)
 RegData <- NakkeRegDataSQL(datoFra = '2014-01-01')
 RegData <- NakkePreprosess(RegData)
 
-#Alle indikatorer i ei fil:
-DataKI <- tilretteleggDataSKDE(RegData = RegData, datoFra = '2014-01-01', aar=0)
-write.table(DataKI, file='data-raw/NakkeKI.csv', sep=';', row.names = F)
+aar <- 2016:2019
+NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar='NDIendr12mnd35pst', aar=aar, ResPort=0)
 
-table(RegData$ReshId)
+kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
+indikatorID <- c('nakke_komplsvelg3mnd', 'nakke_komplstemme3mnd', 'nakke_komplinfek', 'nakke_ndiendr12mnd35pst')   #c('nakke1', 'nakke2', 'nakke3', 'nakke4')
+
+NakkeKvalInd <- data.frame(NULL) #Aar=NULL, ShNavn=NULL)
+for (valgtVar in kvalIndParam){
+  NakkeKvalInd1 <- NakkeKvalInd
+  NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar, aar=aar, ResPort=0)
+  NakkeKvalInd1 <- dataTilOffVisning(...)
+  NakkeKvalInd <- rbind(NakkeKvalInd, NakkeKvalInd1)
+}
 
 
 # NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
