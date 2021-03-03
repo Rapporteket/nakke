@@ -4,9 +4,9 @@
 library(nakke)
 library(xtable)
 setwd('P:/Registerinfo og historie/Nakke/Aarsrapp')
-aarsRappAar <- 2019
+aarsRappAar <- 2020
 
-startAar <- 2011
+startAar <- 2012
 datoFra <- paste0(startAar,'-01-01')
 datoFra1aar <- paste0(aarsRappAar,'-01-01')
 datoFra2aar <- paste0(aarsRappAar-1,'-01-01')
@@ -20,8 +20,9 @@ tidlAar <- aarsRappAar-1
 tidlAar2 <- (aarsRappAar-3):(aarsRappAar-2)
 format <- 'pdf'
 
-
-
+NakkeDataRaa <- NakkeRegDataSQL(datoTil = '2020-12-31')
+NakkeData <- NakkePreprosess(NakkeDataRaa)
+setwd('/home/rstudio/nakke/Aarsrapp')
 
 # NakkeSkjemaDataRaa <- read.table(paste0('A:/Nakke/SkjemaOversiktAarsrapp2019_2020-09-09.csv'),
 #                                  sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
@@ -96,23 +97,23 @@ xtable(tabAvdN5nakke, digits=0, align=c('l', rep('r', 6)),
                       min(NakkeData$Aar, na.rm=T),'.'), label = 'tab:AntRegNakke')
 
 
-#Totalt antall operasjoner siden 2012: 8139
-NtotNakke <- dim(NakkeData)[1]
+#Totalt antall operasjoner siden 2012: 9326
+(NtotNakke <- dim(NakkeData)[1])
 
 #Kjønnsfordeling siden 2012, prosent, kvinner menn: "44.8" "55.2"
-tabKjPstNakke <- sprintf('%.1f',table(NakkeData$ErMann)/NtotNakke*100)
+(tabKjPstNakke <- sprintf('%.1f',table(NakkeData$ErMann)/NtotNakke*100))
 
 #Tall for 2019:
-#Gjennomsnittsalder: 53
-AlderGjsnNakke <- round(mean(NakkeData1aar$Alder, na.rm = T))
-#Andel kvinner: 44,2%
-Kvinner <- prop.table(table(NakkeData1aar$ErMann))[1]*100
+#Gjennomsnittsalder:
+(AlderGjsnNakke <- round(mean(NakkeData1aar$Alder, na.rm = T)))
+#Andel kvinner:
+(Kvinner <- prop.table(table(NakkeData1aar$ErMann))[1]*100)
 
-#Andel elektive: 85%
-Elektivt <- sprintf('%.0f' , sum(NakkeData1aar$OperasjonsKategori == 1)/
-                          sum(NakkeData1aar$OperasjonsKategori %in% 1:3)*100)
+#Andel elektive:
+(Elektivt <- sprintf('%.0f' , sum(NakkeData1aar$OperasjonsKategori == 1)/
+                          sum(NakkeData1aar$OperasjonsKategori %in% 1:3)*100))
 #Andel med ASA-grad 3-5: 11%
-ASA345 <- AndelPst(NakkeData1aar$ASAgrad, 3:5, 1:5)
+(ASA345 <- AndelPst(NakkeData1aar$ASAgrad, 3:5, 1:5))
 
 #Forekomst av sårinfeksjon (totalt for bakre og fremre nakkekirurgi): 2,2%
 '%i%' <- intersect
@@ -122,7 +123,7 @@ ind <- which(NakkeData1aar$OppFolgStatus3mnd == 1) %i%
 NakkeData1aarDum <- NakkeData1aar[ind, ]
 Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1),
                         which(NakkeData1aarDum$KomplinfekOverfl3mnd==1)))
-AndelSaarinf <- round(Saarinf/dim(NakkeData1aarDum)[1]*100, 1)
+(AndelSaarinf <- round(Saarinf/dim(NakkeData1aarDum)[1]*100, 1))
 
 
 
@@ -170,7 +171,7 @@ KomplinfekTid <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Komplinfek',
 #Dobbeltregistrering
 RegData <- NakkeData
 testDato <- aggregate(RegData$PasientID, by=RegData[ ,c('PasientID','OprDato')], drop=TRUE, FUN=length)
-testDato[which(testDato$x >1), ]
+print(testDato[which(testDato$x >1), ], row.names = F)
 RegData$Mnd <- as.POSIXlt(RegData$InnDato)$mon +1
 RegData$Mnd <- RegData$Mnd-min(RegData$Mnd[RegData$Aar==min(RegData$Aar)])+1
 testMnd <- aggregate(RegData$OprDato, by=RegData[ ,c('PasientID','Mnd','Aar')], drop=TRUE, FUN=length)
