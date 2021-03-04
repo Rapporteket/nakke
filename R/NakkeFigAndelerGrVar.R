@@ -73,8 +73,6 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
 
      grVar <- 'ShNavn'
      RegData[ ,grVar] <- factor(RegData[ ,grVar])
-     #Ngrense <- 10		#Minste antall registreringer for at ei gruppe skal bli vist
-
 
      NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
      RegData <- NakkeVarSpes$RegData
@@ -99,7 +97,7 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
      indGrUt <- as.numeric(which(Ngr < Ngrense))
      if (length(indGrUt)==0) { indGrUt <- 0}
      AndelerGr[indGrUt] <- dummy0
-     sortInd <- order(as.numeric(AndelerGr), decreasing=TRUE)
+     sortInd <- rev(order(as.numeric(AndelerGr), decreasing=sortAvtagende)) #Snur fordi søyler plottes nedenfra og opp
      Ngrtxt <- paste0('\n(N=', as.character(Ngr),')')	#
      Ngrtxt[indGrUt] <- paste0('\n(<', Ngrense,')')	#paste(' (<', Ngrense,')',sep='')	#
 	Ngr <- Ngr[sortInd]
@@ -108,10 +106,8 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
    AggVerdier <- list(Hoved = NULL, Tot =NULL)
     AndelerGrSort <- AndelerGr[sortInd]
   AggVerdier$Hoved <- AndelerGrSort
-  #AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
   AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
-     #	GrNavnSort <- paste(names(Ngr)[sortInd], ', ',Ngrtxt[sortInd], sep='')
-     GrNavnSort <- paste0(names(Ngr), Ngrtxt[sortInd]) #names(Ngr)[sortInd]
+  GrNavnSort <- paste0(names(Ngr), Ngrtxt[sortInd]) #names(Ngr)[sortInd]
 
      andeltxt <- paste0(sprintf('%.1f',AndelerGrSort), '%') 	#round(as.numeric(AndelerGrSort),1)
      if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
@@ -167,16 +163,31 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
           pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
                          xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=cexShNavn*0.9)
           overPos <- max(pos)+0.4*log(max(pos))
+          # if (!is.na(KImaalGrenser[1])) {
+          #   antMaalNivaa <- length(KImaalGrenser)-1
+          #   rekkef <- 1:antMaalNivaa
+          #   if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
+          #   fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
+          #   maalOppTxt <- c('Høy', 'Moderat', 'Lav')[rekkef]
+          #   rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
+          #        ytop=max(pos)+(pos[2]-pos[1])/3, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+          #   legend(x=0, y=overPos, yjust=0.5, pch=c(NA,rep(15, antMaalNivaa)), #x=0, y=-4,
+          #          col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+          #          ncol=antMaalNivaa+1,
+          #          xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
+          #          legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
+          # }
           if (!is.na(KImaalGrenser[1])) {
             antMaalNivaa <- length(KImaalGrenser)-1
             rekkef <- 1:antMaalNivaa
             if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
             fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
-            maalOppTxt <- c('Høy', 'Moderat', 'Lav')[rekkef]
+            maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
+            if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
             rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
-                 ytop=max(pos)+(pos[2]-pos[1])/3, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
-            legend(x=0, y=overPos, yjust=0.5, pch=c(NA,rep(15, antMaalNivaa)), #x=0, y=-4,
-                   col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+                 ytop=max(pos)+0.4, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+            legPos <- overPos #ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -3.5)
+            legend(x=0, y=legPos, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
                    ncol=antMaalNivaa+1,
                    xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
                    legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,

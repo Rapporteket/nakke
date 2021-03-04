@@ -40,11 +40,17 @@ setwd('/home/rstudio/nakke/Aarsrapp')
 
 load(paste0('A:/Nakke/NakkeAarsrapp', aarsRappAar, '.Rdata'))
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
-                            fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
+NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
+                     fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
+
+#Pasienter med myelopati (ja) (både bakre og fremre tilgang) og lage figur for gj. sn. ODI forbedring per sykehus. (etterbestilling).
+NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
+                  #datoFra=datoFra3aar, datoTil=datoTil12mnd,
+                  myelopati=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
+
 
 #----------------------------Kvalitetsindikatorer:
-#---MÅ gås over...
+
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
 #per sykehus. Her skal gjennomsnittlig forbedring brukes. Det som er over gj.sn blir grønt, resten gult
 NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
@@ -54,12 +60,9 @@ NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
 #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
                      Ngrense=20, outfile= 'NakkeKomplinfekSh.pdf')
-#?NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra2aar, datoTil=datoTil,
-#                            valgtVar='Komplinfek', #fremBak = 2,
-#                            outfile='NakkeKomplinfekSh.pdf')
-
-NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='Komplinfek',
+dum <- NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='Komplinfek',
                         Ngrense=20, ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplinfekShAar.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='Komplinfek', outfile='NakkeInfekTid.pdf')
 
 #Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplStemme3mnd',
@@ -75,6 +78,10 @@ NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSve
 NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging3mnd',
                    myelopati=0, fremBak=1, Ngrense=20,
                    ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplSvelging3mndShAar.pdf')
+
+
+
+
 
 #-------------------------------------
 AndelPst <- function(variabel,teller,nevner){
@@ -151,19 +158,6 @@ dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd',
                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
                             fremBak = 1, outfile='NakkeFornoydBeh12mndFremSh.pdf')
 
-
-Stemme <-
-      NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='KomplStemme3mnd',
-                           fremBak = 1, myelopati = 0,
-                           outfile='NakkeStemme3mndSh.pdf')
-
-Svelg <- NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='KomplSvelging3mnd',
-                              fremBak = 1, myelopati = 0,
-                              outfile='NakkeSvelg3mndSh.pdf')
-
-
-KomplinfekTid <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Komplinfek',
-                                  outfile='NakkeInfekTid.pdf')
 
 
 

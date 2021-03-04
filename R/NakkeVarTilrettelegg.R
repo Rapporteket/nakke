@@ -40,7 +40,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
   #verdier <- ''	#AggVerdier, gjennomsnitt, ...
   #verdiTxt <- '' 	#pstTxt, ...
   #strIfig <- ''		#cex
-  sortAvtagende <- TRUE  #Sortering av resultater
+  sortAvtagende <- FALSE  #Sortering av resultater. FALSE-laveste best
   tittel <- 'Mangler tittel'
   deltittel <- ''
   variable <- 'Ingen'
@@ -363,13 +363,13 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
   if (valgtVar=='Komplinfek') { #AndelTid, #AndelGrVar
     #3MndSkjema. Andel med KomplinfekDyp3mnd=1
     #Kode 0,1: Nei, Ja +tomme
-    ind <- which(RegData$OppFolgStatus3mnd == 1) %i%
-      union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1))
+    ind <- intersect(which(RegData$OppFolgStatus3mnd == 1),
+      union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1)))
     RegData <- RegData[ind, ]
     RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
     varTxt <- 'infeksjoner'
     tittel <- 'Pasientrapportert dyp eller overfladisk infeksjon, 3 mnd.'
-    KImaalGrenser <- c(0,2)
+    KImaalGrenser <- c(0,2,100)
     }
 
   if (valgtVar=='KomplStemme3mnd') { #AndelTid, #AndelGrVar
@@ -382,7 +382,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
     RegData$Variabel <- RegData[ ,valgtVar]
     varTxt <- 'med stemmevansker'
     tittel <- 'Stemmevansker, fremre tilgang, 3 mnd.'
-    KImaalGrenser <- c(0,10)
+    KImaalGrenser <- c(0,10,100)
   }
   if (valgtVar=='KomplStemme12mnd') { #AndelGrVar,
     #3MndSkjema. Andel med KomplStemme12mnd=1
@@ -414,7 +414,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
     RegData$Variabel <- RegData[ ,valgtVar]
     varTxt <- 'med svelgevansker'
     tittel <- 'Svelgevansker, fremre tilgang, 3 mnd.'
-    KImaalGrenser <- c(0,17)
+    KImaalGrenser <- c(0,17,100)
   }
   if (valgtVar=='LiggeDognPostop') { #Andeler #GjsnTid #GjsnGrVar
     #Legeskjema.
