@@ -134,18 +134,18 @@ Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1),
 
 
 
-#---Figurer
+#---Figurer---------
 
-NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='Alder', outfile='NakkeAlder70Sh.pdf')
+NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Alder', datoFra=datoFra1aar, outfile='NakkeAlder70Sh.pdf')
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='OprIndikMyelopati',
-                            outfile='NakkeOprIndikMyelopatiSh.pdf')
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OprIndikMyelopati',
+                            datoFra=datoFra1aar, outfile='NakkeOprIndikMyelopatiSh.pdf')
 
 dum <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
                         outfile='NakkeSaardrenUmFTid.pdf')
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='Saardren', fremBak = 1, myelopati = 0,
-                            outfile='NakkeSaardrenUmFSh.pdf')
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
+                            datoFra=datoFra1aar, outfile='NakkeSaardrenUmFSh.pdf')
 
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd',
                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
