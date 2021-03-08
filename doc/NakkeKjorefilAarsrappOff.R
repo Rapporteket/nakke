@@ -151,7 +151,7 @@ dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd',
                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
                             fremBak = 1, myelopati = 0, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd30pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
                             fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
 
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd',
