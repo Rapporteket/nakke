@@ -4,6 +4,7 @@
 library(nakke)
 library(xtable)
 setwd('P:/Registerinfo og historie/Nakke/Aarsrapp')
+setwd('/home/rstudio/rygg/Aarsrapp')
 aarsRappAar <- 2020
 
 startAar <- 2012
@@ -38,7 +39,7 @@ setwd('/home/rstudio/nakke/Aarsrapp')
 #
 # save(NakkeSkjemaData, NakkeData, file = 'A:/Nakke/NakkeAarsrapp2019.Rdata')
 
-load(paste0('A:/Nakke/NakkeAarsrapp', aarsRappAar, '.Rdata'))
+#load(paste0('A:/Nakke/NakkeAarsrapp', aarsRappAar, '.Rdata'))
 
 NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
                      fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
