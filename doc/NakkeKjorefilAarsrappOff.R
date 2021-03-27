@@ -81,6 +81,30 @@ NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging
                    ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplSvelging3mndShAar.pdf')
 
 
+#---Figurer---------
+
+NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Alder', datoFra=datoFra1aar, outfile='NakkeAlder70Sh.pdf')
+
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OprIndikMyelopati',
+                            datoFra=datoFra1aar, outfile='NakkeOprIndikMyelopatiSh.pdf')
+
+dum <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
+                        outfile='NakkeSaardrenUmFTid.pdf')
+
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
+                            datoFra=datoFra1aar, outfile='NakkeSaardrenUmFSh.pdf')
+
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd',
+                            datoFra=datoFra3aar, datoTil = datoTil12mnd,
+                            fremBak = 1, myelopati = 0, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
+
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
+                            fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
+
+dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd',
+                            datoFra=datoFra3aar, datoTil = datoTil12mnd,
+                            fremBak = 1, outfile='NakkeFornoydBeh12mndFremSh.pdf')
+
 
 
 
@@ -134,30 +158,6 @@ Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1),
 (AndelSaarinf <- round(Saarinf/dim(NakkeData1aarDum)[1]*100, 1))
 
 
-
-#---Figurer---------
-
-NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Alder', datoFra=datoFra1aar, outfile='NakkeAlder70Sh.pdf')
-
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OprIndikMyelopati',
-                            datoFra=datoFra1aar, outfile='NakkeOprIndikMyelopatiSh.pdf')
-
-dum <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
-                        outfile='NakkeSaardrenUmFTid.pdf')
-
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
-                            datoFra=datoFra1aar, outfile='NakkeSaardrenUmFSh.pdf')
-
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd',
-                            datoFra=datoFra3aar, datoTil = datoTil12mnd,
-                            fremBak = 1, myelopati = 0, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
-
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
-                            fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
-
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd',
-                            datoFra=datoFra3aar, datoTil = datoTil12mnd,
-                            fremBak = 1, outfile='NakkeFornoydBeh12mndFremSh.pdf')
 
 
 
