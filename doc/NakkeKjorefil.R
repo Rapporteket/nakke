@@ -312,10 +312,10 @@ rm(list=ls())
 library(nakke)
 
 #---Interaktive nettsider
-RegData <- NakkeRegDataSQL(datoFra = '2014-01-01')
+RegData <- NakkeRegDataSQL(datoFra = '2014-01-01', datoTil = '2020-12-31')
 RegData <- NakkePreprosess(RegData)
 
-aar <- 2016:2019
+aar <- 2016:2020
 NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar='NDIendr12mnd35pst', aar=aar, ResPort=0)
 
 kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
@@ -324,11 +324,12 @@ indikatorID <- c('nakke_komplsvelg3mnd', 'nakke_komplstemme3mnd', 'nakke_komplin
 NakkeKvalInd <- data.frame(NULL) #Aar=NULL, ShNavn=NULL)
 for (valgtVar in kvalIndParam){
   NakkeKvalInd1 <- NakkeKvalInd
-  NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar, aar=aar, ResPort=0)
-  NakkeKvalInd1 <- dataTilOffVisning(...)
+  NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar, aar=aar, ResPort=0, lagreFil=0)
+  #NakkeKvalInd1 <- dataTilOffVisning(...)
   NakkeKvalInd <- rbind(NakkeKvalInd, NakkeKvalInd1)
 }
-
+#table(NakkeKvalInd$orgnr, useNA = 'a')
+write.table(NakkeKvalInd, file='NakkeTilSKDE.csv', sep=';', row.names = F)
 
 # NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
 # RegData <- NakkePreprosess(NakkeData)
