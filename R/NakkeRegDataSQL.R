@@ -207,7 +207,7 @@ FROM AlleVarNum
 
   #query <-'select * from AlleVarNum'
 
-  RegData <- rapbase::LoadRegData(registryName = "nakke", query = query, dbType = "mysql")
+  RegData <- rapbase::loadRegData(registryName = "nakke", query = query, dbType = "mysql")
 
 #FROM AlleVarNum INNER JOIN ForlopsOversikt ON AlleVarNum.MCEID = ForlopsOversikt.ForlopsID
 #Tatt ut, mai 2017:

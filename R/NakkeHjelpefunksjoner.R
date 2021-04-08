@@ -78,112 +78,78 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 
 
 
-#' Generere data til Resultatportalen
+#' Tilrettelegge data for offentlig visning.
 #'
+#' @param RegData - data
+#' @param valgtVar - 'KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst
 #' @param filUt tilnavn for utdatatabell (fjern?)
-#' @param valgtVar - beinsmLavPre, peropKompDura, sympVarighUtstr
+#' @param lagreFil automatisk lagre fila som genereres? 0-nei, 1-ja (standard)
 #' @inheritParams NakkeFigAndeler
 #' @inheritParams NakkeUtvalgEnh
 #' @return Datafil til Resultatportalen
 #' @export
 
-dataTilResPort <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', aar=0,
-                           myelopati=99, fremBak=0, filUt='dummy'){ #hovedkat=99,
+dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', aar=0,
+                           ResPort=1, filUt='dummy', lagreFil=1){ #hovedkat=99, myelopati=99, fremBak=0, indID = 'indDummy',
 
-  if (valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd')) {myelopati <- 0}
-  if (valgtVar == 'NDIendr12mnd35pst') {
-    myelopati <- 0
-    fremBak<-1}
-  filUt <- paste0('NakkeTilRes', ifelse(filUt=='dummy',  valgtVar, filUt), '.csv')
+  kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
+  myelopati <- ifelse(valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99)
+  fremBak <- ifelse(valgtVar == 'NDIendr12mnd35pst', 1, 0)
+
+  filUt <- paste0('Nakke', ifelse(filUt=='dummy',  valgtVar, filUt), c('_SKDE', '_ResPort')[ResPort+1],'.csv')
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
   NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar, datoFra = datoFra,
                                 myelopati=myelopati, fremBak=fremBak) #, hovedkat=hovedkat) # #, datoTil=datoTil)
-  NakkeTilResvalgtVar <- NakkeUtvalg$RegData[ ,c('Aar', "ShNavn", "ReshId", "Variabel")]
-
-  ##x <- unique(tab$ReshId)
-  nyID <- c('109820'='974589095', '105783'='974749025', '114288'='974703300', #'114288'='4000020',
-            '103469'='874716782', '601161'='974795787', '999920'='913705440',
-            '105588'='974557746', '999998'='991835083', '110771'='973129856',
-            '4212372'='981541499', '4211880'='974518821', '4211879'='813381192',
-            '100407=983975240')
-
-  #999998 (Oslofjordklinikken, either Sandnes 913758862 or Sandvika 991835083)
-
-  NakkeTilResvalgtVar$ID <- as.character(nyID[as.character(NakkeTilResvalgtVar$ReshId)])
-  info <- c(NakkeVarSpes$tittel, NakkeUtvalg$utvalgTxt)
-  NakkeTilResvalgtVar$info <- c(info, rep(NA, dim(NakkeTilResvalgtVar)[1]-length(info)))
-
-  # ReshId=OrgID
-  # 114288=4000020              Stavanger USH
-  # 109820=974589095           OUS, Ullevål USH
-  # 105783=974749025        Trondheim, St. Olav
-  # 103469=874716782                  OUS, RH
-  # 601161=974795787                Tromsø, UNN
-  # 999920=913705440    Oslofjordklinikken Vest
-  # 105588=974557746              Haukeland USH
-  # 999998=991835083        Oslofjordklinikken
-  # 110771=973129856                     Volvat
-  # 4212372=981541499      Aleris Colosseum Oslo #Aleris colosseum nobel
-  # 4211880=974518821             Aleris Nesttun #Aleris sykehus nesttun
-  # 4211879=813381192 Aleris Colosseum Stavanger
-  # 100407=983975240  Sørlandet sykehus
 
 
-  return(invisible(NakkeTilResvalgtVar))
-}
-
-
-#' Tilrettelegge data for offentlig visning.
-#'
-#' @param RegData - data
-#' @param valgtVar -
-#' @param datoFra - startdato
-#' @param aar - velge hele år (flervalg)
-#' @return Datafil til Resultatportalen
-#' @export
-
-tilretteleggDataSKDE <- function(RegData = RegData, datoFra = '2014-01-01', aar=0){ #valgtVar,
-
-  nyID <- c('109820'='974589095', '105783'='974749025', '114288'='974703300', #'114288'='4000020',
-            '103469'='874716782', '601161'='974795787', '999920'='913705440',
-            '105588'='974557746', '999998'='991835083', '110771'='973129856',
-            '4212372'='981541499', '4211880'='974518821', '4211879'='813381192',
-            '100407'='983975240')
-
-  RegData$OrgNrShus <- as.character(nyID[as.character(RegData$ReshId)])
-  resultatVariable <- c('KvalIndId', 'Aar', "OrgNrShus" , "Variabel") # ,"ShNavn", "ReshId"
-  NakkeKvalInd <- data.frame(NULL) #Aar=NULL, ShNavn=NULL)
-
-  kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pstKI')
-  indikatorID <- c('nakke_komplsvelg3mnd', 'nakke_komplstemme3mnd', 'nakke_komplinfek', 'nakke_ndiendr12mnd35pst')   #c('nakke1', 'nakke2', 'nakke3', 'nakke4')
-  #Test <- NakkeUtvalg$RegData
-  #Test[ , c('KvalIndId', 'Aar', "ShNavn", "ReshId", "OrgNrShus" , "Variabel")]
-
-  for (valgtVar in kvalIndParam){
-    #print(valgtVar)
-    NakkeKvalInd1 <- RegData
-    NakkeKvalInd1$KvalIndId <- indikatorID[which(kvalIndParam == valgtVar)]
-    myelopati <- if (valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd')) {0} else {99}
-    fremBak <- if (valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pstKI')) {1} else {0}
-    NakkeVarSpes <- NakkeVarTilrettelegg(RegData=NakkeKvalInd1, valgtVar=valgtVar, figurtype = 'andelGrVar')
-    NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar, datoFra = datoFra,
-                                  myelopati=myelopati, fremBak=fremBak) #, hovedkat=hovedkat) # #, datoTil=datoTil)
-    NakkeKvalInd1 <- NakkeUtvalg$RegData[ , resultatVariable]
-
-    NakkeKvalInd <- rbind(NakkeKvalInd, NakkeKvalInd1)
-    #info <- c(NakkeVarSpes$tittel, NakkeUtvalg$utvalgTxt)
-    #NakkeKvalInd$info <- c(info, rep(NA, dim(NakkeKvalInd)[1]-length(info)))
+  if (ResPort == 1){
+    #Variabler: Aar	ReshId	Teller Ind1	Nevner Ind1	  AarID	   Indikator
+    #          2014	103469	  0	          1	       2014103469	  ind1
+    RegDataUt <- NakkeUtvalg$RegData[,c('Aar', "ReshId", "ShNavn", "Variabel")]
+    RegDataUt<- dplyr::rename(RegDataUt, Teller = Variabel)
+    RegDataUt$AarID <- paste0(RegDataUt$Aar, RegDataUt$ReshId)
+    indikatorID <- c('nakke1', 'nakke2', 'nakke3', 'nakke4')
+    RegDataUt$Indikator <- indikatorID[which(kvalIndParam == valgtVar)]
+    RegDataUt$Nevner <- 1
   }
 
-  NakkeKvalInd <- dplyr::rename(NakkeKvalInd,
-                orgnr = OrgNrShus,
-                year = Aar,
-                var = Variabel,
-                ind_id = KvalIndId)
-  NakkeKvalInd$denominator <- 1
+  if (ResPort == 0){
+    #Variabler: year, orgnr, var, denominator, ind_id
+    RegDataUt <- NakkeUtvalg$RegData[,c('Aar', "ReshId", "Variabel")]
+    # nytt navn = gammelt navn
+    RegDataUt <- dplyr::rename(RegDataUt,
+                               year = Aar,
+                               var = Variabel)
 
-  return(invisible(NakkeKvalInd))
+    nyID <- c(# ReshId=OrgID
+      '114288'='974703300',              #Stavanger USH
+      '109820'='974589095',           #OUS, Ullevål USH
+      '105783'='974749025',        #Trondheim, St. Olav
+      '103469'='874716782',                  #OUS, RH
+      '601161'='974795787',                #Tromsø, UNN
+      '999920'='913758862',    #Oslofjordklinikken Vest
+      '105588'='974557746',              #Haukeland USH
+      '999998'='991835083',        #Oslofjordklinikken
+      '110771'='973129856',                     #Volvat
+      '4212372'='981541499',      #Aleris Colosseum Oslo #Aleris colosseum nobel
+      '4211880'='974518821',             #Aleris Nesttun #Aleris sykehus nesttun
+      '4211879'='813381192', #Aleris Colosseum Stavanger
+      '100407'='983975240')  #Sørlandet sykehus)
+
+    RegDataUt$orgnr <- as.character(nyID[as.character(RegDataUt$ReshId)])
+    indikatorID <- c('nakke_komplsvelg3mnd', 'nakke_komplstemme3mnd', 'nakke_komplinfek', 'nakke_ndiendr12mnd35pst')
+    RegDataUt$ind_id <- indikatorID[which(kvalIndParam == valgtVar)]
+    RegDataUt$denominator <- 1
+
+    RegDataUt <- RegDataUt[ ,c('year', 'orgnr', 'var', 'denominator', 'ind_id')]
 }
+
+  if (lagreFil==1) {
+    write.table(RegDataUt, file = filUt, sep = ';', row.names = F) } #, fileEncoding = 'UTF-8')
+
+  return(invisible(RegDataUt))
+}
+
 
 
 #' Funksjon som produserer rapporten som skal lastes ned av mottager.

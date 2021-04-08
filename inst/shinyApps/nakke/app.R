@@ -46,7 +46,7 @@ if (paaServer == TRUE) {
             Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
            FROM SkjemaOversikt
            WHERE HovedDato >= "2014-01-01" ')
-  SkjemaData <- rapbase::LoadRegData(registryName="nakke", query=querySD, dbType="mysql")
+  SkjemaData <- rapbase::loadRegData(registryName="nakke", query=querySD, dbType="mysql")
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
 } #hente data på server
@@ -119,6 +119,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                 'Komplikasjon, sårinfeksjon' = 'Komplinfek',
                                                 'NDI-endr >35%, ett år etter operasjon' = 'NDIendr12mnd35pstKI')),
                         dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = startDato),
+                        selectInput(inputId = "bildeformatKvalInd",
+                                    label = "Velg format for nedlasting av figur",
+                                    choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
                         # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
                         #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
                         # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
@@ -149,9 +152,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              br(),
              h2("Kvalitetsindikatorer", align='center' ),
              #h3(em("Utvikling over tid")),
-             plotOutput("kvalIndFig1")),
-           plotOutput("kvalIndFig2")
-
+             plotOutput("kvalIndFig1", height = 'auto'),
+           downloadButton('LastNedFigKvalIndTid', label='Velg format (til venstre) og last ned figur'),
+           plotOutput("kvalIndFig2", height = 'auto'),
+           downloadButton('LastNedFigKvalIndGrVar', label='Velg format (til venstre) og last ned figur')
+           )
   ), #tab
 
 
@@ -322,7 +327,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                   choices = fremBakValg),
                       selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
                                   choices = enhetsUtvalg
-                      )
+                      ),
+                      selectInput(inputId = "bildeformatFord",
+                                  label = "Velg format for nedlasting av figur",
+                                  choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg'))
                       #sliderInput(inputId="aar", label = "Årstall", min = 2012,  #min(RegData$Aar),
                       #           max = as.numeric(format(Sys.Date(), '%Y')), value = )
                     ),
@@ -331,9 +339,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                     til venstre. Der kan man også gjøre ulike filtreringer."),
            tabsetPanel(
              tabPanel('Figur',
-                      helpText('Høyreklikk på figuren for å laste den ned'),
-                      br(),
-                      plotOutput("fordelinger")),
+                      plotOutput("fordelinger", height = 'auto'),
+                      downloadButton('LastNedFigFord', label='Velg format (til venstre) og last ned figur')
+             ),
              tabPanel('Tabell',
 			  uiOutput("tittelFord"),
                     br(),
@@ -350,7 +358,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                 søkt erstatning/uføretrygd, utdanning'),
            h2("Sykehusvise andeler og utvikling over tid for valgt variabel", align='center'),
            sidebarPanel(width = 3,
-             selectInput(inputId = "valgtVarAndelGrVar", label="Velg variabel",
+             selectInput(inputId = "valgtVarAndel", label="Velg variabel",
                          choices = c('Alder' = 'Alder',
                                      'Andre sykdommer' = 'AndreRelSykdommer',
                                      'Antibiotika' = 'Antibiotika',
@@ -382,20 +390,23 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
                                      'Utdanning' = 'Utdanning')
              ),
-             dateRangeInput(inputId = 'datovalgAndelGrVar', start = startDato, end = Sys.Date(),
+             dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
-             selectInput(inputId = "erMannAndelGrVar", label="Kjønn",
+             selectInput(inputId = "erMannAndel", label="Kjønn",
                          choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
              ),
-             sliderInput(inputId="alderAndelGrVar", label = "Alder", min = 0,
+             sliderInput(inputId="alderAndel", label = "Alder", min = 0,
                          max = 110, value = c(0, 110)
              ),
-             selectInput(inputId = "inngrepAndeler", label="Inngrepstype",
+             selectInput(inputId = "inngrepAndel", label="Inngrepstype",
                          choices = inngrepValg),
-             selectInput(inputId = "myelopatiAndelGrVar", label="Myelopati",
+             selectInput(inputId = "myelopatiAndel", label="Myelopati",
                          choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-             selectInput(inputId = "fremBakAndelGrVar", label="Tilgang ",
+             selectInput(inputId = "fremBakAndel", label="Tilgang ",
                          choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+             selectInput(inputId = "bildeformatAndel",
+                         label = "Velg format for nedlasting av figur",
+                         choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
              br(),
              p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
              selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet',
@@ -416,9 +427,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                br(),
                h3(em("Utvikling over tid")),
                plotOutput("andelTid", height = 'auto'),
+               downloadButton('LastNedFigAndelTid', label='Velg format (til venstre) og last ned figur'),
                br(),
                h3(em("Sykehusvise resultater")),
-               plotOutput("andelerGrVar", height='auto')
+               plotOutput("andelerGrVar", height='auto'),
+               downloadButton('LastNedFigAndelGrVar', label='Velg format (til venstre) og last ned figur')
       ),
       tabPanel("Tabeller",
                uiOutput("tittelAndel"),
@@ -481,6 +494,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                          choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
              selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
                          choices = c("Gjennomsnitt"='Gjsn', "Median"='Med')),
+             selectInput(inputId = "bildeformatGjsn",
+                         label = "Velg format for nedlasting av figur",
+                         choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
              br(),
              p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
              selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
@@ -497,8 +513,11 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            br(),
              tabsetPanel(
                tabPanel("Figurer",
-                        plotOutput("gjsnTid"),
-                        plotOutput("gjsnGrVar")),
+                        plotOutput("gjsnTid", height = 'auto'),
+                        downloadButton('LastNedFigGjsnTid', label='Velg format (til venstre) og last ned figur'),
+                        plotOutput("gjsnGrVar", height = 'auto'),
+                        downloadButton('LastNedFigGjsnGrVar', label='Velg format (til venstre) og last ned figur')
+               ),
                tabPanel("Tabeller",
                         uiOutput("tittelGjsn"),
                         br(),
@@ -688,14 +707,36 @@ server <- function(input, output,session) {
                      session = session)
   }, height=300, width=1000)
 
+    output$LastNedFigKvalIndTid <- downloadHandler(
+      filename = function(){
+        paste0('FigKvalIndTid_', valgtVar=input$valgtVarKvalInd, '_', Sys.time(), '.', input$bildeformatKvalInd)
+      },
+      content = function(file){
+        NakkeFigAndelTid(RegData=RegData, reshID = reshID,
+                         valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
+                         enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd),
+                         tidsenhet = input$tidsenhetKvalInd,
+                         session = session,
+                         outfile = file)
+      })
+
   output$kvalIndFig2 <- renderPlot(
     NakkeFigAndelerGrVar(RegData=RegData,
                          valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
-                         #fremBak = as.numeric(input$fremBakKvalInd),
-                         #myelopati = as.numeric(input$myelopatiKvalInd)
                          ,session=session)
     , height=700, width=600 #height=600, width=500
   )
+
+  output$LastNedFigKvalIndGrVar <- downloadHandler(
+    filename = function(){
+      paste0('FigKvalIndSj_', valgtVar=input$valgtVarKvalInd, '_', Sys.time(), '.', input$bildeformatKvalInd)
+    },
+    content = function(file){
+      NakkeFigAndelerGrVar(RegData=RegData,
+                           valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
+                           ,session=session,
+                       outfile = file)
+    })
 
 
   #-----------Registeradministrasjon-----------
@@ -703,19 +744,17 @@ server <- function(input, output,session) {
 
   if (rolle=='SC') {
     observe({
-      tabdataTilResPort <- dataTilResPort(RegData=RegData, valgtVar = input$valgtVarRes,
+      tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes, ResPort=1,
                                           #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
-                                          aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2])
-                                          )
-      #tab <- dataTilResPort(RegData=RegData, valgtVar = 'KomplStemme3mnd', aar=2015:2018)
-
+                                          aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
+                                          lagreFil=0)
       output$lastNed_dataTilResPort <- downloadHandler(
         filename = function(){paste0('dataTilResPort_',input$valgtVarRes, '.csv')},
         content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})
     })
   }
 
-  DataAlle <- rapbase::LoadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
+  DataAlle <- rapbase::loadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
   DataAlle <- NakkePreprosess(DataAlle)
 
      observe({
@@ -730,7 +769,7 @@ server <- function(input, output,session) {
        #                           as.Date(OprDato) <= '2020-01-31')
     if (rolle =='SC') {
               valgtResh <- as.numeric(input$velgReshReg)
-        PIDtab <- rapbase::LoadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
+        PIDtab <- rapbase::loadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
         DataDump <- merge(DataDump, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
         ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
           } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
@@ -756,6 +795,20 @@ server <- function(input, output,session) {
                     fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep), session=session)
    }, height=700, width=600)
 
+     output$LastNedFigFord <- downloadHandler(
+       filename = function(){
+         paste0('FigFord_', valgtVar=input$valgtVar, '_', Sys.time(), '.', input$bildeformatFord)
+       },
+       content = function(file){
+         NakkeFigAndeler(RegData=RegData,  valgtVar=input$valgtVar,
+                         reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                         datoFra=input$datovalg[1], datoTil=input$datovalg[2],
+                         minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
+                         erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
+                         fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
+                         session=session,
+                         outfile = file)
+       })
 
   observe({
     #UtDataFord <-  NakkeFigAndeler(RegData=RegData,  valgtVar=valgtVar, enhetsUtvalg = 1, reshID = 601161)
@@ -801,47 +854,83 @@ server <- function(input, output,session) {
   #----------------- Andeler -----------------------
 
   output$andelerGrVar <- renderPlot({
-
     NakkeFigAndelerGrVar(RegData=RegData,
-                         valgtVar=input$valgtVarAndelGrVar,
+                         valgtVar=input$valgtVarAndel,
                          reshID=reshID,
-                         datoFra=input$datovalgAndelGrVar[1],
-                         datoTil=input$datovalgAndelGrVar[2],
-                         minald=as.numeric(input$alderAndelGrVar[1]),
-                         maxald=as.numeric(input$alderAndelGrVar[2]),
-                         erMann=as.numeric(input$erMannAndelGrVar),
-                         myelopati = as.numeric(input$myelopatiAndelGrVar),
-                         fremBak = as.numeric(input$fremBakAndelGrVar),
-                         inngrep=as.numeric(input$inngrepAndeler), session=session)
+                         datoFra=input$datovalgAndel[1],
+                         datoTil=input$datovalgAndel[2],
+                         minald=as.numeric(input$alderAndel[1]),
+                         maxald=as.numeric(input$alderAndel[2]),
+                         erMann=as.numeric(input$erMannAndel),
+                         myelopati = as.numeric(input$myelopatiAndel),
+                         fremBak = as.numeric(input$fremBakAndel),
+                         inngrep=as.numeric(input$inngrepAndel), session=session)
   }, height=700, width=600)
 
-  output$andelTid <- renderPlot({
+  output$LastNedFigAndelGrVar <- downloadHandler(
+    filename = function(){
+      paste0('FigAndelSh_', valgtVar=input$valgtVarAndel, '_', Sys.time(), '.', input$bildeformatAndel)
+    },
+    content = function(file){
+      NakkeFigAndelerGrVar(RegData=RegData,
+                           valgtVar=input$valgtVarAndel,
+                           reshID=reshID,
+                           datoFra=input$datovalgAndel[1],
+                           datoTil=input$datovalgAndel[2],
+                           minald=as.numeric(input$alderAndel[1]),
+                           maxald=as.numeric(input$alderAndel[2]),
+                           erMann=as.numeric(input$erMannAndel),
+                           myelopati = as.numeric(input$myelopatiAndel),
+                           fremBak = as.numeric(input$fremBakAndel),
+                           inngrep=as.numeric(input$inngrepAndel), session=session,
+                      outfile = file)
+    })
 
-    NakkeFigAndelTid(RegData=RegData, valgtVar=input$valgtVarAndelGrVar,
+  output$andelTid <- renderPlot({
+    NakkeFigAndelTid(RegData=RegData, valgtVar=input$valgtVarAndel,
                      reshID=reshID,
-                     datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
-                     minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
-                     erMann=as.numeric(input$erMannAndelGrVar),
-                     myelopati = as.numeric(input$myelopatiAndelGrVar),
-                     fremBak = as.numeric(input$fremBakAndelGrVar),
+                     datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                     minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+                     erMann=as.numeric(input$erMannAndel),
+                     myelopati = as.numeric(input$myelopatiAndel),
+                     fremBak = as.numeric(input$fremBakAndel),
                      tidsenhet = input$tidsenhetAndelTid,
                      enhetsUtvalg = input$enhetsUtvalgAndelTid,
-                     inngrep=as.numeric(input$inngrepAndeler),
+                     inngrep=as.numeric(input$inngrepAndel),
                      session=session)
   }, height=300, width=1000)
 
+  output$LastNedFigAndelTid <- downloadHandler(
+    filename = function(){
+      paste0('FigAndelTid_', valgtVar=input$valgtVarAndel, '_', Sys.time(), '.', input$bildeformatAndel)
+    },
+    content = function(file){
+      NakkeFigAndelTid(RegData=RegData, valgtVar=input$valgtVarAndel,
+                       reshID=reshID,
+                       datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                       minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+                       erMann=as.numeric(input$erMannAndel),
+                       myelopati = as.numeric(input$myelopatiAndel),
+                       fremBak = as.numeric(input$fremBakAndel),
+                       tidsenhet = input$tidsenhetAndelTid,
+                       enhetsUtvalg = input$enhetsUtvalgAndelTid,
+                       inngrep=as.numeric(input$inngrepAndel),
+                       session=session,
+                       outfile = file)
+    })
+
   observe({
     #AndelTid
-    AndelerTid <- NakkeFigAndelTid(RegData=RegData,  valgtVar=input$valgtVarAndelGrVar,
+    AndelerTid <- NakkeFigAndelTid(RegData=RegData,  valgtVar=input$valgtVarAndel,
                                    reshID=reshID,
-                                   datoFra=input$datovalgAndelGrVar[1], datoTil=input$datovalgAndelGrVar[2],
-                                   minald=as.numeric(input$alderAndelGrVar[1]), maxald=as.numeric(input$alderAndelGrVar[2]),
-                                   erMann=as.numeric(input$erMannAndelGrVar),
-                                   myelopati = as.numeric(input$myelopatiAndelGrVar),
-                                   fremBak = as.numeric(input$fremBakAndelGrVar),
+                                   datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
+                                   minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
+                                   erMann=as.numeric(input$erMannAndel),
+                                   myelopati = as.numeric(input$myelopatiAndel),
+                                   fremBak = as.numeric(input$fremBakAndel),
                                    tidsenhet = input$tidsenhetAndelTid,
                                    enhetsUtvalg = input$enhetsUtvalgAndelTid,
-                                   inngrep=as.numeric(input$inngrepAndeler),
+                                   inngrep=as.numeric(input$inngrepAndel),
                                    session=session) #,lagFig=0)
     tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
 
@@ -870,15 +959,15 @@ server <- function(input, output,session) {
 
     #AndelGrVar
     AndelerShus <- NakkeFigAndelerGrVar(RegData=RegData,
-                                        valgtVar=input$valgtVarAndelGrVar,
+                                        valgtVar=input$valgtVarAndel,
                                         reshID=reshID,
-                                        datoFra=input$datovalgAndelGrVar[1],
-                                        datoTil=input$datovalgAndelGrVar[2],
-                                        minald=as.numeric(input$alderAndelGrVar[1]),
-                                        maxald=as.numeric(input$alderAndelGrVar[2]),
-                                        erMann=as.numeric(input$erMannAndelGrVar),
-                                        myelopati = as.numeric(input$myelopatiAndelGrVar),
-                                        inngrep=as.numeric(input$inngrepAndeler),
+                                        datoFra=input$datovalgAndel[1],
+                                        datoTil=input$datovalgAndel[2],
+                                        minald=as.numeric(input$alderAndel[1]),
+                                        maxald=as.numeric(input$alderAndel[2]),
+                                        erMann=as.numeric(input$erMannAndel),
+                                        myelopati = as.numeric(input$myelopatiAndel),
+                                        inngrep=as.numeric(input$inngrepAndel),
                                         session=session) #, lagFig = 0))
     tabAndelerShus <- cbind('Antall (n)' = AndelerShus$Nvar,
                             'Antall (N)' = AndelerShus$Ngr,
@@ -921,6 +1010,23 @@ server <- function(input, output,session) {
                       session=session)
   }, height=600, width=500)
 
+  output$LastNedFigGjsnGrVar <- downloadHandler(
+    filename = function(){
+      paste0('FigGjsnSh_', valgtVar=input$valgtVarGjsn, '_', Sys.time(), '.', input$bildeformatGjsn)
+    },
+    content = function(file){
+      NakkeFigGjsnGrVar(RegData=RegData,  valgtVar=input$valgtVarGjsn,
+                        reshID=reshID,
+                        datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+                        minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+                        erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
+                        fremBak = as.numeric(input$fremBakGjsn),
+                        inngrep=as.numeric(input$inngrepGjsn),
+                        valgtMaal = input$sentralmaal,
+                        session=session,
+                       outfile = file)
+    })
+
   output$gjsnTid <- renderPlot({
     NakkeFigGjsnTid(RegData=RegData,  valgtVar=input$valgtVarGjsn,
                     reshID=reshID,
@@ -935,6 +1041,24 @@ server <- function(input, output,session) {
                     session = session)
   }, height=300, width=1000)
 
+  output$LastNedFigGjsnTid <- downloadHandler(
+    filename = function(){
+      paste0('FigGjsnTid_', valgtVar=input$valgtVarGjsn, '_', Sys.time(), '.', input$bildeformatGjsn)
+    },
+    content = function(file){
+      NakkeFigGjsnTid(RegData=RegData,  valgtVar=input$valgtVarGjsn,
+                      reshID=reshID,
+                      datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
+                      minald=as.numeric(input$alderGjsn[1]), maxald=as.numeric(input$alderGjsn[2]),
+                      erMann=as.numeric(input$erMannGjsn), myelopati = as.numeric(input$myelopatiGjsn),
+                      fremBak = as.numeric(input$fremBakGjsn),
+                      inngrep=as.numeric(input$inngrepGjsn),
+                      valgtMaal = input$sentralmaal,
+                      tidsenhet = input$tidsenhetGjsn,
+                      enhetsUtvalg = input$enhetsUtvalgGjsn,
+                      session = session,
+                      outfile = file)
+    })
 
 observe({ #Sykehusvise gjennomsnitt, figur og tabell
   UtDataGjsnGrVar <- NakkeFigGjsnGrVar(RegData=RegData,

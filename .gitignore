@@ -6,13 +6,14 @@ nakke.Rproj
 NakkeFigAndelGrVar FEIL.jrxml
 *.aux
 *.log
-*.pdf
+
 *.nav
 *.out
 *.snm
 *.toc
 *.vrb
 *.tex
+
 aarsrapp/*
 /aarsrapp
 *~

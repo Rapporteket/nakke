@@ -62,11 +62,11 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
 
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnGrVar')
   RegData <- NakkeVarSpes$RegData
-  #sortAvtagende <- NakkeVarSpes$sortAvtagende
+  sortAvtagende <- NakkeVarSpes$sortAvtagende
   #varTxt <- NakkeVarSpes$varTxt
   # KIekstrem <- NakkeVarSpes$NakkeVarSpes
-  # KImaal <- NakkeVarSpes$KImaal
-  # KImaaltxt <- NakkeVarSpes$KImaaltxt
+  KImaal <- NakkeVarSpes$KImaal
+  KImaaltxt <- NakkeVarSpes$KImaaltxt
   deltittel <- NakkeVarSpes$deltittel
   xAkseTxt <- NakkeVarSpes$xAkseTxt
   #ytxt1 <- NakkeVarSpes$ytxt1
@@ -143,6 +143,10 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
                            gjsn='Gjennomsnitt',
                            med='Median')
 
+  if (valgtVar == 'NDIendr12mnd' & myelopati==0 & fremBak==1) {
+    KImaalGrenser <- c(0, MidtHele, 100) } else {
+      KImaalGrenser <- NA }
+
   FigDataParam <- list(AggVerdier=AggVerdier, #Endres til Soyleverdi? Evt. AggVerdier
                         AggTot=MidtHele, #Til AggVerdiTot?
                         N=list(Hoved=N),
@@ -197,10 +201,31 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
     indGrUtPlot <- AntGr+(1:length(indGrUt))
     posKI <- pos[1:AntGr]
     ybunn <- 0
-    ytopp <- max(posKI)*1.03	 #min(posKI)
+    ytopp <- max(posKI)*1.05	 #min(posKI)
+
+    # if (!is.na(KImaalGrenser)) {
+    #   lines(x=rep(KImaalGrenser, 2), y=c(minpos, maxpos), col= '#FF7260', lwd=2.5) #y=c(0, max(pos)+0.55),
+    #   text(x=KImaalGrenser, y=maxpos+0.6, paste0('Mål:', KImaaltxt), cex=0.9*cexgr, col= '#FF7260',adj=c(0.5,0))
+    # }
+    if (!is.na(KImaalGrenser[1])) {
+      antMaalNivaa <- length(KImaalGrenser)-1
+      rekkef <- 1:antMaalNivaa
+      if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
+      fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
+      #fargerMaalNiva <-  c('#3baa34', '#fd9c00', '#e30713')[rekkef] #Grønn, gul, rød Likt med sykehusviser
+      maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
+      rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
+           ytop=max(posKI)+0.5, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+      legend(x=0, y=-2.5, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+             ncol=antMaalNivaa+1,
+             xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
+             legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
+    }
+
     polygon( c(rep(KIHele[1],2), rep(KIHele[2],2)), c(ybunn, ytopp, ytopp, ybunn),
              col=farger[4], border=farger[4])
     lines(x=rep(MidtHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
+
     legend('top', fill=c('white', farger[4]),  border='white', lwd=2,
            col=c(farger[2], farger[4]), seg.len=0.6, merge=TRUE, bty='n',
            c(paste0(tleg, ', alle: ', sprintf('%.1f', MidtHele), ', N=', N),

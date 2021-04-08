@@ -312,17 +312,29 @@ rm(list=ls())
 library(nakke)
 
 #---Interaktive nettsider
-library(nakke)
-RegData <- NakkeRegDataSQL(datoFra = '2014-01-01')
+RegData <- NakkeRegDataSQL(datoFra = '2014-01-01', datoTil = '2020-12-31')
 RegData <- NakkePreprosess(RegData)
-DataKI <- tilretteleggDataSKDE(RegData = RegData, datoFra = '2014-01-01', aar=0)
-write.table(DataKI, file='data-raw/NakkeKI.csv', sep=';', row.names = F)
 
-table(RegData$ReshId)
+aar <- 2016:2020
+NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar='NDIendr12mnd35pst', aar=aar, ResPort=0)
 
-NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
-RegData <- NakkePreprosess(NakkeData)
-RegData <- RegData[RegData$Aar>=2014,]
+kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
+indikatorID <- c('nakke_komplsvelg3mnd', 'nakke_komplstemme3mnd', 'nakke_komplinfek', 'nakke_ndiendr12mnd35pst')   #c('nakke1', 'nakke2', 'nakke3', 'nakke4')
+
+NakkeKvalInd <- data.frame(NULL) #Aar=NULL, ShNavn=NULL)
+for (valgtVar in kvalIndParam){
+  NakkeKvalInd1 <- NakkeKvalInd
+  NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar, aar=aar, ResPort=0, lagreFil=0)
+  #NakkeKvalInd1 <- dataTilOffVisning(...)
+  NakkeKvalInd <- rbind(NakkeKvalInd, NakkeKvalInd1)
+}
+#table(NakkeKvalInd$orgnr, useNA = 'a')
+write.table(NakkeKvalInd, file='NakkeTilSKDE.csv', sep=';', row.names = F)
+
+# NakkeData <- read.table('A:/Nakke/AlleVarNum2019-09-12.csv', sep=';', header=T) #, encoding = 'UTF-8')
+# RegData <- NakkePreprosess(NakkeData)
+# RegData <- RegData[RegData$Aar>=2014,]
+
 # Stemmevansker, 3 mnd.'
 # Mål: lavest
 #   #Kode 0,1: Nei, Ja +tomme
@@ -365,7 +377,8 @@ RegData$KomplInfek[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$Komp
 variable <- c('ReshId', 'SykehusNavn', 'Aar', 'KomplInfek')
 write.table(RegData[ ,variable], file='A:/ind3_Sårinfeksjon_Nakke.csv', sep=';', row.names = F)
 
-#--------Nøkkeltall, Resultatportalen
+##-------- Nøkkeltall, Resultatportalen---
+
 rm(list=ls())
 library(nakke)
 NakkeData <- read.table('A:/Nakke/AlleVarNum2020-08-24.csv', sep=';', header=T) #, encoding = 'UTF-8')
@@ -481,22 +494,3 @@ write.table(NakkeNPR2017data, file="A:/Nakke/NakkeNPR2017data.csv", sep=';')
 
 NakkeNPR2017data <- read.table('A:/Nakke/NakkeNPR2017persnr.csv', sep=';', header=T, encoding = 'UTF-8', stringsAsFactors = FALSE)  # na.strings = "NULL",
 
-
-#------------------------------ Shiny --------------------------
-library(Nakke)
-setwd('C:/ResultattjenesteGIT/Nakke/R')
-runShinyAppReports()
-
-#Konto
-library(shinyapps)
-??shinyappsProxies
-?shinyappsOptions
-#Publisere:
-- Sette proxy
-
-library(rsconnect)
-rsconnect::setAccountInfo(name='lenatest',
-                          token='..',
-                          secret='..')
-rsconnect::deployApp('C:/ResultattjenesteGIT/Nakke/inst/shinyApps')
-#options(rpubs.upload.method = "internal")
