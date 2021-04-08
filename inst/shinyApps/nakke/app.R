@@ -13,10 +13,6 @@ library(zoo)
 library(nakke)
 #library(tools)
 
-# ui <- shinyUI(basicPage(
-#   downloadButton('report')
-# ))
-
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 paaServer <- context %in% c("DEV", "TEST", "QA", "PRODUCTION")
