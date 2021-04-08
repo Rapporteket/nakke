@@ -501,17 +501,17 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     tittel <- 'Minst 35% forbedring av NDI, 12 mnd.'
 	varTxt <- 'med NDI>35%'
 }
-  # if (valgtVar=='NDIendr12mnd35pstKI') { #AndelGrVar, AndelTid
-  #   #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
-  #   RegData$NDIEndr <- 100*(RegData$NDIscorePreOp - RegData$NDIscore12mnd)/RegData$NDIscorePreOp
-  #   indVar <- which(is.finite(RegData$NDIEndr) & RegData$OprIndikMyelopati==0 & RegData$OprMetodeTilgangFremre==1)
-  #   indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
-  #   RegData <- RegData[intersect(indVar, indSkjema), ]
-  #   RegData$Variabel[RegData$NDIEndr>=35] <- 1
-  #   tittel <- 'Minst 35% forb. av NDI, 12 mnd., fremre, ikke-myelopati'
-  #   varTxt <- 'med NDI>35%'
-  #   KImaalGrenser <- c(70,100)
-  # }
+  if (valgtVar=='NDIendr12mnd35pstKI') { #AndelGrVar, AndelTid
+    #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
+    RegData$NDIEndr <- 100*(RegData$NDIscorePreOp - RegData$NDIscore12mnd)/RegData$NDIscorePreOp
+    indVar <- which(is.finite(RegData$NDIEndr) & RegData$OprIndikMyelopati==0 & RegData$OprMetodeTilgangFremre==1)
+    indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
+    RegData <- RegData[intersect(indVar, indSkjema), ]
+    RegData$Variabel[RegData$NDIEndr>=35] <- 1
+    tittel <- 'Minst 35% forb. av NDI, 12 mnd., fremre, ikke-myelopati'
+    varTxt <- 'med NDI>35%'
+    KImaalGrenser <- c(0,70,100)
+  }
 	if (valgtVar=='NDIendr12mnd') { #GjsnTid, GjsnGrVar
 		#Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
 		KIekstrem <- c(-100,100)
