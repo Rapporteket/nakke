@@ -115,6 +115,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                 'Komplikasjon, sårinfeksjon' = 'Komplinfek',
                                                 'NDI-endr >35%, ett år etter operasjon' = 'NDIendr12mnd35pstKI')),
                         dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = startDato),
+                        h5('Husk å velge startdato minst ett år tilbake i tid hvis du ønkser å se resultater ett år etter operasjon...'),
                         selectInput(inputId = "bildeformatKvalInd",
                                     label = "Velg format for nedlasting av figur",
                                     choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
@@ -746,6 +747,8 @@ server <- function(input, output,session) {
                            valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
                            ,session=session,
                        outfile = file)
+      print(input$valgtVarKvalInd)
+      print(input$datoFraKvalInd)
     })
 
 

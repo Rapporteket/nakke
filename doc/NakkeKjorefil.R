@@ -220,8 +220,9 @@ rm(list=ls())
 NakkeData <- read.table('A:/Nakke/AlleVarNum2018-06-21.csv', sep=';', header=T, encoding = 'UTF-8') #Nakke18012016, AlleVarNum2016-01-04Num
 RegData <- NakkeData
 setwd("C:/ResultattjenesteGIT/Nakke/")
+RegData <- NakkePreprosess(NakkeRegDataSQL(datoFra = '2020-01-01'))
 
-valgtVar <- 'Alder'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
+valgtVar <- 'NDIendr12mnd35pstKI'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
           #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
@@ -230,7 +231,8 @@ valgtVar <- 'Alder'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
 		  #SmertestillPreOp, SymptVarighetNakkeHode, SymptVarighetSmerterUker, UforetrygdPreOp, Utdanning
 outfile <- paste0(valgtVar, '_ShusSyn.pdf')	#''	#Navn angis av Jasper
 outfile <- '' #paste0(valgtVar, '_ShusSyn.png')	#''	#Navn angis av Jasper
-NakkeFigAndelerGrVar(RegData=RegData, datoFra=datoFra, valgtVar=valgtVar, fremBak = fremBak, myelopati = myelopati,
+NakkeFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar)
+, fremBak = fremBak, myelopati = myelopati, datoFra=datoFra,
            datoTil=datoTil, minald=minald, maxald=maxald, erMann=erMann,
            reshID=reshID, outfile=outfile)
 
