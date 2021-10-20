@@ -223,8 +223,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   tabPanel(p('Registeradministrasjon', title="Verktøy for SC-bruker"),
            value = 'Registeradministrasjon',
            h3('Denne siden skal kun vises for SC-bruker', align='center'),
-           sidebarPanel(width=4,
-                        h4('Datadump'),
+           tabsetPanel(
+             tabPanel('Datadump',
+                      sidebarPanel(width=4,
                         dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                        label = "Tidsperiode", separator="t.o.m.", language="nb"),
                         selectInput(inputId = 'velgReshReg', label='Velg sykehus',
@@ -258,11 +259,24 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   ),
 
   mainPanel(
-
     br(),
     'Her er det fritt fram å komme med ønsker'
+    ),
+             ),
+  shiny::tabPanel(
+    "Eksport",
+    #shiny::sidebarLayout(
+    shiny::sidebarPanel(
+      rapbase::exportUCInput("ngerExport")
+    ),
+    shiny::mainPanel(
+      rapbase::exportGuideUI("ngerExportGuide")
     )
-  ),
+    #)
+  ) #Eksport-tab
+                        ) #tabsetPanel
+           ), #Registeradm-tab
+
 #------------- Fordelingsfigurer--------------------
 
  tabPanel(p("Fordelinger", title='Her finner du resultater for: Alder, antibiotika, arbeidsstatus, BMI, erstatning, fornøydhet, komorbiditet,
@@ -780,6 +794,15 @@ server <- function(input, output,session) {
         filename = function(){'dataDumpNakke.csv'},
         content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
      })
+
+     #----------- Eksport ----------------
+     registryName <- "nger"
+     ## brukerkontroller
+     rapbase::exportUCServer("ngerExport", registryName)
+     ## veileding
+     rapbase::exportGuideServer("ngerExportGuide", registryName)
+
+
 
 #-----------Fordelinger---------------------
   output$fordelinger <- renderPlot({
