@@ -267,10 +267,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     "Eksport",
     #shiny::sidebarLayout(
     shiny::sidebarPanel(
-      rapbase::exportUCInput("ngerExport")
+      rapbase::exportUCInput("nakkeExport")
     ),
     shiny::mainPanel(
-      rapbase::exportGuideUI("ngerExportGuide")
+      rapbase::exportGuideUI("nakkeExportGuide")
     )
     #)
   ) #Eksport-tab
@@ -796,11 +796,11 @@ server <- function(input, output,session) {
      })
 
      #----------- Eksport ----------------
-     registryName <- "nger"
+     registryName <- "nakke"
      ## brukerkontroller
-     rapbase::exportUCServer("ngerExport", registryName)
+     rapbase::exportUCServer("nakkeExport", registryName)
      ## veileding
-     rapbase::exportGuideServer("ngerExportGuide", registryName)
+     rapbase::exportGuideServer("nakkeExportGuide", registryName)
 
 
 
