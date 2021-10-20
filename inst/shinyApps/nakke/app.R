@@ -764,12 +764,12 @@ server <- function(input, output,session) {
     })
   }
 
-  DataAlle <- rapbase::loadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
-  DataAlle <- NakkePreprosess(DataAlle)
+  #DataAlle <- rapbase::loadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
+  #DataAlle <- NakkePreprosess(DataAlle)
 
      observe({
        #print(dim(DataAlle[1]))
-       DataDump <- dplyr::filter(DataAlle,
+       DataDump <- dplyr::filter(RegData, #DataAlle,
                                 as.Date(OprDato) >= input$datovalgRegKtr[1],
                                 as.Date(OprDato) <= input$datovalgRegKtr[2])
 #print(input$datovalgRegKtr[1])
