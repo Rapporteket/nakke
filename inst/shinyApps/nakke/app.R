@@ -13,10 +13,6 @@ library(zoo)
 library(nakke)
 #library(tools)
 
-# ui <- shinyUI(basicPage(
-#   downloadButton('report')
-# ))
-
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 paaServer <- context %in% c("DEV", "TEST", "QA", "PRODUCTION")
@@ -119,6 +115,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                 'Komplikasjon, sårinfeksjon' = 'Komplinfek',
                                                 'NDI-endr >35%, ett år etter operasjon' = 'NDIendr12mnd35pstKI')),
                         dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = startDato),
+                        h5('Husk å velge startdato minst ett år tilbake i tid hvis du ønkser å se resultater ett år etter operasjon...'),
                         selectInput(inputId = "bildeformatKvalInd",
                                     label = "Velg format for nedlasting av figur",
                                     choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
@@ -227,8 +224,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   tabPanel(p('Registeradministrasjon', title="Verktøy for SC-bruker"),
            value = 'Registeradministrasjon',
            h3('Denne siden skal kun vises for SC-bruker', align='center'),
-           sidebarPanel(width=4,
-                        h4('Datadump'),
+           tabsetPanel(
+             tabPanel('Datadump',
+                      sidebarPanel(width=4,
                         dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                        label = "Tidsperiode", separator="t.o.m.", language="nb"),
                         selectInput(inputId = 'velgReshReg', label='Velg sykehus',
@@ -262,11 +260,24 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   ),
 
   mainPanel(
-
     br(),
     'Her er det fritt fram å komme med ønsker'
+    ),
+             ),
+  shiny::tabPanel(
+    "Eksport",
+    #shiny::sidebarLayout(
+    shiny::sidebarPanel(
+      rapbase::exportUCInput("nakkeExport")
+    ),
+    shiny::mainPanel(
+      rapbase::exportGuideUI("nakkeExportGuide")
     )
-  ),
+    #)
+  ) #Eksport-tab
+                        ) #tabsetPanel
+           ), #Registeradm-tab
+
 #------------- Fordelingsfigurer--------------------
 
  tabPanel(p("Fordelinger", title='Her finner du resultater for: Alder, antibiotika, arbeidsstatus, BMI, erstatning, fornøydhet, komorbiditet,
@@ -736,6 +747,8 @@ server <- function(input, output,session) {
                            valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
                            ,session=session,
                        outfile = file)
+      print(input$valgtVarKvalInd)
+      print(input$datoFraKvalInd)
     })
 
 
@@ -754,12 +767,12 @@ server <- function(input, output,session) {
     })
   }
 
-  DataAlle <- rapbase::loadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
-  DataAlle <- NakkePreprosess(DataAlle)
+  #DataAlle <- rapbase::loadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
+  #DataAlle <- NakkePreprosess(DataAlle)
 
      observe({
        #print(dim(DataAlle[1]))
-       DataDump <- dplyr::filter(DataAlle,
+       DataDump <- dplyr::filter(RegData, #DataAlle,
                                 as.Date(OprDato) >= input$datovalgRegKtr[1],
                                 as.Date(OprDato) <= input$datovalgRegKtr[2])
 #print(input$datovalgRegKtr[1])
@@ -784,6 +797,15 @@ server <- function(input, output,session) {
         filename = function(){'dataDumpNakke.csv'},
         content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
      })
+
+     #----------- Eksport ----------------
+     registryName <- "nakke"
+     ## brukerkontroller
+     rapbase::exportUCServer("nakkeExport", registryName)
+     ## veileding
+     rapbase::exportGuideServer("nakkeExportGuide", registryName)
+
+
 
 #-----------Fordelinger---------------------
   output$fordelinger <- renderPlot({

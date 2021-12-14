@@ -8,9 +8,9 @@
 #' @return Henter dataramma RegData for Degenerativ Nakke
 #' @export
 #'
-NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = '2099-01-01') {
+NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date()) {
 
-  query <- paste0('SELECT
+  queryAVN <- paste0('SELECT
 	Alder,
 	AndreRelSykdommer,
 	AntallNivaaOpr,
@@ -206,8 +206,15 @@ FROM AlleVarNum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
 
   #query <-'select * from AlleVarNum'
+    RegDataAVN <- rapbase::loadRegData(registryName = "nakke", query = queryAVN, dbType = "mysql")
 
-  RegData <- rapbase::loadRegData(registryName = "nakke", query = query, dbType = "mysql")
+  queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
+               FROM ForlopsOversikt'
+  RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
+  #intersect(sort(names(RegDataAVN)), sort(names(RegDataForl)))
+
+  RegData <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
+
 
 #FROM AlleVarNum INNER JOIN ForlopsOversikt ON AlleVarNum.MCEID = ForlopsOversikt.ForlopsID
 #Tatt ut, mai 2017:
