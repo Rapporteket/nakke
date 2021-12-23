@@ -225,8 +225,22 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            value = 'Registeradministrasjon',
            h3('Denne siden skal kun vises for SC-bruker', align='center'),
            tabsetPanel(
+             tabPanel(
+               h3("Utsendinger"),
+               #title = "Utsending av rapporter",
+               sidebarLayout(
+                 sidebarPanel(
+                   rapbase::autoReportOrgInput("NakkeUts"),
+                   rapbase::autoReportInput("NakkeUts")
+                 ),
+                 mainPanel(
+                   rapbase::autoReportUI("NakkeUts")
+                 )
+               )
+             ),
              tabPanel('Datadump',
-                      sidebarPanel(width=4,
+                      sidebarPanel(
+                        width=4,
                         dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                        label = "Tidsperiode", separator="t.o.m.", language="nb"),
                         selectInput(inputId = 'velgReshReg', label='Velg sykehus',
@@ -245,38 +259,31 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                 'Infeksjon, 3 mnd.' = 'Komplinfek',
                                                 'NDI-endring 12mnd > 35%' = 'NDIendr12mnd35pst')
                         ),
-                        # selectInput(inputId = 'myelopatiRes', label='Myelopati',
-                        #             choices = myelopatiValg
-                        # ),
-                        # selectInput(inputId = 'fremBakRes', label='Tilgang',
-                        #             choices = fremBakValg
-                        # ),
                         sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2014),
                                     max = as.numeric(year(idag)), value = c(2014, year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
                         ),
                         br(),
                         downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data til Resultatportalen'),
                         br()
-  ),
+                      ),
 
-  mainPanel(
-    br(),
-    'Her er det fritt fram å komme med ønsker'
-    ),
+                      mainPanel(
+                        br(),
+                        'Her er det fritt fram å komme med ønsker'
+                      ),
              ),
-  shiny::tabPanel(
-    "Eksport",
-    #shiny::sidebarLayout(
-    shiny::sidebarPanel(
-      rapbase::exportUCInput("nakkeExport")
-    ),
-    shiny::mainPanel(
-      rapbase::exportGuideUI("nakkeExportGuide")
-    )
-    #)
-  ) #Eksport-tab
-                        ) #tabsetPanel
-           ), #Registeradm-tab
+             shiny::tabPanel(
+               "Eksport av krypterte data",
+               #shiny::sidebarLayout(
+               shiny::sidebarPanel(
+                 rapbase::exportUCInput("nakkeExport")
+               ),
+               shiny::mainPanel(
+                 rapbase::exportGuideUI("nakkeExportGuide")
+               )
+             ) #Eksport-tab
+           ) #tabsetPanel
+  ), #Registeradm-tab
 
 #------------- Fordelingsfigurer--------------------
 
@@ -767,19 +774,10 @@ server <- function(input, output,session) {
     })
   }
 
-  #DataAlle <- rapbase::loadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
-  #DataAlle <- NakkePreprosess(DataAlle)
-
      observe({
-       #print(dim(DataAlle[1]))
        DataDump <- dplyr::filter(RegData, #DataAlle,
                                 as.Date(OprDato) >= input$datovalgRegKtr[1],
                                 as.Date(OprDato) <= input$datovalgRegKtr[2])
-#print(input$datovalgRegKtr[1])
-#print(dim(DataDump[1]))
-# DataDump <- dplyr::filter(RegData,
-       #                           as.Date(OprDato) >= '2019-01-01',
-       #                           as.Date(OprDato) <= '2020-01-31')
     if (rolle =='SC') {
               valgtResh <- as.numeric(input$velgReshReg)
         PIDtab <- rapbase::loadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
@@ -797,6 +795,34 @@ server <- function(input, output,session) {
         filename = function(){'dataDumpNakke.csv'},
         content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
      })
+
+     #---Utsendinger---------------
+     orgs <- as.list(sykehusValg)
+
+     ## liste med metadata for rapport
+     reports <- list(
+       MndRapp = list(
+         synopsis = "Månedsrapport",
+         fun = "abonnement",
+         paramNames = c('rnwFil', "reshID"),
+         paramValues = c('NakkeMndRapp.Rnw', 0)
+       )
+     )
+     #abonnementNakke(rnwFil, brukernavn='tullebukk', reshID=0, datoFra=Sys.Date()-180, datoTil=Sys.Date())
+
+     org <- rapbase::autoReportOrgServer("NakkeUts", orgs)
+
+     # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
+     paramNames <- shiny::reactive("reshID")
+     paramValues <- shiny::reactive(org$value())
+
+     rapbase::autoReportServer(
+       id = "NakkeUts", registryName = "nakke", type = "dispatchment",
+       org = org$value, paramNames = paramNames, paramValues = paramValues,
+       reports = reports, orgs = orgs, eligible = TRUE
+     )
+
+
 
      #----------- Eksport ----------------
      registryName <- "nakke"
