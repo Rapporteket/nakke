@@ -226,8 +226,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            h3('Denne siden skal kun vises for SC-bruker', align='center'),
            tabsetPanel(
              tabPanel(
-               h3("Utsendinger"),
-               #title = "Utsending av rapporter",
+               h4("Utsending av rapporter"),
                sidebarLayout(
                  sidebarPanel(
                    rapbase::autoReportOrgInput("NakkeUts"),
@@ -238,7 +237,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                  )
                )
              ),
-             tabPanel('Datadump',
+             tabPanel(
+               h4('Datadump'),
                       sidebarPanel(
                         width=4,
                         dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
@@ -273,7 +273,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                       ),
              ),
              shiny::tabPanel(
-               "Eksport av krypterte data",
+              h4("Eksport av krypterte data"),
                #shiny::sidebarLayout(
                shiny::sidebarPanel(
                  rapbase::exportUCInput("nakkeExport")
