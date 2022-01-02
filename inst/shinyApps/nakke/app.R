@@ -803,7 +803,7 @@ server <- function(input, output,session) {
      reports <- list(
        MndRapp = list(
          synopsis = "Månedsrapport",
-         fun = "abonnement",
+         fun = "abonnementNakke",
          paramNames = c('rnwFil', "reshID"),
          paramValues = c('NakkeMndRapp.Rnw', 0)
        )
