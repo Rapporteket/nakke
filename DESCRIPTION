@@ -30,7 +30,7 @@ Imports:
     xtable,
     zoo
 Remotes:
-    Rapporteket/rapbase,
+     Rapporteket/rapbase@*release,
     Rapporteket/raplog,
     Rapporteket/rapFigurer
 Suggests:

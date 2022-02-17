@@ -591,7 +591,7 @@ server <- function(input, output,session) {
 
 
 
-  raplog::appLogger(session, msg='Starter Rapporteket-Nakke')
+  rapbase::appLogger(session, msg='Starter Rapporteket-Nakke')
   #system.file('NakkeMndRapp.Rnw', package='Nakke')
   #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
 

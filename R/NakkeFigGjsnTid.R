@@ -36,7 +36,7 @@ NakkeFigGjsnTid <- function(RegData, outfile='', valgtVar='Alder', erMann='',
 		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=0, reshID=0,...){ #tittel=1,
 
   if ("session" %in% names(list(...))) {
-    raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigGjsnTid: ',valgtVar))
+    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigGjsnTid: ',valgtVar))
   }
 
 	if (hentData == 1) {

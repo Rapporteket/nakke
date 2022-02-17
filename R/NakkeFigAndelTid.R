@@ -53,7 +53,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                              hentData=0,...) {
 
   if ("session" %in% names(list(...))) {
-    raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelTid: ',valgtVar))
+    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelTid: ',valgtVar))
   }
 
 

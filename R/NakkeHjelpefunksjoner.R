@@ -192,7 +192,7 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
                        datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
-  raplog::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
+  rapbase::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
                     reshId = reshID[[1]], msg = "Abonnement: månedsrapport")
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
@@ -206,7 +206,7 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
 
   #gc() #Opprydning gc-"garbage collection"
   utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
-  raplog::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
+  rapbase::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
                     reshId = reshID[[1]], msg = paste("Sendt: ", utfil))
   return(utfil)
 }
