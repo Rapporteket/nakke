@@ -116,11 +116,11 @@ table(RegData[,variable[9]], useNA = 'a')
 	#table(SkjemaData$Sykehusnavn) #[ind])
 	reshID <- 601161
 
-	setwd('C:/ResultattjenesteGIT/nakke/inst/')
+	setwd('./inst')
 	#options(encoded_text_to_latex= 'UTF-8')
 	knit('NakkeMndRapp.Rnw', encoding = 'UTF-8')
 	texi2pdf(file='NakkeMndRapp.tex')
-#	knit2pdf('NakkeMndRapp.Rnw', encoding = 'UTF-8')
+	knit2pdf('NakkeMndRapp.Rnw')
 
 
 #---------------Offentliggjøring fra 2016----------------
