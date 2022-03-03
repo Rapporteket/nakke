@@ -95,7 +95,7 @@ skalShFig <- 0.32
 
 
 \title[Degenerativ Nakke \\\Sexpr{shtxt}]{\textit{NKR - Degenerativ Nakke} \\
-MÅNEDSRAPPORT \\
+Halvårsrapport \\
 \Sexpr{shtxt}}
 \date{}
 
@@ -110,7 +110,7 @@ MÅNEDSRAPPORT \\
 \begin{frame}[fragile] {Innhold}
 Dette er en sammenstilling av resultater  fra Norsk Kvalitetsregister for Ryggkirurgi, Degenerativ Nakke.
 Alle registreringer er basert på registreringer i registeret per rapportdato. Data er hentet rett fra registeret og er ikke kvalitetssikret.
-Datoer/årstall er basert på operasjonsdato. Resultatene som vises er i all hovedsak for de siste 12 måneder.
+Datoer/årstall er basert på operasjonsdato. Resultatene som vises varierer fra de siste 12 måneder til siste 4 år.
 Tidsutvalg for rapportene er spesifisert øverst i hver enkelt figur.
 
 Rapporten viser følgende:
@@ -300,7 +300,7 @@ NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeSvelg3mndSh.pdf}
-\caption{Svelgvansker, 3 måneder etter operasjon. }
+\caption{Svelgevansker, 3 måneder etter operasjon. }
 \end{figure}
 \end{frame}
 
@@ -308,7 +308,7 @@ NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeSvelg3mndTid.pdf}
-\caption{Svelgvansker, 3 måneder etter operasjon, utvikling over tid. }
+\caption{Svelgevansker, 3 måneder etter operasjon, utvikling over tid. }
 \end{figure}
 \end{frame}
 
@@ -320,7 +320,7 @@ NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=\Sexpr{skalShFig}]{NDIendr3mndFremUmSh.pdf}
-\caption{Gjennomsnittlig forbedring i NDI, fremre tilgang, u/myelopati. }
+\caption{Gjennomsnittlig forbedring i NDI, fremre tilgang, u/myelopati.}
 \end{figure}
 \end{frame}
 
@@ -328,7 +328,7 @@ NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NDIendr3mndFremUmTid.pdf}
-\caption{Gjennomsnittlig forbedring i NDI, fremre tilgang, u/myelopati. }
+\caption{Gjennomsnittlig forbedring i NDI, fremre tilgang, u/myelopati.}
 \end{figure}
 \end{frame}
 
@@ -352,7 +352,7 @@ NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NSRsmerteNakkeEndr3mndSh.pdf}
-\caption{Gjennomsnittlig forbedring i nakkesmerte}
+\caption{Gjennomsnittlig forbedring i nakkesmerte.}
 \end{figure}
 \end{frame}
 
@@ -368,7 +368,7 @@ NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=\Sexpr{skalShFig}]{NakkeFornoydBeh3mndSh.pdf}
-\caption{Pasienter som var helt eller litt fornøyd med behandlinga på sykehuset. }
+\caption{Pasienter som var helt eller litt fornøyd med behandlinga på sykehuset.}
 \end{figure}
 \end{frame}
 
@@ -376,7 +376,7 @@ NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=0.35]{NakkeFornoydBeh3mndTid.pdf}
-\caption{Pasienter som var helt eller litt fornøyd med behandlinga på sykehuset. Utvikling over tid. }
+\caption{Pasienter som var helt eller litt fornøyd med behandlinga på sykehuset. Utvikling over tid.}
 \end{figure}
 \end{frame}
 
@@ -385,7 +385,7 @@ NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3
 \begin{figure}[ht]
 \centering
 \includegraphics[scale=\Sexpr{skalShFig}]{NakkeNytteOpr3mndFremUmSh.pdf}
-\caption{Pasienter uten myelopati operert med fremre tilgang og som har blitt helt bra eller mye bedre 3 mnd. etter operasjonen. }
+\caption{Pasienter uten myelopati operert med fremre tilgang og som har blitt helt bra eller mye bedre 3 mnd. etter operasjonen.}
 \end{figure}
 \end{frame}
 
