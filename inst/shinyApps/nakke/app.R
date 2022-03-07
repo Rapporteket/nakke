@@ -94,15 +94,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
 
   #------------ Viktigste resultater-----------------
-  tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og månedsrapport'),
+  tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og halvårsrapport'),
            h2('Velkommen til Rapporteket for NKR Degenerativ Nakke!', align='center'),
            shinyjs::useShinyjs(),
            sidebarPanel(width=3,
-                        h3("Rapport med månedsresultater"), #),
+                        h3("Rapport med halvårsresultater"), #),
                         h5('Rapporten kan man også få regelmessig på e-post.
                         Gå til fanen "Abonnement" for å bestille dette.'),
                         br(),
-                        downloadButton(outputId = 'mndRapp.pdf', label='Last ned månedsrapport', class = "butt"),
+                        downloadButton(outputId = 'mndRapp.pdf', label='Last ned halvårsrapport', class = "butt"),
                         tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
                         br(),
                         br(),
@@ -575,14 +575,14 @@ tabPanel(p("Abonnement",
          sidebarLayout(
            sidebarPanel(width = 3,
                         selectInput("subscriptionRep", "Rapport:",
-                                    c("Månedsrapport")), #, "Samlerapport", "Influensaresultater")),
+                                    c("Halvårsrapport")), #, "Samlerapport", "Influensaresultater")),
                         selectInput("subscriptionFreq", "Frekvens:",
                                     list(Årlig="Årlig-year",
                                           Kvartalsvis="Kvartalsvis-quarter",
                                           Månedlig="Månedlig-month",
                                           Ukentlig="Ukentlig-week",
                                           Daglig="Daglig-DSTday"),
-                                    selected = "Månedlig-month"),
+                                    selected = "Kvartalsvis-quarter"),
                         #selectInput("subscriptionFileFormat", "Format:",
                         #            c("html", "pdf")),
                         actionButton("subscribe", "Bestill!")
@@ -826,8 +826,8 @@ server <- function(input, output,session) {
 
      ## liste med metadata for rapport
      reports <- list(
-       MndRapp = list(
-         synopsis = "Månedsrapport",
+       HalvaarRapp = list(
+         synopsis = "Halvårsrapport",
          fun = "abonnementNakke",
          paramNames = c('rnwFil', "reshID"),
          paramValues = c('NakkeMndRapp.Rnw', 0)
@@ -1270,8 +1270,8 @@ observeEvent (input$subscribe, { #MÅ HA
   organization <- rapbase::getUserReshId(session)
   runDayOfYear <- rapbase::makeRunDayOfYearSequence(interval = interval)
   email <- rapbase::getUserEmail(session)
-  if (input$subscriptionRep == "Månedsrapport") {
-    synopsis <- "nakke/Rapporteket: månedsrapport"
+  if (input$subscriptionRep == "Halvårsrapport") {
+    synopsis <- "nakke/Rapporteket: halvårsrapport"
     rnwFil <- "NakkeMndRapp.Rnw" #Navn på fila
     #print(rnwFil)
   }
