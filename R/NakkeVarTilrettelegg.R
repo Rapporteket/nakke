@@ -691,6 +691,24 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     RegData$VariabelGr <- factor(RegData$VariabelGr, levels = c(1:3,9))
     tittel <- 'Hastegrad'
   }
+  if (valgtVar %in% c('Oppf3mnd', 'Oppf12mnd', 'Oppf3og12mnd')) { #AndelGrVar, -Tid
+    #Oppfølgingsskjema: OppFolgStatus12mnd, OppFolgStatus3mnd
+    trekkfraDager <- ifelse(valgtVar == 'Oppf3mnd', 100, 400)
+    RegData <- RegData[RegData$InnDato < min(max(RegData$InnDato), Sys.Date()-trekkfraDager), ]
+    ind <- switch(valgtVar,
+                  Oppf3mnd = which(RegData$OppFolgStatus3mnd==1),
+                  Oppf12mnd = which(RegData$OppFolgStatus12mnd==1),
+                  Oppf3og12mnd = which(RegData$OppFolgStatus3mnd==1 & RegData$OppFolgStatus12mnd==1 ))
+
+    RegData$Variabel[ind] <- 1
+
+    tittel <- paste0('Svart på oppfølging, ',
+                     switch(valgtVar,
+                            Oppf3mnd = '3 mnd. etter',
+                            Oppf12mnd = '12 mnd. etter',
+                            Oppf3og12mnd = 'både 3 og 12 mnd. etter'))
+    sortAvtagende <- T
+  }
   if (valgtVar=='OprIndikMyelopati') { #AndelTid #AndelGrVar
     #LegeSkjema. Andel med OprIndikMyelopati=1
     #Kode 0,1: Nei, Ja +tomme

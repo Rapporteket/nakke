@@ -237,7 +237,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                )
              ),
              tabPanel(
-               h4('Datadump'),
+               h4('Datadump og datakvalitet'),
                       sidebarPanel(
                         width=4,
                         dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
@@ -267,9 +267,21 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                       ),
 
                       mainPanel(
+                        h3('Potensielle dobbeltregistreringer'),
                         br(),
-                        'Her er det fritt fram å komme med ønsker'
-                      ),
+                        downloadButton(outputId = 'lastNed_tabDblReg', label='Last ned tabell med mulige dobbeltregistreringer'),
+                        br(),
+                        numericInput(inputId = 'valgtTidsavvik',
+                          label = 'Dager mellom registrerte operasjoner:',
+                          value = 30,
+                          min = 0,
+                          max = NA,
+                          step = 1
+                          , width = '100px'
+                          ),
+
+                        tableOutput("tabDblReg")
+                      )
              ),
              shiny::tabPanel(
               h4("Eksport av krypterte data"),
@@ -405,6 +417,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
                                      'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                      'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
+                                     'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
+                                     'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
+                                     'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
                                      'Utdanning' = 'Utdanning')
              ),
              dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
@@ -759,7 +774,7 @@ server <- function(input, output,session) {
 
 
   #-----------Registeradministrasjon-----------
-  variablePRM <- 'Variable som skal tas bort for LU-bruker'
+  variablePRM <- 'Variabler som skal tas bort for LU-bruker'
 
   if (rolle=='SC') {
     observe({
@@ -772,6 +787,17 @@ server <- function(input, output,session) {
         content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})
     })
   }
+
+
+  #renderTable
+  observe({
+    tabDblReg <- PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik)
+    output$tabDblReg <- renderTable(tabDblReg, digits=0)
+
+    output$lastNed_tabDblReg <- downloadHandler(
+    filename = function(){paste0('MuligeDobbeltReg.csv')},
+    content = function(file, filename){write.csv2(tabDbl, file, row.names = F, fileEncoding = 'latin1', na = '')})
+  })
 
      observe({
        DataDump <- dplyr::filter(RegData, #DataAlle,

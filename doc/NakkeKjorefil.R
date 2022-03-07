@@ -6,6 +6,15 @@
 #         x <- enc2native(x)
 #Do not set options(encoding) $encoding: [1] "native.enc". Tester
 #test
+
+#Dobbeltregistrering
+library(magrittr)
+RegDataRaa <- NakkeRegDataSQL()
+RegData <- NakkePreprosess(RegDataRaa)
+DblReg <- RegData %<% group_by(PasientID) %<%
+  summarise()
+
+
 #--------------------------------------SAMLERAPPORT-----------------------------------
 setwd("C:/ResultattjenesteGIT/Nakke/inst")
 knitr::knit('NakkeAarsRapp.Rnw')

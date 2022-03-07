@@ -223,3 +223,35 @@ delTekst <- function(x, len) #x -tekststreng/vektor av tekststrenger, len - Leng
 }
 
 
+
+#' Finner pasienter med potensielt dobbeltregistrerte skjema
+#'
+#' @param RegData dataramme fra nakkeregisteret
+#' @param tidssavik - maks tidsavvik (dager) mellom to påfølgende registreringer som sjekkes
+#'
+#' @return
+#' @export
+PasMdblReg <- function(RegData, tidsavvik=30){
+
+  FlereReg <- RegData %>% dplyr::group_by(PasientID) %>%
+    dplyr::summarise(N = length(PasientID), #n(),
+              KortTid = ifelse(N>1,
+                              ifelse(difftime(InnDato[order(InnDato)][2:N], InnDato[order(InnDato)][1:(N-1)], units = 'days') <= tidsavvik,
+                                     1, 0), 0),
+              PasientID = PasientID[1]
+    )
+
+  PasMdbl <- FlereReg$PasientID[which(FlereReg$KortTid == 1)]
+  TabDbl <- RegData[which(RegData$PasientID %in% PasMdbl),
+                    c("PasientID", "InnDato", "SykehusNavn", "ReshId", "ForlopsID")] #, 'SkjemaGUID'
+  TabDbl <- TabDbl[order(TabDbl$InnDato), ]
+  N <- dim(TabDbl)[1]
+
+  if (N>0) {
+    indSmTid <- which(difftime(TabDbl$InnDato[2:N], TabDbl$InnDato[1:(N-1)], units = 'days') <= tidsavvik)
+    TabDbl <- TabDbl[unique(sort(c(indSmTid, (indSmTid+1)))), ]
+    TabDbl$InnDato <- format(TabDbl$InnDato, '%d.%m.%Y')
+    tabUt <- TabDbl[order(TabDbl$PasientID, TabDbl$InnDato), ]
+  } else {tabUt <- paste0('Ingen registreringer med mindre enn ', tidsavvik, 'minutter mellom registreringene for samme pasient.')}
+}
+
