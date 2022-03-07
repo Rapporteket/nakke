@@ -796,7 +796,7 @@ server <- function(input, output,session) {
 
     output$lastNed_tabDblReg <- downloadHandler(
     filename = function(){paste0('MuligeDobbeltReg.csv')},
-    content = function(file, filename){write.csv2(tabDbl, file, row.names = F, fileEncoding = 'latin1', na = '')})
+    content = function(file, filename){write.csv2(tabDblReg, file, row.names = F, fileEncoding = 'latin1', na = '')})
   })
 
      observe({

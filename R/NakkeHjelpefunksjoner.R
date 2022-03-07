@@ -250,7 +250,7 @@ PasMdblReg <- function(RegData, tidsavvik=30){
   if (N>0) {
     indSmTid <- which(difftime(TabDbl$InnDato[2:N], TabDbl$InnDato[1:(N-1)], units = 'days') <= tidsavvik)
     TabDbl <- TabDbl[unique(sort(c(indSmTid, (indSmTid+1)))), ]
-    TabDbl$InnDato <- format(TabDbl$InnDato, '%d.%m.%Y')
+    TabDbl$InnDato <- format(TabDbl$InnDato, '%Y-%m-%d') #'%d.%m.%Y')
     tabUt <- TabDbl[order(TabDbl$PasientID, TabDbl$InnDato), ]
   } else {tabUt <- paste0('Ingen registreringer med mindre enn ', tidsavvik, 'minutter mellom registreringene for samme pasient.')}
 }
