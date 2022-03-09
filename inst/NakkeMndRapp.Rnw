@@ -48,7 +48,7 @@ if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
 
   #kb <- les_oqr_kb(system.file("SmerteReg_klokeboken.05.10.2017.csv", package = "smertereg"))
 
-  SkjemaData <- rapbase::LoadRegData(registryName="nakke", query=querySD, dbType="mysql")
+  SkjemaData <- rapbase::loadRegData(registryName="nakke", query=querySD, dbType="mysql")
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
 } #hente data på server
