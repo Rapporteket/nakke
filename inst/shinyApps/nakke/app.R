@@ -615,8 +615,9 @@ server <- function(input, output,session) {
   reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)
   rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
   brukernavn <- ifelse(paaServer, rapbase::getUserName(shinySession=session), 'BrukerNavn')
+  fulltNavn <- ifelse(paaServer, rapbase::getUserFullName(shinySession=session), 'FulltNavn')
 
-  # widget
+    # widget
   if (paaServer) {
     output$appUserName <- renderText(rapbase::getUserFullName(session))
     output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> reshID: ', reshID) )}
@@ -833,7 +834,8 @@ server <- function(input, output,session) {
          paramValues = c('NakkeMndRapp.Rnw', 0)
        )
      )
-     #abonnementNakke(rnwFil, brukernavn='tullebukk', reshID=0, datoFra=Sys.Date()-180, datoTil=Sys.Date())
+     # rnwFil <- 'NakkeMndRapp.Rnw'
+     # abonnementNakke(rnwFil, brukernavn='tullebukk', fulltNavn = 'Lena Luring', reshID=0, datoFra=Sys.Date()-180, datoTil=Sys.Date())
 
      org <- rapbase::autoReportOrgServer("NakkeUts", orgs)
 

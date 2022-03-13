@@ -11,6 +11,7 @@ abonnementNakke(
   rnwFil,
   brukernavn = "tullebukk",
   reshID = 0,
+  fulltNavn = "Mangler personnavn",
   datoFra = Sys.Date() - 180,
   datoTil = Sys.Date()
 )

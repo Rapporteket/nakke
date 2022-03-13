@@ -9,7 +9,7 @@ PasMdblReg(RegData, tidsavvik = 30)
 \arguments{
 \item{RegData}{dataramme fra nakkeregisteret}
 
-\item{tidssavik}{- maks tidsavvik (minutter) mellom to påfølgende registreringer som sjekkes}
+\item{tidssavik}{- maks tidsavvik (dager) mellom to påfølgende registreringer som sjekkes}
 }
 \value{
 

@@ -190,9 +190,14 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 #' @return Full path of file produced
 #' @export
 abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
+                            fulltNavn = 'Mangler personnavn',
                        datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
-  rapbase::autLogger(user = brukernavn, registryName = 'NKR: Degenerativ Nakke',
+  rapbase::autLogger(user = brukernavn, name = fulltNavn,
+                     fun = "abonnementNakke",
+                     type = 'abb el uts',
+                     param = c(rnwFil, reshID),
+                     registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
                     reshId = reshID, msg = "Abonnement: månedsrapport")
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
@@ -206,7 +211,11 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
 
   #gc() #Opprydning gc-"garbage collection"
   utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
-  rapbase::autLogger(user = brukernavn, registryName = 'NKR: Degenerativ Nakke',
+  rapbase::autLogger(user = brukernavn, name = fulltNavn,
+                     fun = "abonnementNakke",
+                     type = 'abb el uts',
+                     param = c(rnwFil, reshID),
+                     registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
                     reshId = reshID, msg = paste("Sendt: ", utfil))
   return(utfil)
 }
