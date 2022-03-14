@@ -30,6 +30,8 @@ library(lubridate)
 library(xtable)
 library(zoo)
 
+#MÅ sende inn: reshID
+
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
 #Henter data fire årstall tilbake
@@ -83,10 +85,11 @@ SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 SkjemaData12mnd <- SkjemaData[SkjemaData$InnDato > as.POSIXlt(datoFra12mnd), ]
 
 enhetsUtvalg <- 1
-shtxt <- switch(as.character(enhetsUtvalg),
-                '0' = 'Hele landet',
-                '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
-                '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+shtxt <- ifelse(reshID == 0, 'Hele landet', as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+  # switch(as.character(enhetsUtvalg),
+  #               '0' = 'Hele landet',
+  #               '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
+  #               '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
 
 tidsenhRapp <- 'Halvaar'
 
