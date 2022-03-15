@@ -205,7 +205,7 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date()) {
 FROM AlleVarNum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
 
-  #query <-'select * from AlleVarNum'
+  #queryAVN <-'select * from AlleVarNum'
     RegDataAVN <- rapbase::loadRegData(registryName = "nakke", query = queryAVN, dbType = "mysql")
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus

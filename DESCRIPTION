@@ -7,8 +7,8 @@ Description: Alle R-baserte resultattjenester på Rapporteket for Degenerativ
     filer (generere LaTeX-dokumenter) og evt. logofiler o.l. Kan også inkludere
     kjørefiler og eksempeldatasett. Pakken inneholder også en Shiny-app. for 
     registeret, samt figurer og tabeller til årsrapport.
-Version: 2.1.3
-Date: 2021-12-14
+Version: 2.1.4
+Date: 2022-03-15
 Author: Lena Ringstad Olsen, Nasjonalt Servicemiljo for Kvalitetsregistre, SKDE
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Depends:
@@ -30,9 +30,9 @@ Imports:
     xtable,
     zoo
 Remotes:
-    Rapporteket/rapbase,
+     Rapporteket/rapbase@*release,
     Rapporteket/raplog,
     Rapporteket/rapFigurer
 Suggests:
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

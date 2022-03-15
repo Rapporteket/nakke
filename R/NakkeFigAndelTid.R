@@ -53,7 +53,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                              hentData=0,...) {
 
   if ("session" %in% names(list(...))) {
-    raplog::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelTid: ',valgtVar))
+    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelTid: ',valgtVar))
   }
 
 
@@ -140,8 +140,8 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
       grtxt2 <- paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
       yAkseTxt <- 'Andel (%)'
       vektor <- c('Aar','Halvaar','Kvartal','Mnd')
-      xAkseTxt <- paste0(c('Innleggelsesår', 'Innleggelsesår', 'Innleggelseskvartal', 'Innleggelsesmåned')
-                         [which(tidsenhet==vektor)])
+      xAkseTxt <- paste0(c('Innleggelsesår', 'Innleggelsesår-halvår', 'Innleggelsesår-kvartal',
+                           'Innleggelsesmåned')[which(tidsenhet==vektor)])
 
       hovedgrTxt <- NakkeUtvalg$hovedgrTxt
       smltxt <- NakkeUtvalg$smltxt
@@ -182,50 +182,6 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
 
     #-----------Figur---------------------------------------
 
-    #Plottspesifikke parametre:
-    # FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
-    # farger <- FigTypUt$farger
-    # fargeHoved <- farger[3]
-    # fargeRest <- farger[1]
-    # NutvTxt <- length(utvalgTxt)
-    # hmarg <- 0.04+0.01*NutvTxt
-    # par('fig' = c(0,1,0,1-hmarg))
-    # cexleg <- 1	#Størrelse på legendtekst
-    #
-    #
-    # ymax <- min(119, 1.25*max(Andeler,na.rm=T))
-    # plot(Aartxt, AndelHoved,  font.main=1,  type='o', pch="'", col='white', #type='o',
-    #      xlim= c(Aartxt[1], max(Aartxt)), xaxt='n', frame.plot = FALSE,  #xaxp=c(min(Aartxt), max(Aartxt),length(Aartxt)-1)
-    #      cex=2, xlab='Innleggelsesår', ylab="Andel (%)", ylim=c(0,ymax), yaxs = 'i') 	#Operasjonsår,
-    # axis(side=1, at = Aartxt)
-    # title(tittel, line=1, font.main=1)
-    #
-    # #Legge på linjer i plottet.
-    # grid(nx = NA, ny = NULL, col = farger[4], lty = "solid")
-    #
-    # lines(Aartxt, AndelHoved, col=fargeHoved, lwd=3)
-    # points(Aartxt, AndelHoved, pch="'", cex=2, col=fargeHoved)
-    # text(Aartxt, AndelHoved, pos=3, NAarHendHoved, cex=0.9, col=fargeHoved)
-    #
-    # lines(Aartxt, AndelRest, col=fargeRest, lwd=3)
-    # points(Aartxt, AndelRest, pch="'", cex=2, col=fargeRest)	#}
-    #
-    # Ttxt <- paste0('(Tall ved punktene angir antall ', varTxt, ')')
-    # if (NakkeUtvalg$medSml == 1) {
-    #   text(Aartxt, AndelRest, pos=3, NAarHendRest, cex=0.9, col=fargeRest)
-    #   legend('topleft', border=NA, c(paste0(NakkeUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')'),
-    #                                  paste0(NakkeUtvalg$smltxt, ' (N=', NSmlRes, ')'), Ttxt), bty='n', ncol=1, cex=cexleg,
-    #          col=c(fargeHoved, fargeRest, NA), lwd=3)
-    # } else {
-    #   legend('top', c(paste0(NakkeUtvalg$hovedgrTxt, ' (N=', NHovedRes, ')'), Ttxt),
-    #          col=c(fargeHoved, NA), lwd=3, bty='n')
-    # }
-    #
-    # #Tekst som angir hvilket utvalg som er gjort
-    # mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=fargeRest, line=c(3+0.8*((NutvTxt-1):0)))
-    #
-    # par('fig'=c(0, 1, 0, 1))
-    # if ( outfile != '') {dev.off()}
     #------------------------------------------------------------------------------
                  #Plottspesifikke parametre:
                   FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)

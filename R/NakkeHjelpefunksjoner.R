@@ -190,10 +190,15 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 #' @return Full path of file produced
 #' @export
 abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
+                            fulltNavn = 'Mangler personnavn',
                        datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
-  raplog::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
-                    reshId = reshID[[1]], msg = "Abonnement: månedsrapport")
+  rapbase::autLogger(user = brukernavn, name = fulltNavn,
+                     fun = "abonnementNakke",
+                     type = 'abb el uts',
+                     param = c(rnwFil, reshID),
+                     registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
+                    reshId = reshID, msg = "Abonnement: månedsrapport")
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
@@ -206,8 +211,12 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
 
   #gc() #Opprydning gc-"garbage collection"
   utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
-  raplog::subLogger(author = brukernavn, registryName = 'NKR: Degenerativ Nakke',
-                    reshId = reshID[[1]], msg = paste("Sendt: ", utfil))
+  rapbase::autLogger(user = brukernavn, name = fulltNavn,
+                     fun = "abonnementNakke",
+                     type = 'abb el uts',
+                     param = c(rnwFil, reshID),
+                     registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
+                    reshId = reshID, msg = paste("Sendt: ", utfil))
   return(utfil)
 }
 
@@ -222,4 +231,36 @@ delTekst <- function(x, len) #x -tekststreng/vektor av tekststrenger, len - Leng
         USE.NAMES = FALSE)
 }
 
+
+
+#' Finner pasienter med potensielt dobbeltregistrerte skjema
+#'
+#' @param RegData dataramme fra nakkeregisteret
+#' @param tidssavik - maks tidsavvik (dager) mellom to påfølgende registreringer som sjekkes
+#'
+#' @return
+#' @export
+PasMdblReg <- function(RegData, tidsavvik=30){
+
+  FlereReg <- RegData %>% dplyr::group_by(PasientID) %>%
+    dplyr::summarise(N = length(PasientID), #n(),
+              KortTid = ifelse(N>1,
+                              ifelse(difftime(InnDato[order(InnDato)][2:N], InnDato[order(InnDato)][1:(N-1)], units = 'days') <= tidsavvik,
+                                     1, 0), 0),
+              PasientID = PasientID[1]
+    )
+
+  PasMdbl <- FlereReg$PasientID[which(FlereReg$KortTid == 1)]
+  TabDbl <- RegData[which(RegData$PasientID %in% PasMdbl),
+                    c("PasientID", "InnDato", "SykehusNavn", "ReshId", "ForlopsID")] #, 'SkjemaGUID'
+  TabDbl <- TabDbl[order(TabDbl$InnDato), ]
+  N <- dim(TabDbl)[1]
+
+  if (N>0) {
+    indSmTid <- which(difftime(TabDbl$InnDato[2:N], TabDbl$InnDato[1:(N-1)], units = 'days') <= tidsavvik)
+    TabDbl <- TabDbl[unique(sort(c(indSmTid, (indSmTid+1)))), ]
+    TabDbl$InnDato <- format(TabDbl$InnDato, '%Y-%m-%d') #'%d.%m.%Y')
+    tabUt <- TabDbl[order(TabDbl$PasientID, TabDbl$InnDato), ]
+  } else {tabUt <- paste0('Ingen registreringer med mindre enn ', tidsavvik, 'minutter mellom registreringene for samme pasient.')}
+}
 

@@ -3,9 +3,10 @@
 #Nakke
 library(nakke)
 library(xtable)
-setwd('P:/Registerinfo og historie/Nakke/Aarsrapp')
-setwd('/home/rstudio/rygg/Aarsrapp')
-aarsRappAar <- 2020
+#setwd('P:/Registerinfo og historie/Nakke/Aarsrapp')
+setwd('/home/rstudio/nakke/Aarsrapp')
+setwd('~/speil/aarsrapp')
+aarsRappAar <- 2021
 
 startAar <- 2012
 datoFra <- paste0(startAar,'-01-01')
@@ -19,11 +20,9 @@ aar2 <- (aarsRappAar-1):aarsRappAar
 aar2_12mnd <- (aarsRappAar-2):(aarsRappAar-1)
 tidlAar <- aarsRappAar-1
 tidlAar2 <- (aarsRappAar-3):(aarsRappAar-2)
-format <- 'pdf'
 
-NakkeDataRaa <- NakkeRegDataSQL(datoTil = '2020-12-31')
+NakkeDataRaa <- NakkeRegDataSQL(datoTil = datoTil)
 NakkeData <- NakkePreprosess(NakkeDataRaa)
-setwd('/home/rstudio/nakke/Aarsrapp')
 
 # NakkeSkjemaDataRaa <- read.table(paste0('A:/Nakke/SkjemaOversiktAarsrapp2019_2020-09-09.csv'),
 #                                  sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
@@ -57,6 +56,8 @@ NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
 NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
                   datoFra=datoFra2aar, datoTil=datoTil12mnd,
                   myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
+NakkeFigGjsnTid(RegData = NakkeData, valgtVar='NDIendr12mnd',
+                  myelopati=0, fremBak=1, outfile='NakkeNDIendr12mndTid.pdf')
 
 #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
@@ -72,6 +73,9 @@ NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSte
 NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplStemme3mnd',
                      myelopati=0, fremBak=1, Ngrense=20,
                      ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplStemme3mndShAar.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplStemme3mnd',
+                 myelopati=0, fremBak=1, outfile='NakkeKomplStemme3mndTid.pdf')
+
 
 #Svelgvansker, 3 mnd (ikke-myelopati, fremre tilgang) – lav
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSvelging3mnd',
@@ -79,7 +83,8 @@ NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSve
 NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging3mnd',
                    myelopati=0, fremBak=1, Ngrense=20,
                    ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplSvelging3mndShAar.pdf')
-
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplSvelging3mnd',
+                 myelopati=0, fremBak=1, outfile='NakkeKomplSvelging3mndTid.pdf')
 
 #---Figurer---------
 

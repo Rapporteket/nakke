@@ -35,7 +35,7 @@ addResourcePath('rap', system.file('www', package='rapbase'))
 
 # #----------Hente data og evt. parametre som er statistke i appen----------
 if (paaServer == TRUE) {
-  RegData <- NakkeRegDataSQL() #startDato = '2017-01-01') #datoFra = startDato, datoTil = datoTil)
+  RegData <- NakkeRegDataSQL()
 
   querySD <- paste0('
           SELECT
@@ -94,15 +94,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
 
   #------------ Viktigste resultater-----------------
-  tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og månedsrapport'),
+  tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og halvårsrapport'),
            h2('Velkommen til Rapporteket for NKR Degenerativ Nakke!', align='center'),
            shinyjs::useShinyjs(),
            sidebarPanel(width=3,
-                        h3("Rapport med månedsresultater"), #),
+                        h3("Rapport med halvårsresultater"), #),
                         h5('Rapporten kan man også få regelmessig på e-post.
                         Gå til fanen "Abonnement" for å bestille dette.'),
                         br(),
-                        downloadButton(outputId = 'mndRapp.pdf', label='Last ned månedsrapport', class = "butt"),
+                        downloadButton(outputId = 'mndRapp.pdf', label='Last ned halvårsrapport', class = "butt"),
                         tags$head(tags$style(".butt{background-color:#6baed6;} .butt{color: white;}")), # background color and font color
                         br(),
                         br(),
@@ -134,7 +134,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            ),
 
            mainPanel(
-             shinyalert::useShinyalert(),
              appNavbarUserWidget(user = uiOutput("appUserName"),
                                  organization = uiOutput("appOrgName"),
                                  addUserInfo = TRUE),
@@ -225,8 +224,22 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            value = 'Registeradministrasjon',
            h3('Denne siden skal kun vises for SC-bruker', align='center'),
            tabsetPanel(
-             tabPanel('Datadump',
-                      sidebarPanel(width=4,
+             tabPanel(
+               h4("Utsending av rapporter"),
+               sidebarLayout(
+                 sidebarPanel(
+                   rapbase::autoReportOrgInput("NakkeUts"),
+                   rapbase::autoReportInput("NakkeUts")
+                 ),
+                 mainPanel(
+                   rapbase::autoReportUI("NakkeUts")
+                 )
+               )
+             ),
+             tabPanel(
+               h4('Datadump og datakvalitet'),
+                      sidebarPanel(
+                        width=4,
                         dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                        label = "Tidsperiode", separator="t.o.m.", language="nb"),
                         selectInput(inputId = 'velgReshReg', label='Velg sykehus',
@@ -245,38 +258,43 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                 'Infeksjon, 3 mnd.' = 'Komplinfek',
                                                 'NDI-endring 12mnd > 35%' = 'NDIendr12mnd35pst')
                         ),
-                        # selectInput(inputId = 'myelopatiRes', label='Myelopati',
-                        #             choices = myelopatiValg
-                        # ),
-                        # selectInput(inputId = 'fremBakRes', label='Tilgang',
-                        #             choices = fremBakValg
-                        # ),
                         sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2014),
                                     max = as.numeric(year(idag)), value = c(2014, year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
                         ),
                         br(),
                         downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data til Resultatportalen'),
                         br()
-  ),
+                      ),
 
-  mainPanel(
-    br(),
-    'Her er det fritt fram å komme med ønsker'
-    ),
+                      mainPanel(
+                        h3('Potensielle dobbeltregistreringer'),
+                        br(),
+                        downloadButton(outputId = 'lastNed_tabDblReg', label='Last ned tabell med mulige dobbeltregistreringer'),
+                        br(),
+                        numericInput(inputId = 'valgtTidsavvik',
+                          label = 'Dager mellom registrerte operasjoner:',
+                          value = 30,
+                          min = 0,
+                          max = NA,
+                          step = 1
+                          , width = '100px'
+                          ),
+
+                        tableOutput("tabDblReg")
+                      )
              ),
-  shiny::tabPanel(
-    "Eksport",
-    #shiny::sidebarLayout(
-    shiny::sidebarPanel(
-      rapbase::exportUCInput("nakkeExport")
-    ),
-    shiny::mainPanel(
-      rapbase::exportGuideUI("nakkeExportGuide")
-    )
-    #)
-  ) #Eksport-tab
-                        ) #tabsetPanel
-           ), #Registeradm-tab
+             shiny::tabPanel(
+              h4("Eksport av krypterte data"),
+               #shiny::sidebarLayout(
+               shiny::sidebarPanel(
+                 rapbase::exportUCInput("nakkeExport")
+               ),
+               shiny::mainPanel(
+                 rapbase::exportGuideUI("nakkeExportGuide")
+               )
+             ) #Eksport-tab
+           ) #tabsetPanel
+  ), #Registeradm-tab
 
 #------------- Fordelingsfigurer--------------------
 
@@ -399,6 +417,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
                                      'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                      'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
+                                     'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
+                                     'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
+                                     'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
                                      'Utdanning' = 'Utdanning')
              ),
              dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
@@ -554,14 +575,14 @@ tabPanel(p("Abonnement",
          sidebarLayout(
            sidebarPanel(width = 3,
                         selectInput("subscriptionRep", "Rapport:",
-                                    c("Månedsrapport")), #, "Samlerapport", "Influensaresultater")),
+                                    c("Halvårsrapport")), #, "Samlerapport", "Influensaresultater")),
                         selectInput("subscriptionFreq", "Frekvens:",
                                     list(Årlig="Årlig-year",
                                           Kvartalsvis="Kvartalsvis-quarter",
                                           Månedlig="Månedlig-month",
                                           Ukentlig="Ukentlig-week",
                                           Daglig="Daglig-DSTday"),
-                                    selected = "Månedlig-month"),
+                                    selected = "Kvartalsvis-quarter"),
                         #selectInput("subscriptionFileFormat", "Format:",
                         #            c("html", "pdf")),
                         actionButton("subscribe", "Bestill!")
@@ -584,7 +605,7 @@ server <- function(input, output,session) {
 
 
 
-  raplog::appLogger(session, msg='Starter Rapporteket-Nakke')
+  rapbase::appLogger(session, msg='Starter Rapporteket-Nakke')
   #system.file('NakkeMndRapp.Rnw', package='Nakke')
   #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
 
@@ -594,8 +615,9 @@ server <- function(input, output,session) {
   reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)
   rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
   brukernavn <- ifelse(paaServer, rapbase::getUserName(shinySession=session), 'BrukerNavn')
+  fulltNavn <- ifelse(paaServer, rapbase::getUserFullName(shinySession=session), 'FulltNavn')
 
-  # widget
+    # widget
   if (paaServer) {
     output$appUserName <- renderText(rapbase::getUserFullName(session))
     output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> reshID: ', reshID) )}
@@ -753,7 +775,7 @@ server <- function(input, output,session) {
 
 
   #-----------Registeradministrasjon-----------
-  variablePRM <- 'Variable som skal tas bort for LU-bruker'
+  variablePRM <- 'Variabler som skal tas bort for LU-bruker'
 
   if (rolle=='SC') {
     observe({
@@ -767,19 +789,21 @@ server <- function(input, output,session) {
     })
   }
 
-  #DataAlle <- rapbase::loadRegData(registryName = "nakke", query = 'select * from AlleVarNum')
-  #DataAlle <- NakkePreprosess(DataAlle)
+
+  #renderTable
+  observe({
+    tabDblReg <- PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik)
+    output$tabDblReg <- renderTable(tabDblReg, digits=0)
+
+    output$lastNed_tabDblReg <- downloadHandler(
+    filename = function(){paste0('MuligeDobbeltReg.csv')},
+    content = function(file, filename){write.csv2(tabDblReg, file, row.names = F, fileEncoding = 'latin1', na = '')})
+  })
 
      observe({
-       #print(dim(DataAlle[1]))
        DataDump <- dplyr::filter(RegData, #DataAlle,
                                 as.Date(OprDato) >= input$datovalgRegKtr[1],
                                 as.Date(OprDato) <= input$datovalgRegKtr[2])
-#print(input$datovalgRegKtr[1])
-#print(dim(DataDump[1]))
-# DataDump <- dplyr::filter(RegData,
-       #                           as.Date(OprDato) >= '2019-01-01',
-       #                           as.Date(OprDato) <= '2020-01-31')
     if (rolle =='SC') {
               valgtResh <- as.numeric(input$velgReshReg)
         PIDtab <- rapbase::loadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
@@ -797,6 +821,35 @@ server <- function(input, output,session) {
         filename = function(){'dataDumpNakke.csv'},
         content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
      })
+
+     #---Utsendinger---------------
+     orgs <- as.list(sykehusValg)
+
+     ## liste med metadata for rapport
+     reports <- list(
+       HalvaarRapp = list(
+         synopsis = "Halvårsrapport",
+         fun = "abonnementNakke",
+         paramNames = c('rnwFil', "reshID"),
+         paramValues = c('NakkeMndRapp.Rnw', 0)
+       )
+     )
+     # rnwFil <- 'NakkeMndRapp.Rnw'
+     # abonnementNakke(rnwFil, brukernavn='tullebukk', fulltNavn = 'Lena Luring', reshID=0, datoFra=Sys.Date()-180, datoTil=Sys.Date())
+
+     org <- rapbase::autoReportOrgServer("NakkeUts", orgs)
+
+     # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
+     paramNames <- shiny::reactive("reshID")
+     paramValues <- shiny::reactive(org$value())
+
+     rapbase::autoReportServer(
+       id = "NakkeUts", registryName = "nakke", type = "dispatchment",
+       org = org$value, paramNames = paramNames, paramValues = paramValues,
+       reports = reports, orgs = orgs, eligible = TRUE
+     )
+
+
 
      #----------- Eksport ----------------
      registryName <- "nakke"
@@ -1189,7 +1242,7 @@ antDesFormat <- paste0("%.", antDes, "f")
 ## reaktive verdier for å holde rede på endringer som skjer mens
 ## applikasjonen kjører
 rv <- reactiveValues(
-  subscriptionTab = rapbase::makeUserSubscriptionTab(session))
+  subscriptionTab = rapbase::makeAutoReportTab(session))
 
 
 ## lag tabell over gjeldende status for abonnement
@@ -1219,8 +1272,8 @@ observeEvent (input$subscribe, { #MÅ HA
   organization <- rapbase::getUserReshId(session)
   runDayOfYear <- rapbase::makeRunDayOfYearSequence(interval = interval)
   email <- rapbase::getUserEmail(session)
-  if (input$subscriptionRep == "Månedsrapport") {
-    synopsis <- "nakke/Rapporteket: månedsrapport"
+  if (input$subscriptionRep == "Halvårsrapport") {
+    synopsis <- "nakke/Rapporteket: halvårsrapport"
     rnwFil <- "NakkeMndRapp.Rnw" #Navn på fila
     #print(rnwFil)
   }
@@ -1237,14 +1290,14 @@ observeEvent (input$subscribe, { #MÅ HA
                             email = email, organization = organization,
                             runDayOfYear = runDayOfYear, interval = interval,
                             intervalName = intervalName)
-  rv$subscriptionTab <- rapbase::makeUserSubscriptionTab(session)
+  rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
 })
 
 ## slett eksisterende abonnement
 observeEvent(input$del_button, {
   selectedRepId <- strsplit(input$del_button, "_")[[1]][2]
   rapbase::deleteAutoReport(selectedRepId)
-  rv$subscriptionTab <- rapbase::makeUserSubscriptionTab(session)
+  rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
 })
 
 
