@@ -269,6 +269,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                       mainPanel(
                         h3('Potensielle dobbeltregistreringer'),
                         br(),
+                        h4('Funksjonen finner alle PID med to operasjoner nærmere enn valgt tidsintervall
+                           og tabellen viser alle operasjoner for de aktuelle pasientene.'),
                         downloadButton(outputId = 'lastNed_tabDblReg', label='Last ned tabell med mulige dobbeltregistreringer'),
                         br(),
                         numericInput(inputId = 'valgtTidsavvik',

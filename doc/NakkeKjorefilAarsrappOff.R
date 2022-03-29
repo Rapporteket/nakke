@@ -86,6 +86,15 @@ NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging
 NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplSvelging3mnd',
                  myelopati=0, fremBak=1, outfile='NakkeKomplSvelging3mndTid.pdf')
 
+#Registreringsforsinkelse
+NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSvelging3mnd',
+                     myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplSvelging3mndSh.pdf')
+NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging3mnd',
+                        Ngrense=20, ktr=0,aar=aar2, tidlAar=tidlAar2, outfile='NakkeKomplSvelging3mndShAar.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplSvelging3mnd',
+                 myelopati=0, fremBak=1, outfile='NakkeKomplSvelging3mndTid.pdf')
+
+
 #---Figurer---------
 
 NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Alder', datoFra=datoFra1aar, outfile='NakkeAlder70Sh.pdf')

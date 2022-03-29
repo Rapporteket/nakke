@@ -33,6 +33,9 @@ NakkePreprosess <- function(RegData=RegData)
 	RegData$Aar <- 1900 + as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
 	RegData$MndAar <- format(RegData$InnDato, '%b%y')
 
+	#RegData$DiffUtFerdig <- as.numeric(difftime(as.Date(RegData$MedForstLukket), RegData$UtskrivelseDato,units = 'days'))
+	#RegData$DiffUtFerdig <- as.numeric(difftime(as.Date(RegData$??), RegData$UtDato,units = 'days'))
+
 	#Variabel som identifiserer avdelingas resh
 	names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
 	class(RegData$ReshId) <- 'numeric'
