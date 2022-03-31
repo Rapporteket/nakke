@@ -510,7 +510,7 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     RegData$Variabel[RegData$NDIEndr>=35] <- 1
     tittel <- 'Minst 35% forb. av NDI, 12 mnd., fremre, ikke-myelopati'
     varTxt <- 'med NDI>35%'
-    KImaalGrenser <- rev(c(0,70,100)) #c(0,70,100)
+    KImaalGrenser <- rev(c(0,40,70,100)) #c(0,70,100)
   }
 	if (valgtVar=='NDIendr12mnd') { #GjsnTid, GjsnGrVar
 		#Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.

@@ -40,24 +40,25 @@ NakkeData <- NakkePreprosess(NakkeDataRaa)
 
 #load(paste0('A:/Nakke/NakkeAarsrapp', aarsRappAar, '.Rdata'))
 
-NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
-                     fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
 
-#Pasienter med myelopati (ja) (både bakre og fremre tilgang) og lage figur for gj. sn. ODI forbedring per sykehus. (etterbestilling).
-NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
-                  #datoFra=datoFra3aar, datoTil=datoTil12mnd,
-                  myelopati=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
+
 
 
 #----------------------------Kvalitetsindikatorer:
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
 #per sykehus. Her skal gjennomsnittlig forbedring brukes. Det som er over gj.sn blir grønt, resten gult
-NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
-                  datoFra=datoFra2aar, datoTil=datoTil12mnd,
-                  myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
-NakkeFigGjsnTid(RegData = NakkeData, valgtVar='NDIendr12mnd',
-                  myelopati=0, fremBak=1, outfile='NakkeNDIendr12mndTid.pdf')
+# NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
+#                   datoFra=datoFra2aar, datoTil=datoTil12mnd,
+#                   myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
+# NakkeFigGjsnTid(RegData = NakkeData, valgtVar='NDIendr12mnd',
+#                   myelopati=0, fremBak=1, outfile='NakkeNDIendr12mndTid.pdf')
+
+NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pstKI', datoFra = datoFra3aar , datoTil = datoTil12mnd,
+                     fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mnd35pstSh.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='NDIendr12mnd35pstKI', datoTil = datoTil12mnd,
+                 myelopati=0, fremBak=1, outfile='NakkeNDIendr12mnd35pstTid.pdf')
+
 
 #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
@@ -86,13 +87,6 @@ NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging
 NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplSvelging3mnd',
                  myelopati=0, fremBak=1, outfile='NakkeKomplSvelging3mndTid.pdf')
 
-#Registreringsforsinkelse
-NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSvelging3mnd',
-                     myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplSvelging3mndSh.pdf')
-NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging3mnd',
-                        Ngrense=20, ktr=0,aar=aar2, tidlAar=tidlAar2, outfile='NakkeKomplSvelging3mndShAar.pdf')
-NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplSvelging3mnd',
-                 myelopati=0, fremBak=1, outfile='NakkeKomplSvelging3mndTid.pdf')
 
 
 #---Figurer---------
@@ -112,13 +106,14 @@ dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd',
                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
                             fremBak = 1, myelopati = 0, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
 
-dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
-                            fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mndUmFSh.pdf')
-
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd',
                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
                             fremBak = 1, outfile='NakkeFornoydBeh12mndFremSh.pdf')
 
+#Pasienter med myelopati (ja) (både bakre og fremre tilgang) og lage figur for gj. sn. ODI forbedring per sykehus. (etterbestilling).
+NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
+                  #datoFra=datoFra3aar, datoTil=datoTil12mnd,
+                  myelopati=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
 
 
 
