@@ -3,8 +3,6 @@
 #Nakke
 library(nakke)
 library(xtable)
-#setwd('P:/Registerinfo og historie/Nakke/Aarsrapp')
-setwd('/home/rstudio/nakke/Aarsrapp')
 setwd('~/speil/aarsrapp')
 aarsRappAar <- 2021
 
@@ -24,22 +22,7 @@ tidlAar2 <- (aarsRappAar-3):(aarsRappAar-2)
 NakkeDataRaa <- NakkeRegDataSQL(datoTil = datoTil)
 NakkeData <- NakkePreprosess(NakkeDataRaa)
 
-# NakkeSkjemaDataRaa <- read.table(paste0('A:/Nakke/SkjemaOversiktAarsrapp2019_2020-09-09.csv'),
-#                                  sep=';', header=T, fileEncoding = 'UTF-8') #, encoding = 'UTF-8')
-# NakkeSkjemaData <- NakkeSkjemaDataRaa[which(as.Date(NakkeSkjemaDataRaa$HovedDato) <= '2019-12-31'), ]
-# write.table(NakkeSkjemaData, file = 'A:/Nakke/NakkeSkjemaDataAarsrapp2019.csv',
-#             sep = ';', row.names = F, fileEncoding = 'UTF-8')
-#
-# NakkeDataRaa <- read.table(paste0('A:/Nakke/AlleVarNumAarsrapp2019_2020-09-09.csv'),
-#                            sep=';', header=T, encoding = 'UTF-8')
-# NakkeData <- NakkeDataRaa[which(as.Date(NakkeDataRaa$OprDato) <= datoTil), ]
-# NakkeData <- NakkePreprosess(RegData = NakkeData)
-# write.table(NakkeData, file = paste0('A:/Nakke/NakkeDataAarsrapp', aarsRappAar, '.csv'), sep = ';', row.names = F, fileEncoding = 'UTF-8')
-#
-# save(NakkeSkjemaData, NakkeData, file = 'A:/Nakke/NakkeAarsrapp2019.Rdata')
-
-#load(paste0('A:/Nakke/NakkeAarsrapp', aarsRappAar, '.Rdata'))
-
+#write.table(NakkeData, file = 'NakkeDataAarsrapp2021.csv', sep = ';', na='', row.names = F, fileEncoding = 'latin1') #'UTF-8')
 
 
 
@@ -54,10 +37,10 @@ NakkeData <- NakkePreprosess(NakkeDataRaa)
 # NakkeFigGjsnTid(RegData = NakkeData, valgtVar='NDIendr12mnd',
 #                   myelopati=0, fremBak=1, outfile='NakkeNDIendr12mndTid.pdf')
 
-NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pstKI', datoFra = datoFra3aar , datoTil = datoTil12mnd,
-                     fremBak = 1, myelopati = 0, outfile='NakkeNDIendr12mnd35pstSh.pdf')
+NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
+                     fremBak = 1, myelopati = 0, outfile='' )#'NakkeNDIendr12mnd35pstSh.pdf')
 NakkeFigAndelTid(RegData=NakkeData, valgtVar='NDIendr12mnd35pstKI', datoTil = datoTil12mnd,
-                 myelopati=0, fremBak=1, outfile='NakkeNDIendr12mnd35pstTid.pdf')
+                 fremBak=1, myelopati=0, outfile='NakkeNDIendr12mnd35pstTid.pdf')
 
 
 #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav

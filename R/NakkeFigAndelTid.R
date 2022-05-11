@@ -70,10 +70,9 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
 
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelTid')
   RegData <- NakkeVarSpes$RegData
-  #sortAvtagende <- NakkeVarSpes$sortAvtagende
   varTxt <- NakkeVarSpes$varTxt
-  KImaal <- NakkeVarSpes$KImaal
-  KImaaltxt <- NakkeVarSpes$KImaaltxt
+  # KImaal <- NakkeVarSpes$KImaal #Tatt bort mai 2021
+  # KImaaltxt <- NakkeVarSpes$KImaaltxt
   tittel <- NakkeVarSpes$tittel
 
   #Gjør utvalg
@@ -88,39 +87,10 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
   NHovedRes <- length(ind$Hoved)
   NSmlRes <- length(ind$Rest)
 
-      #------------------------Klargjøre tidsenhet--------------
-  #RegData$Mnd <- RegData$InnDato$mon +1
-  #RegData$Kvartal <- ceiling(RegData$Mnd/3)
-  #RegData$Halvaar <- ceiling(RegData$Mnd/6)
-  #RegData$Aar <- 1900 + RegData$InnDato$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
-
-      # #Brukes til sortering
-      # RegData$TidsEnhet <- switch(tidsenhet,
-      #                             Aar = RegData$Aar-min(RegData$Aar)+1,
-      #                             Mnd = RegData$Mnd-min(RegData$Mnd[RegData$Aar==min(RegData$Aar)])+1
-      #                             +(RegData$Aar-min(RegData$Aar))*12,
-      #                             Kvartal = RegData$Kvartal-min(RegData$Kvartal[RegData$Aar==min(RegData$Aar)])+1+
-      #                                   (RegData$Aar-min(RegData$Aar))*4,
-      #                             Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
-      #                                   (RegData$Aar-min(RegData$Aar))*2
-      # )
-      #
-      # tidtxt <- switch(tidsenhet,
-      #                  Mnd = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-      #                              sprintf('%02.0f', RegData$Mnd[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='.'),
-      #                  Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-      #                                  sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
-      #                  Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)], 3,4),
-      #                                  sprintf('%01.0f', RegData$Halvaar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]), sep='-'),
-      #                  Aar = as.character(RegData$Aar[match(1:max(RegData$TidsEnhet), RegData$TidsEnhet)]))
-      #
-      # RegData$TidsEnhet <- factor(RegData$TidsEnhet, levels=1:max(RegData$TidsEnhet)) #evt. levels=tidtxt
-#Legge på tidsenhet
+  #Legge på tidsenhet
       N <- list(Hoved = dim(RegData)[1], Rest=0)
-      #if (N$Hoved>9) {
         RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
         RegData <- RegDataFunk$RegData
-        #tidtxt <- RegDataFunk$tidtxt
         tidNum <- min(RegData$TidsEnhetSort, na.rm=T):max(RegData$TidsEnhetSort, na.rm = T) #as.numeric(levels(RegData$TidsEnhetSort))
 
       AggVerdier <- list(Hoved = 0, Rest =0)
@@ -218,10 +188,10 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                   lines(tidNum, AggVerdier$Rest, col=fargeRest, lwd=3)
                   points(tidNum, AggVerdier$Rest, pch="'", cex=2, col=fargeRest)
 
-                  #KImål
-                  lines(tidNum,rep(KImaal[2],length(tidNum)), col= '#FF7260', lwd=3)
-                  #mtext(text=paste0('Mål:',KImaaltxt), at=50, side=4, las=1, adj=1,  cex=0.9, col='#FF7260')
-                  #text(max(tidNum), KImaal, pos=4, paste0('Mål:',KImaaltxt), cex=0.9, col='#FF7260')
+                  # #KImål Tatt bort mai 2021
+                  # lines(tidNum,rep(KImaal[2],length(tidNum)), col= '#FF7260', lwd=3)
+                  # #mtext(text=paste0('Mål:',KImaaltxt), at=50, side=4, las=1, adj=1,  cex=0.9, col='#FF7260')
+                  # #text(max(tidNum), KImaal, pos=4, paste0('Mål:',KImaaltxt), cex=0.9, col='#FF7260')
 
                   Ttxt <- paste0('(Tall ved punktene angir antall ', varTxt, ')')
                   if (NakkeUtvalg$medSml == 1) {

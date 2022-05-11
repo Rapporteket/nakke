@@ -51,173 +51,292 @@
 
 NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=130,
                                  datoFra='2012-01-01', datoTil='3000-12-31', inngrep=99,
-                            erMann='', myelopati=99, fremBak=0, Ngrense=10,
-                            hentData=0, preprosess=0, reshID=0, outfile='',...) { #tittel=1,
+                                 erMann='', myelopati=99, fremBak=0, Ngrense=10,
+                                 hentData=0, preprosess=0, reshID=0, outfile='',...) { #tittel=1,
 
   if ("session" %in% names(list(...))) {
     rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelGrVar: ',valgtVar))
   }
 
-     if (hentData == 1) {
-          RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
-     }
+  if (hentData == 1) {
+    RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
+  }
 
-     # Preprosessere data
-     if (preprosess==1){
-          RegData <- NakkePreprosess(RegData=RegData)
-     }
+  # Preprosessere data
+  if (preprosess==1){
+    RegData <- NakkePreprosess(RegData=RegData)
+  }
 
-    '%i%' <- intersect
-     #----------- Figurparametre ------------------------------
-     cexShNavn <- 1 #0.85
+  '%i%' <- intersect
+  #----------- Figurparametre ------------------------------
+  grVar <- 'ShNavn'
+  RegData[ ,grVar] <- factor(RegData[ ,grVar])
 
-     grVar <- 'ShNavn'
-     RegData[ ,grVar] <- factor(RegData[ ,grVar])
+  NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
+  RegData <- NakkeVarSpes$RegData
+  sortAvtagende <- NakkeVarSpes$sortAvtagende
+  Tittel <- NakkeVarSpes$tittel
+  KImaalGrenser <- NA
 
-     NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
-     RegData <- NakkeVarSpes$RegData
-     sortAvtagende <- NakkeVarSpes$sortAvtagende
-     tittel <- NakkeVarSpes$tittel
-     KImaalGrenser <- NakkeVarSpes$KImaalGrenser
-
-     #Gjør utvalg
-     NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, minald=minald, maxald=maxald,
-                                   erMann=erMann, myelopati=myelopati, fremBak=fremBak, inngrep = inngrep)
-     RegData <- NakkeUtvalg$RegData
-     utvalgTxt <- NakkeUtvalg$utvalgTxt
-
-
-     dummy0 <- -0.001
-     N <- dim(RegData)[1]
-     Nvar <- tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)
-     if(N > 0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
-     AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
-     AndelerGr <- round(100*Nvar/Ngr,2)
-
-     indGrUt <- as.numeric(which(Ngr < Ngrense))
-     if (length(indGrUt)==0) { indGrUt <- 0}
-     AndelerGr[indGrUt] <- dummy0
-     sortInd <- rev(order(as.numeric(AndelerGr), decreasing=sortAvtagende)) #Snur fordi søyler plottes nedenfra og opp
-     Ngrtxt <- paste0('\n(N=', as.character(Ngr),')')	#
-     Ngrtxt[indGrUt] <- paste0('\n(<', Ngrense,')')	#paste(' (<', Ngrense,')',sep='')	#
-	Ngr <- Ngr[sortInd]
-	Nvar <- Nvar[sortInd]
-
-   AggVerdier <- list(Hoved = NULL, Tot =NULL)
-    AndelerGrSort <- AndelerGr[sortInd]
-  AggVerdier$Hoved <- AndelerGrSort
-  AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
-  GrNavnSort <- paste0(names(Ngr), Ngrtxt[sortInd]) #names(Ngr)[sortInd]
-
-     andeltxt <- paste0(sprintf('%.1f',AndelerGrSort), '%') 	#round(as.numeric(AndelerGrSort),1)
-     if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
-
-     #if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
-     FigDataParam <- list(AggVerdier=AggVerdier,
-                          N=N,
-                          Ngr=Ngr,
-                          Nvar=Nvar,
-                          KImaalGrenser <- KImaalGrenser,
-                          #soyletxt=soyletxt,
-                          #grtxt2=grtxt2,
-                          tittel=tittel,
-                          andeltxt=andeltxt,
-                          #xAkseTxt=xAkseTxt,
-                          #yAkseTxt=yAkseTxt,
-                          utvalgTxt=NakkeUtvalg$utvalgTxt,
-                          fargepalett=NakkeUtvalg$fargepalett
-                          #medSml=NakkeUtvalg$medSml
-                          #hovedgrTxt=hovedgrTxt,
-                          #smltxt=RyggUtvalg$smltxt
-     )
-
-     #-----------Figur---------------------------------------
-     if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
-          FigTypUt <- rapFigurer::figtype(outfile)
-          farger <- FigTypUt$farger
-          plot.new()
-          if (dim(RegData)[1]>0) {
-               tekst <- paste0('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene')
-          } else {tekst <- 'Ingen registrerte data for dette utvalget'}
-          title(main=tittel)
-          text(0.5, 0.6, tekst, cex=1.2)
-          legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-          if ( outfile != '') {dev.off()}
-
-     } else {
-
-          #--------------------------FIGUR---------------------------------------------------
-          #Innparametre: ...
+  #Gjør utvalg
+  NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
+                                minald=minald, maxald=maxald, erMann=erMann,
+                                myelopati=myelopati, fremBak=fremBak, inngrep = inngrep)
+  RegData <- NakkeUtvalg$RegData
+  utvalgTxt <- NakkeUtvalg$utvalgTxt
 
 
-          FigTypUt <- rapFigurer::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
-                  #Påvirker ikke filtype ''
-          farger <- FigTypUt$farger
-          #Tilpasse marger for å kunne skrive utvalgsteksten
-          NutvTxt <- length(utvalgTxt)
-          vmarg <- max(0, strwidth(GrNavnSort, units='figure', cex=cexShNavn)*0.7)
-          #NB: strwidth oppfører seg ulikt avh. av device...
-          par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
 
-          xmax <- min(max(AndelerGrSort),100)*1.15
-          pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
-                         xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=cexShNavn*0.9)
-          overPos <- max(pos)+0.4*log(max(pos))
-          # if (!is.na(KImaalGrenser[1])) {
-          #   antMaalNivaa <- length(KImaalGrenser)-1
-          #   rekkef <- 1:antMaalNivaa
-          #   if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
-          #   fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
-          #   maalOppTxt <- c('Høy', 'Moderat', 'Lav')[rekkef]
-          #   rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
-          #        ytop=max(pos)+(pos[2]-pos[1])/3, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
-          #   legend(x=0, y=overPos, yjust=0.5, pch=c(NA,rep(15, antMaalNivaa)), #x=0, y=-4,
-          #          col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
-          #          ncol=antMaalNivaa+1,
-          #          xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
-          #          legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
-          # }
-          if (!is.na(KImaalGrenser[1])) {
-            antMaalNivaa <- length(KImaalGrenser)-1
-            rekkef <- 1:antMaalNivaa
-            if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
-            fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
-            #fargerMaalNiva <-  c('#3baa34', '#fd9c00', '#e30713')[rekkef] #Grønn, gul, rød Likt med sykehusviser
-            maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
-            if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
-            rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
-                 ytop=max(pos)+0.4, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
-            legPos <- overPos #ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -3.5)
-            legend(x=0, y=legPos, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
-                   ncol=antMaalNivaa+1,
-                   xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
-                   legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
-          }
-          pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
-                         xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)',
-                         las=1, cex.names=cexShNavn*0.9, add = T)
-          ybunn <- 0.1
-          ytopp <- pos[AntGr]+1	#-length(indGrUt)]
-          lines(x=rep(AggVerdier$Tot, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
-          legend('topright', xjust=1, yjust = 0.5, cex=1, lwd=2, col=farger[2],
-                 legend=paste0('Hele landet', ' (', sprintf('%.1f',AggVerdier$Tot), '%), ', 'N=', N),
-                 bty='o', bg='white', box.col='white')
-          mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
-          title(tittel, line=1, font.main=1, cex.main=1.3)
+  if(dim(RegData)[1] > 0) {
+    RegData <- RegData[which(RegData[ ,grVar] != ''),] #Tar ut registreringer uten grupperingsnavn
+    RegData[ ,grVar] <- as.factor(RegData[ ,grVar])
+    Ngr <- table(RegData[ ,grVar])
+    Ngrtxt <- as.character(Ngr)
+  }	else {Ngr <- 0}
 
-          text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
-               las=1, cex=0.9, adj=0, col=farger[1])	#Andeler, hvert sykehus
+  N <- dim(RegData)[1]
+  AntGr <- length(which(Ngr >= Ngrense))	#Alle som har gyldig resultat
+  AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
+  AndelerGr <- round(100*tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)/Ngr,2)
 
-          #mtext(at=max(pos)+0.35*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)
+  GrNavn <- names(Ngr)
+  xAkseTxt <- "Andel opphold (%)"
 
-          #Tekst som angir hvilket utvalg som er gjort
-          mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
-          #mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+  indGrUt <- which(Ngr < Ngrense)
+  if (sum(indGrUt)>0) {
+    AndelGrUt <- sum(AndelerGr[indGrUt]*Ngr[indGrUt], na.rm = T)/sum(Ngr[indGrUt])
+    AndelerGr <- c(AndelerGr[-indGrUt],AndelGrUt) #AndelerGr[indGrUt] <- NA
+    GrUtNavn <- paste0(length(indGrUt), ' avd. med N<',Ngrense)
+    Ngrtxt <- c(Ngr[-indGrUt],sum(Ngr[indGrUt]))  #Ngrtxt[indGrUt] <- paste0('<', Ngrense)
+    GrNavn <- c(GrNavn[-indGrUt], GrUtNavn) #paste0(c(GrNavn[-indGrUt], GrUtNavn),' (',Ngrtxt , ')')
+  }
+
+  if (valgtVar == 'NDIendr12mnd35pst' & fremBak == 1 & myelopati == 0) {KImaalGrenser <- c(0,40,70,100)}
+  if (valgtVar == 'KomplSvelging3mnd' & fremBak == 1) {KImaalGrenser <- c(0,17,100)}
+  if (valgtVar == 'Komplinfek') {KImaalGrenser <- c(0,2,100)}
+  if (valgtVar == 'KomplStemme3mnd' & fremBak == 1) {KImaalGrenser <- c(0,10,100)}
+  fargepalett <- NakkeUtvalg$fargepalett
+
+sortInd <- order(as.numeric(AndelerGr), decreasing=sortAvtagende, na.last = FALSE)
+AndelerGrSort <- AndelerGr[sortInd]
+GrNavnSort <- GrNavn[sortInd]
+Ngrtxt <- Ngrtxt[sortInd]
+
+andeltxtUsort <- paste0(sprintf('%.1f',AndelerGr), ' %')
+andeltxt <- andeltxtUsort[sortInd]
 
 
-          par('fig'=c(0, 1, 0, 1))
-          if ( outfile != '') {dev.off()}
-          #----------------------------------------------------------------------------------
-     }
-     return(invisible(FigDataParam))
+FigDataParam <- list(AggVerdier=AndelerGrSort,
+                     AggTot=AndelHele,
+                     N=N,
+                     Ngr=as.numeric(Ngrtxt),
+                     soyletxt=andeltxt,
+                     grtxt=GrNavnSort,
+                     Tittel=Tittel,
+                     #                          xAkseTxt=xAkseTxt, #NIRVarSpes$xAkseTxt,
+                     #                          KImaal = KImaal,
+                     #                          KImaaltxt = KImaaltxt,
+                     #                          grTypeTxt=RyggUtvalg$grTypeTxt,
+                     utvalgTxt=utvalgTxt,
+                     fargepalett =fargepalett
+
+)
+
+
+#-----------Figur---------------------------------------
+if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
+  FigTypUt <- rapFigurer::figtype(outfile)
+  farger <- FigTypUt$farger
+  plot.new()
+  if (!is.null(dim(RegData))) { #>0
+    tekst <- paste0('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene')
+  } else {tekst <- 'Ingen registrerte data for dette utvalget'}
+  title(main=Tittel)
+  text(0.5, 0.6, tekst, cex=1.2)
+  legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
+  if ( outfile != '') {dev.off()}
+
+} else {
+
+  #--------------------------FIGUR---------------------------------------------------
+  #Innparametre: ...
+  #----------- Figurparametre ------------------------------
+  cexShNavn <- 0.9 #0.85
+
+  FigTypUt <- rapFigurer::figtype(outfile, height=3*800, fargepalett=fargepalett)
+  farger <- FigTypUt$farger
+  #Tilpasse marger for å kunne skrive utvalgsteksten
+  NutvTxt <- length(utvalgTxt)
+  vmarg <- max(0, strwidth(GrNavnSort, units='figure', cex=cexShNavn)*0.8)
+  #NB: strwidth oppfører seg ulikt avh. av device...
+  par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
+
+  xmax <- min(max(AndelerGrSort, na.rm=T),100)*1.15
+  #paste0(GrNavnSort,' (',Ngrtxt , ')')
+  pos <- rev(barplot(rev(as.numeric(AndelerGrSort)), horiz=T, border=NA, col=farger[4],
+                     xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(GrNavnSort), font.main=1, #xlab='Andel (%)',
+                     las=1, cex.names=cexShNavn*0.9))
+  #Legge på målnivå
+  if (!is.na(KImaalGrenser[1])) {
+    antMaalNivaa <- length(KImaalGrenser)-1
+    rekkef <- 1:antMaalNivaa
+    if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
+    fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
+    maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
+    if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
+    rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
+         ytop=max(pos)+0.4, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+    legPos <- ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -3.5)
+    legend(x=0, y=legPos, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+           ncol=antMaalNivaa+1,
+           xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
+           legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
+  }
+  pos <- rev(barplot(rev(as.numeric(AndelerGrSort)), horiz=T, border=NA, col=farger[4], #main=Tittel,
+                     xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(GrNavnSort), font.main=1, #xlab='Andel (%)',
+                     las=1, cex.names=cexShNavn*0.9, add=T))
+  mtext('Andel (%)', side=1, line=2)
+  ybunn <- 0.1
+  ytopp <- rev(pos)[AntGr]+1
+  #Linje for hele landet/utvalget:
+  lines(x=rep(AndelHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
+  legend('topright', xjust=1, cex=1, lwd=2, col=farger[2],
+         legend=paste0(hovedgrTxt, ' (', sprintf('%.1f',AndelHele), '%), ', 'N=', N),
+         bty='o', bg='white', box.col='white')
+  mtext(at=pos+max(pos)*0.0045, paste0(GrNavnSort,' (',Ngrtxt , ')'), side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
+
+
+  title(Tittel, line=1, font.main=1, cex.main=1.3)
+
+  text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
+       las=1, cex=0.9, adj=0, col=farger[1])	#Andeler, hvert sykehus
+
+  mtext(at=max(pos)+0.4*log(max(pos)), paste0('(N)' ), side=2, las=1, cex=1, adj=1, line=0.25)
+
+  #Tekst som angir hvilket utvalg som er gjort
+  mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+
+    par('fig'=c(0, 1, 0, 1))
+  if ( outfile != '') {dev.off()}
+  #----------------------------------------------------------------------------------
 }
+return(invisible(FigDataParam))
+}
+
+
+
+#   N <- dim(RegData)[1]
+#   Nvar <- tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)
+#   if(N > 0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
+#   AntGr <- length(which(Ngr >= Ngrense))	#length(which(Midt>0))
+#   AndelerGr <- round(100*Nvar/Ngr,2)
+#
+#   indGrUt <- as.numeric(which(Ngr < Ngrense))
+#   if (length(indGrUt)==0) { indGrUt <- 0}
+#   AndelerGr[indGrUt] <- NA #-0.001
+#   sortInd <- rev(order(as.numeric(AndelerGr), decreasing=sortAvtagende)) #Snur fordi søyler plottes nedenfra og opp
+#   Ngrtxt <- paste0('\n(N=', as.character(Ngr),')')	#
+#   Ngrtxt[indGrUt] <- paste0('\n(<', Ngrense,')')	#paste(' (<', Ngrense,')',sep='')	#
+#   Ngr <- Ngr[sortInd]
+#   Nvar <- Nvar[sortInd]
+#
+#   AggVerdier <- list(Hoved = NULL, Tot =NULL)
+#   AndelerGrSort <- AndelerGr[sortInd]
+#   AggVerdier$Hoved <- AndelerGrSort
+#   AggVerdier$Tot <- round(100*sum(RegData$Variabel)/N, 2)
+#   GrNavnSort <- paste0(names(Ngr), Ngrtxt[sortInd]) #names(Ngr)[sortInd]
+#
+#   andeltxt <- paste0(sprintf('%.1f',AndelerGrSort), '%') 	#round(as.numeric(AndelerGrSort),1)
+#   if (length(indGrUt)>0) {andeltxt[(AntGr+1):(AntGr+length(indGrUt))] <- ''}
+#
+#   FigDataParam <- list(AggVerdier=AggVerdier,
+#                        N=N,
+#                        Ngr=Ngr,
+#                        Nvar=Nvar,
+#                        KImaalGrenser <- KImaalGrenser,
+#                        #soyletxt=soyletxt,
+#                        #grtxt2=grtxt2,
+#                        tittel=tittel,
+#                        andeltxt=andeltxt,
+#                        #xAkseTxt=xAkseTxt,
+#                        #yAkseTxt=yAkseTxt,
+#                        utvalgTxt=NakkeUtvalg$utvalgTxt,
+#                        fargepalett=NakkeUtvalg$fargepalett
+#                        #medSml=NakkeUtvalg$medSml
+#                        #hovedgrTxt=hovedgrTxt,
+#                        #smltxt=RyggUtvalg$smltxt
+#   )
+#
+#   #-----------Figur---------------------------------------
+#   if 	( max(Ngr) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
+#     FigTypUt <- rapFigurer::figtype(outfile)
+#     farger <- FigTypUt$farger
+#     plot.new()
+#     if (dim(RegData)[1]>0) {
+#       tekst <- paste0('Færre enn ', Ngrense, ' registreringer ved hvert av sykehusene')
+#     } else {tekst <- 'Ingen registrerte data for dette utvalget'}
+#     title(main=tittel)
+#     text(0.5, 0.6, tekst, cex=1.2)
+#     legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
+#     if ( outfile != '') {dev.off()}
+#
+#   } else {
+#
+#     #--------------------------FIGUR---------------------------------------------------
+#     #Innparametre: ...
+#
+#
+#     FigTypUt <- rapFigurer::figtype(outfile, height=3*800, fargepalett=NakkeUtvalg$fargepalett)
+#     #Påvirker ikke filtype ''
+#     farger <- FigTypUt$farger
+#     #Tilpasse marger for å kunne skrive utvalgsteksten
+#     NutvTxt <- length(utvalgTxt)
+#     vmarg <- max(0, strwidth(GrNavnSort, units='figure', cex=cexShNavn)*0.7)
+#     #NB: strwidth oppfører seg ulikt avh. av device...
+#     par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
+#
+#     xmax <- min(max(AndelerGrSort),100)*1.15
+#     pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
+#                    xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)', las=1, cex.names=cexShNavn*0.9)
+#     overPos <- max(pos)+0.4*log(max(pos))
+#     if (!is.na(KImaalGrenser[1])) {
+#       antMaalNivaa <- length(KImaalGrenser)-1
+#       rekkef <- 1:antMaalNivaa
+#       #if (sortAvtagende == TRUE) {rekkef <- rev(rekkef)}
+#       fargerMaalNiva <-  c('#4fc63f', '#fbf850', '#c6312a')[rekkef] #c('green','yellow')# #c('#ddffcc', '#ffffcc') #, '#fff0e6') #Grønn, gul, rød
+#       maalOppTxt <- c('Høy', 'Moderat til lav', 'Lav')[rekkef]
+#       if (antMaalNivaa==3) {maalOppTxt[2] <- 'Moderat' }
+#       rect(xleft=KImaalGrenser[1:antMaalNivaa], ybottom=0, xright=KImaalGrenser[2:(antMaalNivaa+1)],
+#            ytop=max(pos)+0.4, col = fargerMaalNiva[1:antMaalNivaa], border = NA) #add = TRUE, #pos[AntGrNgr+1],
+#       legPos <- overPos #ifelse(AntGr < 31, ifelse(AntGr < 15, -1, -2.5), -3.5)
+#       legend(x=0, y=legPos, pch=c(NA,rep(15, antMaalNivaa)), col=c(NA, fargerMaalNiva[1:antMaalNivaa]),
+#              ncol=antMaalNivaa+1,
+#              xpd=TRUE, border=NA, box.col='white',cex=0.8, pt.cex=1.5,
+#              legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
+#     }
+#     pos <- barplot(as.numeric(AndelerGrSort), horiz=T, border=NA, col=farger[3], #main=tittel,
+#                    xlim=c(0,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='Andel (%)',
+#                    las=1, cex.names=cexShNavn*0.9, add = T)
+#     ybunn <- 0.1
+#     ytopp <- pos[AntGr]+1	#-length(indGrUt)]
+#     lines(x=rep(AggVerdier$Tot, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
+#     legend('topright', xjust=1, yjust = 0.5, cex=1, lwd=2, col=farger[2],
+#            legend=paste0('Hele landet', ' (', sprintf('%.1f',AggVerdier$Tot), '%), ', 'N=', N),
+#            bty='o', bg='white', box.col='white')
+#     mtext(at=pos+max(pos)*0.0045, GrNavnSort, side=2, las=1, cex=cexShNavn, adj=1, line=0.25)	#Legge på navn som eget steg
+#     title(tittel, line=1, font.main=1, cex.main=1.3)
+#
+#     text(x=AndelerGrSort+xmax*0.01, y=pos+0.1, andeltxt,
+#          las=1, cex=0.9, adj=0, col=farger[1])	#Andeler, hvert sykehus
+#
+#     #Tekst som angir hvilket utvalg som er gjort
+#     mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
+#     #mtext(utvalgTxt, side=3, las=1, cex=1, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
+#
+#
+#     par('fig'=c(0, 1, 0, 1))
+#     if ( outfile != '') {dev.off()}
+#     #----------------------------------------------------------------------------------
+#   }
+#   return(invisible(FigDataParam))
+# }

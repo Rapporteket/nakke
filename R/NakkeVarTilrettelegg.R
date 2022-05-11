@@ -45,7 +45,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
   deltittel <- ''
   variable <- 'Ingen'
   KIekstrem <- NULL
-  KImaalGrenser <- NA
+  #KImaalGrenser <- NA
   #deltittel <- ''
   RegData$Variabel <- 0
   #Kan her definere opp alle aktuelle grupperingsvariable og deres tekst, eller
@@ -369,7 +369,6 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
     RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
     varTxt <- 'infeksjoner'
     tittel <- 'Pasientrapportert dyp eller overfladisk infeksjon, 3 mnd.'
-    KImaalGrenser <- c(0,2,100)
     }
 
   if (valgtVar=='KomplStemme3mnd') { #AndelTid, #AndelGrVar
@@ -382,7 +381,6 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
     RegData$Variabel <- RegData[ ,valgtVar]
     varTxt <- 'med stemmevansker'
     tittel <- 'Stemmevansker, fremre tilgang, 3 mnd.'
-    KImaalGrenser <- c(0,10,100)
   }
   if (valgtVar=='KomplStemme12mnd') { #AndelGrVar,
     #3MndSkjema. Andel med KomplStemme12mnd=1
@@ -414,7 +412,6 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
     RegData$Variabel <- RegData[ ,valgtVar]
     varTxt <- 'med svelgevansker'
     tittel <- 'Svelgevansker, fremre tilgang, 3 mnd.'
-    KImaalGrenser <- c(0,17,100)
   }
   if (valgtVar=='LiggeDognPostop') { #Andeler #GjsnTid #GjsnGrVar
     #Legeskjema.
@@ -500,18 +497,19 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     RegData$Variabel[RegData$NDIEndr>=35] <- 1
     tittel <- 'Minst 35% forbedring av NDI, 12 mnd.'
 	varTxt <- 'med NDI>35%'
+	sortAvtagende <- TRUE
 }
-  if (valgtVar=='NDIendr12mnd35pstKI') { #AndelGrVar, AndelTid
-    #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
-    RegData$NDIEndr <- 100*(RegData$NDIscorePreOp - RegData$NDIscore12mnd)/RegData$NDIscorePreOp
-    indVar <- which(is.finite(RegData$NDIEndr) & RegData$OprIndikMyelopati==0 & RegData$OprMetodeTilgangFremre==1)
-    indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
-    RegData <- RegData[intersect(indVar, indSkjema), ]
-    RegData$Variabel[RegData$NDIEndr>=35] <- 1
-    tittel <- 'Minst 35% forb. av NDI, 12 mnd., fremre, ikke-myelopati'
-    varTxt <- 'med NDI>35%'
-    KImaalGrenser <- rev(c(0,40,70,100)) #c(0,70,100)
-  }
+  # if (valgtVar=='NDIendr12mnd35pstKI') { #AndelGrVar, AndelTid
+  #   #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
+  #   RegData$NDIEndr <- 100*(RegData$NDIscorePreOp - RegData$NDIscore12mnd)/RegData$NDIscorePreOp
+  #   indVar <- which(is.finite(RegData$NDIEndr) & RegData$OprIndikMyelopati==0 & RegData$OprMetodeTilgangFremre==1)
+  #   indSkjema <- which(RegData$PasientSkjemaStatus==1 & RegData$OppFolgStatus12mnd==1)
+  #   RegData <- RegData[intersect(indVar, indSkjema), ]
+  #   RegData$Variabel[RegData$NDIEndr>=35] <- 1
+  #   tittel <- 'Minst 35% forb. av NDI, 12 mnd., fremre, ikke-myelopati'
+  #   varTxt <- 'med NDI>35%'
+  #   KImaalGrenser <- rev(c(0,40,70,100)) #c(0,70,100)
+  # }
 	if (valgtVar=='NDIendr12mnd') { #GjsnTid, GjsnGrVar
 		#Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
 		KIekstrem <- c(-100,100)
@@ -1054,7 +1052,7 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
 
 
     UtData <- list(RegData=RegData, grtxt=grtxt, cexgr=cexgr, varTxt=varTxt, xAkseTxt=xAkseTxt,
-                   KImaalGrenser=KImaalGrenser, tittel=tittel, varTxt=varTxt, flerevar=flerevar,
+                   tittel=tittel, varTxt=varTxt, flerevar=flerevar, #KImaalGrenser=KImaalGrenser,
                    variable=variable, sortAvtagende=sortAvtagende,
                  retn=retn, ytxt1=ytxt1, deltittel=deltittel, KIekstrem=KIekstrem)
   #RegData inneholder nå variablene 'Variabel' og 'VariabelGr'
