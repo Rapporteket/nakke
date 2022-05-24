@@ -270,9 +270,6 @@ smltxt <- NakkeUtvalg$smltxt
                                paste0(AarTxt, ' (', sprintf('%.1f', ResAar[2]), '%, ', 'N=', Naar[2],')'),
                                paste0('Hele landet, ',AarTxt))
                   )
-                  # legend(x=0, y=-3.5, pch=c(NA,15,15,15), col=c(NA, fargerMaalNiva), ncol=4, xpd=TRUE, border=NA,
-                  #        box.col='white',cex=0.8, pt.cex=1.5,
-                  #        legend=c('Måloppnåelse:', 'Meget god', 'God', 'Mindre god')) #paste(c('Meget god', 'God', 'Mindre god'), 'måloppnåelse')
 
                   mtext(signTxt, side=1, las=1, cex=cexShNavn, adj=0, line=3, col='#FF7260')
                   mtext(xAkseTxt, side=1, las=1, cex=cexShNavn, adj=0.5, line=2)

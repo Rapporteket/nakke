@@ -48,44 +48,34 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
     RegData <- NakkePreprosess(RegData=RegData)
   }
 
-
   #----------- Figurparametre ------------------------------
 
-  #Når bare skal sammenlikne med region trengs ikke data for hele landet:
-  #reshID <- as.numeric(reshID)
-  #indEgen1 <- match(reshID, RegData$ReshId)
-  #smltxt <- 'alle enheter'
-
   grVar <- 'ShNavn'
-  RegData[ ,grVar] <- factor(RegData[ ,grVar])
+  #RegData[ ,grVar] <- factor(RegData[ ,grVar])
 
 
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnGrVar')
   RegData <- NakkeVarSpes$RegData
   sortAvtagende <- NakkeVarSpes$sortAvtagende
-  #varTxt <- NakkeVarSpes$varTxt
-  # KIekstrem <- NakkeVarSpes$NakkeVarSpes
   KImaal <- NakkeVarSpes$KImaal
   KImaaltxt <- NakkeVarSpes$KImaaltxt
   deltittel <- NakkeVarSpes$deltittel
   xAkseTxt <- NakkeVarSpes$xAkseTxt
-  #ytxt1 <- NakkeVarSpes$ytxt1
 
   #Gjør utvalg
   NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
                                 minald=minald, maxald=maxald, inngrep=inngrep,
-                                erMann=erMann, myelopati=myelopati, fremBak=fremBak)	#, tidlOp=tidlOp
+                                erMann=erMann, myelopati=myelopati, fremBak=fremBak)
   RegData <- NakkeUtvalg$RegData
   utvalgTxt <- NakkeUtvalg$utvalgTxt
 
   N <- dim(RegData)[1]
   if(N > 0) {Ngr <- table(RegData[ ,grVar])}	else {Ngr <- 0}
 
-  #Ngrtxt <- paste(', N=', as.character(Ngr), sep='') #paste('N=', as.character(Ngr), sep='')
-  Ngrtxt <- paste0('N=', as.character(Ngr)) #paste('N=', as.character(Ngr), sep='')
+  Ngrtxt <- paste0('N=', as.character(Ngr))
   indGrUt <- as.numeric(which(Ngr < Ngrense))
   if (length(indGrUt)==0) { indGrUt <- 0}
-  Ngrtxt[indGrUt] <- paste0(' (<', Ngrense,')')	#paste('N<', Ngrense,sep='')
+  Ngrtxt[indGrUt] <- paste0(' (<', Ngrense,')')
 
 
   if (valgtMaal=='Med') {

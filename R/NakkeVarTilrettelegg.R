@@ -324,7 +324,9 @@ if (valgtVar=='Eq5DScorePreOp') { #gjsnTid, gjsnGrVar
     tittel <- switch(valgtVar,
                      FornoydBeh3mnd = 'Fornøyd med behandlinga på sykehuset, 3 mnd' ,
                      FornoydBeh12mnd = 'Fornøyd med behandlinga på sykehuset, 12 mnd')
+    sortAvtagende <- TRUE
   }
+
   if (valgtVar == 'Inngrep'){
     grtxt <- c('Ikke klassifiserbar', 'Fremre diskektomi, prolaps', 'Bakre dekompresjon',
                'Fremre dekomp. SS u/prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep') #for verdiene 0:6
@@ -520,6 +522,7 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
 		tittel <- 'Forbedring av NDI, 12 mnd. etter operasjon'
 		deltittel <- 'forbedring av NDI, 12 mnd. etter operasjon'
  		ytxt1 <- '(endring av NDI-skår)'
+ 		sortAvtagende <- TRUE
 		}
 
 	if (valgtVar=='NDIendr3mnd') { #GjsnTid, GjsnGrVar
@@ -548,6 +551,7 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
 		RegData$Variabel <- RegData$NRSsmerteArmPreOp - RegData$NRSsmerteArm12mnd} #RegData$NRSEndr
 	deltittel <- 'NRS, armsmerte, endring 12 mnd.'
 	xAkseTxt <- 'skåring'
+	sortAvtagende <- TRUE
 	}
   if (valgtVar == 'NRSsmerteArmEndr3mnd') { #AndelGrVar #GjsnGrVar, GjsnTid
     #Pasientskjema.

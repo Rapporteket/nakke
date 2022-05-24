@@ -25,22 +25,14 @@ NakkeData <- NakkePreprosess(NakkeDataRaa)
 #write.table(NakkeData, file = 'NakkeDataAarsrapp2021.csv', sep = ';', na='', row.names = F, fileEncoding = 'latin1') #'UTF-8')
 
 
-
-
 #----------------------------Kvalitetsindikatorer:
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
-#per sykehus. Her skal gjennomsnittlig forbedring brukes. Det som er over gj.sn blir grønt, resten gult
-# NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
-#                   datoFra=datoFra2aar, datoTil=datoTil12mnd,
-#                   myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
-# NakkeFigGjsnTid(RegData = NakkeData, valgtVar='NDIendr12mnd',
-#                   myelopati=0, fremBak=1, outfile='NakkeNDIendr12mndTid.pdf')
 
 NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
-                     fremBak = 1, myelopati = 0, outfile='' )#'NakkeNDIendr12mnd35pstSh.pdf')
-NakkeFigAndelTid(RegData=NakkeData, valgtVar='NDIendr12mnd35pstKI', datoTil = datoTil12mnd,
-                 fremBak=1, myelopati=0, outfile='NakkeNDIendr12mnd35pstTid.pdf')
+                     fremBak = 1, myelopati = 0, Ngrense=20, outfile='NakkeNDIendr12mnd35pstSh.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoTil = datoTil12mnd,
+                 fremBak=1, myelopati=0, Ngrense=20,outfile='NakkeNDIendr12mnd35pstTid.pdf')
 
 
 #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
@@ -77,21 +69,21 @@ NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplSvelging3mnd',
 NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Alder', datoFra=datoFra1aar, outfile='NakkeAlder70Sh.pdf')
 
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OprIndikMyelopati',
-                            datoFra=datoFra1aar, outfile='NakkeOprIndikMyelopatiSh.pdf')
+                            datoFra=datoFra1aar, Ngrense=20,outfile='NakkeOprIndikMyelopatiSh.pdf')
 
 dum <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
                         outfile='NakkeSaardrenUmFTid.pdf')
 
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
-                            datoFra=datoFra1aar, outfile='NakkeSaardrenUmFSh.pdf')
+                            datoFra=datoFra1aar, Ngrense=20,outfile='NakkeSaardrenUmFSh.pdf')
 
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd',
                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
-                            fremBak = 1, myelopati = 0, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
+                            fremBak = 1, myelopati = 0, Ngrense=20, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
 
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd',
                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
-                            fremBak = 1, outfile='NakkeFornoydBeh12mndFremSh.pdf')
+                            fremBak = 1, Ngrense=20, outfile='NakkeFornoydBeh12mndFremSh.pdf')
 
 #Pasienter med myelopati (ja) (både bakre og fremre tilgang) og lage figur for gj. sn. ODI forbedring per sykehus. (etterbestilling).
 NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
@@ -106,8 +98,7 @@ AndelPst <- function(variabel,teller,nevner){
                     sum(variabel %in% nevner)*100)}
 
 #----- TABELLER og tall ------------------------------------------------------------------
-NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeData, datoFra=datoFra1aar, datoTil=datoTil)
-NakkeData1aar <- NakkeUtvalg$RegData
+NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra=datoFra1aar, datoTil=datoTil)$RegData
 
 
 tabAvdNnakke <- addmargins(table(NakkeData[c('ShNavn','Aar')]))
@@ -121,13 +112,13 @@ xtable(tabAvdN5nakke, digits=0, align=c('l', rep('r', 6)),
                       min(NakkeData$Aar, na.rm=T),'.'), label = 'tab:AntRegNakke')
 
 
-#Totalt antall operasjoner siden 2012: 9326
+#Totalt antall operasjoner siden 2012:
 (NtotNakke <- dim(NakkeData)[1])
 
-#Kjønnsfordeling siden 2012, prosent, kvinner menn: "44.8" "55.2"
+#Kjønnsfordeling siden 2012, prosent, kvinner menn:
 (tabKjPstNakke <- sprintf('%.1f',table(NakkeData$ErMann)/NtotNakke*100))
 
-#Tall for 2019:
+#Tall for årsrapportåret:
 #Gjennomsnittsalder:
 (AlderGjsnNakke <- round(mean(NakkeData1aar$Alder, na.rm = T)))
 #Andel kvinner:
