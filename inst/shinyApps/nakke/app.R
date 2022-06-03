@@ -89,9 +89,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   windowTitle = regTitle,
   theme = "rap/bootstrap.css",
 
-  # Application title #titlePanel("Testing testing, Nakke"),
-
-
 
   #------------ Viktigste resultater-----------------
   tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og halvårsrapport'),
@@ -119,11 +116,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         selectInput(inputId = "bildeformatKvalInd",
                                     label = "Velg format for nedlasting av figur",
                                     choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
-                        # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
-                        #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-                        # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
-                        #             choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-                        #if (input$valgtVarKvalInd == 'NDIendr12mnd35pstKI'){...}
                         br(),
                         helpText('Følgende valg gjelder bare tidsfigur:'),
                         selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
@@ -179,14 +171,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                   "Åpen"=-1)
                           )),
                         br()
-                        # sidebarPanel( width = 3,
-                        #               #side(column(width = 3, #Første kolonne. Alternativ til sidebarLayout(sidebarPanel())
-                        #               dateInput(inputId = 'datoTil', value = Sys.Date(), min = '2012-01-01',
-                        #                         label = "Velg sluttdato", language="nb"),
-                        #               #helpText("Denne endrer bare tabellen med 12-månedersoversikt"),
-                        #               selectInput(inputId = "status", label="Ferdigstilt/kladd (legeskjema), kun tab. med månedsoversikt:",
-                        #                           choices = c("Ikke valgt"=2, "Ferdigstilt"=1, "Kladd"=0))),
-                        #
            ),
 
            mainPanel(
@@ -214,9 +198,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     tableOutput("tabAntSkjema"),
                                     downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                   )
-                                           # h2("Ferdigstilte skjema ved hver avdeling for valgte 12 måneder"),
-                                           # p(em("Velg tidsperiode ved å velge sluttdato i menyen til venstre")),
-                                           # tableOutput("tabAvdSkjema12"))
              )))
            ), #tab
   #------Registeradministrasjon-----------------------
@@ -248,10 +229,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         br(),
                         downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
                         br(),
-                        #downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsdato og operasjonsdato'),
                         br(),
                         br(),
-                        h4('Data til Resultatportalen'),
+                        h4('Data til Resultatportalen - utdatert. Vil bli fikset.'),
                         selectInput(inputId = "valgtVarRes", label="Velg variabel",
                                     choices = c('Stemmevansker u/myelopati, 3 mnd.' = 'KomplStemme3mnd',
                                                 'Svelgvansker, 3 mnd.' = 'KomplSvelging3mnd',
@@ -608,12 +588,6 @@ server <- function(input, output,session) {
 
 
   rapbase::appLogger(session, msg='Starter Rapporteket-Nakke')
-  #system.file('NakkeMndRapp.Rnw', package='Nakke')
-  #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
-
-  # reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)})
-  # rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
-  # brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(shinySession=session), 'tullebukk')})
   reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)
   rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
   brukernavn <- ifelse(paaServer, rapbase::getUserName(shinySession=session), 'BrukerNavn')
@@ -635,16 +609,8 @@ server <- function(input, output,session) {
 
 
   observe({if (rolle != 'SC') {
-
-    #NB: Må aktiveres i ui-del også OK
-    #shinyjs::hide(id = 'samleRappLand.pdf')
-    #hideTab(inputId = "toppPaneler", target = "Registeradministrasjon")
-      #shinyjs::hide(id = 'velgReshReg')
-      #shinyjs::hide(id = 'lastNed_dataDump')
-      #hideTab(inputId = "tabs", target = "Foo")
       shiny::hideTab(inputId = "tab1nivaa",
-                     target = 'Registeradministrasjon') #
-  }
+                     target = 'Registeradministrasjon') }
   })
     #-------Samlerapporter--------------------
 
@@ -771,9 +737,7 @@ server <- function(input, output,session) {
                            valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
                            ,session=session,
                        outfile = file)
-      print(input$valgtVarKvalInd)
-      print(input$datoFraKvalInd)
-    })
+     })
 
 
   #-----------Registeradministrasjon-----------
@@ -792,7 +756,6 @@ server <- function(input, output,session) {
   }
 
 
-  #renderTable
   observe({
     tabDblReg <- PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik)
     output$tabDblReg <- renderTable(tabDblReg, digits=0)
@@ -802,19 +765,32 @@ server <- function(input, output,session) {
     content = function(file, filename){write.csv2(tabDblReg, file, row.names = F, fileEncoding = 'latin1', na = '')})
   })
 
-     observe({
-       DataDump <- dplyr::filter(RegData, #DataAlle,
-                                as.Date(OprDato) >= input$datovalgRegKtr[1],
-                                as.Date(OprDato) <= input$datovalgRegKtr[2])
+  queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
+               FROM ForlopsOversikt'
+  RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
+
+
+  observe({
+    queryAVN <-  paste0('select * from AlleVarNum
+                      WHERE OprDato >= \'', input$datovalgRegKtr[1],
+                        '\' AND OprDato <= \'', input$datovalgRegKtr[2], '\'')
+    RegDataAVN <- rapbase::loadRegData(registryName = "nakke",
+                                       query = queryAVN)
+    DataDumpRaa <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
+
+    DataDump <- NakkePreprosess(RegData = DataDumpRaa)
+
+    # DataDump <- dplyr::filter(RegData, #DataAlle,
+    #                             as.Date(OprDato) >= input$datovalgRegKtr[1],
+    #                             as.Date(OprDato) <= input$datovalgRegKtr[2])
     if (rolle =='SC') {
-              valgtResh <- as.numeric(input$velgReshReg)
+        valgtResh <- as.numeric(input$velgReshReg)
         PIDtab <- rapbase::loadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
         DataDump <- merge(DataDump, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
         ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
           } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
         tabDataDump <- DataDump[ind,]
-        #output$test <- renderText(valgtResh)
-      } else {
+      } else { #Kun SC får laste ned data
         tabDataDump <-
           DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
       } #Tar bort PROM/PREM til egen avdeling
@@ -1048,7 +1024,7 @@ server <- function(input, output,session) {
                                         session=session) #, lagFig = 0))
     tabAndelerShus <- cbind('Antall (n)' = AndelerShus$Nvar,
                             'Antall (N)' = AndelerShus$Ngr,
-                            'Andel (%)' = AndelerShus$AggVerdier$Hoved)
+                            'Andel (%)' = AndelerShus$AggVerdier)
     output$andelerGrVarTab <- function() {
       antKol <- ncol(tabAndelerShus)
       kableExtra::kable(tabAndelerShus, format = 'html'
@@ -1208,8 +1184,6 @@ antDesFormat <- paste0("%.", antDes, "f")
     grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
   rownames(tabGjsnTid) <- grtxt
 
-  #print(tabGjsnTid)
-
   antKol <- ncol(tabGjsnTid)
   navnKol <- colnames(tabGjsnTid)
   if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
@@ -1277,7 +1251,6 @@ observeEvent (input$subscribe, { #MÅ HA
   if (input$subscriptionRep == "Halvårsrapport") {
     synopsis <- "nakke/Rapporteket: halvårsrapport"
     rnwFil <- "NakkeMndRapp.Rnw" #Navn på fila
-    #print(rnwFil)
   }
 
   fun <- "abonnementNakke"  #"henteSamlerapporter"

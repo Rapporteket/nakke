@@ -96,7 +96,8 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
   N <- dim(RegData)[1]
   AntGr <- length(which(Ngr >= Ngrense))	#Alle som har gyldig resultat
   AndelHele <- round(100*sum(RegData$Variabel)/N, 2)
-  AndelerGr <- round(100*tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)/Ngr,2)
+  Nvar <- tapply(RegData$Variabel, RegData[ ,grVar], sum, na.rm=T)
+  AndelerGr <- round(100*Nvar/Ngr,2)
 
   GrNavn <- names(Ngr)
   xAkseTxt <- "Andel opphold (%)"
@@ -129,16 +130,12 @@ FigDataParam <- list(AggVerdier=AndelerGrSort,
                      AggTot=AndelHele,
                      N=N,
                      Ngr=as.numeric(Ngrtxt),
+                     Nvar=Nvar[sortInd],
                      soyletxt=andeltxt,
                      grtxt=GrNavnSort,
                      Tittel=Tittel,
-                     #                          xAkseTxt=xAkseTxt, #NIRVarSpes$xAkseTxt,
-                     #                          KImaal = KImaal,
-                     #                          KImaaltxt = KImaaltxt,
-                     #                          grTypeTxt=RyggUtvalg$grTypeTxt,
                      utvalgTxt=utvalgTxt,
                      fargepalett =fargepalett
-
 )
 
 
