@@ -77,7 +77,8 @@ RegData$Mnd <- RegData$MndNum #RegData$InnDato$mon +1
 #aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
 SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
 
-#SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
+#SkjemaRekkeflg #5-pasientskjema, 10-legeskjema, 15- Oppf. 3mnd, 20
+- Oppf. 12mnd
 SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
 SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
@@ -139,7 +140,7 @@ Dette er bare et lite utvalg resultater. På Rapporteket kan du finne mer spesif
 
 <<'Registreringer siste 12 mnd', warnings=FALSE , results='asis'>>=
 
-tabAvdSiste12mnd <- addmargins(table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2,
+tabAvdSiste12mnd <- addmargins(table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2*5,
                                                      c('Sykehusnavn', 'Mnd')]))
 colnames(tabAvdSiste12mnd) <- substring(colnames(tabAvdSiste12mnd),1,3)
 tabAvdSiste12mndUt <- print(xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('l', rep('r', ncol(tabAvdSiste12mnd))),
@@ -154,12 +155,12 @@ tabAvdSiste12mndUt <- print(xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('
 \begin{frame}[fragile]
 <<'Registrering, type skjema', results='asis'>>=
 
-LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, 'Sykehusnavn'])
-PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1, 'Sykehusnavn'])
-Oppf3mnd <- table(SkjemaData12mnd[which(SkjemaData12mnd$SkjemaRekkeflg==3 &
+LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2*5, 'Sykehusnavn'])
+PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1*5, 'Sykehusnavn'])
+Oppf3mnd <- table(SkjemaData12mnd[which(SkjemaData12mnd$SkjemaRekkeflg==3*5 &
                                           SkjemaData12mnd$InnDato < (as.Date(dato)-100)), 'Sykehusnavn'])
 #Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4, 'Sykehusnavn'])
-Lege3mnd <- table(SkjemaData12mnd[which(SkjemaData12mnd$SkjemaRekkeflg==2 &
+Lege3mnd <- table(SkjemaData12mnd[which(SkjemaData12mnd$SkjemaRekkeflg==2*5 &
                                           SkjemaData12mnd$InnDato < (as.Date(dato)-100)), 'Sykehusnavn'])
 
 tabAvd12MndNskjemaDum <- cbind(
