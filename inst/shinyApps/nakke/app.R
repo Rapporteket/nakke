@@ -56,11 +56,11 @@ if (!exists('RegData')){
 
 RegData <- NakkePreprosess(RegData = RegData)
 
-#SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
-SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus > -1, ]
+#SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd. Endret til 5*, dvs. 5,10,15,20, juli 2022
+#SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus > -1, ]
 SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato) #as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
-SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
+SkjemaData$Mnd <- zoo::as.yearmon(SkjemaData$InnDato)
 SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
 
 
@@ -644,7 +644,7 @@ server <- function(input, output,session) {
                    Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
                    Aar = paste0(t1, 'siste 5 år til og med ', valgtAar, '<br />'))
     ))})
-  #RegData som har tilknyttede skjema av ulik type. Fra NGER!
+  #RegData som har tilknyttede skjema av ulik type.
   AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
                                   skjemastatus=as.numeric(input$skjemastatus))
   output$tabAntSkjema <- renderTable(AntSkjemaAvHver
@@ -656,45 +656,45 @@ server <- function(input, output,session) {
 
 
   #Velge ferdigstillelse og tidsintervall.
-  output$tabAntSkjema <- renderTable({})
-
-    output$tabAntSkjemaGml <- renderTable({
-    SkjemaDataFerdig <- SkjemaData[SkjemaData$SkjemaStatus ==1, ]
-    #Flyttes til overvåkning
-    datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
-
-    #datoFra12 <- '2017-03-01'
-    SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(input$datoTil)
-                                        & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
-    # SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(Sys.Date())
-    #                                     & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
-    LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, 'Sykehusnavn'])
-    PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1, 'Sykehusnavn'])
-    Oppf3mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==3, 'Sykehusnavn'])
-    Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4, 'Sykehusnavn'])
-
-    tabAvd12MndNskjemaDum <- cbind(
-      Lege = LegeSkjema,
-      Pasient = PasientSkjema,
-      'Oppf3mnd' = Oppf3mnd,
-      'Oppf12mnd' = Oppf12mnd)
-
-    tabAvd12MndNskjemaDum <- addmargins(tabAvd12MndNskjemaDum, margin=1)
-
-    tabAvd12MndNskjema <- cbind(
-      tabAvd12MndNskjemaDum[ ,1:2],
-      'Pasient (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100, 1),
-      'Oppfølging 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
-      'Oppfølging 3 mnd. (%)' = sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf3mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, '%'),
-      'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
-      'Oppfølging 12 mnd. (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf12mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, 1)
-    )
-    #sprintf('%1.3f'
-    xtable::xtable(tabAvd12MndNskjema,  align = c('l', rep('r', ncol(tabAvd12MndNskjema))),
-                   caption= paste0('Tidsperiode: ', as.POSIXlt(datoFra12), 'til', as.POSIXlt(input$datoTil)))
-  },
-  rownames = T, align= 'r' #
-  ) #digits=1,
+  # output$tabAntSkjema <- renderTable({})
+  #
+  #   output$tabAntSkjemaGml <- renderTable({
+  #   SkjemaDataFerdig <- SkjemaData[SkjemaData$SkjemaStatus ==1, ]
+  #   #Flyttes til overvåkning
+  #   datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
+  #
+  #   #datoFra12 <- '2017-03-01'
+  #   SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(input$datoTil)
+  #                                       & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
+  #   # SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(Sys.Date())
+  #   #                                     & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
+  #   LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2*5, 'Sykehusnavn'])
+  #   PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1*5, 'Sykehusnavn'])
+  #   Oppf3mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==3*5, 'Sykehusnavn'])
+  #   Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4*5, 'Sykehusnavn'])
+  #
+  #   tabAvd12MndNskjemaDum <- cbind(
+  #     Lege = LegeSkjema,
+  #     Pasient = PasientSkjema,
+  #     'Oppf3mnd' = Oppf3mnd,
+  #     'Oppf12mnd' = Oppf12mnd)
+  #
+  #   tabAvd12MndNskjemaDum <- addmargins(tabAvd12MndNskjemaDum, margin=1)
+  #
+  #   tabAvd12MndNskjema <- cbind(
+  #     tabAvd12MndNskjemaDum[ ,1:2],
+  #     'Pasient (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100, 1),
+  #     'Oppfølging 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
+  #     'Oppfølging 3 mnd. (%)' = sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf3mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, '%'),
+  #     'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
+  #     'Oppfølging 12 mnd. (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf12mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, 1)
+  #   )
+  #   #sprintf('%1.3f'
+  #   xtable::xtable(tabAvd12MndNskjema,  align = c('l', rep('r', ncol(tabAvd12MndNskjema))),
+  #                  caption= paste0('Tidsperiode: ', as.POSIXlt(datoFra12), 'til', as.POSIXlt(input$datoTil)))
+  # },
+  # rownames = T, align= 'r' #
+  # ) #digits=1,
 
 #--------------Viktigste resultater-------------------------
   output$kvalIndFig1 <- renderPlot({
