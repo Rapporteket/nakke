@@ -77,8 +77,7 @@ RegData$Mnd <- RegData$MndNum #RegData$InnDato$mon +1
 #aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
 SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
 
-#SkjemaRekkeflg #5-pasientskjema, 10-legeskjema, 15- Oppf. 3mnd, 20
-- Oppf. 12mnd
+#SkjemaRekkeflg #5-pasientskjema, 10-legeskjema, 15- Oppf. 3mnd, 20 - Oppf. 12mnd
 SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
 SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
