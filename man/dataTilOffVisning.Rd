@@ -2,14 +2,14 @@
 % Please edit documentation in R/NakkeHjelpefunksjoner.R
 \name{dataTilOffVisning}
 \alias{dataTilOffVisning}
-\title{Tilrettelegge data for offentlig visning.}
+\title{Tilrettelegge data for offentlig visning. Aktuelle filtreringer er lagt inn i funksjonen og skjer "automatisk".
+NDIendr12mnd35pst benytter svardato for å angi årstall for data.}
 \usage{
 dataTilOffVisning(
   RegData = RegData,
   valgtVar,
-  datoFra = "2014-01-01",
   aar = 0,
-  ResPort = 1,
+  slaaSmToAar = 0,
   filUt = "dummy",
   lagreFil = 1
 )
@@ -19,15 +19,19 @@ dataTilOffVisning(
 
 \item{valgtVar}{- 'KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst}
 
-\item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
+\item{aar}{- hvilke år kvalitetsindikatorene skal beregnes for.}
+
+\item{slaaSmToAar}{0:nei (standard), 1:ja. Slår sammen resultater for to og to år, glidende. Dvs. 2021 viser resultat fra alle operasjoner i
+2020 og 2021, mens 2020 viser for 2020 og 2019. De fleste indikatorer vises for to år (slaaSmToAar=1). I praksis dupliseres data for hvert år.}
 
 \item{filUt}{tilnavn for utdatatabell (fjern?)}
 
 \item{lagreFil}{automatisk lagre fila som genereres? 0-nei, 1-ja (standard)}
 }
 \value{
-Datafil til Resultatportalen
+Datafil til SKDEs interaktive nettsider
 }
 \description{
-Tilrettelegge data for offentlig visning.
+Tilrettelegge data for offentlig visning. Aktuelle filtreringer er lagt inn i funksjonen og skjer "automatisk".
+NDIendr12mnd35pst benytter svardato for å angi årstall for data.
 }

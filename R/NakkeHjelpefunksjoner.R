@@ -78,48 +78,57 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
 
 
 
-#' Tilrettelegge data for offentlig visning.
+#' Tilrettelegge data for offentlig visning. Aktuelle filtreringer er lagt inn i funksjonen og skjer "automatisk".
+#' NDIendr12mnd35pst benytter svardato for å angi årstall for data.
 #'
 #' @param RegData - data
 #' @param valgtVar - 'KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst
+#' @param aar - hvilke år kvalitetsindikatorene skal beregnes for.
+#' @param slaaSmToAar 0:nei (standard), 1:ja. Slår sammen resultater for to og to år, glidende. Dvs. 2021 viser resultat fra alle operasjoner i
+#' 2020 og 2021, mens 2020 viser for 2020 og 2019. De fleste indikatorer vises for to år (slaaSmToAar=1). I praksis dupliseres data for hvert år.
 #' @param filUt tilnavn for utdatatabell (fjern?)
 #' @param lagreFil automatisk lagre fila som genereres? 0-nei, 1-ja (standard)
-#' @inheritParams NakkeFigAndeler
-#' @inheritParams NakkeUtvalgEnh
-#' @return Datafil til Resultatportalen
+#' @return Datafil til SKDEs interaktive nettsider
 #' @export
 
-dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01', aar=0,
-                           ResPort=1, filUt='dummy', lagreFil=1){ #hovedkat=99, myelopati=99, fremBak=0, indID = 'indDummy',
+dataTilOffVisning <- function(RegData = RegData, valgtVar, aar=0, #datoFra = '2012-01-01',
+                              slaaSmToAar=0, filUt='dummy', lagreFil=1){ #hovedkat=99, myelopati=99, fremBak=0, indID = 'indDummy',
+
+  if (valgtVar == 'NDIendr12mnd35pst') {
+    #For 12-mnd.ktr. vil vi benytte det året pasientetn SVARTE
+    RegData$Aar <-RegData$Aar+1
+  }
+
 
   kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
   myelopati <- ifelse(valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99)
   fremBak <- ifelse(valgtVar == 'NDIendr12mnd35pst', 1, 0)
 
-  filUt <- paste0('Nakke', ifelse(filUt=='dummy',  valgtVar, filUt), c('_SKDE', '_ResPort')[ResPort+1],'.csv')
+  filUt <- paste0('Nakke', ifelse(filUt=='dummy',  valgtVar, filUt), '.csv')
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
-  NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar, datoFra = datoFra,
+  NakkeUtvalg <- NakkeUtvalgEnh(RegData=NakkeVarSpes$RegData, aar=aar,
                                 myelopati=myelopati, fremBak=fremBak) #, hovedkat=hovedkat) # #, datoTil=datoTil)
 
 
-  if (ResPort == 1){
-    #Variabler: Aar	ReshId	Teller Ind1	Nevner Ind1	  AarID	   Indikator
-    #          2014	103469	  0	          1	       2014103469	  ind1
-    RegDataUt <- NakkeUtvalg$RegData[,c('Aar', "ReshId", "ShNavn", "Variabel")]
-    RegDataUt<- dplyr::rename(RegDataUt, Teller = Variabel)
-    RegDataUt$AarID <- paste0(RegDataUt$Aar, RegDataUt$ReshId)
-    indikatorID <- c('nakke1', 'nakke2', 'nakke3', 'nakke4')
-    RegDataUt$Indikator <- indikatorID[which(kvalIndParam == valgtVar)]
-    RegDataUt$Nevner <- 1
-  }
-
-  if (ResPort == 0){
     #Variabler: year, orgnr, var, denominator, ind_id
     RegDataUt <- NakkeUtvalg$RegData[,c('Aar', "ReshId", "Variabel")]
+
+    aarMed <- sort(unique(RegDataUt$Aar))
+    antAar <- length(aarMed)
+    if (slaaSmToAar==1 & antAar>1) { #duplisering av data
+      RegDataDupl <- RegDataUt[RegDataUt$Aar %in% aarMed[1:(antAar-1)], ]
+      RegDataDupl$Aar <- RegDataDupl$Aar+1
+      #table(RegDataDupl$Aar)
+      #table(RegDataUt$Aar)
+      RegDataUt <- rbind(RegDataUt[-which(RegDataUt$Aar == aarMed[1]), ], RegDataDupl)
+      #table(RegDataUt$Aar)
+    }
+
     # nytt navn = gammelt navn
     RegDataUt <- dplyr::rename(RegDataUt,
                                year = Aar,
                                var = Variabel)
+
 
     nyID <- c(# ReshId=OrgID
       '114288'='974703300',              #Stavanger USH
@@ -131,18 +140,22 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, datoFra = '2014-01-01
       '105588'='974557746',              #Haukeland USH
       '999998'='991835083',        #Oslofjordklinikken
       '110771'='973129856',                     #Volvat
-      '4212372'='981541499',      #Aleris Colosseum Oslo #Aleris colosseum nobel
-      '4211880'='974518821',             #Aleris Nesttun #Aleris sykehus nesttun
-      '4211879'='813381192', #Aleris Colosseum Stavanger
+      '4212372'='943545634',      #Aleris Colosseum Oslo #Aleris colosseum nobel
+      '107511' = '943545634',     #Aleris Oslo
+      '4211880'='943545634',             #Aleris Nesttun #Aleris sykehus nesttun
+      '4211879'='943545634', #Aleris Colosseum Stavanger
       '100407'='983975240')  #Sørlandet sykehus)
 
+    #Sjekk om nye org:
+     #nye <- setdiff(unique(RegData$ReshId), names(nyID)) #length(unique(RegData$ReshId))
     RegDataUt$orgnr <- as.character(nyID[as.character(RegDataUt$ReshId)])
     indikatorID <- c('nakke_komplsvelg3mnd', 'nakke_komplstemme3mnd', 'nakke_komplinfek', 'nakke_ndiendr12mnd35pst')
     RegDataUt$ind_id <- indikatorID[which(kvalIndParam == valgtVar)]
+    #Variabler: year, orgnr, var, denominator, ind_id
     RegDataUt$denominator <- 1
+    RegDataUt$context <- 'caregiver'
+    RegDataUt <- RegDataUt[ ,-which(names(RegDataUt)=='ReshId')]
 
-    RegDataUt <- RegDataUt[ ,c('year', 'orgnr', 'var', 'denominator', 'ind_id')]
-}
 
   if (lagreFil==1) {
     write.table(RegDataUt, file = filUt, sep = ';', row.names = F) } #, fileEncoding = 'UTF-8')
