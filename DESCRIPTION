@@ -7,8 +7,8 @@ Description: Alle R-baserte resultattjenester på Rapporteket for Degenerativ
     filer (generere LaTeX-dokumenter) og evt. logofiler o.l. Kan også inkludere
     kjørefiler og eksempeldatasett. Pakken inneholder også en Shiny-app. for 
     registeret, samt figurer og tabeller til årsrapport.
-Version: 2.2.0
-Date: 2022-03-15
+Version: 2.3.0
+Date: 2022-07-21
 Author: Lena Ringstad Olsen, Nasjonalt Servicemiljo for Kvalitetsregistre, SKDE
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Depends:
