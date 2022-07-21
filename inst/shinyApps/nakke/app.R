@@ -242,7 +242,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     max = as.numeric(year(idag)), value = c(2014, year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
                         ),
                         br(),
-                        downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data til Resultatportalen'),
+                        downloadButton(outputId = 'lastNed_dataTilOffNett', label='Last ned data til SKDEs interaktive nettsider'),
                         br()
                       ),
 
@@ -311,6 +311,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
                                               'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
                                               'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
+                                              'Registreringsforsinkelse' = 'regForsinkelse',
                                               'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
                                               'Smertestillende, hyppighet preoperativt' = 'SmertestillBrukPreOp',
                                               'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
@@ -320,7 +321,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Tidligere operert' = 'TidlOpr',
                                               'Tidligere operert, antall' = 'TidlOprAntall',
                                               'Tilgang ved operasjon' = 'OpTilgfrembak',
-                                              'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
+                                              'Utdanning' = 'Utdanning'),
+                                  selected = 'regForsinkelse'
                       ),
                       dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
                                      label = "Tidsperiode", separator="t.o.m.", language="nb"),
@@ -365,7 +367,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   #------------ Andeler-----------------
   tabPanel(p("Andeler", title= 'Alder, arbeidsstatus, ASA-grad, komorbiditet, komplikasjoner, fornøydhet,
-                                forverring, NDI, nytte, NSR, røyking, smertestillende, symptomvarighet,
+                                forverring, NDI, nytte, NSR, registreringsforsinkelse, røyking, smertestillende, symptomvarighet,
                                 søkt erstatning/uføretrygd, utdanning'),
            h2("Sykehusvise andeler og utvikling over tid for valgt variabel", align='center'),
            sidebarPanel(width = 3,
@@ -393,6 +395,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
                                      'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
                                      'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
+                                     'Registreringsforsinkelse' = 'regForsinkelse',
                                      'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
                                      'Smertestillende, preoperativt' = 'SmertestillPreOp',
                                      'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
@@ -402,7 +405,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
                                      'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
                                      'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
-                                     'Utdanning' = 'Utdanning')
+                                     'Utdanning' = 'Utdanning'),
+                         selected = 'regForsinkelse'
              ),
              dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
@@ -565,8 +569,6 @@ tabPanel(p("Abonnement",
                                           Ukentlig="Ukentlig-week",
                                           Daglig="Daglig-DSTday"),
                                     selected = "Kvartalsvis-quarter"),
-                        #selectInput("subscriptionFileFormat", "Format:",
-                        #            c("html", "pdf")),
                         actionButton("subscribe", "Bestill!")
            ),
            mainPanel(
@@ -745,13 +747,13 @@ server <- function(input, output,session) {
 
   if (rolle=='SC') {
     observe({
-      tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes, ResPort=1,
+      tabdataTilOffNett <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
                                           #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
                                           aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
                                           lagreFil=0)
-      output$lastNed_dataTilResPort <- downloadHandler(
-        filename = function(){paste0('dataTilResPort_',input$valgtVarRes, '.csv')},
-        content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})
+      output$lastNed_dataTilOffNett <- downloadHandler(
+        filename = function(){paste0('dataTilOffNett_',input$valgtVarRes, '.csv')},
+        content = function(file, filename){write.csv2(tabdataTilOffNett, file, row.names = F, fileEncoding = 'latin1', na = '')})
     })
   }
 

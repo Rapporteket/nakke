@@ -758,6 +758,38 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     #varTxt <- 'med komplikasjoner'
     tittel <- 'Operasjonstilgang'
   }
+
+  if (valgtVar == 'regForsinkelse') {  #Fordeling, Andeler
+    #Verdier: 0-3402
+    RegData <- RegData[which(RegData$DiffUtFerdig > -1), ]
+    tittel <- switch(figurtype,
+                     andeler='Tid fra utskriving til ferdigstilt registrering',
+                     andelGrVar = 'Mer enn 30 dager fra utskriving til ferdig registrering') #
+    subtxt <- 'døgn'
+    # gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
+    # RegData$VariabelGr <- cut(RegData$DiffUtFerdig, breaks = gr, include.lowest = TRUE, right = TRUE)
+    # grtxt <- c('1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
+    cexgr <- 0.9
+    xAkseTxt <- 'dager'
+    sortAvtagende <- FALSE
+    RegData <- RegData[RegData$InnDato < min(max(RegData$InnDato), Sys.Date()-30), ]
+
+    if (figurtype == 'andeler') {	#Fordelingsfigur
+      gr <- c(seq(0,98,7), 2000)
+      RegData$VariabelGr <- cut(RegData$DiffUtFerdig, breaks=gr, include.lowest=TRUE, right=FALSE)
+      #plot(RegData$VariabelGr)
+      grtxt <- c(1:14, '>3 mnd.')
+      subtxt <- 'innen gitte uker etter utskriving'
+    }
+
+    if (figurtype %in% c('andelTid', 'andelGrVar')) {
+      RegData$Variabel[which(RegData$DiffUtFerdig >90)] <- 1
+      tittel <- 'Registrert for sent for 3 mnd. oppfølging'
+      varTxt <- 'for sent registrert'
+      sortAvtagende <- F}
+    KImaalGrenser <- c(0,3,10,100)
+  }
+
   if (valgtVar=='Roker') { #Andeler #AndelTid #AndelGrVar
     #PasientSkjema. Andel med Roker=1
     #Kode 0,1,9: Nei, Ja Ukjent
