@@ -92,7 +92,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   #------------ Viktigste resultater-----------------
   tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og halvårsrapport'),
-           h2('Velkommen til Rapporteket for NKR Degenerativ Nakke!', align='center'),
+           h2('Velkommen til Rapporteket for NKR, degenerativ nakke!', align='center'),
            shinyjs::useShinyjs(),
            sidebarPanel(width=3,
                         h3("Rapport med halvårsresultater"), #),

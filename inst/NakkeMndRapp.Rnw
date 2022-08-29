@@ -97,7 +97,7 @@ skalShFig <- 0.32
 @
 
 
-\title[Degenerativ Nakke \\\Sexpr{shtxt}]{\textit{NKR - Degenerativ Nakke} \\
+\title[Degenerativ nakke \\\Sexpr{shtxt}]{\textit{NKR - degenerativ nakke} \\
 Halvårsrapport \\
 \Sexpr{shtxt}}
 \date{}
