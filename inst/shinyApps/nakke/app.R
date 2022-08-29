@@ -26,8 +26,8 @@ sluttDato <- idag
 aarFra <- paste0(1900+as.POSIXlt(idag)$year-5, '-01-01')
 
 regTitle <- ifelse(paaServer,
-                   'NKR: Degenerativ Nakke',
-                   'Degenerativ Nakke med FIKTIVE data')
+                   'NKR: Degenerativ nakke',
+                   'Degenerativ nakke med FIKTIVE data')
 
 
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
@@ -56,11 +56,11 @@ if (!exists('RegData')){
 
 RegData <- NakkePreprosess(RegData = RegData)
 
-#SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd
-SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus > -1, ]
+#SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd. Endret til 5*, dvs. 5,10,15,20, juli 2022
+#SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus > -1, ]
 SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato) #as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
-SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
+SkjemaData$Mnd <- zoo::as.yearmon(SkjemaData$InnDato)
 SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
 
 
@@ -89,13 +89,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   windowTitle = regTitle,
   theme = "rap/bootstrap.css",
 
-  # Application title #titlePanel("Testing testing, Nakke"),
-
-
 
   #------------ Viktigste resultater-----------------
   tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og halvårsrapport'),
-           h2('Velkommen til Rapporteket for NKR Degenerativ Nakke!', align='center'),
+           h2('Velkommen til Rapporteket for NKR, degenerativ nakke!', align='center'),
            shinyjs::useShinyjs(),
            sidebarPanel(width=3,
                         h3("Rapport med halvårsresultater"), #),
@@ -119,11 +116,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         selectInput(inputId = "bildeformatKvalInd",
                                     label = "Velg format for nedlasting av figur",
                                     choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
-                        # selectInput(inputId = "myelopatiKvalInd", label="Myelopati",
-                        #             choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-                        # selectInput(inputId = "fremBakKvalInd", label="Tilgang ",
-                        #             choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-                        #if (input$valgtVarKvalInd == 'NDIendr12mnd35pstKI'){...}
                         br(),
                         helpText('Følgende valg gjelder bare tidsfigur:'),
                         selectInput(inputId = "tidsenhetKvalInd", label="Velg tidsenhet",
@@ -179,14 +171,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                   "Åpen"=-1)
                           )),
                         br()
-                        # sidebarPanel( width = 3,
-                        #               #side(column(width = 3, #Første kolonne. Alternativ til sidebarLayout(sidebarPanel())
-                        #               dateInput(inputId = 'datoTil', value = Sys.Date(), min = '2012-01-01',
-                        #                         label = "Velg sluttdato", language="nb"),
-                        #               #helpText("Denne endrer bare tabellen med 12-månedersoversikt"),
-                        #               selectInput(inputId = "status", label="Ferdigstilt/kladd (legeskjema), kun tab. med månedsoversikt:",
-                        #                           choices = c("Ikke valgt"=2, "Ferdigstilt"=1, "Kladd"=0))),
-                        #
            ),
 
            mainPanel(
@@ -214,9 +198,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     tableOutput("tabAntSkjema"),
                                     downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                   )
-                                           # h2("Ferdigstilte skjema ved hver avdeling for valgte 12 måneder"),
-                                           # p(em("Velg tidsperiode ved å velge sluttdato i menyen til venstre")),
-                                           # tableOutput("tabAvdSkjema12"))
              )))
            ), #tab
   #------Registeradministrasjon-----------------------
@@ -248,10 +229,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         br(),
                         downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
                         br(),
-                        #downloadButton(outputId = 'lastNed_dataTilRegKtr', label='Last ned fødselsdato og operasjonsdato'),
                         br(),
                         br(),
-                        h4('Data til Resultatportalen'),
+                        h4('Data til Resultatportalen - utdatert. Vil bli fikset.'),
                         selectInput(inputId = "valgtVarRes", label="Velg variabel",
                                     choices = c('Stemmevansker u/myelopati, 3 mnd.' = 'KomplStemme3mnd',
                                                 'Svelgvansker, 3 mnd.' = 'KomplSvelging3mnd',
@@ -262,13 +242,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     max = as.numeric(year(idag)), value = c(2014, year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
                         ),
                         br(),
-                        downloadButton(outputId = 'lastNed_dataTilResPort', label='Last ned data til Resultatportalen'),
+                        downloadButton(outputId = 'lastNed_dataTilOffNett', label='Last ned data til SKDEs interaktive nettsider'),
                         br()
                       ),
 
                       mainPanel(
                         h3('Potensielle dobbeltregistreringer'),
                         br(),
+                        h4('Funksjonen finner alle PID med to operasjoner nærmere enn valgt tidsintervall
+                           og tabellen viser alle operasjoner for de aktuelle pasientene.'),
                         downloadButton(outputId = 'lastNed_tabDblReg', label='Last ned tabell med mulige dobbeltregistreringer'),
                         br(),
                         numericInput(inputId = 'valgtTidsavvik',
@@ -329,6 +311,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
                                               'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
                                               'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
+                                              'Registreringsforsinkelse' = 'regForsinkelse',
                                               'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
                                               'Smertestillende, hyppighet preoperativt' = 'SmertestillBrukPreOp',
                                               'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
@@ -338,7 +321,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Tidligere operert' = 'TidlOpr',
                                               'Tidligere operert, antall' = 'TidlOprAntall',
                                               'Tilgang ved operasjon' = 'OpTilgfrembak',
-                                              'Utdanning' = 'Utdanning') #c('Alder'='Alder', "Ant. nivå operert" = 'AntallNivaaOpr')
+                                              'Utdanning' = 'Utdanning'),
+                                  selected = 'regForsinkelse'
                       ),
                       dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
                                      label = "Tidsperiode", separator="t.o.m.", language="nb"),
@@ -383,7 +367,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   #------------ Andeler-----------------
   tabPanel(p("Andeler", title= 'Alder, arbeidsstatus, ASA-grad, komorbiditet, komplikasjoner, fornøydhet,
-                                forverring, NDI, nytte, NSR, røyking, smertestillende, symptomvarighet,
+                                forverring, NDI, nytte, NSR, registreringsforsinkelse, røyking, smertestillende, symptomvarighet,
                                 søkt erstatning/uføretrygd, utdanning'),
            h2("Sykehusvise andeler og utvikling over tid for valgt variabel", align='center'),
            sidebarPanel(width = 3,
@@ -411,6 +395,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
                                      'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
                                      'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
+                                     'Registreringsforsinkelse' = 'regForsinkelse',
                                      'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
                                      'Smertestillende, preoperativt' = 'SmertestillPreOp',
                                      'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
@@ -420,7 +405,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
                                      'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
                                      'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
-                                     'Utdanning' = 'Utdanning')
+                                     'Utdanning' = 'Utdanning'),
+                         selected = 'regForsinkelse'
              ),
              dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
@@ -583,8 +569,6 @@ tabPanel(p("Abonnement",
                                           Ukentlig="Ukentlig-week",
                                           Daglig="Daglig-DSTday"),
                                     selected = "Kvartalsvis-quarter"),
-                        #selectInput("subscriptionFileFormat", "Format:",
-                        #            c("html", "pdf")),
                         actionButton("subscribe", "Bestill!")
            ),
            mainPanel(
@@ -606,12 +590,6 @@ server <- function(input, output,session) {
 
 
   rapbase::appLogger(session, msg='Starter Rapporteket-Nakke')
-  #system.file('NakkeMndRapp.Rnw', package='Nakke')
-  #hospitalName <-getHospitalName(rapbase::getUserReshId(session))
-
-  # reshID <- reactive({ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)})
-  # rolle <- reactive({ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')})
-  # brukernavn <- reactive({ifelse(paaServer, rapbase::getUserName(shinySession=session), 'tullebukk')})
   reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)
   rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
   brukernavn <- ifelse(paaServer, rapbase::getUserName(shinySession=session), 'BrukerNavn')
@@ -633,16 +611,8 @@ server <- function(input, output,session) {
 
 
   observe({if (rolle != 'SC') {
-
-    #NB: Må aktiveres i ui-del også OK
-    #shinyjs::hide(id = 'samleRappLand.pdf')
-    #hideTab(inputId = "toppPaneler", target = "Registeradministrasjon")
-      #shinyjs::hide(id = 'velgReshReg')
-      #shinyjs::hide(id = 'lastNed_dataDump')
-      #hideTab(inputId = "tabs", target = "Foo")
       shiny::hideTab(inputId = "tab1nivaa",
-                     target = 'Registeradministrasjon') #
-  }
+                     target = 'Registeradministrasjon') }
   })
     #-------Samlerapporter--------------------
 
@@ -676,7 +646,7 @@ server <- function(input, output,session) {
                    Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
                    Aar = paste0(t1, 'siste 5 år til og med ', valgtAar, '<br />'))
     ))})
-  #RegData som har tilknyttede skjema av ulik type. Fra NGER!
+  #RegData som har tilknyttede skjema av ulik type.
   AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
                                   skjemastatus=as.numeric(input$skjemastatus))
   output$tabAntSkjema <- renderTable(AntSkjemaAvHver
@@ -688,45 +658,45 @@ server <- function(input, output,session) {
 
 
   #Velge ferdigstillelse og tidsintervall.
-  output$tabAntSkjema <- renderTable({})
-
-    output$tabAntSkjemaGml <- renderTable({
-    SkjemaDataFerdig <- SkjemaData[SkjemaData$SkjemaStatus ==1, ]
-    #Flyttes til overvåkning
-    datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
-
-    #datoFra12 <- '2017-03-01'
-    SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(input$datoTil)
-                                        & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
-    # SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(Sys.Date())
-    #                                     & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
-    LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2, 'Sykehusnavn'])
-    PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1, 'Sykehusnavn'])
-    Oppf3mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==3, 'Sykehusnavn'])
-    Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4, 'Sykehusnavn'])
-
-    tabAvd12MndNskjemaDum <- cbind(
-      Lege = LegeSkjema,
-      Pasient = PasientSkjema,
-      'Oppf3mnd' = Oppf3mnd,
-      'Oppf12mnd' = Oppf12mnd)
-
-    tabAvd12MndNskjemaDum <- addmargins(tabAvd12MndNskjemaDum, margin=1)
-
-    tabAvd12MndNskjema <- cbind(
-      tabAvd12MndNskjemaDum[ ,1:2],
-      'Pasient (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100, 1),
-      'Oppfølging 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
-      'Oppfølging 3 mnd. (%)' = sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf3mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, '%'),
-      'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
-      'Oppfølging 12 mnd. (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf12mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, 1)
-    )
-    #sprintf('%1.3f'
-    xtable::xtable(tabAvd12MndNskjema,  align = c('l', rep('r', ncol(tabAvd12MndNskjema))),
-                   caption= paste0('Tidsperiode: ', as.POSIXlt(datoFra12), 'til', as.POSIXlt(input$datoTil)))
-  },
-  rownames = T, align= 'r' #
-  ) #digits=1,
+  # output$tabAntSkjema <- renderTable({})
+  #
+  #   output$tabAntSkjemaGml <- renderTable({
+  #   SkjemaDataFerdig <- SkjemaData[SkjemaData$SkjemaStatus ==1, ]
+  #   #Flyttes til overvåkning
+  #   datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
+  #
+  #   #datoFra12 <- '2017-03-01'
+  #   SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(input$datoTil)
+  #                                       & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
+  #   # SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(Sys.Date())
+  #   #                                     & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
+  #   LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2*5, 'Sykehusnavn'])
+  #   PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1*5, 'Sykehusnavn'])
+  #   Oppf3mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==3*5, 'Sykehusnavn'])
+  #   Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4*5, 'Sykehusnavn'])
+  #
+  #   tabAvd12MndNskjemaDum <- cbind(
+  #     Lege = LegeSkjema,
+  #     Pasient = PasientSkjema,
+  #     'Oppf3mnd' = Oppf3mnd,
+  #     'Oppf12mnd' = Oppf12mnd)
+  #
+  #   tabAvd12MndNskjemaDum <- addmargins(tabAvd12MndNskjemaDum, margin=1)
+  #
+  #   tabAvd12MndNskjema <- cbind(
+  #     tabAvd12MndNskjemaDum[ ,1:2],
+  #     'Pasient (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100, 1),
+  #     'Oppfølging 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
+  #     'Oppfølging 3 mnd. (%)' = sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf3mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, '%'),
+  #     'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
+  #     'Oppfølging 12 mnd. (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf12mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, 1)
+  #   )
+  #   #sprintf('%1.3f'
+  #   xtable::xtable(tabAvd12MndNskjema,  align = c('l', rep('r', ncol(tabAvd12MndNskjema))),
+  #                  caption= paste0('Tidsperiode: ', as.POSIXlt(datoFra12), 'til', as.POSIXlt(input$datoTil)))
+  # },
+  # rownames = T, align= 'r' #
+  # ) #digits=1,
 
 #--------------Viktigste resultater-------------------------
   output$kvalIndFig1 <- renderPlot({
@@ -769,9 +739,7 @@ server <- function(input, output,session) {
                            valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
                            ,session=session,
                        outfile = file)
-      print(input$valgtVarKvalInd)
-      print(input$datoFraKvalInd)
-    })
+     })
 
 
   #-----------Registeradministrasjon-----------
@@ -779,18 +747,17 @@ server <- function(input, output,session) {
 
   if (rolle=='SC') {
     observe({
-      tabdataTilResPort <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes, ResPort=1,
+      tabdataTilOffNett <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
                                           #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
                                           aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
                                           lagreFil=0)
-      output$lastNed_dataTilResPort <- downloadHandler(
-        filename = function(){paste0('dataTilResPort_',input$valgtVarRes, '.csv')},
-        content = function(file, filename){write.csv2(tabdataTilResPort, file, row.names = F, fileEncoding = 'latin1', na = '')})
+      output$lastNed_dataTilOffNett <- downloadHandler(
+        filename = function(){paste0('dataTilOffNett_',input$valgtVarRes, '.csv')},
+        content = function(file, filename){write.csv2(tabdataTilOffNett, file, row.names = F, fileEncoding = 'latin1', na = '')})
     })
   }
 
 
-  #renderTable
   observe({
     tabDblReg <- PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik)
     output$tabDblReg <- renderTable(tabDblReg, digits=0)
@@ -800,19 +767,32 @@ server <- function(input, output,session) {
     content = function(file, filename){write.csv2(tabDblReg, file, row.names = F, fileEncoding = 'latin1', na = '')})
   })
 
-     observe({
-       DataDump <- dplyr::filter(RegData, #DataAlle,
-                                as.Date(OprDato) >= input$datovalgRegKtr[1],
-                                as.Date(OprDato) <= input$datovalgRegKtr[2])
+  queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
+               FROM ForlopsOversikt'
+  RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
+
+
+  observe({
+    queryAVN <-  paste0('select * from AlleVarNum
+                      WHERE OprDato >= \'', input$datovalgRegKtr[1],
+                        '\' AND OprDato <= \'', input$datovalgRegKtr[2], '\'')
+    RegDataAVN <- rapbase::loadRegData(registryName = "nakke",
+                                       query = queryAVN)
+    DataDumpRaa <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
+
+    DataDump <- NakkePreprosess(RegData = DataDumpRaa)
+
+    # DataDump <- dplyr::filter(RegData, #DataAlle,
+    #                             as.Date(OprDato) >= input$datovalgRegKtr[1],
+    #                             as.Date(OprDato) <= input$datovalgRegKtr[2])
     if (rolle =='SC') {
-              valgtResh <- as.numeric(input$velgReshReg)
+        valgtResh <- as.numeric(input$velgReshReg)
         PIDtab <- rapbase::loadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
         DataDump <- merge(DataDump, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
         ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
           } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
         tabDataDump <- DataDump[ind,]
-        #output$test <- renderText(valgtResh)
-      } else {
+      } else { #Kun SC får laste ned data
         tabDataDump <-
           DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
       } #Tar bort PROM/PREM til egen avdeling
@@ -1046,7 +1026,7 @@ server <- function(input, output,session) {
                                         session=session) #, lagFig = 0))
     tabAndelerShus <- cbind('Antall (n)' = AndelerShus$Nvar,
                             'Antall (N)' = AndelerShus$Ngr,
-                            'Andel (%)' = AndelerShus$AggVerdier$Hoved)
+                            'Andel (%)' = AndelerShus$AggVerdier)
     output$andelerGrVarTab <- function() {
       antKol <- ncol(tabAndelerShus)
       kableExtra::kable(tabAndelerShus, format = 'html'
@@ -1206,8 +1186,6 @@ antDesFormat <- paste0("%.", antDes, "f")
     grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
   rownames(tabGjsnTid) <- grtxt
 
-  #print(tabGjsnTid)
-
   antKol <- ncol(tabGjsnTid)
   navnKol <- colnames(tabGjsnTid)
   if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
@@ -1275,7 +1253,6 @@ observeEvent (input$subscribe, { #MÅ HA
   if (input$subscriptionRep == "Halvårsrapport") {
     synopsis <- "nakke/Rapporteket: halvårsrapport"
     rnwFil <- "NakkeMndRapp.Rnw" #Navn på fila
-    #print(rnwFil)
   }
 
   fun <- "abonnementNakke"  #"henteSamlerapporter"

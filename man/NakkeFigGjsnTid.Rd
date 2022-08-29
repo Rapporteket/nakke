@@ -17,6 +17,7 @@ NakkeFigGjsnTid(
   fremBak = 0,
   tidsenhet = "Aar",
   inngrep = 99,
+  konfInt = 1,
   valgtMaal = "",
   enhetsUtvalg = 0,
   hentData = 0,
@@ -61,6 +62,8 @@ NDIendr12mnd: Forbedring av NDI, 12 mnd. etter operasjon}
 \item{inngrep}{Inngrepstype     0-'Ikke klassifiserbar operasjon', 1-'Fremre diketomi for prolaps',
 2-'Bakre dekompresjon', 3-'Fremre dekompresjon sp st.uten prolaps', 4-'Bakre fusjon',
 5-'Korporektomi', 6-'Andre inngrep', 99-alle (standard)}
+
+\item{konfInt}{konfidensintervall 1: ja (standard), 0: nei}
 
 \item{valgtMaal}{Sentralmål: 'Med' gir median, alt annet gir gjennomsnitt}
 

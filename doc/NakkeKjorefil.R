@@ -14,6 +14,8 @@ RegData <- NakkePreprosess(RegDataRaa)
 DblReg <- RegData %<% group_by(PasientID) %<%
   summarise()
 
+library(nakke)
+AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData) #, skjemastatus=as.numeric(input$skjemastatus))
 
 #--------------------------------------SAMLERAPPORT-----------------------------------
 setwd("C:/ResultattjenesteGIT/Nakke/inst")

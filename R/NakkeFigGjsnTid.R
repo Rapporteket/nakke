@@ -9,6 +9,7 @@
 #' Oswestry: Skala fra 0 til 100, hvor lavest er friskest
 #'
 #' @param valgtMaal Sentralmål: 'Med' gir median, alt annet gir gjennomsnitt
+#' @param konfInt konfidensintervall 1: ja (standard), 0: nei
 #' @inheritParams NakkeFigAndeler
 #' @inheritParams NakkeUtvalgEnh
 #' @param valgtVar - Variabelen det skal vises resultat for.
@@ -32,13 +33,12 @@
 
 NakkeFigGjsnTid <- function(RegData, outfile='', valgtVar='Alder', erMann='',
 		minald=0, maxald=130, datoFra='2007-01-01', datoTil='3000-01-01',
-		myelopati=99, fremBak=0, tidsenhet='Aar', inngrep=99,
+		myelopati=99, fremBak=0, tidsenhet='Aar', inngrep=99, konfInt=1,
 		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=0, reshID=0,...){ #tittel=1,
 
   if ("session" %in% names(list(...))) {
     rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigGjsnTid: ',valgtVar))
   }
-
 	if (hentData == 1) {
 		RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
 	  }
