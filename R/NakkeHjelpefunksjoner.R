@@ -32,10 +32,10 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
                        Mnd = format.Date(seq(from=lubridate::floor_date(as.Date(min(as.Date(RegData$InnDato), na.rm = T)), 'month'),
                                          to=max(as.Date(RegData$InnDato), na.rm = T), by='month'), format = '%B%y'), #Hele måneden
                        Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
-                                       sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)]), sep='-'),
-                       Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
-                                       sprintf('%01.0f', RegData$Halvaar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)]), sep='-'),
-                       Aar = as.character(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)]))
+                                       sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhetSort, na.rm = T), RegData$TidsEnhetSort)]), sep='-'),
+                       Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort, na.rm = T), RegData$TidsEnhetSort)], 3,4),
+                                       sprintf('%01.0f', RegData$Halvaar[match(1:max(RegData$TidsEnhetSort, na.rm = T), RegData$TidsEnhetSort)]), sep='-'),
+                       Aar = as.character(RegData$Aar[match(1:max(RegData$TidsEnhetSort, na.rm = T), RegData$TidsEnhetSort)]))
 
       substrRight <- function(x, n){substr(x, nchar(x)-n+1, nchar(x))}
       if (tidsenhet=='Mnd') {tidtxt <- paste0(substr(tidtxt, 1,3), ' '[tab], substrRight(tidtxt, 2))}
