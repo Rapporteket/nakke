@@ -26,8 +26,8 @@ sluttDato <- idag
 aarFra <- paste0(1900+as.POSIXlt(idag)$year-5, '-01-01')
 
 regTitle <- ifelse(paaServer,
-                   'NKR: Degenerativ Nakke',
-                   'Degenerativ Nakke med FIKTIVE data')
+                   'NKR: Degenerativ nakke',
+                   'Degenerativ nakke med FIKTIVE data')
 
 
 # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
