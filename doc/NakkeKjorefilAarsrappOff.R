@@ -3,8 +3,8 @@
 #Nakke
 library(nakke)
 library(xtable)
-setwd('~/speil/aarsrapp')
-aarsRappAar <- 2021
+setwd('~/Aarsrappresultater/NKR/Nakke22/')
+aarsRappAar <- 2022
 
 startAar <- 2012
 datoFra <- paste0(startAar,'-01-01')
@@ -22,7 +22,16 @@ tidlAar2 <- (aarsRappAar-3):(aarsRappAar-2)
 NakkeDataRaa <- NakkeRegDataSQL(datoTil = datoTil)
 NakkeData <- NakkePreprosess(NakkeDataRaa)
 
-#write.table(NakkeData, file = 'NakkeDataAarsrapp2021.csv', sep = ';', na='', row.names = F, fileEncoding = 'latin1') #'UTF-8')
+
+#Til Tore
+# RegDataAVN <- rapbase::loadRegData(registryName = "nakke", dbType = "mysql",
+#                                    query = "select * from AlleVarNum")
+# RegDataForl <- rapbase::loadRegData(registryName = "nakke", dbType = "mysql",
+#   query = 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
+#                                     FROM ForlopsOversikt')
+# RegData <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
+# RegData <- NakkePreprosess(RegData = RegData)
+# write.table(RegData, file = 'NakkeDataAarsrapp2022alt.csv', sep = ';', na='', row.names = F, fileEncoding = 'latin1') #'UTF-8')
 
 
 #----------------------------Kvalitetsindikatorer:--------
@@ -35,21 +44,21 @@ NakkeFigAndelTid(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoTil = dato
                  fremBak=1, myelopati=0, Ngrense=20,outfile='NakkeNDIendr12mnd35pstTid.pdf')
 
 
-#Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
-NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
-                     Ngrense=20, outfile= 'NakkeKomplinfekSh.pdf')
-dum <- NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='Komplinfek',
-                        Ngrense=20, ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplinfekShAar.pdf')
-NakkeFigAndelTid(RegData=NakkeData, valgtVar='Komplinfek', outfile='NakkeInfekTid.pdf')
+# #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
+# NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
+#                      Ngrense=20, outfile= 'NakkeKomplinfekSh.pdf')
+# dum <- NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='Komplinfek',
+#                         Ngrense=20, ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplinfekShAar.pdf')
+# NakkeFigAndelTid(RegData=NakkeData, valgtVar='Komplinfek', outfile='NakkeInfekTid.pdf')
 
 #Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
-NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplStemme3mnd',
+NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=0, datoFra=datoFra1aar,  valgtVar='KomplStemme3mnd',
                    myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplStemme3mndSh.pdf')
 
 NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplStemme3mnd',
                      myelopati=0, fremBak=1, Ngrense=20,
                      ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplStemme3mndShAar.pdf')
-NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplStemme3mnd',
+NakkeFigAndelTid(RegData=NakkeData, preprosess=0, valgtVar='KomplStemme3mnd',
                  myelopati=0, fremBak=1, outfile='NakkeKomplStemme3mndTid.pdf')
 
 
@@ -64,7 +73,7 @@ NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplSvelging3mnd',
 
 
 
-#Data til SKDE interaktive nettsider
+#-------Data til SKDE interaktive nettsider----------
 
 #Nakke
 library(nakke)
@@ -115,7 +124,21 @@ table(FellesFilNakke$ind_id, FellesFilNakke$year)
 
 #---Figurer---------
 
+#Oppf3mnd
+NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Oppf3mnd',
+                     Ngrense=20, outfile= 'Oppf3mndSh.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='Oppf3mnd', outfile='Oppf3mndTid.pdf')
+
+#Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
+NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
+                     Ngrense=20, outfile= 'NakkeKomplinfekSh.pdf')
+dum <- NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='Komplinfek',
+                               Ngrense=20, ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplinfekShAar.pdf')
+
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='Komplinfek', outfile='NakkeInfekTid.pdf')
+
 NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Alder', datoFra=datoFra1aar, outfile='NakkeAlder70Sh.pdf')
+NakkeFigAndelTid(RegData=NakkeData, preprosess=0, valgtVar='Alder', outfile='NakkeAlder70Tid.pdf')
 
 dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OprIndikMyelopati',
                             datoFra=datoFra1aar, Ngrense=20,outfile='NakkeOprIndikMyelopatiSh.pdf')

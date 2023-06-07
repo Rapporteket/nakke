@@ -1,17 +1,14 @@
 
-#library(magrittr)
-library(knitr)
+#library(knitr)
 library(lubridate)
 library(kableExtra)
 library(rapbase)
 library(rapFigurer)
 library(raplog)
-library(shiny)
-library(shinyalert)
-#ibrary(shinyBS) # Additional Bootstrap Controls
+#library(shiny)
+#library(shinyalert)
 library(zoo)
 library(nakke)
-#library(tools)
 
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
@@ -19,7 +16,7 @@ paaServer <- context %in% c("DEV", "TEST", "QA", "PRODUCTION")
 options(knitr.table.format = "html")
 
 idag <- Sys.Date()
-startDato <- paste0(as.numeric(format(idag-150, "%Y")), '-01-01') #paste0(1900+as.POSIXlt(idag)$year, '-01-01')
+startDato <- paste0(as.numeric(format(idag-200, "%Y")), '-01-01') #paste0(1900+as.POSIXlt(idag)$year, '-01-01')
 #AarNaa <- as.numeric(format(idag, "%Y"))
 datoTil <- as.POSIXlt(idag)
 sluttDato <- idag
