@@ -321,6 +321,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Utdanning' = 'Utdanning'),
                                   selected = 'regForsinkelse'
                       ),
+                      selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
+                                  choices = enhetsUtvalg
+                      ),
                       dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
                                      label = "Tidsperiode", separator="t.o.m.", language="nb"),
                       selectInput(inputId = "erMann", label="Kjønn",
@@ -335,9 +338,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                   choices = myelopatiValg),
                       selectInput(inputId = "fremBak", label="Tilgang ",
                                   choices = fremBakValg),
-                      selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
-                                  choices = enhetsUtvalg
-                      ),
                       selectInput(inputId = "bildeformatFord",
                                   label = "Velg format for nedlasting av figur",
                                   choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg'))
@@ -405,6 +405,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Utdanning' = 'Utdanning'),
                          selected = 'regForsinkelse'
              ),
+             selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet (kun for utvikling over tid)',
+                         choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
+             ),
+             selectInput(inputId = "tidsenhetAndelTid", label="Velg tidsenhet (kun for utvikling over tid)",
+                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                         'Kvartal'='Kvartal', 'Måned'='Mnd'))),
              dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
              selectInput(inputId = "erMannAndel", label="Kjønn",
@@ -422,14 +428,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              selectInput(inputId = "bildeformatAndel",
                          label = "Velg format for nedlasting av figur",
                          choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
-             br(),
-             p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
-             selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet',
-                         choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
-             ),
-             selectInput(inputId = "tidsenhetAndelTid", label="Velg tidsenhet",
-                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                         'Kvartal'='Kvartal', 'Måned'='Mnd')))
+             br()
+             #p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
 
   ), #sidebarPanel/kolonna til venstre
 
@@ -493,6 +493,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Total knivtid' = 'KnivtidTotalMin'
                          )
              ),
+             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet (fig utvikling over tid)',
+                         choices = enhetsUtvalg
+             ),
+             selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet (fig utvikling over tid)",
+                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                         'Kvartal'='Kvartal', 'Måned'='Mnd'))),
              dateRangeInput(inputId = 'datovalgGjsn', start = startDato, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
              selectInput(inputId = "erMannGjsn", label="Kjønn",
@@ -512,14 +518,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              selectInput(inputId = "bildeformatGjsn",
                          label = "Velg format for nedlasting av figur",
                          choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
-             br(),
-             p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
-             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
-                         choices = enhetsUtvalg
-             ),
-             selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet",
-                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                         'Kvartal'='Kvartal', 'Måned'='Mnd')))
+             br()
+             #p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
 
            ),
            mainPanel(
