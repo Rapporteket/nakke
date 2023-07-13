@@ -493,10 +493,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Total knivtid' = 'KnivtidTotalMin'
                          )
              ),
-             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet (fig utvikling over tid)',
+             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet (kun for utvikling over tid)',
                          choices = enhetsUtvalg
              ),
-             selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet (fig utvikling over tid)",
+             selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet (kun for utvikling over tid)",
                          choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
                                          'Kvartal'='Kvartal', 'Måned'='Mnd'))),
              dateRangeInput(inputId = 'datovalgGjsn', start = startDato, end = Sys.Date(),
