@@ -86,17 +86,40 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
 
   NHovedRes <- length(ind$Hoved)
   NSmlRes <- length(ind$Rest)
+  AggVerdier <- list(Hoved = 0, Rest =0)
+  #N <- list(Hoved = dim(RegData)[1], Rest=0)
+  N <- list(Hoved = length(ind$Hoved), Rest =length(ind$Rest))
+
+  yAkseTxt <- 'Andel (%)'
+  vektor <- c('Aar','Halvaar','Kvartal','Mnd')
+  xAkseTxt <- paste0(c('Innleggelsesår', 'Innleggelsesår-halvår', 'Innleggelsesår-kvartal',
+                       'Innleggelsesmåned')[which(tidsenhet==vektor)])
+
+  #Hvis for få observasjoner..
+  if (length(ind$Hoved) < 10 | (NakkeUtvalg$medSml ==1 & length(ind$Rest)<10)) {
+    #-----------Figur---------------------------------------
+    Ngr <- list(Hoved = 0, Rest = 0)
+    Nvar <- list(Hoved = 0, Rest = 0)
+
+    FigTypUt <- rapFigurer::figtype(outfile)
+    farger <- FigTypUt$farger
+    plot.new()
+    tittel <- paste('variabel: ', valgtVar, sep='')
+    title(main=tittel)	#, line=-6)
+    legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
+    text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
+    text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
+    if ( outfile != '') {dev.off()}
+
+    } else {
+
 
   #Legge på tidsenhet
-      N <- list(Hoved = dim(RegData)[1], Rest=0)
         RegDataFunk <- SorterOgNavngiTidsEnhet(RegData=RegData, tidsenhet = tidsenhet)
         RegData <- RegDataFunk$RegData
         tidNum <- min(RegData$TidsEnhetSort, na.rm=T):max(RegData$TidsEnhetSort, na.rm = T) #as.numeric(levels(RegData$TidsEnhetSort))
 
-      AggVerdier <- list(Hoved = 0, Rest =0)
-      N <- list(Hoved = length(ind$Hoved), Rest =length(ind$Rest))
-
-      #-------------------------Beregning av andel-----------------------------------------
+  #-------------------------Beregning av andel-----------------------------------------
 
       NAarHoved <- tapply(RegData[ind$Hoved, 'Variabel'], RegData[ind$Hoved ,'TidsEnhet'], length) #Tot. ant. per år
       NAarHendHoved <- tapply(RegData[ind$Hoved, 'Variabel'], RegData[ind$Hoved ,'TidsEnhet'],sum, na.rm=T) #Ant. hendelser per år
@@ -108,51 +131,15 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
       Nvar <- list(Hoved = NAarHendHoved, Rest = NAarHendRest)
 
       grtxt2 <- paste0('(', sprintf('%.1f',AggVerdier$Hoved), '%)')
-      yAkseTxt <- 'Andel (%)'
-      vektor <- c('Aar','Halvaar','Kvartal','Mnd')
-      xAkseTxt <- paste0(c('Innleggelsesår', 'Innleggelsesår-halvår', 'Innleggelsesår-kvartal',
-                           'Innleggelsesmåned')[which(tidsenhet==vektor)])
 
       hovedgrTxt <- NakkeUtvalg$hovedgrTxt
       smltxt <- NakkeUtvalg$smltxt
-      FigDataParam <- list(AggVerdier=AggVerdier,
-                           N=N,
-                           Ngr=Ngr,
-                           Nvar=Nvar,
-                           #KImaal <- KImaal,
-                           #soyletxt=soyletxt,
-                           grtxt2=grtxt2,
-                           varTxt=varTxt,
-                           #tidtxt=tidtxt, #RyggVarSpes$grtxt,
-                           tittel=tittel,
-                           xAkseTxt=xAkseTxt,
-                           yAkseTxt=yAkseTxt,
-                           utvalgTxt=NakkeUtvalg$utvalgTxt,
-                           fargepalett=NakkeUtvalg$fargepalett,
-                           medSml=NakkeUtvalg$medSml,
-                           hovedgrTxt=NakkeUtvalg$hovedgrTxt,
-                           smltxt=NakkeUtvalg$smltxt
-						   )
 
 #}
   #----------FIGUR------------------------------
-  #Hvis for få observasjoner..
-  #if (dim(RegData)[1] < 10 | (length(which(RegData$ReshId == reshID))<5 & medSml == 1)) {
-  if (length(ind$Hoved) < 10 | (NakkeUtvalg$medSml ==1 & length(ind$Rest)<10)) {
-    #-----------Figur---------------------------------------
-    FigTypUt <- rapFigurer::figtype(outfile)
-    farger <- FigTypUt$farger
-    plot.new()
-    title(main=paste('variabel: ', valgtVar, sep=''))	#, line=-6)
-    legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
-    text(0.5, 0.65, 'Færre enn 10 registreringer i hoved-', cex=1.2)
-    text(0.55, 0.6, 'eller sammenlikningsgruppe', cex=1.2)
-    if ( outfile != '') {dev.off()}
-  } else {
 
     #-----------Figur---------------------------------------
 
-    #------------------------------------------------------------------------------
                  #Plottspesifikke parametre:
                   FigTypUt <- rapFigurer::figtype(outfile, fargepalett=NakkeUtvalg$fargepalett)
                   farger <- FigTypUt$farger
@@ -213,6 +200,21 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                   #------------------------------------------------------------------------------
 
   }	#end else statement
+  FigDataParam <- list(AggVerdier=AggVerdier,
+                       N=N,
+                       Ngr=Ngr,
+                       Nvar=Nvar,
+                       grtxt2=grtxt2,
+                       varTxt=varTxt,
+                       tittel=tittel,
+                       xAkseTxt=xAkseTxt,
+                       yAkseTxt=yAkseTxt,
+                       utvalgTxt=NakkeUtvalg$utvalgTxt,
+                       fargepalett=NakkeUtvalg$fargepalett,
+                       medSml=NakkeUtvalg$medSml,
+                       hovedgrTxt=NakkeUtvalg$hovedgrTxt,
+                       smltxt=NakkeUtvalg$smltxt
+  )
   return(invisible(FigDataParam))
 }	#end function
 

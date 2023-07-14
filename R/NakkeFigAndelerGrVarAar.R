@@ -251,7 +251,7 @@ smltxt <- NakkeUtvalg$smltxt
             #    col = fargerMaalNiva, border = NA) #add = TRUE,
             ybunn <- 0.1
             ytopp <- max(pos)+ 0.4 #pos[2]-pos[1] #pos[AntGrNgr]+ 0.4	#
-            if (tidlAar != 0) {
+            if (tidlAar[1] != 0) {
                   #indMed <- 1:AntGrNgr
                   AartxtTidl <- ifelse(length(tidlAar)>1, paste0(min(tidlAar),'-', max(tidlAar)), as.character(tidlAar))
                   Naar <- rowSums(Ngr, na.rm=T)

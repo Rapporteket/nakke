@@ -1,17 +1,14 @@
 
-#library(magrittr)
-library(knitr)
-library(lubridate)
-library(kableExtra)
-library(rapbase)
-library(rapFigurer)
-library(raplog)
-library(shiny)
-library(shinyalert)
-#ibrary(shinyBS) # Additional Bootstrap Controls
-library(zoo)
+#library(knitr)
+#library(lubridate)
+#library(kableExtra)
+#library(rapbase)
+#library(rapFigurer)
+#library(raplog)
+#library(shiny)
+#library(shinyalert)
+#library(zoo)
 library(nakke)
-#library(tools)
 
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
@@ -19,7 +16,7 @@ paaServer <- context %in% c("DEV", "TEST", "QA", "PRODUCTION")
 options(knitr.table.format = "html")
 
 idag <- Sys.Date()
-startDato <- paste0(as.numeric(format(idag-150, "%Y")), '-01-01') #paste0(1900+as.POSIXlt(idag)$year, '-01-01')
+startDato <- paste0(as.numeric(format(idag-200, "%Y")), '-01-01') #paste0(1900+as.POSIXlt(idag)$year, '-01-01')
 #AarNaa <- as.numeric(format(idag, "%Y"))
 datoTil <- as.POSIXlt(idag)
 sluttDato <- idag
@@ -126,7 +123,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            ),
 
            mainPanel(
-             appNavbarUserWidget(user = uiOutput("appUserName"),
+             rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
                                  organization = uiOutput("appOrgName"),
                                  addUserInfo = TRUE),
              tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
@@ -239,7 +236,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                                 'NDI-endring 12mnd > 35%' = 'NDIendr12mnd35pst')
                         ),
                         sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2014),
-                                    max = as.numeric(year(idag)), value = c(2014, year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
+                                    max = as.numeric(lubridate::year(idag)), value = c(2014, lubridate::year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
                         ),
                         br(),
                         downloadButton(outputId = 'lastNed_dataTilOffNett', label='Last ned data til SKDEs interaktive nettsider'),
@@ -324,6 +321,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                               'Utdanning' = 'Utdanning'),
                                   selected = 'regForsinkelse'
                       ),
+                      selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
+                                  choices = enhetsUtvalg
+                      ),
                       dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
                                      label = "Tidsperiode", separator="t.o.m.", language="nb"),
                       selectInput(inputId = "erMann", label="Kjønn",
@@ -338,9 +338,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                   choices = myelopatiValg),
                       selectInput(inputId = "fremBak", label="Tilgang ",
                                   choices = fremBakValg),
-                      selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
-                                  choices = enhetsUtvalg
-                      ),
                       selectInput(inputId = "bildeformatFord",
                                   label = "Velg format for nedlasting av figur",
                                   choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg'))
@@ -408,6 +405,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Utdanning' = 'Utdanning'),
                          selected = 'regForsinkelse'
              ),
+             selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet (kun for utvikling over tid)',
+                         choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
+             ),
+             selectInput(inputId = "tidsenhetAndelTid", label="Velg tidsenhet (kun for utvikling over tid)",
+                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                         'Kvartal'='Kvartal', 'Måned'='Mnd'))),
              dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
              selectInput(inputId = "erMannAndel", label="Kjønn",
@@ -425,14 +428,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              selectInput(inputId = "bildeformatAndel",
                          label = "Velg format for nedlasting av figur",
                          choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
-             br(),
-             p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
-             selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet',
-                         choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
-             ),
-             selectInput(inputId = "tidsenhetAndelTid", label="Velg tidsenhet",
-                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                         'Kvartal'='Kvartal', 'Måned'='Mnd')))
+             br()
+             #p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
 
   ), #sidebarPanel/kolonna til venstre
 
@@ -496,6 +493,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      'Total knivtid' = 'KnivtidTotalMin'
                          )
              ),
+             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet (kun for utvikling over tid)',
+                         choices = enhetsUtvalg
+             ),
+             selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet (kun for utvikling over tid)",
+                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                         'Kvartal'='Kvartal', 'Måned'='Mnd'))),
              dateRangeInput(inputId = 'datovalgGjsn', start = startDato, end = Sys.Date(),
                             label = "Tidsperiode", separator="t.o.m.", language="nb"),
              selectInput(inputId = "erMannGjsn", label="Kjønn",
@@ -515,14 +518,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              selectInput(inputId = "bildeformatGjsn",
                          label = "Velg format for nedlasting av figur",
                          choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
-             br(),
-             p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
-             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet',
-                         choices = enhetsUtvalg
-             ),
-             selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet",
-                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                         'Kvartal'='Kvartal', 'Måned'='Mnd')))
+             br()
+             #p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
 
            ),
            mainPanel(
@@ -892,11 +889,11 @@ server <- function(input, output,session) {
                       , full_width=F
                       , digits = c(0,0,1,0,0,1)[1:antKol]
     ) %>%
-      add_header_above(kolGruppering[1:(2+UtDataFord$medSml)]) %>%
-      #add_header_above(c(" "=1, tittelKolGr[1] = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-      column_spec(column = 1, width='5em') %>% #width_min = '3em', width_max = '10em') %>%
-      column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
-      row_spec(0, bold = T)
+      kableExtra::add_header_above(kolGruppering[1:(2+UtDataFord$medSml)]) %>%
+      #kableExtra::add_header_above(c(" "=1, tittelKolGr[1] = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+      kableExtra::column_spec(column = 1, width='5em') %>% #width_min = '3em', width_max = '10em') %>%
+      kableExtra::column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
+      kableExtra::row_spec(0, bold = T)
   }
 
   output$lastNed_tabFord <- downloadHandler(
@@ -997,11 +994,11 @@ server <- function(input, output,session) {
                          , full_width=F
                          , digits = c(0,0,1,0,0,1)[1:antKol]
        ) %>%
-       #  add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-        add_header_above(kolGruppering[1:(2+AndelerTid$medSml)]) %>%
-        column_spec(column = 1, width_min = '7em') %>%
-        column_spec(column = 2:(antKol+1), width = '7em') %>%
-        row_spec(0, bold = T)
+       #  kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
+        kableExtra::add_header_above(kolGruppering[1:(2+AndelerTid$medSml)]) %>%
+        kableExtra::column_spec(column = 1, width_min = '7em') %>%
+        kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
+        kableExtra::row_spec(0, bold = T)
     }
     output$lastNed_tabAndelTid <- downloadHandler(
       filename = function(){
@@ -1033,9 +1030,9 @@ server <- function(input, output,session) {
                         #, full_width=T
                         , digits = c(0,0,1) #,0,1)[1:antKol]
       ) %>%
-        column_spec(column = 1, width_min = '5em') %>%
-        column_spec(column = 2:(antKol+1), width = '4em') %>%
-        row_spec(0, bold = T)
+        kableExtra::column_spec(column = 1, width_min = '5em') %>%
+        kableExtra::column_spec(column = 2:(antKol+1), width = '4em') %>%
+        kableExtra::row_spec(0, bold = T)
     }
     output$lastNed_tabAndelGrVar <- downloadHandler(
       filename = function(){
@@ -1149,9 +1146,9 @@ antDesFormat <- paste0("%.", antDes, "f")
                       , digits = c(0,1) #,1,1)[1:antKol]
                       , align = 'r'
     ) %>%
-      column_spec(column = 1, width_min = '7em') %>%
-      column_spec(column = 2:4, width = '8em') %>%
-      row_spec(0, bold = T)
+      kableExtra::column_spec(column = 1, width_min = '7em') %>%
+      kableExtra::column_spec(column = 2:4, width = '8em') %>%
+      kableExtra::row_spec(0, bold = T)
   }
 
   output$lastNed_gjsnGrVarTab <- downloadHandler(
@@ -1197,10 +1194,10 @@ antDesFormat <- paste0("%.", antDes, "f")
                       , full_width=F
                       , digits = antDes #c(0,1,1,1)[1:antKol]
     ) %>%
-      add_header_above(kolGruppering[1:(2+UtDataGjsnTid$medSml)]) %>%
-      column_spec(column = 1, width_min = '7em') %>%
-      column_spec(column = 2:(antKol+1), width = '7em') %>%
-      row_spec(0, bold = T)
+      kableExtra::add_header_above(kolGruppering[1:(2+UtDataGjsnTid$medSml)]) %>%
+      kableExtra::column_spec(column = 1, width_min = '7em') %>%
+      kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
+      kableExtra::row_spec(0, bold = T)
   }
 
   output$lastNed_gjsnTidTab <- downloadHandler(

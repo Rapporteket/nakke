@@ -29,24 +29,15 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
   flerevar <- 0
   grtxt <- ''		#Spesifiseres for hver enkelt variabel
   grtxt2 <- ''	#Spesifiseres evt. for hver enkelt variabel
-  #grNavn <- ''
   varTxt <- ''
   xAkseTxt <- ''	#Benevning
   if (figurtype == 'andelGrVar') {xAkseTxt <- 'Andel operasjoner (%)'}
-  #yAkseTxt <- ''
   ytxt1 <- ''
-  #pktTxt <- '' #(evt. søyletekst)
-  #txtEtiketter  <- ''	#legend
-  #verdier <- ''	#AggVerdier, gjennomsnitt, ...
-  #verdiTxt <- '' 	#pstTxt, ...
-  #strIfig <- ''		#cex
   sortAvtagende <- FALSE  #Sortering av resultater. FALSE-laveste best
   tittel <- 'Mangler tittel'
   deltittel <- ''
   variable <- 'Ingen'
   KIekstrem <- NULL
-  #KImaalGrenser <- NA
-  #deltittel <- ''
   RegData$Variabel <- 0
   #Kan her definere opp alle aktuelle grupperingsvariable og deres tekst, eller
   #sende inn grupperingsvariabel og så gjøre beregninger. (Ulempe: Ekstra avhengigheter)
@@ -60,8 +51,6 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
   # tittel, xAkseTxt, sortAvtagende (standard: TRUE)
 
   tittel <- '' #I AndelerGrVar og GjsnGrVar genereres tittel i beregningsfunksjonen
-  #if (valgtVar %in% c('OswEndr20', 'OswEndr30pst' )) {
-  #ktr kan ha verdiene 0, 1 eller 2
   ktrtxt <- c(', 3 mnd etter', ', 12 mnd. etter')[ktr]
   #	}
 

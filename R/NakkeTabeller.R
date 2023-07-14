@@ -10,17 +10,21 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
       #RegData må inneholde ..
   if (reshID!=0){RegData <- RegData[which(RegData$ReshId==reshID), ]}
       datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
+      tabAvdMnd1 <- 0
+      if (exists('datoFra')){
       aggVar <-  c('ShNavn', 'InnDato')
       RegDataDum <- RegData[intersect(which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')),
                                which(as.Date(RegData$InnDato, tz='uTC') > as.Date(datoFra, tz='UTC'))), aggVar]
+
       RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$InnDato, 'month')
       tabAvdMnd1 <- table(RegDataDum[ , c('ShNavn', 'Maaned1')])
       colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)), '%b %y') #month(ymd(colnames(tabAvdMnd1)), label = T)
-      if (reshID==0){
+
+      if (dim(tabAvdMnd1)[1]>0) {
+      if (reshID==0 ){
         tabAvdMnd1 <- addmargins((tabAvdMnd1))}
-      #tabAvdMnd1 <- RegDataDum %>% group_by(Maaned=floor_date(InnDato, "month"), ShNavn) %>%
-      #      summarize(Antall=length(ShNavn))
       tabAvdMnd1 <- xtable::xtable(tabAvdMnd1, digits=0)
+      }}
 	return(tabAvdMnd1)
 }
 
@@ -32,14 +36,15 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
 #' @export
 tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date()){
       AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
-
+      tabAvdAarN <- 0
+      if (length(AarNaa)>0) {
+        RegData <- RegData[which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')), ]
       tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]))
       rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle enheter:'
       colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste 5 år'
       tabAvdAarN <- xtable::xtable(tabAvdAarN)
+      }
       return(tabAvdAarN)
-
-    #tabAntOpphSh5Aar(RegData=RegData, datoTil=Sys.Date())
 }
 
 
