@@ -1,5 +1,5 @@
-  #**************************************************
-#********************* Tilrettelegge filer ****************************
+  # **************************************************
+# ********************* Tilrettelegge filer ****************************
 #Nakke
 library(nakke)
 library(xtable)
@@ -22,6 +22,8 @@ tidlAar2 <- (aarsRappAar-3):(aarsRappAar-2)
 NakkeDataRaa <- NakkeRegDataSQL(datoTil = datoTil)
 NakkeData <- NakkePreprosess(NakkeDataRaa)
 
+
+2000000/4.1868/5351
 
 #Til Tore
 # RegDataAVN <- rapbase::loadRegData(registryName = "nakke", dbType = "mysql",
