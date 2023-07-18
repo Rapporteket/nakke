@@ -1,13 +1,4 @@
 
-#library(knitr)
-#library(lubridate)
-#library(kableExtra)
-#library(rapbase)
-#library(rapFigurer)
-#library(raplog)
-#library(shiny)
-#library(shinyalert)
-#library(zoo)
 library(nakke)
 
 
@@ -568,30 +559,6 @@ tabPanel(p("Abonnement",
 ) #tab abonnement
 
 
-
-# tabPanel(p("Abonnement",
-#            title='Bestill automatisk utsending av rapporter på e-post'),
-#          sidebarLayout(
-#            sidebarPanel(width = 3,
-#                         selectInput("subscriptionRep", "Rapport:",
-#                                     c("Halvårsrapport")), #, "Samlerapport", "Influensaresultater")),
-#                         selectInput("subscriptionFreq", "Frekvens:",
-#                                     list(Årlig="Årlig-year",
-#                                           Kvartalsvis="Kvartalsvis-quarter",
-#                                           Månedlig="Månedlig-month",
-#                                           Ukentlig="Ukentlig-week",
-#                                           Daglig="Daglig-DSTday"),
-#                                     selected = "Kvartalsvis-quarter"),
-#                         actionButton("subscribe", "Bestill!")
-#            ),
-#            mainPanel(
-#              uiOutput("subscriptionContent")
-#            )
-#          )
-# )
-
-
-#-------tab'er-------------------------
 ) #fluidpage, dvs. alt som vises på skjermen
 
 
@@ -1250,72 +1217,6 @@ rapbase::autoReportServer(
   paramNames = paramNames, paramValues = paramValues,
   reports = reports, orgs = orgs, eligible = TRUE
 )
-
-
-#
-# ## reaktive verdier for å holde rede på endringer som skjer mens
-# ## applikasjonen kjører
-# rv <- reactiveValues(
-#   subscriptionTab = rapbase::makeAutoReportTab(session))
-#
-#
-# ## lag tabell over gjeldende status for abonnement
-# output$activeSubscriptions <- DT::renderDataTable(
-#   rv$subscriptionTab, server = FALSE, escape = FALSE, selection = 'none',
-#   rownames = FALSE, options = list(dom = 't')
-# )
-#
-# ## lag side som viser status for abonnement, også når det ikke finnes noen
-# output$subscriptionContent <- renderUI({
-#   fullName <- rapbase::getUserFullName(session)
-#   if (length(rv$subscriptionTab) == 0) {
-#     p(paste("Ingen aktive abonnement for", fullName))
-#   } else {
-#     tagList(
-#       p(paste("Aktive abonnement for", fullName, "som sendes per epost til ",
-#               rapbase::getUserEmail(session), ":")),
-#       DT::dataTableOutput("activeSubscriptions")
-#     )
-#   }
-# })
-# ## nye abonnement
-# observeEvent (input$subscribe, { #MÅ HA
-#   owner <- rapbase::getUserName(session)
-#   interval <- strsplit(input$subscriptionFreq, "-")[[1]][2]
-#   intervalName <- strsplit(input$subscriptionFreq, "-")[[1]][1]
-#   organization <- rapbase::getUserReshId(session)
-#   runDayOfYear <- rapbase::makeRunDayOfYearSequence(interval = interval)
-#   email <- rapbase::getUserEmail(session)
-#   if (input$subscriptionRep == "Halvårsrapport") {
-#     synopsis <- "nakke/Rapporteket: halvårsrapport"
-#     rnwFil <- "NakkeMndRapp.Rnw" #Navn på fila
-#   }
-#
-#   fun <- "abonnementNakke"  #"henteSamlerapporter"
-#   paramNames <- c('rnwFil', 'brukernavn', "reshID")
-#   paramValues <- c(rnwFil, brukernavn, reshID) #input$subscriptionFileFormat)
-#
-#   #abonnementNakke(rnwFil = 'NakkeMndRapp.Rnw', brukernavn='hei', reshID=601161, datoTil=Sys.Date())
-#
-#   rapbase::createAutoReport(synopsis = synopsis, package = 'nakke',
-#                             fun = fun, paramNames = paramNames,
-#                             paramValues = paramValues, owner = owner,
-#                             email = email, organization = organization,
-#                             runDayOfYear = runDayOfYear, interval = interval,
-#                             intervalName = intervalName)
-#   rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
-# })
-#
-# ## slett eksisterende abonnement
-# observeEvent(input$del_button, {
-#   selectedRepId <- strsplit(input$del_button, "_")[[1]][2]
-#   rapbase::deleteAutoReport(selectedRepId)
-#   rv$subscriptionTab <- rapbase::makeAutoReportTab(session)
-# })
-
-
-
-
 
 
 } #server
