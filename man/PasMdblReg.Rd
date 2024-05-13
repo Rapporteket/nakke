@@ -11,9 +11,6 @@ PasMdblReg(RegData, tidsavvik = 30)
 
 \item{tidssavik}{- maks tidsavvik (dager) mellom to påfølgende registreringer som sjekkes}
 }
-\value{
-
-}
 \description{
 Finner pasienter med potensielt dobbeltregistrerte skjema
 }
