@@ -4,11 +4,12 @@
 #' Kan benytte datoFra og datoFra som input.
 #'
 #' @inheritParams NakkeFigAndeler
+#' @param medProm Ha med prom-skjema 0-nei, 1-ja (standard)
 #'
 #' @return Henter dataramma RegData for Degenerativ Nakke
 #' @export
 #'
-NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date()) {
+NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medProm=1) {
 
   queryAVN <- paste0('SELECT
 	Alder,
@@ -221,6 +222,7 @@ FROM AlleVarNum
 
   RegData <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
 
+if (medPROM == 1) {
 #Feil i andel oppfølging etter innføreing av ePROM. OppFolgStatus3mnd=1 betyr ikke lenger at skjemaet er utfylt
 #Må lage variabelen på nytt
 ePROMadmTab <- rapbase::loadRegData(registryName="nakke",
@@ -248,7 +250,7 @@ RegData$OppFolgStatus12mnd <- 0
 RegData$OppFolgStatus12mnd[
   RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
 RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
-
+}
 # table(RegData$Aar, RegData$OppFolgStatus12mnd)
 # table(RegData$Aar, RegData$OppFolg12mndGML)
 # table(RegData$Aar, !is.na(RegData$NDIscore12mnd))

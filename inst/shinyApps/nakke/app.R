@@ -219,18 +219,18 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         br(),
                         br(),
                         br(),
-                        h4('Data til Resultatportalen - utdatert. Vil bli fikset.'),
-                        selectInput(inputId = "valgtVarRes", label="Velg variabel",
-                                    choices = c('Stemmevansker u/myelopati, 3 mnd.' = 'KomplStemme3mnd',
-                                                'Svelgvansker, 3 mnd.' = 'KomplSvelging3mnd',
-                                                'Infeksjon, 3 mnd.' = 'Komplinfek',
-                                                'NDI-endring 12mnd > 35%' = 'NDIendr12mnd35pst')
-                        ),
-                        sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2014),
-                                    max = as.numeric(lubridate::year(idag)), value = c(2014, lubridate::year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
-                        ),
+                        # h4('Data til Resultatportalen - utdatert. Vil bli fikset.'),
+                        # selectInput(inputId = "valgtVarRes", label="Velg variabel",
+                        #             choices = c('Stemmevansker u/myelopati, 3 mnd.' = 'KomplStemme3mnd',
+                        #                         'Svelgvansker, 3 mnd.' = 'KomplSvelging3mnd',
+                        #                         'Infeksjon, 3 mnd.' = 'Komplinfek',
+                        #                         'NDI-endring 12mnd > 35%' = 'NDIendr12mnd35pst')
+                        # ),
+                        # sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2014),
+                        #             max = as.numeric(lubridate::year(idag)), value = c(2014, lubridate::year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
+                        # ),
                         br(),
-                        downloadButton(outputId = 'lastNed_dataTilOffNett', label='Last ned data til SKDEs interaktive nettsider'),
+                        # downloadButton(outputId = 'lastNed_dataTilOffNett', label='Last ned data til SKDEs interaktive nettsider'),
                         br()
                       ),
 
@@ -753,13 +753,14 @@ server <- function(input, output,session) {
 
 
   observe({
-    queryAVN <-  paste0('select * from AlleVarNum
-                      WHERE OprDato >= \'', input$datovalgRegKtr[1],
-                        '\' AND OprDato <= \'', input$datovalgRegKtr[2], '\'')
-    RegDataAVN <- rapbase::loadRegData(registryName = "nakke",
-                                       query = queryAVN)
-    DataDumpRaa <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
+    # queryAVN <-  paste0('select * from AlleVarNum
+    #                   WHERE OprDato >= \'', input$datovalgRegKtr[1],
+    #                     '\' AND OprDato <= \'', input$datovalgRegKtr[2], '\'')
+    # RegDataAVN <- rapbase::loadRegData(registryName = "nakke",
+    #                                    query = queryAVN)
+    # DataDumpRaa <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
 
+    DataDumpRaa <- NakkeRegDataSQL(medProm==0)
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
 
     # DataDump <- dplyr::filter(RegData, #DataAlle,
