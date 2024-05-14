@@ -251,7 +251,7 @@ delTekst <- function(x, len) #x -tekststreng/vektor av tekststrenger, len - Leng
 #' @param RegData dataramme fra nakkeregisteret
 #' @param tidssavik - maks tidsavvik (dager) mellom to påfølgende registreringer som sjekkes
 #'
-#' @return
+#' @return Alle registreringer for pasienter med potensielle dobbeltregistreringer
 #' @export
 PasMdblReg <- function(RegData, tidsavvik=30){
 

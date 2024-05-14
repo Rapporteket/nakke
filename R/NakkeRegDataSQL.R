@@ -9,7 +9,8 @@
 #' @return Henter dataramma RegData for Degenerativ Nakke
 #' @export
 #'
-NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medProm=1) {
+NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medProm = 1) {
+
 
   queryAVN <- paste0('SELECT
 	Alder,
@@ -213,7 +214,7 @@ FROM AlleVarNum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
 
   #queryAVN <-'select * from AlleVarNum'
-    RegDataAVN <- rapbase::loadRegData(registryName = "nakke", query = queryAVN, dbType = "mysql")
+  RegDataAVN <- rapbase::loadRegData(registryName = "nakke", query = queryAVN, dbType = "mysql")
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
                FROM ForlopsOversikt'
@@ -222,41 +223,42 @@ FROM AlleVarNum
 
   RegData <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
 
-if (medPROM == 1) {
-#Feil i andel oppfølging etter innføreing av ePROM. OppFolgStatus3mnd=1 betyr ikke lenger at skjemaet er utfylt
-#Må lage variabelen på nytt
-ePROMadmTab <- rapbase::loadRegData(registryName="nakke",
-                                    query='SELECT * FROM proms')
-ePROMvar <- c("MCEID", "TSSENDT", "TSRECEIVED", "NOTIFICATION_CHANNEL", "DISTRIBUTION_RULE",
-              'REGISTRATION_TYPE')
-# «EpromStatus»:  0 = Created, 1 = Ordered, 2 = Expired, 3 = Completed, 4 = Failed
-ind3mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
-                   c('PATIENTFOLLOWUP', 'PATIENTFOLLOWUP_3_PiPP', 'PATIENTFOLLOWUP_3_PiPP_REMINDER'))
-ind12mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
-                    c('PATIENTFOLLOWUP12', 'PATIENTFOLLOWUP_12_PiPP', 'PATIENTFOLLOWUP_12_PiPP_REMINDER'))
+  if (medProm == 1) {
 
-indIkkeEprom3mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
-indIkkeEprom12mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind12mnd]))
+    #Feil i andel oppfølging etter innføreing av ePROM. OppFolgStatus3mnd=1 betyr ikke lenger at skjemaet er utfylt
+    #Må lage variabelen på nytt
+    ePROMadmTab <- rapbase::loadRegData(registryName="nakke",
+                                        query='SELECT * FROM proms')
+    ePROMvar <- c("MCEID", "TSSENDT", "TSRECEIVED", "NOTIFICATION_CHANNEL", "DISTRIBUTION_RULE",
+                  'REGISTRATION_TYPE')
+    # «EpromStatus»:  0 = Created, 1 = Ordered, 2 = Expired, 3 = Completed, 4 = Failed
+    ind3mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
+                       c('PATIENTFOLLOWUP', 'PATIENTFOLLOWUP_3_PiPP', 'PATIENTFOLLOWUP_3_PiPP_REMINDER'))
+    ind12mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
+                        c('PATIENTFOLLOWUP12', 'PATIENTFOLLOWUP_12_PiPP', 'PATIENTFOLLOWUP_12_PiPP_REMINDER'))
 
-#indEprom <-  which((RegDataV3$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
-RegData$OppFolg3mndGML <- RegData$OppFolgStatus3mnd
-RegData$OppFolgStatus3mnd <- 0
-RegData$OppFolgStatus3mnd[
-  RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-RegData$OppFolgStatus3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
+    indIkkeEprom3mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
+    indIkkeEprom12mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind12mnd]))
 
-RegData$OppFolg12mndGML <- RegData$OppFolgStatus12mnd
-RegData$OppFolgStatus12mnd <- 0
-RegData$OppFolgStatus12mnd[
-  RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
-}
-# table(RegData$Aar, RegData$OppFolgStatus12mnd)
-# table(RegData$Aar, RegData$OppFolg12mndGML)
-# table(RegData$Aar, !is.na(RegData$NDIscore12mnd))
-# RegData$Aar <- lubridate::year(RegData$OprDato)
+    #indEprom <-  which((RegDataV3$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
+    RegData$OppFolg3mndGML <- RegData$OppFolgStatus3mnd
+    RegData$OppFolgStatus3mnd <- 0
+    RegData$OppFolgStatus3mnd[
+      RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
+    RegData$OppFolgStatus3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
 
-return(RegData)
+    RegData$OppFolg12mndGML <- RegData$OppFolgStatus12mnd
+    RegData$OppFolgStatus12mnd <- 0
+    RegData$OppFolgStatus12mnd[
+      RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
+    RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
+  }
+  # table(RegData$Aar, RegData$OppFolgStatus12mnd)
+  # table(RegData$Aar, RegData$OppFolg12mndGML)
+  # table(RegData$Aar, !is.na(RegData$NDIscore12mnd))
+  # RegData$Aar <- lubridate::year(RegData$OprDato)
+
+  return(RegData)
 }
 
 

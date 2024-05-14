@@ -725,17 +725,17 @@ server <- function(input, output,session) {
   #-----------Registeradministrasjon-----------
   variablePRM <- 'Variabler som skal tas bort for LU-bruker'
 
-  if (rolle=='SC') {
-    observe({
-      tabdataTilOffNett <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
-                                          #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
-                                          aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
-                                          lagreFil=0)
-      output$lastNed_dataTilOffNett <- downloadHandler(
-        filename = function(){paste0('dataTilOffNett_',input$valgtVarRes, '.csv')},
-        content = function(file, filename){write.csv2(tabdataTilOffNett, file, row.names = F, fileEncoding = 'latin1', na = '')})
-    })
-  }
+  # if (rolle=='SC') {
+  #   observe({
+  #     tabdataTilOffNett <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
+  #                                         #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
+  #                                         aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
+  #                                         lagreFil=0)
+  #     output$lastNed_dataTilOffNett <- downloadHandler(
+  #       filename = function(){paste0('dataTilOffNett_',input$valgtVarRes, '.csv')},
+  #       content = function(file, filename){write.csv2(tabdataTilOffNett, file, row.names = F, fileEncoding = 'latin1', na = '')})
+  #   })
+  # }
 
 
   observe({
@@ -760,7 +760,7 @@ server <- function(input, output,session) {
     #                                    query = queryAVN)
     # DataDumpRaa <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
 
-    DataDumpRaa <- NakkeRegDataSQL(medProm==0)
+    DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
 
     # DataDump <- dplyr::filter(RegData, #DataAlle,
