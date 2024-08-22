@@ -209,6 +209,15 @@ table(FellesFilNakke$ind_id, FellesFilNakke$year)
 
 
 
+
+#----------Dekningsgrad---------------------
+ReshSh <- unique(NakkeData[ ,c('ReshId', 'ShNavn')])
+write.csv2(ReshSh, file = 'data/ReshShNavn', row.names = F)
+
+
+
+
+
 #----- Testing av data-----
 #Dobbeltregistrering
 RegData <- NakkeData

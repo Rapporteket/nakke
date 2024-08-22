@@ -98,7 +98,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     choices = c('Komplikasjon, stemme' = 'KomplStemme3mnd',
                                                 'Komplikasjon, svelging' = 'KomplSvelging3mnd',
                                                 'Komplikasjon, sårinfeksjon' = 'Komplinfek',
-                                                'NDI-endr >35%, ett år etter operasjon' = 'NDIendr12mnd35pstKI')),
+                                                'NDI-endr >35%, ett år etter operasjon' = 'NDIendr12mnd35pst')),
                         dateInput(inputId = "datoFraKvalInd", label='Velg startdato', value = startDato),
                         h5('Husk å velge startdato minst ett år tilbake i tid hvis du ønkser å se resultater ett år etter operasjon...'),
                         selectInput(inputId = "bildeformatKvalInd",
