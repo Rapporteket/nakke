@@ -45,8 +45,7 @@ if (!exists('RegData')){
 RegData <- NakkePreprosess(RegData = RegData)
 
 #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd. Endret til 5*, dvs. 5,10,15,20, juli 2022
-#SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus > -1, ]
-SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato) #as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
+SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato)
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
 SkjemaData$Mnd <- zoo::as.yearmon(SkjemaData$InnDato)
 SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
@@ -115,8 +114,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
            mainPanel(
              rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
-                                 organization = uiOutput("appOrgName"),
-                                 addUserInfo = TRUE),
+                                          organization = uiOutput("appOrgName"),
+                                          addUserInfo = TRUE),
              tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
 
              h4('Her kan man finne resultater fra NKR. Under hver fane kan man velge hva man
@@ -129,9 +128,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              h2("Kvalitetsindikatorer", align='center' ),
              #h3(em("Utvikling over tid")),
              plotOutput("kvalIndFig1", height = 'auto'),
-           downloadButton('LastNedFigKvalIndTid', label='Velg format (til venstre) og last ned figur'),
-           plotOutput("kvalIndFig2", height = 'auto'),
-           downloadButton('LastNedFigKvalIndGrVar', label='Velg format (til venstre) og last ned figur')
+             downloadButton('LastNedFigKvalIndTid', label='Velg format (til venstre) og last ned figur'),
+             plotOutput("kvalIndFig2", height = 'auto'),
+             downloadButton('LastNedFigKvalIndGrVar', label='Velg format (til venstre) og last ned figur')
            )
   ), #tab
 
@@ -171,12 +170,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     tableOutput("tabAntOpphSh"),
                                     downloadButton(outputId = 'lastNed_tabAntOpphSh', label='Last ned')
                                   )
-
-                                  # h2("Antall registreringer per avdeling"),
-                                  # tableOutput("tabAvdMnd12"),
-                                  # h2("Antall registreringer per år og avdeling, siste 5 år"),
-                                  # tableOutput("tabAvdNAar5"))
-
                          ),
                          tabPanel('Antall skjema',
                                   h4("Tabellen viser antall registrerte skjema for valgt tidsperiode"),
@@ -186,8 +179,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                     tableOutput("tabAntSkjema"),
                                     downloadButton(outputId = 'lastNed_tabAntSkjema', label='Last ned')
                                   )
-             )))
-           ), #tab
+                         )))
+  ), #tab
   #------Registeradministrasjon-----------------------
   tabPanel(p('Registeradministrasjon', title="Verktøy for SC-bruker"),
            value = 'Registeradministrasjon',
@@ -207,54 +200,48 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
              ),
              tabPanel(
                h4('Datadump og datakvalitet'),
-                      sidebarPanel(
-                        width=4,
-                        dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
-                                       label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                        selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                                    selected = 0,
-                                    choices = sykehusValg),
-                        br(),
-                        downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
-                        br(),
-                        br(),
-                        br(),
-                        # h4('Data til Resultatportalen - utdatert. Vil bli fikset.'),
-                        # selectInput(inputId = "valgtVarRes", label="Velg variabel",
-                        #             choices = c('Stemmevansker u/myelopati, 3 mnd.' = 'KomplStemme3mnd',
-                        #                         'Svelgvansker, 3 mnd.' = 'KomplSvelging3mnd',
-                        #                         'Infeksjon, 3 mnd.' = 'Komplinfek',
-                        #                         'NDI-endring 12mnd > 35%' = 'NDIendr12mnd35pst')
-                        # ),
-                        # sliderInput(inputId="aarRes", label = "Operasjonsår", min = as.numeric(2014),
-                        #             max = as.numeric(lubridate::year(idag)), value = c(2014, lubridate::year(idag)), step=1 #c(2014, year(idag), step=1, sep="")
-                        # ),
-                        br(),
-                        # downloadButton(outputId = 'lastNed_dataTilOffNett', label='Last ned data til SKDEs interaktive nettsider'),
-                        br()
-                      ),
+               sidebarPanel(
+                 width=4,
+                 dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
+                                label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                 selectInput(inputId = 'velgReshReg', label='Velg sykehus',
+                             selected = 0,
+                             choices = sykehusValg),
+                 br(),
+                 downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
+                 br(),
+                 # h4('Data til Resultatportalen - utdatert. Vil bli fikset?'),
+                 # selectInput(inputId = "valgtVarRes", label="Velg variabel",
+                 #             choices = c('Stemmevansker u/myelopati, 3 mnd.' = 'KomplStemme3mnd',
+                 #                         'Svelgvansker, 3 mnd.' = 'KomplSvelging3mnd',
+                 #                         'Infeksjon, 3 mnd.' = 'Komplinfek',
+                 #                         'NDI-endring 12mnd > 35%' = 'NDIendr12mnd35pst')
+                 # ),
+                 # downloadButton(outputId = 'lastNed_dataTilOffNett', label='Last ned data til SKDEs interaktive nettsider'),
+                 br()
+               ),
 
-                      mainPanel(
-                        h3('Potensielle dobbeltregistreringer'),
-                        br(),
-                        h4('Funksjonen finner alle PID med to operasjoner nærmere enn valgt tidsintervall
+               mainPanel(
+                 h3('Potensielle dobbeltregistreringer'),
+                 br(),
+                 h4('Funksjonen finner alle PID med to operasjoner nærmere enn valgt tidsintervall
                            og tabellen viser alle operasjoner for de aktuelle pasientene.'),
-                        downloadButton(outputId = 'lastNed_tabDblReg', label='Last ned tabell med mulige dobbeltregistreringer'),
-                        br(),
-                        numericInput(inputId = 'valgtTidsavvik',
-                          label = 'Dager mellom registrerte operasjoner:',
-                          value = 30,
-                          min = 0,
-                          max = NA,
-                          step = 1
-                          , width = '100px'
-                          ),
+                 downloadButton(outputId = 'lastNed_tabDblReg', label='Last ned tabell med mulige dobbeltregistreringer'),
+                 br(),
+                 numericInput(inputId = 'valgtTidsavvik',
+                              label = 'Dager mellom registrerte operasjoner:',
+                              value = 30,
+                              min = 0,
+                              max = NA,
+                              step = 1
+                              , width = '100px'
+                 ),
 
-                        tableOutput("tabDblReg")
-                      )
+                 tableOutput("tabDblReg")
+               )
              ),
              shiny::tabPanel(
-              h4("Eksport av krypterte data"),
+               h4("Eksport av krypterte data"),
                #shiny::sidebarLayout(
                shiny::sidebarPanel(
                  rapbase::exportUCInput("nakkeExport")
@@ -266,92 +253,92 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            ) #tabsetPanel
   ), #Registeradm-tab
 
-#------------- Fordelingsfigurer--------------------
+  #------------- Fordelingsfigurer--------------------
 
- tabPanel(p("Fordelinger", title='Her finner du resultater for: Alder, antibiotika, arbeidsstatus, BMI, erstatning, fornøydhet, komorbiditet,
+  tabPanel(p("Fordelinger", title='Her finner du resultater for: Alder, antibiotika, arbeidsstatus, BMI, erstatning, fornøydhet, komorbiditet,
             komplikasjoner, liggetid, morsmål, nytteverdi, operasjonskategori, operasjonsindikasjon, radiologi,
             snus, smertestillende, symptomvaribhet, tidl.operert, uføretrygdet, utdanning'),
-          h2("Fordeling av valgt variabel", align='center'),
-          sidebarPanel(width = 3,
-                      selectInput(inputId = "valgtVar", label="Velg variabel",
-                                  choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr',
-                                              'Antibiotika' = 'Antibiotika',
-                                              'Arbeidsstatus før operasjon' = 'ArbeidstausPreOp',
-                                              'Arbeidsstatus 3 mnd. etter' = 'Arbeidstaus3mnd',
-                                              'Arbeidsstatus 12 mnd. etter' = 'Arbeidstaus12mnd',
-                                              'ASA-grad' = 'ASAgrad',
-                                              'BMI' = 'BMI',
-                                              'Angst (EQ5D) før operasjon' = 'EqAngstPreOp',
-                                              'Fornoydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
-                                              'Fornoydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd' ,
-                                              'Inngrepstyper' = 'Inngrep',
-                                              'Komorbiditet' = 'Komorbiditet',
-                                              'Komplikasjoner, pas.rapp. 3 mnd. etter' = 'Kompl3mnd',
-                                              'Komplikasjoner ved operasjon' = 'KomplOpr',
-                                              'Liggedøgn, postoperativt' = 'LiggeDognPostop',
-                                              'Liggedøgn, totalt' = 'LiggeDognTotalt',
-                                              'Morsmål' = 'Morsmal',
-                                              'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
-                                              'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
-                                              'Hastegrad kirurgi' = 'OperasjonsKategori',
-                                              'Operasjonsindikasjon' = 'OprIndik',
-                                              'Operasjonsindikasjon, paresegrad' = 'OprIndikPareseGrad',
-                                              'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
-                                              'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
-                                              'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
-                                              'Registreringsforsinkelse' = 'regForsinkelse',
-                                              'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
-                                              'Smertestillende, hyppighet preoperativt' = 'SmertestillBrukPreOp',
-                                              'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
-                                              'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
-                                              'Søkt erstatning før operasjon' = 'ErstatningPreOp',
-                                              'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
-                                              'Tidligere operert' = 'TidlOpr',
-                                              'Tidligere operert, antall' = 'TidlOprAntall',
-                                              'Tilgang ved operasjon' = 'OpTilgfrembak',
-                                              'Utdanning' = 'Utdanning'),
-                                  selected = 'regForsinkelse'
-                      ),
-                      selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
-                                  choices = enhetsUtvalg
-                      ),
-                      dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
-                                     label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                      selectInput(inputId = "erMann", label="Kjønn",
-                                  choices = kjonn
-                      ),
-                      sliderInput(inputId="alder", label = "Alder", min = 0,
-                                  max = 110, value = c(0, 110)
-                      ),
-                      selectInput(inputId = "inngrep", label="Inngrepstype",
-                                  choices = inngrepValg),
-                      selectInput(inputId = "myelopati", label="Myelopati",
-                                  choices = myelopatiValg),
-                      selectInput(inputId = "fremBak", label="Tilgang ",
-                                  choices = fremBakValg),
-                      selectInput(inputId = "bildeformatFord",
-                                  label = "Velg format for nedlasting av figur",
-                                  choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg'))
-                      #sliderInput(inputId="aar", label = "Årstall", min = 2012,  #min(RegData$Aar),
-                      #           max = as.numeric(format(Sys.Date(), '%Y')), value = )
-                    ),
+           h2("Fordeling av valgt variabel", align='center'),
+           sidebarPanel(width = 3,
+                        selectInput(inputId = "valgtVar", label="Velg variabel",
+                                    choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr',
+                                                'Antibiotika' = 'Antibiotika',
+                                                'Arbeidsstatus før operasjon' = 'ArbeidstausPreOp',
+                                                'Arbeidsstatus 3 mnd. etter' = 'Arbeidstaus3mnd',
+                                                'Arbeidsstatus 12 mnd. etter' = 'Arbeidstaus12mnd',
+                                                'ASA-grad' = 'ASAgrad',
+                                                'BMI' = 'BMI',
+                                                'Angst (EQ5D) før operasjon' = 'EqAngstPreOp',
+                                                'Fornoydhet med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
+                                                'Fornoydhet med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd' ,
+                                                'Inngrepstyper' = 'Inngrep',
+                                                'Komorbiditet' = 'Komorbiditet',
+                                                'Komplikasjoner, pas.rapp. 3 mnd. etter' = 'Kompl3mnd',
+                                                'Komplikasjoner ved operasjon' = 'KomplOpr',
+                                                'Liggedøgn, postoperativt' = 'LiggeDognPostop',
+                                                'Liggedøgn, totalt' = 'LiggeDognTotalt',
+                                                'Morsmål' = 'Morsmal',
+                                                'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
+                                                'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
+                                                'Hastegrad kirurgi' = 'OperasjonsKategori',
+                                                'Operasjonsindikasjon' = 'OprIndik',
+                                                'Operasjonsindikasjon, paresegrad' = 'OprIndikPareseGrad',
+                                                'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
+                                                'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
+                                                'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
+                                                'Registreringsforsinkelse' = 'regForsinkelse',
+                                                'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
+                                                'Smertestillende, hyppighet preoperativt' = 'SmertestillBrukPreOp',
+                                                'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
+                                                'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                                                'Søkt erstatning før operasjon' = 'ErstatningPreOp',
+                                                'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
+                                                'Tidligere operert' = 'TidlOpr',
+                                                'Tidligere operert, antall' = 'TidlOprAntall',
+                                                'Tilgang ved operasjon' = 'OpTilgfrembak',
+                                                'Utdanning' = 'Utdanning'),
+                                    selected = 'regForsinkelse'
+                        ),
+                        selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
+                                    choices = enhetsUtvalg
+                        ),
+                        dateRangeInput(inputId = 'datovalg', start = startDato, end = Sys.Date(),
+                                       label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                        selectInput(inputId = "erMann", label="Kjønn",
+                                    choices = kjonn
+                        ),
+                        sliderInput(inputId="alder", label = "Alder", min = 0,
+                                    max = 110, value = c(0, 110)
+                        ),
+                        selectInput(inputId = "inngrep", label="Inngrepstype",
+                                    choices = inngrepValg),
+                        selectInput(inputId = "myelopati", label="Myelopati",
+                                    choices = myelopatiValg),
+                        selectInput(inputId = "fremBak", label="Tilgang ",
+                                    choices = fremBakValg),
+                        selectInput(inputId = "bildeformatFord",
+                                    label = "Velg format for nedlasting av figur",
+                                    choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg'))
+                        #sliderInput(inputId="aar", label = "Årstall", min = 2012,  #min(RegData$Aar),
+                        #           max = as.numeric(format(Sys.Date(), '%Y')), value = )
+           ),
            mainPanel(
-           h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
+             h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Der kan man også gjøre ulike filtreringer."),
-           tabsetPanel(
-             tabPanel('Figur',
-                      plotOutput("fordelinger", height = 'auto'),
-                      downloadButton('LastNedFigFord', label='Velg format (til venstre) og last ned figur')
-             ),
-             tabPanel('Tabell',
-			  uiOutput("tittelFord"),
-                    br(),
-                    tableOutput('fordelingTab'),
-                    br(),
-                    downloadButton(outputId = 'lastNed_tabFord', label='Last ned tabell')
-                    )
-          ))#main
-          ),
+             tabsetPanel(
+               tabPanel('Figur',
+                        plotOutput("fordelinger", height = 'auto'),
+                        downloadButton('LastNedFigFord', label='Velg format (til venstre) og last ned figur')
+               ),
+               tabPanel('Tabell',
+                        uiOutput("tittelFord"),
+                        br(),
+                        tableOutput('fordelingTab'),
+                        br(),
+                        downloadButton(outputId = 'lastNed_tabFord', label='Last ned tabell')
+               )
+             ))#main
+  ),
 
   #------------ Andeler-----------------
   tabPanel(p("Andeler", title= 'Alder, arbeidsstatus, ASA-grad, komorbiditet, komplikasjoner, fornøydhet,
@@ -359,164 +346,165 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                 søkt erstatning/uføretrygd, utdanning'),
            h2("Sykehusvise andeler og utvikling over tid for valgt variabel", align='center'),
            sidebarPanel(width = 3,
-             selectInput(inputId = "valgtVarAndel", label="Velg variabel",
-                         choices = c('Alder' = 'Alder',
-                                     'Andre sykdommer' = 'AndreRelSykdommer',
-                                     'Antibiotika' = 'Antibiotika',
-                                     'Arbeidstaus før operasjon' = 'ArbeidstausPreOp',
-                                     'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
-                                     'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
-                                     'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
-                                     'Fornøyd med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
-                                     'Fornøyd med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
-                                     'Forverring, 3 mnd. etter' = 'Verre3mnd',
-                                     'Forverring, 12 mnd. etter' = 'Verre12mnd',
-                                     'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
-                                     'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
-                                     'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
-                                     'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
-                                     'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
-                                     'Misfornøyd med behandlinga, 3 mnd.' = 'Misfor3mnd',
-                                     'Misfornøyd med behandlinga, 12 mnd.' = 'Misfor12mnd',
-                                     'NDIendring over 35%, 12 mnd. etter' = 'NDIendr12mnd35pst',
-                                     'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
-                                     'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
-                                     'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
-                                     'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
-                                     'Registreringsforsinkelse' = 'regForsinkelse',
-                                     'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
-                                     'Smertestillende, preoperativt' = 'SmertestillPreOp',
-                                     'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
-                                     'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
-                                     'Søkt erstatning før operasjon' = 'ErstatningPreOp',
-                                     'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
-                                     'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
-                                     'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
-                                     'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
-                                     'Utdanning' = 'Utdanning'),
-                         selected = 'regForsinkelse'
-             ),
-             selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet (kun for utvikling over tid)',
-                         choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
-             ),
-             selectInput(inputId = "tidsenhetAndelTid", label="Velg tidsenhet (kun for utvikling over tid)",
-                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                         'Kvartal'='Kvartal', 'Måned'='Mnd'))),
-             dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
-                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
-             selectInput(inputId = "erMannAndel", label="Kjønn",
-                         choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
-             ),
-             sliderInput(inputId="alderAndel", label = "Alder", min = 0,
-                         max = 110, value = c(0, 110)
-             ),
-             selectInput(inputId = "inngrepAndel", label="Inngrepstype",
-                         choices = inngrepValg),
-             selectInput(inputId = "myelopatiAndel", label="Myelopati",
-                         choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-             selectInput(inputId = "fremBakAndel", label="Tilgang ",
-                         choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-             selectInput(inputId = "bildeformatAndel",
-                         label = "Velg format for nedlasting av figur",
-                         choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
-             br()
-             #p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
+                        selectInput(inputId = "valgtVarAndel", label="Velg variabel",
+                                    choices = c('Alder' = 'Alder',
+                                                'Andre sykdommer' = 'AndreRelSykdommer',
+                                                'Antibiotika' = 'Antibiotika',
+                                                'Arbeidstaus før operasjon' = 'ArbeidstausPreOp',
+                                                'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
+                                                'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
+                                                'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
+                                                'Fornøyd med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
+                                                'Fornøyd med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
+                                                'Forverring, 3 mnd. etter' = 'Verre3mnd',
+                                                'Forverring, 12 mnd. etter' = 'Verre12mnd',
+                                                'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
+                                                'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
+                                                'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
+                                                'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
+                                                'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
+                                                'Misfornøyd med behandlinga, 3 mnd.' = 'Misfor3mnd',
+                                                'Misfornøyd med behandlinga, 12 mnd.' = 'Misfor12mnd',
+                                                'NDIendring over 35%, 12 mnd. etter' = 'NDIendr12mnd35pst',
+                                                'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
+                                                'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
+                                                'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
+                                                'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
+                                                'Registreringsforsinkelse' = 'regForsinkelse',
+                                                'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
+                                                'Smertestillende, preoperativt' = 'SmertestillPreOp',
+                                                'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
+                                                'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                                                'Søkt erstatning før operasjon' = 'ErstatningPreOp',
+                                                'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
+                                                'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
+                                                'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
+                                                'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
+                                                'Utdanning' = 'Utdanning'),
+                                    selected = 'regForsinkelse'
+                        ),
+                        selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet (kun for utvikling over tid)',
+                                    choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
+                        ),
+                        selectInput(inputId = "tidsenhetAndelTid", label="Velg tidsenhet (kun for utvikling over tid)",
+                                    choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                                    'Kvartal'='Kvartal', 'Måned'='Mnd'))),
+                        dateRangeInput(inputId = 'datovalgAndel', start = startDato, end = Sys.Date(),
+                                       label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                        selectInput(inputId = "erMannAndel", label="Kjønn",
+                                    choices = c("Begge"=2, "Menn"=1, "Kvinner"=0)
+                        ),
+                        sliderInput(inputId="alderAndel", label = "Alder", min = 0,
+                                    max = 110, value = c(0, 110)
+                        ),
+                        selectInput(inputId = "inngrepAndel", label="Inngrepstype",
+                                    choices = inngrepValg),
+                        selectInput(inputId = "myelopatiAndel", label="Myelopati",
+                                    choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
+                        selectInput(inputId = "fremBakAndel", label="Tilgang ",
+                                    choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+                        selectInput(inputId = "bildeformatAndel",
+                                    label = "Velg format for nedlasting av figur",
+                                    choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
+                        br()
+                        #p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
 
-  ), #sidebarPanel/kolonna til venstre
+           ), #sidebarPanel/kolonna til venstre
 
-  mainPanel(
-    h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
+           mainPanel(
+             h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Der kan man også gjøre ulike filtreringer."),
-    tabsetPanel(
-      tabPanel("Figurer",
-               helpText('Høyreklikk på figuren for å laste den ned'),
-               br(),
-               h3(em("Utvikling over tid")),
-               plotOutput("andelTid", height = 'auto'),
-               downloadButton('LastNedFigAndelTid', label='Velg format (til venstre) og last ned figur'),
-               br(),
-               h3(em("Sykehusvise resultater")),
-               plotOutput("andelerGrVar", height='auto'),
-               downloadButton('LastNedFigAndelGrVar', label='Velg format (til venstre) og last ned figur')
-      ),
-      tabPanel("Tabeller",
-               uiOutput("tittelAndel"),
-               br(),
-               #fluidRow(
-               column(width = 3,
-                      h3("Sykehusvise resultater"),
-                      tableOutput("andelerGrVarTab"),
-                      br(),
-                      downloadButton(outputId = 'lastNed_tabAndelGrVar', label='Last ned tabell')),
-               column(width = 1),
-               column(width = 5,
-                      h3("Utvikling over tid"),
-                      tableOutput("andelTidTab"),
-                      br(),
-                      downloadButton(outputId = 'lastNed_tabAndelTid', label='Last ned tabell'))
-               #DT::DTOutput("andelerGrVarTab")
-      ))
-  ) #mainPanel
-), #tab, Andeler
-  #-------------------Sentralmål (gjsn./median)---------------------------
+             tabsetPanel(
+               tabPanel("Figurer",
+                        helpText('Høyreklikk på figuren for å laste den ned'),
+                        br(),
+                        h3(em("Utvikling over tid")),
+                        plotOutput("andelTid", height = 'auto'),
+                        downloadButton('LastNedFigAndelTid', label='Velg format (til venstre) og last ned figur'),
+                        br(),
+                        h3(em("Sykehusvise resultater")),
+                        plotOutput("andelerGrVar", height='auto'),
+                        downloadButton('LastNedFigAndelGrVar', label='Velg format (til venstre) og last ned figur')
+               ),
+               tabPanel("Tabeller",
+                        uiOutput("tittelAndel"),
+                        br(),
+                        #fluidRow(
+                        column(width = 3,
+                               h3("Sykehusvise resultater"),
+                               tableOutput("andelerGrVarTab"),
+                               br(),
+                               downloadButton(outputId = 'lastNed_tabAndelGrVar', label='Last ned tabell')),
+                        column(width = 1),
+                        column(width = 5,
+                               h3("Utvikling over tid"),
+                               tableOutput("andelTidTab"),
+                               br(),
+                               downloadButton(outputId = 'lastNed_tabAndelTid', label='Last ned tabell'))
+                        #DT::DTOutput("andelerGrVarTab")
+               ))
+           ) #mainPanel
+  ), #tab, Andeler
+
+#-------------------Sentralmål (gjsn./median)---------------------------
   tabPanel(p("Gjennomsnitt", title='Alder, EMS, EQ5D, knivtid, liggetid, NDI, NSR'),
            h2("Sykehusvise gjennomsnitt/median og utvikling over tid for valgt variabel", align='center'),
            sidebarPanel(width = 3,
-             selectInput(inputId = "valgtVarGjsn", label="Velg variabel",
-                         choices = c('Alder' = 'Alder',
-                                     'EMS før operasjon, myelopatipasienter' = 'EMSscorePreOp',
-                                     'EMS-forbedring, myelopati, 12 mnd.' = 'EMSendr12mnd',
-                                     'EMS-forbedring, myelopati, 3 mnd.' = 'EMSendr3mnd',
-                                     'EQ5D før operasjon' = 'Eq5DScorePreOp',
-                                     'EQ5D-forbedring, 12 mnd.' = 'EQ5Dendr12mnd',
-                                     'EQ5D-Forbedring, 3 mnd.' = 'EQ5Dendr3mnd',
-                                     'Liggetid etter operasjon' = 'LiggeDognPostop',
-                                     'Liggetid, totalt' = 'LiggeDognTotalt',
-                                     'NDI før operasjon' = 'NDIscorePreOp',
-                                     'NDI-forbedring, 3 mnd.' = 'NDIendr3mnd',
-                                     'NDI-forbedring, 12 mnd.' = 'NDIendr12mnd',
-                                     'NSR, arm før operasjon' = 'NRSsmerteArmPreOp',
-                                     'NSR, arm, endring 3 mnd.' = 'NRSsmerteArmEndr3mnd',
-                                     'NSR, arm, endring 12 mnd.' = 'NRSsmerteArmEndr12mnd',
-                                     'NSR, nakke før operasjon' = 'NRSsmerteNakkePreOp',
-                                     'NSR, nakke, endring 3 mnd.' = 'NRSsmerteNakkeEndr3mnd',
-                                     'NSR, nakke, endring 12 mnd.' = 'NRSsmerteNakkeEndr12mnd',
-                                     'Total knivtid' = 'KnivtidTotalMin'
-                         )
-             ),
-             selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet (kun for utvikling over tid)',
-                         choices = enhetsUtvalg
-             ),
-             selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet (kun for utvikling over tid)",
-                         choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
-                                         'Kvartal'='Kvartal', 'Måned'='Mnd'))),
-             dateRangeInput(inputId = 'datovalgGjsn', start = startDato, end = Sys.Date(),
-                            label = "Tidsperiode", separator="t.o.m.", language="nb"),
-             selectInput(inputId = "erMannGjsn", label="Kjønn",
-                         choices = kjonn
-             ),
-             sliderInput(inputId="alderGjsn", label = "Alder", min = 0,
-                         max = 110, value = c(0, 110)
-             ),
-             selectInput(inputId = "inngrepGjsn", label="Inngrepstype",
-                         choices = inngrepValg),
-             selectInput(inputId = "myelopatiGjsn", label="Myelopati",
-                         choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
-             selectInput(inputId = "fremBakGjsn", label="Tilgang ",
-                         choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
-             selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
-                         choices = c("Gjennomsnitt"='Gjsn', "Median"='Med')),
-             selectInput(inputId = "bildeformatGjsn",
-                         label = "Velg format for nedlasting av figur",
-                         choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
-             br()
-             #p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
+                        selectInput(inputId = "valgtVarGjsn", label="Velg variabel",
+                                    choices = c('Alder' = 'Alder',
+                                                'EMS før operasjon, myelopatipasienter' = 'EMSscorePreOp',
+                                                'EMS-forbedring, myelopati, 12 mnd.' = 'EMSendr12mnd',
+                                                'EMS-forbedring, myelopati, 3 mnd.' = 'EMSendr3mnd',
+                                                'EQ5D før operasjon' = 'Eq5DScorePreOp',
+                                                'EQ5D-forbedring, 12 mnd.' = 'EQ5Dendr12mnd',
+                                                'EQ5D-Forbedring, 3 mnd.' = 'EQ5Dendr3mnd',
+                                                'Liggetid etter operasjon' = 'LiggeDognPostop',
+                                                'Liggetid, totalt' = 'LiggeDognTotalt',
+                                                'NDI før operasjon' = 'NDIscorePreOp',
+                                                'NDI-forbedring, 3 mnd.' = 'NDIendr3mnd',
+                                                'NDI-forbedring, 12 mnd.' = 'NDIendr12mnd',
+                                                'NSR, arm før operasjon' = 'NRSsmerteArmPreOp',
+                                                'NSR, arm, endring 3 mnd.' = 'NRSsmerteArmEndr3mnd',
+                                                'NSR, arm, endring 12 mnd.' = 'NRSsmerteArmEndr12mnd',
+                                                'NSR, nakke før operasjon' = 'NRSsmerteNakkePreOp',
+                                                'NSR, nakke, endring 3 mnd.' = 'NRSsmerteNakkeEndr3mnd',
+                                                'NSR, nakke, endring 12 mnd.' = 'NRSsmerteNakkeEndr12mnd',
+                                                'Total knivtid' = 'KnivtidTotalMin'
+                                    )
+                        ),
+                        selectInput(inputId = 'enhetsUtvalgGjsn', label='Egen enhet og/eller landet (kun for utvikling over tid)',
+                                    choices = enhetsUtvalg
+                        ),
+                        selectInput(inputId = "tidsenhetGjsn", label="Velg tidsenhet (kun for utvikling over tid)",
+                                    choices = rev(c('År'= 'Aar', 'Halvår' = 'Halvaar',
+                                                    'Kvartal'='Kvartal', 'Måned'='Mnd'))),
+                        dateRangeInput(inputId = 'datovalgGjsn', start = startDato, end = Sys.Date(),
+                                       label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                        selectInput(inputId = "erMannGjsn", label="Kjønn",
+                                    choices = kjonn
+                        ),
+                        sliderInput(inputId="alderGjsn", label = "Alder", min = 0,
+                                    max = 110, value = c(0, 110)
+                        ),
+                        selectInput(inputId = "inngrepGjsn", label="Inngrepstype",
+                                    choices = inngrepValg),
+                        selectInput(inputId = "myelopatiGjsn", label="Myelopati",
+                                    choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
+                        selectInput(inputId = "fremBakGjsn", label="Tilgang ",
+                                    choices = c("Alle"=0, "Fremre"=1, "Bakre"=2)),
+                        selectInput(inputId = "sentralmaal", label="Velg gjennomsnitt/median ",
+                                    choices = c("Gjennomsnitt"='Gjsn', "Median"='Med')),
+                        selectInput(inputId = "bildeformatGjsn",
+                                    label = "Velg format for nedlasting av figur",
+                                    choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg')),
+                        br()
+                        #p(em('Følgende utvalg gjelder bare figuren som viser utvikling over tid')),
 
            ),
            mainPanel(
-           h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
+             h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                   til venstre. Man kan også gjøre ulike filtreringer."),
-           br(),
+             br(),
              tabsetPanel(
                tabPanel("Figurer",
                         plotOutput("gjsnTid", height = 'auto'),
@@ -540,27 +528,24 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                downloadButton(outputId = 'lastNed_gjsnTidTab', label='Last ned tabell')) )
              )
            )
-), #tab, gjsn
+  ), #tab, gjsn
 
-#------------------Abonnement-------------------------
+  #------------------Abonnement-------------------------
 
-tabPanel(p("Abonnement",
-           title='Bestill automatisk utsending av rapporter på e-post'),
-         value = 'Abonnement',
+  tabPanel(p("Abonnement",
+             title='Bestill automatisk utsending av rapporter på e-post'),
+           value = 'Abonnement',
 
-         sidebarLayout(
-           sidebarPanel(
-             rapbase::autoReportInput("NakkeAbb")
-           ),
-           shiny::mainPanel(
-             rapbase::autoReportUI("NakkeAbb")
+           sidebarLayout(
+             sidebarPanel(
+               rapbase::autoReportInput("NakkeAbb")
+             ),
+             shiny::mainPanel(
+               rapbase::autoReportUI("NakkeAbb")
+             )
            )
-         )
-) #tab abonnement
-
-
+  ) #tab abonnement
 ) #fluidpage, dvs. alt som vises på skjermen
-
 
 
 
@@ -626,6 +611,7 @@ server <- function(input, output,session) {
                    Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
                    Aar = paste0(t1, 'siste 5 år til og med ', valgtAar, '<br />'))
     ))})
+
   #RegData som har tilknyttede skjema av ulik type.
   AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
                                   skjemastatus=as.numeric(input$skjemastatus))
@@ -635,48 +621,6 @@ server <- function(input, output,session) {
     filename = function(){'tabAntSkjema.csv'},
     content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, fileEncoding = 'latin1', na = '')})
     })
-
-
-  #Velge ferdigstillelse og tidsintervall.
-  # output$tabAntSkjema <- renderTable({})
-  #
-  #   output$tabAntSkjemaGml <- renderTable({
-  #   SkjemaDataFerdig <- SkjemaData[SkjemaData$SkjemaStatus ==1, ]
-  #   #Flyttes til overvåkning
-  #   datoFra12 <- as.Date(paste0(as.numeric(substr(input$datoTil,1,4))-1, substr(input$datoTil,5,8), '01'))
-  #
-  #   #datoFra12 <- '2017-03-01'
-  #   SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(input$datoTil)
-  #                                       & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
-  #   # SkjemaData12mnd <- SkjemaDataFerdig[SkjemaDataFerdig$InnDato < as.POSIXlt(Sys.Date())
-  #   #                                     & SkjemaDataFerdig$InnDato > as.POSIXlt(datoFra12), ]
-  #   LegeSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2*5, 'Sykehusnavn'])
-  #   PasientSkjema <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==1*5, 'Sykehusnavn'])
-  #   Oppf3mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==3*5, 'Sykehusnavn'])
-  #   Oppf12mnd <- table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==4*5, 'Sykehusnavn'])
-  #
-  #   tabAvd12MndNskjemaDum <- cbind(
-  #     Lege = LegeSkjema,
-  #     Pasient = PasientSkjema,
-  #     'Oppf3mnd' = Oppf3mnd,
-  #     'Oppf12mnd' = Oppf12mnd)
-  #
-  #   tabAvd12MndNskjemaDum <- addmargins(tabAvd12MndNskjemaDum, margin=1)
-  #
-  #   tabAvd12MndNskjema <- cbind(
-  #     tabAvd12MndNskjemaDum[ ,1:2],
-  #     'Pasient (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Pasient']/tabAvd12MndNskjemaDum[,'Lege']*100, 1),
-  #     'Oppfølging 3 mnd.' = tabAvd12MndNskjemaDum[ ,3],
-  #     'Oppfølging 3 mnd. (%)' = sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf3mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, '%'),
-  #     'Oppfølging 12 mnd.' = tabAvd12MndNskjemaDum[ ,4],
-  #     'Oppfølging 12 mnd. (%)' =  sprintf('%1.1f', tabAvd12MndNskjemaDum[,'Oppf12mnd']/tabAvd12MndNskjemaDum[,'Lege']*100, 1)
-  #   )
-  #   #sprintf('%1.3f'
-  #   xtable::xtable(tabAvd12MndNskjema,  align = c('l', rep('r', ncol(tabAvd12MndNskjema))),
-  #                  caption= paste0('Tidsperiode: ', as.POSIXlt(datoFra12), 'til', as.POSIXlt(input$datoTil)))
-  # },
-  # rownames = T, align= 'r' #
-  # ) #digits=1,
 
 #--------------Viktigste resultater-------------------------
   output$kvalIndFig1 <- renderPlot({
@@ -723,21 +667,6 @@ server <- function(input, output,session) {
 
 
   #-----------Registeradministrasjon-----------
-  variablePRM <- 'Variabler som skal tas bort for LU-bruker'
-
-  # if (rolle=='SC') {
-  #   observe({
-  #     tabdataTilOffNett <- dataTilOffVisning(RegData=RegData, valgtVar = input$valgtVarRes,
-  #                                         #myelopati=input$myelopatiRes, fremBak = input$fremBakRes,
-  #                                         aar=as.numeric(input$aarRes[1]):as.numeric(input$aarRes[2]),
-  #                                         lagreFil=0)
-  #     output$lastNed_dataTilOffNett <- downloadHandler(
-  #       filename = function(){paste0('dataTilOffNett_',input$valgtVarRes, '.csv')},
-  #       content = function(file, filename){write.csv2(tabdataTilOffNett, file, row.names = F, fileEncoding = 'latin1', na = '')})
-  #   })
-  # }
-
-
   observe({
     tabDblReg <- PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik)
     output$tabDblReg <- renderTable(tabDblReg, digits=0)
@@ -751,39 +680,28 @@ server <- function(input, output,session) {
                FROM ForlopsOversikt'
   RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
 
+  variablePRM <- 'Variabler som skal tas bort for LU-bruker'
 
   observe({
-    # queryAVN <-  paste0('select * from AlleVarNum
-    #                   WHERE OprDato >= \'', input$datovalgRegKtr[1],
-    #                     '\' AND OprDato <= \'', input$datovalgRegKtr[2], '\'')
-    # RegDataAVN <- rapbase::loadRegData(registryName = "nakke",
-    #                                    query = queryAVN)
-    # DataDumpRaa <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
-
     DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
 
-    # DataDump <- dplyr::filter(RegData, #DataAlle,
-    #                             as.Date(OprDato) >= input$datovalgRegKtr[1],
-    #                             as.Date(OprDato) <= input$datovalgRegKtr[2])
     if (rolle =='SC') {
-        valgtResh <- as.numeric(input$velgReshReg)
-        PIDtab <- rapbase::loadRegData(registryName="nakke", query='SELECT * FROM koblingstabell')
-        DataDump <- merge(DataDump, PIDtab, by.x = 'PasientID', by.y = 'ID', all.x = T)
-        ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-          } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
-        tabDataDump <- DataDump[ind,]
-      } else { #Kun SC får laste ned data
-        tabDataDump <-
-          DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
-      } #Tar bort PROM/PREM til egen avdeling
+      valgtResh <- as.numeric(input$velgReshReg)
+      ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
+        } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+      tabDataDump <- DataDump[ind,]
+    } else { #Kun SC får laste ned data
+      tabDataDump <-
+        DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
+    } # Sjekk at PROM/PREM ikke er med for LU-bruker
 
-      output$lastNed_dataDump <- downloadHandler(
-        filename = function(){'dataDumpNakke.csv'},
-        content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
-     })
+    output$lastNed_dataDump <- downloadHandler(
+      filename = function(){'dataDumpNakke.csv'},
+      content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
+  })
 
-     #---Utsendinger---------------
+#---Utsendinger---------------
      orgs <- as.list(sykehusValg)
 
      ## liste med metadata for rapport
@@ -795,8 +713,6 @@ server <- function(input, output,session) {
          paramValues = c('NakkeMndRapp.Rnw', 0)
        )
      )
-     # rnwFil <- 'NakkeMndRapp.Rnw'
-     # abonnementNakke(rnwFil, brukernavn='tullebukk', fulltNavn = 'Lena Luring', reshID=0, datoFra=Sys.Date()-180, datoTil=Sys.Date())
 
      org <- rapbase::autoReportOrgServer("NakkeUts", orgs)
 
