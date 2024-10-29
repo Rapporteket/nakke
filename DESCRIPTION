@@ -14,6 +14,9 @@ Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Depends:
     R (>= 3.5.0),
     rapFigurer
+Remotes:
+    Rapporteket/rapbase@*release,
+    Rapporteket/rapFigurer
 License: GPL-2
 LazyData: TRUE
 Imports:
@@ -21,16 +24,14 @@ Imports:
     kableExtra,
     knitr, 
     lubridate,
+    magrittr,
     rapbase,
     rapFigurer,
+    rlang,
     shiny,
-    shinyalert,
     tidyverse,
     xtable,
     zoo
-Remotes:
-    Rapporteket/rapbase@*release,
-    Rapporteket/rapFigurer
 Suggests:
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
