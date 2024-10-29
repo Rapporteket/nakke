@@ -622,12 +622,17 @@ server <- function(input, output,session) {
     })
 
 #--------------Viktigste resultater-------------------------
-  output$kvalIndFig1 <- renderPlot({
+ observe({
+   myelopatiKval <-
+     ifelse(input$valgtVarKvalInd %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99)
+  fremBakKval <-
+     ifelse(input$valgtVarKvalInd %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'), 1, 0)
 
+  output$kvalIndFig1 <- renderPlot({
     NakkeFigAndelTid(RegData=RegData, reshID = reshID,
                      valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                     #myelopati = as.numeric(input$myelopatiKvalInd),
-                     #fremBak = as.numeric(input$fremBakKvalInd),
+                     myelopati = myelopatiKval,
+                     fremBak = fremBakKval,
                      enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd),
                      tidsenhet = input$tidsenhetKvalInd,
                      session = session)
@@ -640,6 +645,8 @@ server <- function(input, output,session) {
       content = function(file){
         NakkeFigAndelTid(RegData=RegData, reshID = reshID,
                          valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
+                         myelopati = myelopatiKval,
+                         fremBak = fremBakKval,
                          enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd),
                          tidsenhet = input$tidsenhetKvalInd,
                          session = session,
@@ -648,8 +655,10 @@ server <- function(input, output,session) {
 
   output$kvalIndFig2 <- renderPlot(
     NakkeFigAndelerGrVar(RegData=RegData,
-                         valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
-                         ,session=session)
+                         valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
+                         myelopati = myelopatiKval,
+                         fremBak = fremBakKval,
+                         session=session)
     , height=700, width=600 #height=600, width=500
   )
 
@@ -659,12 +668,14 @@ server <- function(input, output,session) {
     },
     content = function(file){
       NakkeFigAndelerGrVar(RegData=RegData,
-                           valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd
-                           ,session=session,
+                           valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
+                           myelopati = myelopatiKval,
+                           fremBak = fremBakKval,
+                           session=session,
                        outfile = file)
      })
 
-
+ })
   #-----------Registeradministrasjon-----------
   observe({
     tabDblReg <- PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik)
