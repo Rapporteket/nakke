@@ -48,8 +48,6 @@ if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
            FROM SkjemaOversikt
            WHERE HovedDato >= "2014-01-01" ')
 
-  #kb <- les_oqr_kb(system.file("SmerteReg_klokeboken.05.10.2017.csv", package = "smertereg"))
-
   SkjemaData <- rapbase::loadRegData(registryName="nakke", query=querySD, dbType="mysql")
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
@@ -66,15 +64,11 @@ datoFra24mnd <- as.Date(paste0(1900+dato$year-1-ifelse(dato$mon==11, 0, 1),'-', 
 datoFra12mnd <- as.Date(paste0(1900+dato$year-ifelse(dato$mon==11, 0, 1),'-',
                                ifelse(dato$mon==11, 1, dato$mon+1), '-', '01'))
 RegData <- NakkePreprosess(RegData = RegData)
-#RegDataAndelTid <- RegData[RegData$Aar > as.POSIXlt(datoFra), ]
 RegData24mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra24mnd), ]
 RegData12mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra12mnd), ]
 AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
-# Nye variable:
-RegData$Mnd <- RegData$MndNum #RegData$InnDato$mon +1
-#RegData$Kvartal <- ceiling(RegData$Mnd/3)
-#RegData$Halvaar <- ceiling(RegData$Mnd/6)
-#aarFra <- paste0(1900+as.POSIXlt(Sys.Date())$year-5, '-01-01')
+# Nye variabler:
+RegData$Mnd <- RegData$MndNum
 SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
 
 #SkjemaRekkeflg #5-pasientskjema, 10-legeskjema, 15- Oppf. 3mnd, 20 - Oppf. 12mnd
@@ -86,11 +80,6 @@ SkjemaData12mnd <- SkjemaData[SkjemaData$InnDato > as.POSIXlt(datoFra12mnd), ]
 
 enhetsUtvalg <- 1
 shtxt <- ifelse(reshID == 0, 'Hele landet', as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
-  # switch(as.character(enhetsUtvalg),
-  #               '0' = 'Hele landet',
-  #               '1' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]),
-  #               '2' = as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
-
 tidsenhRapp <- 'Halvaar'
 
 skalShFig <- 0.32
