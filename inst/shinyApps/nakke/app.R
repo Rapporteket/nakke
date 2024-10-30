@@ -1,5 +1,6 @@
 
 library(nakke)
+library(magrittr)
 
 
 context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
