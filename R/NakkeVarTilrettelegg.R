@@ -479,7 +479,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
 	}
 
 
-if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
+if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, AndelTid
     #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
     RegData$NDIEndr <- 100*(RegData$NDIscorePreOp - RegData$NDIscore12mnd)/RegData$NDIscorePreOp
     indVar <- which(is.finite(RegData$NDIEndr))
@@ -489,6 +489,9 @@ if (valgtVar=='NDIendr12mnd35pst') { #AndelGrVar, AndelTid
     tittel <- 'Minst 35% forbedring av NDI, 12 mnd.'
 	varTxt <- 'med NDI>35%'
 	sortAvtagende <- TRUE
+	# if (valgtVar == 'NDIendr12mnd35pstKI'){
+	#   KImaalGrenser <- rev(c(0,40,70,100)) #c(0,70,100)
+	# }
 }
   # if (valgtVar=='NDIendr12mnd35pstKI') { #AndelGrVar, AndelTid
   #   #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.

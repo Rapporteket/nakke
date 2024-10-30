@@ -7,6 +7,19 @@
 #Do not set options(encoding) $encoding: [1] "native.enc". Tester
 #test
 
+
+# Uttrekk med alle på DEG_NAKKE med PID + Operasjonsdato + string variabelen tilknyttet OprIndikAnnet (Annet spesifiser…..)
+# +  stringvariablen tilknyttet RtgFunnANNET (Annet spesifiser…..).
+
+
+RegDataAVN <- rapbase::loadRegData(registryName = "nakke", dbType = "mysql",
+                                   query = 'select * from AlleVarNum')
+#OprIndikAnnet - Ingen med "Spesifiser" e.l. i navnet.
+
+#DataNakke <- RegDataAVN[ ,c('PasientID', 'OprDato', 'OprIndikAnnet', 'RtgFunnANNET')]
+table(DataNakke$RtgFunnANNET, useNA = 'a')
+
+
 #Dobbeltregistrering
 library(magrittr)
 RegDataRaa <- NakkeRegDataSQL()

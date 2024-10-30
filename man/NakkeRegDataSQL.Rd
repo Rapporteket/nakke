@@ -4,12 +4,14 @@
 \alias{NakkeRegDataSQL}
 \title{Henter data registrert for Degenerativ Nakke}
 \usage{
-NakkeRegDataSQL(datoFra = "2012-01-01", datoTil = Sys.Date())
+NakkeRegDataSQL(datoFra = "2012-01-01", datoTil = Sys.Date(), medProm = 1)
 }
 \arguments{
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}
 
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
+
+\item{medProm}{Ha med prom-skjema 0-nei, 1-ja (standard)}
 }
 \value{
 Henter dataramma RegData for Degenerativ Nakke

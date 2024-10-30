@@ -23,13 +23,7 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
       #                 to=as.Date('2018-09-01'), by='month'), format = '%b%y')
 
       tidtxt <- switch(tidsenhet,
-                       #Mnd = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
-                        #           sprintf('%02.0f', RegData$Mnd[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)]), sep='.'),
-                       #Mnd = RegData$MndAar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)],
-                       # Mnd = format.Date(seq(from=min(as.Date(RegData$InnDato), na.rm = T),
-                       #                       to=max(as.Date(RegData$InnDato), na.rm = T), by='month'), format = '%b%y'),
-                       #Henter fullt månedsnavn og forkorter etterpå.
-                       Mnd = format.Date(seq(from=lubridate::floor_date(as.Date(min(as.Date(RegData$InnDato), na.rm = T)), 'month'),
+                        Mnd = format.Date(seq(from=lubridate::floor_date(as.Date(min(as.Date(RegData$InnDato), na.rm = T)), 'month'),
                                          to=max(as.Date(RegData$InnDato), na.rm = T), by='month'), format = '%B%y'), #Hele måneden
                        Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
                                        sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhetSort, na.rm = T), RegData$TidsEnhetSort)]), sep='-'),
@@ -41,12 +35,7 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
       if (tidsenhet=='Mnd') {tidtxt <- paste0(substr(tidtxt, 1,3), ' '[tab], substrRight(tidtxt, 2))}
       #RegData$TidsEnhetSort <- factor(RegData$TidsEnhetSort, levels=1:max(RegData$TidsEnhetSort), labels=tidtxt)
       RegData$TidsEnhet <- factor(RegData$TidsEnhetSort, levels=1:max(RegData$TidsEnhetSort), labels=tidtxt)
-      #RegData$TidsEnhet <- factor(RegData$TidsEnhetSort, ordered = TRUE, labels=tidtxt)
-      #a <- factor(c(1:10,3,2,4,3,7,9,4), levels=1:11, labels = letters[1:11])
-#table(a)
 
-      #RegData$TidsEnhet <- RegData$TidsEnhetSort
-      #levels(RegData$TidsEnhet) <- tidtxt
       UtData <- list('RegData'=RegData, 'tidtxt'=tidtxt)
       return(UtData)
 }
@@ -61,7 +50,6 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
       #ForlopsID <- RegData$ForlopsID
   if (!is.na(varBort[1])) {
       RegData <- RegData[,-which(names(RegData) %in% varBort)]}
-      #RegData <- RegData[sample(1:dim(RegData)[1], antObs, replace = T),]
       sykehus <- cbind(ShNavn=paste('Sykehus', LETTERS[1:antSh]),
                        ReshId=1:antSh)
       fordelingPasienter <- sample(1:10,antSh, replace = TRUE)
@@ -102,7 +90,8 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aar=0, #datoFra = '20
 
   kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
   myelopati <- ifelse(valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99)
-  fremBak <- ifelse(valgtVar == 'NDIendr12mnd35pst', 1, 0)
+  fremBak <- ifelse(valgtVar == c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'), 1, 0)
+    #KomplStemme3mnd og KomplSvelging3mnd - blir også filtrert på fremre i tilrettelegging
 
   filUt <- paste0('Nakke', ifelse(filUt=='dummy',  valgtVar, filUt), '.csv')
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'andelGrVar')
@@ -251,7 +240,7 @@ delTekst <- function(x, len) #x -tekststreng/vektor av tekststrenger, len - Leng
 #' @param RegData dataramme fra nakkeregisteret
 #' @param tidssavik - maks tidsavvik (dager) mellom to påfølgende registreringer som sjekkes
 #'
-#' @return
+#' @return Alle registreringer for pasienter med potensielle dobbeltregistreringer
 #' @export
 PasMdblReg <- function(RegData, tidsavvik=30){
 
