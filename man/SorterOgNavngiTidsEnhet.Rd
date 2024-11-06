@@ -2,9 +2,7 @@
 % Please edit documentation in R/NakkeHjelpefunksjoner.R
 \name{SorterOgNavngiTidsEnhet}
 \alias{SorterOgNavngiTidsEnhet}
-\title{Hjelpefunksjoner for Nakke
-Detaljer. kommer senere
-Fil som inneholder hjelpefunksjoner.}
+\title{Tilrettelegge tidsenhetvariabel. Legger til tidsenhetene Aar, Halvaar, Mnd og Kvartal}
 \usage{
 SorterOgNavngiTidsEnhet(RegData, tidsenhet = "Aar", tab = 0)
 }

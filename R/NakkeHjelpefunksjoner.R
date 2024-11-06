@@ -1,7 +1,17 @@
-#' Hjelpefunksjoner for Nakke
-#' Detaljer. kommer senere
-#' Fil som inneholder hjelpefunksjoner.
-#'
+# Hjelpefunksjoner for Nakke
+
+#' Kjør Shiny Application
+#' @return Et objekt som representerer den NGERapp'en
+#' @export
+
+kjor_NakkeApp <- function() {
+
+  app <- shiny::shinyApp(ui = nakke::ui_nakke, server = nakke::server_nakke)
+
+  return(app)
+}
+
+
 #'  Tilrettelegge tidsenhetvariabel. Legger til tidsenhetene Aar, Halvaar, Mnd og Kvartal
 #' @param RegData dataramme
 #' @param tidsenhet valgt tidsenhet for visninga
