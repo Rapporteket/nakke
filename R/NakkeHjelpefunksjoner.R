@@ -90,7 +90,7 @@ dataTilOffVisning <- function(RegData = RegData, valgtVar, aar=0, #datoFra = '20
 
   kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
   myelopati <- ifelse(valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99)
-  fremBak <- ifelse(valgtVar == c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'), 1, 0)
+  fremBak <- ifelse(valgtVar %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'), 1, 0)
     #KomplStemme3mnd og KomplSvelging3mnd - blir også filtrert på fremre i tilrettelegging
 
   filUt <- paste0('Nakke', ifelse(filUt=='dummy',  valgtVar, filUt), '.csv')

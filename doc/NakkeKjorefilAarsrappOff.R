@@ -159,17 +159,15 @@ Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1),
 
 #Nakke
 library(nakke)
-library(xtable)
+#library(xtable)
 setwd('~/Aarsrappresultater/NETTsider')
-aarTilVisning <- 2012:2024
+  aarTilVisning <- 2012:2024
 NakkeDataRaa <- NakkeRegDataSQL() #Tar også med inneværende år
 NakkeData <- NakkePreprosess(NakkeDataRaa)
 
 #Sjekk om det har kommet nye avdelinger:
 #ny <- setdiff(sort(unique(NakkeData$ReshId)), sort(names(nyID)))
 #NakkeData$ShNavn[match(ny, NakkeData$ReshId)]
-#NakkeData <- NakkeData[-which(NakkeData$ShNavn == ''), ] #Juni-23: Fjerner ei reg fra 24.feb.-23 på resh uten shnavn
-#101627
 #NB: Aktuelle utvalg for fremBak, myelopati osv. er lagt inn i funksjonen (dataTilOffVisning)
 
 #Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
