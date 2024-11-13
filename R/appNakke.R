@@ -1083,9 +1083,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     antDes <- ifelse(input$valgtVarGjsn %in%
                        c('Eq5DScorePreOp', 'EQ5Dendr3mnd', 'EQ5Dendr12mnd'), 2, 1)
     antDesFormat <- paste0("%.", antDes, "f")
-    tabGjsnGrVar <- cbind(Antall = UtDataGjsnGrVar$Ngr, #$Hoved,
-                          Sentralmål = sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$Hoved),
-                          Konf.int. = paste0(sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIned), ' - ',
+    tabGjsnGrVar <- cbind('Antall' = UtDataGjsnGrVar$Ngr, #$Hoved,
+                          'Sentralmål' = sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$Hoved),
+                          'Konf.int.' = paste0(sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIned), ' - ',
                                              sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIopp)))
     colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
 
