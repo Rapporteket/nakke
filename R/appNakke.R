@@ -1150,8 +1150,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      session = session))
 
     observe({
-      tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
-      grtxt <-UtDataGjsnTid$grtxt
+      tabGjsnTid <- t(UtDataGjsnTid()$AggVerdier)
+      grtxt <-UtDataGjsnTid()$grtxt
       if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
         grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
       rownames(tabGjsnTid) <- grtxt
@@ -1161,13 +1161,13 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
 
       kolGruppering <- c(1,3,3)
-      names(kolGruppering) <- c(' ', UtDataGjsnTid$hovedgrTxt, UtDataGjsnTid$smltxt)
+      names(kolGruppering) <- c(' ', UtDataGjsnTid()$hovedgrTxt, UtDataGjsnTid()$smltxt)
       output$gjsnTidTab <- function() { #kableExtra::kable
         kableExtra::kable(tabGjsnTid, format = 'html'
                           , full_width=F
                           , digits = antDes #c(0,1,1,1)[1:antKol]
         ) %>%
-          kableExtra::add_header_above(kolGruppering[1:(2+UtDataGjsnTid$medSml)]) %>%
+          kableExtra::add_header_above(kolGruppering[1:(2+UtDataGjsnTid()$medSml)]) %>%
           kableExtra::column_spec(column = 1, width_min = '7em') %>%
           kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
           kableExtra::row_spec(0, bold = T)
