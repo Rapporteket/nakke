@@ -622,7 +622,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     output$tabAntOpphSh <- renderTable(tabAntOpphSh, rownames = T, digits=0, spacing="xs")
     output$lastNed_tabAntOpphSh <- downloadHandler(
       filename = function(){'tabAntOpphSh.csv'},
-      content = function(file, filename){write.csv2(tabAntOpphSh, file, row.names = T, fileEncoding = 'latin1', na = '')})
+      content = function(file, filename){write.csv2(tabAntOpphSh, file,
+                                                    row.names = T, fileEncoding = 'latin1', na = '')})
+  })
 
     output$undertittelReg <- renderUI({
       br()
@@ -634,27 +636,34 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       ))})
 
     #RegData som har tilknyttede skjema av ulik type.
-    AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData, datoFra = input$datovalgReg[1], datoTil=input$datovalgReg[2],
+    AntSkjemaAvHver <- reactive(
+      tabAntSkjema(SkjemaOversikt=SkjemaData,
+                                    datoFra = input$datovalgReg[1],
+                                    datoTil=input$datovalgReg[2],
                                     skjemastatus=as.numeric(input$skjemastatus))
-    output$tabAntSkjema <- renderTable(AntSkjemaAvHver
+    )
+    output$tabAntSkjema <- renderTable(AntSkjemaAvHver()
                                        ,rownames = T, digits=0, spacing="xs" )
     output$lastNed_tabAntSkjema <- downloadHandler(
       filename = function(){'tabAntSkjema.csv'},
-      content = function(file, filename){write.csv2(AntSkjemaAvHver, file, row.names = T, fileEncoding = 'latin1', na = '')})
-  })
+      content = function(file, filename){write.csv2(AntSkjemaAvHver(), file,
+                                                    row.names = T, fileEncoding = 'latin1', na = '')})
+
 
   #--------------Viktigste resultater-------------------------
-  observe({
+  #observe({
     myelopatiKval <-
-      ifelse(input$valgtVarKvalInd %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99)
+      render(ifelse(input$valgtVarKvalInd %in%
+               c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99))
     fremBakKval <-
-      ifelse(input$valgtVarKvalInd %in% c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'), 1, 0)
+      render(ifelse(input$valgtVarKvalInd %in%
+               c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'), 1, 0))
 
     output$kvalIndFig1 <- renderPlot({
       NakkeFigAndelTid(RegData=RegData, reshID = reshID,
                        valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                       myelopati = myelopatiKval,
-                       fremBak = fremBakKval,
+                       myelopati = myelopatiKval(),
+                       fremBak = fremBakKval(),
                        enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd),
                        tidsenhet = input$tidsenhetKvalInd,
                        session = session)
@@ -666,9 +675,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       },
       content = function(file){
         NakkeFigAndelTid(RegData=RegData, reshID = reshID,
-                         valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                         myelopati = myelopatiKval,
-                         fremBak = fremBakKval,
+                         valgtVar=input$valgtVarKvalInd,
+                         datoFra = input$datoFraKvalInd,
+                         myelopati = myelopatiKval(),
+                         fremBak = fremBakKval(),
                          enhetsUtvalg = as.numeric(input$enhetsUtvalgKvalInd),
                          tidsenhet = input$tidsenhetKvalInd,
                          session = session,
@@ -677,9 +687,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
     output$kvalIndFig2 <- renderPlot(
       NakkeFigAndelerGrVar(RegData=RegData,
-                           valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                           myelopati = myelopatiKval,
-                           fremBak = fremBakKval,
+                           valgtVar=input$valgtVarKvalInd,
+                           datoFra = input$datoFraKvalInd,
+                           myelopati = myelopatiKval(),
+                           fremBak = fremBakKval(),
                            session=session)
       , height=700, width=600 #height=600, width=500
     )
@@ -690,23 +701,24 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       },
       content = function(file){
         NakkeFigAndelerGrVar(RegData=RegData,
-                             valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
-                             myelopati = myelopatiKval,
-                             fremBak = fremBakKval,
+                             valgtVar=input$valgtVarKvalInd,
+                             datoFra = input$datoFraKvalInd,
+                             myelopati = myelopatiKval(),
+                             fremBak = fremBakKval(),
                              session=session,
                              outfile = file)
       })
 
-  })
+ # })
   #-----------Registeradministrasjon-----------
-  observe({
-    tabDblReg <- PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik)
-    output$tabDblReg <- renderTable(tabDblReg, digits=0)
+  #observe({
+    tabDblReg <- reaktive(PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik))
+    output$tabDblReg <- renderTable(tabDblReg(), digits=0)
 
     output$lastNed_tabDblReg <- downloadHandler(
       filename = function(){paste0('MuligeDobbeltReg.csv')},
-      content = function(file, filename){write.csv2(tabDblReg, file, row.names = F, fileEncoding = 'latin1', na = '')})
-  })
+      content = function(file, filename){write.csv2(tabDblReg(), file, row.names = F, fileEncoding = 'latin1', na = '')})
+  #})
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
                FROM ForlopsOversikt'
@@ -718,7 +730,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                 selected = 0,
                 choices = sykehusValg)
-  })
+    })
 
   observe({
     DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
@@ -800,46 +812,45 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                       outfile = file)
     })
 
-  observe({
-    #UtDataFord <-  NakkeFigAndeler(RegData=RegData,  valgtVar=valgtVar, enhetsUtvalg = 1, reshID = 601161)
-    UtDataFord <-  NakkeFigAndeler(RegData=RegData,  valgtVar=input$valgtVar,
-                                   reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                                   datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                                   minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
-                                   erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                                   fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
-                                   session=session)
+  #observe({
+
+  UtDataFord <-  render(NakkeFigAndeler(RegData=RegData,
+                                        valgtVar=input$valgtVar,
+                                        reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
+                                        minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
+                                        erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
+                                        fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
+                                        session=session))
     #Følgende kan være likt for fordelingsfigurer i alle registre:
-    tabFord <- lagTabavFig(UtDataFraFig = UtDataFord) #lagTabavFigAndeler
+    tabFord <- render(lagTabavFig(UtDataFraFig = UtDataFord()))
     output$tittelFord <- renderUI({
       tagList(
-        h3(UtDataFord$tittel),
-        h5(HTML(paste0(UtDataFord$utvalgTxt, '<br />')))
+        h3(UtDataFord()$tittel),
+        h5(HTML(paste0(UtDataFord()$utvalgTxt, '<br />')))
       )}) #, align='center'
-    #output$fordelingTab <- renderTable(tabFord, rownames = T)
 
-    #tittelKolGr <- c(UtDataFord$hovedgrTxt, UtDataFord$smltxt)
     kolGruppering <- c(1,3,3)
-    names(kolGruppering) <- c(' ', UtDataFord$hovedgrTxt, UtDataFord$smltxt)
-    output$fordelingTab <- function() { #gr1=UtDataFord$hovedgrTxt, gr2=UtDataFord$smltxt renderTable(
-      antKol <- ncol(tabFord)
-      kableExtra::kable(tabFord, format = 'html'
+    names(kolGruppering) <- c(' ', UtDataFord()$hovedgrTxt, UtDataFord()$smltxt)
+    output$fordelingTab <- function() {
+      antKol <- ncol(tabFord())
+      kableExtra::kable(tabFord(), format = 'html'
                         , full_width=F
                         , digits = c(0,0,1,0,0,1)[1:antKol]
       ) %>%
-        kableExtra::add_header_above(kolGruppering[1:(2+UtDataFord$medSml)]) %>%
+        kableExtra::add_header_above(kolGruppering[1:(2+UtDataFord()$medSml)]) %>%
         #kableExtra::add_header_above(c(" "=1, tittelKolGr[1] = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
         kableExtra::column_spec(column = 1, width='5em') %>% #width_min = '3em', width_max = '10em') %>%
-        kableExtra::column_spec(column = 2:(ncol(tabFord)+1), width = '7em') %>%
+        kableExtra::column_spec(column = 2:(ncol(tabFord())+1), width = '7em') %>%
         kableExtra::row_spec(0, bold = T)
     }
 
     output$lastNed_tabFord <- downloadHandler(
       filename = function(){paste0(input$valgtVar, '_fordeling.csv')},
-      content = function(file, filename){write.csv2(tabFord, file, row.names = T, fileEncoding = 'latin1', na = '')
+      content = function(file, filename){write.csv2(tabFord(), file, row.names = T, fileEncoding = 'latin1', na = '')
       })
 
-  }) #observe, fordelinger
+  #}) #observe, fordelinger
 
   #----------------- Andeler -----------------------
 
@@ -911,7 +922,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   observe({
     #AndelTid
-    AndelerTid <- NakkeFigAndelTid(RegData=RegData,  valgtVar=input$valgtVarAndel,
+    AndelerTid <- NakkeFigAndelTid(RegData=RegData,
+                                   valgtVar=input$valgtVarAndel,
                                    reshID=reshID,
                                    datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                                    minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
