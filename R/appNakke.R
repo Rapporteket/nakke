@@ -712,7 +712,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
  # })
   #-----------Registeradministrasjon-----------
   #observe({
-    tabDblReg <- reaktive(PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik))
+    tabDblReg <- reactive(PasMdblReg(RegData=RegData, tidsavvik=input$valgtTidsavvik))
     output$tabDblReg <- renderTable(tabDblReg(), digits=0)
 
     output$lastNed_tabDblReg <- downloadHandler(
