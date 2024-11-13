@@ -653,10 +653,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   #--------------Viktigste resultater-------------------------
   #observe({
     myelopatiKval <-
-      render(ifelse(input$valgtVarKvalInd %in%
+      reactive(ifelse(input$valgtVarKvalInd %in%
                c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'),  0, 99))
     fremBakKval <-
-      render(ifelse(input$valgtVarKvalInd %in%
+      reactive(ifelse(input$valgtVarKvalInd %in%
                c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'), 1, 0))
 
     output$kvalIndFig1 <- renderPlot({
@@ -814,7 +814,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   #observe({
 
-  UtDataFord <-  render(NakkeFigAndeler(RegData=RegData,
+  UtDataFord <-  reactive(NakkeFigAndeler(RegData=RegData,
                                         valgtVar=input$valgtVar,
                                         reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                                         datoFra=input$datovalg[1], datoTil=input$datovalg[2],
@@ -823,7 +823,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                         fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
                                         session=session))
     #Følgende kan være likt for fordelingsfigurer i alle registre:
-    tabFord <- render(lagTabavFig(UtDataFraFig = UtDataFord()))
+    tabFord <- reactive(lagTabavFig(UtDataFraFig = UtDataFord()))
     output$tittelFord <- renderUI({
       tagList(
         h3(UtDataFord()$tittel),
