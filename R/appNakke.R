@@ -853,7 +853,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       content = function(file, filename){write.csv2(tabFord(), file, row.names = T, fileEncoding = 'latin1', na = '')
       })
 
-  #}) #observe, fordelinger
 
   #----------------- Andeler -----------------------
 
@@ -923,9 +922,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                        outfile = file)
     })
 
-  observe({
+
     #AndelTid
-    AndelerTid <- NakkeFigAndelTid(RegData=RegData,
+    AndelerTid <- reactive(NakkeFigAndelTid(RegData=RegData,
                                    valgtVar=input$valgtVarAndel,
                                    reshID=reshID,
                                    datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
@@ -936,19 +935,23 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                    tidsenhet = input$tidsenhetAndelTid,
                                    enhetsUtvalg = input$enhetsUtvalgAndelTid,
                                    inngrep=as.numeric(input$inngrepAndel),
-                                   session=session) #,lagFig=0)
-    tabAndelTid <- lagTabavFig(UtDataFraFig = AndelerTid, figurtype = 'andelTid')
+                                   session=session))
 
+    tabAndelTid <- reactive(
+      lagTabavFig(UtDataFraFig = AndelerTid(), figurtype = 'andelTid'))
+
+    observe({
     kolGruppering <- c(1,3,3)
-    names(kolGruppering) <- c(' ', AndelerTid$hovedgrTxt, AndelerTid$smltxt)
+    names(kolGruppering) <- c(' ', AndelerTid()$hovedgrTxt, AndelerTid()$smltxt)
+
     output$andelTidTab <- function() {
-      antKol <- ncol(tabAndelTid)
-      kableExtra::kable(tabAndelTid, format = 'html'
+      antKol <- ncol(tabAndelTid())
+      kableExtra::kable(tabAndelTid(), format = 'html'
                         , full_width=F
                         , digits = c(0,0,1,0,0,1)[1:antKol]
       ) %>%
         #  kableExtra::add_header_above(c(" "=1, 'Egen enhet/gruppe' = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
-        kableExtra::add_header_above(kolGruppering[1:(2+AndelerTid$medSml)]) %>%
+        kableExtra::add_header_above(kolGruppering[1:(2+AndelerTid()$medSml)]) %>%
         kableExtra::column_spec(column = 1, width_min = '7em') %>%
         kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
         kableExtra::row_spec(0, bold = T)
@@ -960,26 +963,29 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       content = function(file, filename){
         write.csv2(tabAndelTid, file, row.names = T, fileEncoding = 'latin1', na = '')
       })
-
+    }) #observe
 
     #AndelGrVar
-    AndelerShus <- NakkeFigAndelerGrVar(RegData=RegData,
-                                        valgtVar=input$valgtVarAndel,
-                                        reshID=reshID,
-                                        datoFra=input$datovalgAndel[1],
-                                        datoTil=input$datovalgAndel[2],
-                                        minald=as.numeric(input$alderAndel[1]),
-                                        maxald=as.numeric(input$alderAndel[2]),
-                                        erMann=as.numeric(input$erMannAndel),
-                                        myelopati = as.numeric(input$myelopatiAndel),
-                                        inngrep=as.numeric(input$inngrepAndel),
-                                        session=session) #, lagFig = 0))
-    tabAndelerShus <- cbind('Antall (n)' = AndelerShus$Nvar,
-                            'Antall (N)' = AndelerShus$Ngr,
-                            'Andel (%)' = AndelerShus$AggVerdier)
+    AndelerShus <- reactive(
+      NakkeFigAndelerGrVar(RegData=RegData,
+                           valgtVar=input$valgtVarAndel,
+                           reshID=reshID,
+                           datoFra=input$datovalgAndel[1],
+                           datoTil=input$datovalgAndel[2],
+                           minald=as.numeric(input$alderAndel[1]),
+                           maxald=as.numeric(input$alderAndel[2]),
+                           erMann=as.numeric(input$erMannAndel),
+                           myelopati = as.numeric(input$myelopatiAndel),
+                           inngrep=as.numeric(input$inngrepAndel),
+                           session=session))
+
+    tabAndelerShus <- reactive(cbind('Antall (n)' = AndelerShus()$Nvar,
+                                     'Antall (N)' = AndelerShus()$Ngr,
+                                     'Andel (%)' = AndelerShus()$AggVerdier))
+
     output$andelerGrVarTab <- function() {
-      antKol <- ncol(tabAndelerShus)
-      kableExtra::kable(tabAndelerShus, format = 'html'
+      antKol <- ncol(tabAndelerShus())
+      kableExtra::kable(tabAndelerShus(), format = 'html'
                         #, full_width=T
                         , digits = c(0,0,1) #,0,1)[1:antKol]
       ) %>%
@@ -992,15 +998,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
         paste0(input$valgtVar, '_andelGrVar.csv')
       },
       content = function(file, filename){
-        write.csv2(tabAndelerShus, file, row.names = T, fileEncoding = 'latin1', na = '')
+        write.csv2(tabAndelerShus(), file, row.names = T, fileEncoding = 'latin1', na = '')
       })
 
     output$tittelAndel <- renderUI({
       tagList(
-        h3(AndelerShus$tittel),
-        h5(HTML(paste0(AndelerShus$utvalgTxt, '<br />')))
+        h3(AndelerShus()$tittel),
+        h5(HTML(paste0(AndelerShus()$utvalgTxt, '<br />')))
       )}) #, align='center'
-  }) #observe
+  #}) #observe
 
   #------------ Gjennomsnitt--------------------------
   output$gjsnGrVar <- renderPlot({
@@ -1076,8 +1082,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                       outfile = file)
     })
 
-  observe({ #Sykehusvise gjennomsnitt, figur og tabell
-    UtDataGjsnGrVar <- NakkeFigGjsnGrVar(RegData=RegData,
+  #Sykehusvise gjennomsnitt, figur og tabell
+    UtDataGjsnGrVar <- reactive(NakkeFigGjsnGrVar(RegData=RegData,
                                          valgtVar=input$valgtVarGjsn,
                                          reshID=reshID,
                                          datoFra=input$datovalgGjsn[1],
@@ -1089,43 +1095,45 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                          myelopati = as.numeric(input$myelopatiGjsn),
                                          fremBak = as.numeric(input$fremBakGjsn),
                                          valgtMaal = input$sentralmaal,
-                                         session = session)
+                                         session = session))
     output$tittelGjsn <- renderUI({
       tagList(
         h3(UtDataGjsnGrVar$tittel),
         h5(HTML(paste0(UtDataGjsnGrVar$utvalgTxt, '<br />')))
       )}) #, align='center'
-    antDes <- ifelse(input$valgtVarGjsn %in%
-                       c('Eq5DScorePreOp', 'EQ5Dendr3mnd', 'EQ5Dendr12mnd'), 2, 1)
-    antDesFormat <- paste0("%.", antDes, "f")
-    tabGjsnGrVar <- cbind('Antall' = UtDataGjsnGrVar$Ngr, #$Hoved,
-                          'Sentralmål' = sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$Hoved),
-                          'Konf.int.' = paste0(sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIned), ' - ',
-                                             sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIopp)))
-    colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
 
-    output$gjsnGrVarTab <- function() {
-      kableExtra::kable(tabGjsnGrVar, format = 'html'
-                        , full_width=F
-                        , digits = c(0,1) #,1,1)[1:antKol]
-                        , align = 'r'
-      ) %>%
-        kableExtra::column_spec(column = 1, width_min = '7em') %>%
-        kableExtra::column_spec(column = 2:4, width = '8em') %>%
-        kableExtra::row_spec(0, bold = T)
-    }
+    observe({
+      antDes <- ifelse(input$valgtVarGjsn %in%
+                         c('Eq5DScorePreOp', 'EQ5Dendr3mnd', 'EQ5Dendr12mnd'), 2, 1)
+      antDesFormat <- paste0("%.", antDes, "f")
+      tabGjsnGrVar <- cbind('Antall' = UtDataGjsnGrVar$Ngr, #$Hoved,
+                            'Sentralmål' = sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$Hoved),
+                            'Konf.int.' = paste0(sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIned), ' - ',
+                                                 sprintf(antDesFormat,UtDataGjsnGrVar$AggVerdier$KIopp)))
+      colnames(tabGjsnGrVar)[2] <- ifelse(input$sentralmaal == 'Med', 'Median', 'Gjennomsnitt')
 
-    output$lastNed_gjsnGrVarTab <- downloadHandler(
-      filename = function(){
-        paste0(input$valgtVarGjsn, '_tabGjsnSh .csv')
-      },
-      content = function(file, filename){
-        write.csv2(tabGjsnGrVar, file, row.names = T, fileEncoding = 'latin1', na = '')
-      })
+      output$gjsnGrVarTab <- function() {
+        kableExtra::kable(tabGjsnGrVar, format = 'html'
+                          , full_width=F
+                          , digits = c(0,1) #,1,1)[1:antKol]
+                          , align = 'r'
+        ) %>%
+          kableExtra::column_spec(column = 1, width_min = '7em') %>%
+          kableExtra::column_spec(column = 2:4, width = '8em') %>%
+          kableExtra::row_spec(0, bold = T)
+      }
 
+      output$lastNed_gjsnGrVarTab <- downloadHandler(
+        filename = function(){
+          paste0(input$valgtVarGjsn, '_tabGjsnSh .csv')
+        },
+        content = function(file, filename){
+          write.csv2(tabGjsnGrVar, file, row.names = T, fileEncoding = 'latin1', na = '')
+        })
+    })
     #------gjsnTid
 
-    UtDataGjsnTid <- NakkeFigGjsnTid(RegData=RegData,
+    UtDataGjsnTid <- reactive(NakkeFigGjsnTid(RegData=RegData,
                                      valgtVar=input$valgtVarGjsn,
                                      reshID=reshID,
                                      datoFra=input$datovalgGjsn[1],
@@ -1139,40 +1147,41 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                      valgtMaal = input$sentralmaal,
                                      tidsenhet = input$tidsenhetGjsn,
                                      enhetsUtvalg = input$enhetsUtvalgGjsn,
-                                     session = session)
+                                     session = session))
 
-    tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
-    grtxt <-UtDataGjsnTid$grtxt
-    if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
-      grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
-    rownames(tabGjsnTid) <- grtxt
+    observe({
+      tabGjsnTid <- t(UtDataGjsnTid$AggVerdier)
+      grtxt <-UtDataGjsnTid$grtxt
+      if ((min(nchar(grtxt)) == 5) & (max(nchar(grtxt)) == 5)) {
+        grtxt <- paste(substr(grtxt, 1,3), substr(grtxt, 4,5))}
+      rownames(tabGjsnTid) <- grtxt
 
-    antKol <- ncol(tabGjsnTid)
-    navnKol <- colnames(tabGjsnTid)
-    if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
+      antKol <- ncol(tabGjsnTid)
+      navnKol <- colnames(tabGjsnTid)
+      if (antKol==6) {colnames(tabGjsnTid) <- c(navnKol[1:3], navnKol[1:3])}
 
-    kolGruppering <- c(1,3,3)
-    names(kolGruppering) <- c(' ', UtDataGjsnTid$hovedgrTxt, UtDataGjsnTid$smltxt)
-    output$gjsnTidTab <- function() { #kableExtra::kable
-      kableExtra::kable(tabGjsnTid, format = 'html'
-                        , full_width=F
-                        , digits = antDes #c(0,1,1,1)[1:antKol]
-      ) %>%
-        kableExtra::add_header_above(kolGruppering[1:(2+UtDataGjsnTid$medSml)]) %>%
-        kableExtra::column_spec(column = 1, width_min = '7em') %>%
-        kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
-        kableExtra::row_spec(0, bold = T)
-    }
+      kolGruppering <- c(1,3,3)
+      names(kolGruppering) <- c(' ', UtDataGjsnTid$hovedgrTxt, UtDataGjsnTid$smltxt)
+      output$gjsnTidTab <- function() { #kableExtra::kable
+        kableExtra::kable(tabGjsnTid, format = 'html'
+                          , full_width=F
+                          , digits = antDes #c(0,1,1,1)[1:antKol]
+        ) %>%
+          kableExtra::add_header_above(kolGruppering[1:(2+UtDataGjsnTid$medSml)]) %>%
+          kableExtra::column_spec(column = 1, width_min = '7em') %>%
+          kableExtra::column_spec(column = 2:(antKol+1), width = '7em') %>%
+          kableExtra::row_spec(0, bold = T)
+      }
 
-    output$lastNed_gjsnTidTab <- downloadHandler(
-      filename = function(){
-        paste0(input$valgtVarGjsn, '_tabGjsnTid .csv')
-      },
-      content = function(file, filename){
-        write.csv2(tabGjsnTid, file, row.names = T, fileEncoding = 'latin1', na = '')
-      })
+      output$lastNed_gjsnTidTab <- downloadHandler(
+        filename = function(){
+          paste0(input$valgtVarGjsn, '_tabGjsnTid .csv')
+        },
+        content = function(file, filename){
+          write.csv2(tabGjsnTid, file, row.names = T, fileEncoding = 'latin1', na = '')
+        })
 
-  }) #observe gjsnGrVar
+    }) #observe
 
 
 
