@@ -4,7 +4,7 @@
 #' @return Et objekt som representerer den NGERapp'en
 #' @export
 
-kjor_NakkeApp <- function() {
+kjorNakkeApp <- function() {
 
   app <- shiny::shinyApp(ui = nakke::ui_nakke, server = nakke::server_nakke)
 
