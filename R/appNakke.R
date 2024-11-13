@@ -830,9 +830,9 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
         h5(HTML(paste0(UtDataFord()$utvalgTxt, '<br />')))
       )}) #, align='center'
 
-    #observe({
+    observe({
       kolGruppering <- c(1,3,3)
-    names(kolGruppering) <- reactive(c(' ', UtDataFord()$hovedgrTxt, UtDataFord()$smltxt))
+    names(kolGruppering) <- c(' ', UtDataFord()$hovedgrTxt, UtDataFord()$smltxt)
 
     output$fordelingTab <- function() {
       antKol <- ncol(tabFord())
@@ -840,12 +840,13 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                         , full_width=F
                         , digits = c(0,0,1,0,0,1)[1:antKol]
       ) %>%
-        kableExtra::add_header_above(kolGruppering()[1:(2+UtDataFord()$medSml)]) %>%
+        kableExtra::add_header_above(kolGruppering[1:(2+UtDataFord()$medSml)]) %>%
         #kableExtra::add_header_above(c(" "=1, tittelKolGr[1] = 3, 'Resten' = 3)[1:(antKol/3+1)]) %>%
         kableExtra::column_spec(column = 1, width='5em') %>% #width_min = '3em', width_max = '10em') %>%
         kableExtra::column_spec(column = 2:(ncol(tabFord())+1), width = '7em') %>%
         kableExtra::row_spec(0, bold = T)
     }
+    }) #Observe
 
     output$lastNed_tabFord <- downloadHandler(
       filename = function(){paste0(input$valgtVar, '_fordeling.csv')},
