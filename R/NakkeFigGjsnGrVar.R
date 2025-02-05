@@ -1,4 +1,4 @@
-#'Søylediagram som viser sentralmål (gj.sn./median) for hvert sykehus
+#' Søylediagram som viser sentralmål (gj.sn./median) for hvert sykehus
 #'
 #' Funksjon som genererer en figur med gjennomsnitt/median
 #' for hvert sykehus og kan ta inn ulike numeriske variable.

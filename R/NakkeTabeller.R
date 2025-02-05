@@ -50,7 +50,7 @@ tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date()){
 
 #' Hvor mange skjema av hver type
 #'
-#' @param SkjemaOversikt tabellen skjemaoversikt fra QReg
+#' @param skjemaversikt tabellen skjemaoversikt fra QReg
 #' @param datoFra startdato
 #' @param datoTil til og med dato
 #' @param skjemastatus status på registreringsskjemaet

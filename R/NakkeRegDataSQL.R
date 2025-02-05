@@ -210,16 +210,15 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medPro
 	VarighetSykeMeld12mnd,
 	VarighetSykeMeld3mnd,
 	Vekt
-FROM AlleVarNum
+FROM allevarnum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
 
-  #queryAVN <-'select * from AlleVarNum'
+  #queryAVN <-'select * from allevarnum'
   RegDataAVN <- rapbase::loadRegData(registryName = "nakke", query = queryAVN, dbType = "mysql")
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
-               FROM ForlopsOversikt'
+               FROM forlopsoversikt'
   RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
-  #intersect(sort(names(RegDataAVN)), sort(names(RegDataForl)))
 
   RegData <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
 
@@ -253,10 +252,6 @@ FROM AlleVarNum
       RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
     RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
   }
-  # table(RegData$Aar, RegData$OppFolgStatus12mnd)
-  # table(RegData$Aar, RegData$OppFolg12mndGML)
-  # table(RegData$Aar, !is.na(RegData$NDIscore12mnd))
-  # RegData$Aar <- lubridate::year(RegData$OprDato)
 
   return(RegData)
 }

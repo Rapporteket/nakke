@@ -29,8 +29,6 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
                                       Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
                                             (RegData$Aar-min(RegData$Aar))*2
       )
-      # format.Date(seq(from=as.Date('2018-01-01'),
-      #                 to=as.Date('2018-09-01'), by='month'), format = '%b%y')
 
       tidtxt <- switch(tidsenhet,
                         Mnd = format.Date(seq(from=lubridate::floor_date(as.Date(min(as.Date(RegData$InnDato), na.rm = T)), 'month'),
@@ -201,7 +199,8 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
 #'
 #' @return Full path of file produced
 #' @export
-abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
+abonnementNakke <- function(rnwFil, reshID=0,
+                            brukernavn='Brukernavn ikke angitt',
                             fulltNavn = 'Mangler personnavn',
                        datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
@@ -213,7 +212,7 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
                     reshId = reshID, msg = "Abonnement: månedsrapport")
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
-  tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(brukernavn), '.Rnw')
+  tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(Sys.time()), '.Rnw')
   src <- normalizePath(system.file(rnwFil, package='nakke'))
   # gå til tempdir. Har ikke skriverettigheter i arbeidskatalog
   setwd(tempdir())
@@ -223,12 +222,12 @@ abonnementNakke <- function(rnwFil, brukernavn='tullebukk', reshID=0,
 
   #gc() #Opprydning gc-"garbage collection"
   utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
-  rapbase::autLogger(user = brukernavn, name = fulltNavn,
-                     fun = "abonnementNakke",
-                     type = 'abb el uts',
-                     param = c(rnwFil, reshID),
-                     registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
-                    reshId = reshID, msg = paste("Sendt: ", utfil))
+  # rapbase::autLogger(user = brukernavn, name = fulltNavn,
+  #                    fun = "abonnementNakke",
+  #                    type = 'abb el uts',
+  #                    param = c(rnwFil, reshID),
+  #                    registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
+  #                   reshId = reshID, msg = paste("Sendt: ", utfil))
   return(utfil)
 }
 

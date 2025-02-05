@@ -48,7 +48,6 @@ context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
 paaServer <- context %in% c("DEV", "TEST", "QA", "PRODUCTION")
 
 
-
 #----Define UI for application------
 ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   id = "tab1nivaa",
@@ -93,9 +92,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
            ),
 
            mainPanel(
-             rapbase::appNavbarUserWidget(user = uiOutput("appUserName"),
-                                          organization = uiOutput("appOrgName"),
-                                          addUserInfo = TRUE),
+             if (context %in% c("DEV", "TEST", "QA", "PRODUCTION", "QAC", "PRODUCTIONC")) {
+               rapbase::navbarWidgetInput("navbar-widget", selectOrganization = TRUE)
+             },
+
              tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
 
              h4('Her kan man finne resultater fra NKR. Under hver fane kan man velge hva man
@@ -534,21 +534,45 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   #' @export
   server_nakke <- function(input, output, session) {
 
-  #-- Div serveroppstart----
+  #-- Div serveroppstart og hente data
+
   context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
   paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
   if (paaServer) {
     rapbase::appLogger(session, msg = 'Starter Rapporteket-NGER')}
 
-  reshID <- ifelse(paaServer, as.numeric(rapbase::getUserReshId(session)), 601161)
-  rolle <- ifelse(paaServer, rapbase::getUserRole(shinySession=session), 'SC')
-  brukernavn <- ifelse(paaServer, rapbase::getUserName(shinySession=session), 'BrukerNavn')
-  fulltNavn <- ifelse(paaServer, rapbase::getUserFullName(shinySession=session), 'FulltNavn')
+  if (paaServer == TRUE) {
+    RegData <- NakkeRegDataSQL()
 
-  # widget
+    querySD <- paste0('
+          SELECT Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
+           FROM skjemaoversikt
+           WHERE HovedDato >= "2014-01-01" ')
+    SkjemaData <- rapbase::loadRegData(registryName="nakke", query=querySD, dbType="mysql")
+  } #hente data på server
+
+  #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd. Endret til 5*, dvs. 5,10,15,20, juli 2022
+  SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato)
+  SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
+  SkjemaData$Mnd <- zoo::as.yearmon(SkjemaData$InnDato)
+  SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
+
+  RegData <- NakkePreprosess(RegData = RegData)
+
+  map_avdeling <- data.frame(
+    UnitId = unique(RegData$ReshId),
+    orgname = RegData$ShNavn[match(unique(RegData$ReshId),
+                                   RegData$ReshId)])
+
+  sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
+  sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
+  sykehusValg <- c(0,sykehusValg)
+  names(sykehusValg) <- c('Alle',sykehusNavn$x)
+
+
   if (paaServer) {
-    output$appUserName <- renderText(rapbase::getUserFullName(session))
-    output$appOrgName <- renderText(paste0('rolle: ', rolle, '<br> reshID: ', reshID) )}
+    #output$appUserName <- renderText(rapbase::getUserFullName(session))
+    #output$appOrgName <- renderText(paste0('rolle: ', user$org(), '<br> reshID: ', reshID=user$org()) )}
 
   # User info in widget
   userInfo <- rapbase::howWeDealWithPersonalData(session)
@@ -558,46 +582,21 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                            closeOnEsc = TRUE, closeOnClickOutside = TRUE,
                            html = TRUE, confirmButtonText = rapbase::noOptOutOk())
   })
+  #user inneholder både reshID: user$org() og  rolle: user$role()
+  user <- rapbase::navbarWidgetServer2(
+    id = "navbar-widget",
+    orgName = "nakke",
+    map_orgname = shiny::req(map_avdeling),
+    caller = "nakke"
+  )
 
-
-  observe({if (rolle != 'SC') {
-    shiny::hideTab(inputId = "tab1nivaa",
-                   target = 'Registeradministrasjon') }
+  observeEvent(user$role(), {
+    if (user$role() == 'SC') {
+      showTab(inputId = "tab1nivaa", target = "Registeradministrasjon")
+    } else {
+      hideTab(inputId = "tab1nivaa", target = "Registeradministrasjon")
+    }
   })
-
-  if (paaServer == TRUE) {
-    RegData <- NakkeRegDataSQL()
-
-    querySD <- paste0('
-          SELECT
-            Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
-           FROM SkjemaOversikt
-           WHERE HovedDato >= "2014-01-01" ')
-    SkjemaData <- rapbase::loadRegData(registryName="nakke", query=querySD, dbType="mysql")
-    #knitr::opts_knit$set(root.dir = './')
-    #knitr::opts_chunk$set(fig.path='')
-  } #hente data på server
-
-  if (!exists('RegData')){
-    data('NakkeRegDataSyn', package = 'nakke')
-    data('SkjemaDataSyn', package = 'nakke')
-    reshID <- 601161
-  }
-
-
-  RegData <- NakkePreprosess(RegData = RegData)
-
-  #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd. Endret til 5*, dvs. 5,10,15,20, juli 2022
-  SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato)
-  SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
-  SkjemaData$Mnd <- zoo::as.yearmon(SkjemaData$InnDato)
-  SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
-
-  sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
-  sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
-  sykehusValg <- c(0,sykehusValg)
-  names(sykehusValg) <- c('Alle',sykehusNavn$x)
-
 
 
   #-------Samlerapporter--------------------
@@ -606,7 +605,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     filename = function(){ paste0('MndRapp', Sys.time(), '.pdf')},
     content = function(file){
       henteSamlerapporter(file, rnwFil="NakkeMndRapp.Rnw",
-                          reshID = reshID, datoFra = startDato)
+                          reshID=user$org(), datoFra = startDato)
     }
   )
 
@@ -660,7 +659,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                c('KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd35pst'), 1, 0))
 
     output$kvalIndFig1 <- renderPlot({
-      NakkeFigAndelTid(RegData=RegData, reshID = reshID,
+      NakkeFigAndelTid(RegData=RegData, reshID=user$org(),
                        valgtVar=input$valgtVarKvalInd, datoFra = input$datoFraKvalInd,
                        myelopati = myelopatiKval(),
                        fremBak = fremBakKval(),
@@ -674,7 +673,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
         paste0('FigKvalIndTid_', valgtVar=input$valgtVarKvalInd, '_', Sys.time(), '.', input$bildeformatKvalInd)
       },
       content = function(file){
-        NakkeFigAndelTid(RegData=RegData, reshID = reshID,
+        NakkeFigAndelTid(RegData=RegData, reshID=user$org(),
                          valgtVar=input$valgtVarKvalInd,
                          datoFra = input$datoFraKvalInd,
                          myelopati = myelopatiKval(),
@@ -721,7 +720,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   #})
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
-               FROM ForlopsOversikt'
+               FROM forlopsoversikt'
   RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
 
   variablePRM <- 'Variabler som skal tas bort for LU-bruker'
@@ -736,14 +735,14 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
 
-    if (rolle =='SC') {
+    if (user$role() =='SC') {
       valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
       } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
     } else { #Kun SC får laste ned data
       tabDataDump <-
-        DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
+        DataDump[which(DataDump$ReshId == user$org()), -which(names(DataDump) %in% variablePRM)]
     } # Sjekk at PROM/PREM ikke er med for LU-bruker
 
     output$lastNed_dataDump <- downloadHandler(
@@ -770,7 +769,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   paramNames <- shiny::reactive("reshID")
   paramValues <- shiny::reactive(org$value())
 
-  rapbase::autoReportServer(
+  rapbase::autoReportServer2(
     id = "NakkeUts", registryName = "nakke", type = "dispatchment",
     org = org$value, paramNames = paramNames, paramValues = paramValues,
     reports = reports, orgs = orgs, eligible = TRUE
@@ -790,7 +789,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   #-----------Fordelinger---------------------
   output$fordelinger <- renderPlot({
     NakkeFigAndeler(RegData=RegData,  valgtVar=input$valgtVar,
-                    reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                    reshID=user$org(), enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                     minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                     erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
@@ -803,7 +802,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     },
     content = function(file){
       NakkeFigAndeler(RegData=RegData,  valgtVar=input$valgtVar,
-                      reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                      reshID=user$org(), enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                       datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                       minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                       erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
@@ -813,14 +812,15 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     })
 
 
-  UtDataFord <-  reactive(NakkeFigAndeler(RegData=RegData,
-                                        valgtVar=input$valgtVar,
-                                        reshID=reshID, enhetsUtvalg=as.numeric(input$enhetsUtvalg),
-                                        datoFra=input$datovalg[1], datoTil=input$datovalg[2],
-                                        minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
-                                        erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                                        fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
-                                        session=session))
+  UtDataFord <-  reactive(
+    NakkeFigAndeler(RegData=RegData,
+                    valgtVar=input$valgtVar,
+                    reshID=user$org(), enhetsUtvalg=as.numeric(input$enhetsUtvalg),
+                    datoFra=input$datovalg[1], datoTil=input$datovalg[2],
+                    minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
+                    erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
+                    fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
+                    session=session))
     #Følgende kan være likt for fordelingsfigurer i alle registre:
     tabFord <- reactive(lagTabavFig(UtDataFraFig = UtDataFord()))
 
@@ -859,7 +859,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   output$andelerGrVar <- renderPlot({
     NakkeFigAndelerGrVar(RegData=RegData,
                          valgtVar=input$valgtVarAndel,
-                         reshID=reshID,
+                         reshID=user$org(),
                          datoFra=input$datovalgAndel[1],
                          datoTil=input$datovalgAndel[2],
                          minald=as.numeric(input$alderAndel[1]),
@@ -877,7 +877,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     content = function(file){
       NakkeFigAndelerGrVar(RegData=RegData,
                            valgtVar=input$valgtVarAndel,
-                           reshID=reshID,
+                           reshID=user$org(),
                            datoFra=input$datovalgAndel[1],
                            datoTil=input$datovalgAndel[2],
                            minald=as.numeric(input$alderAndel[1]),
@@ -891,7 +891,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   output$andelTid <- renderPlot({
     NakkeFigAndelTid(RegData=RegData, valgtVar=input$valgtVarAndel,
-                     reshID=reshID,
+                     reshID=user$org(),
                      datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                      minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
                      erMann=as.numeric(input$erMannAndel),
@@ -909,7 +909,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     },
     content = function(file){
       NakkeFigAndelTid(RegData=RegData, valgtVar=input$valgtVarAndel,
-                       reshID=reshID,
+                       reshID=user$org(),
                        datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                        minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
                        erMann=as.numeric(input$erMannAndel),
@@ -926,7 +926,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     #AndelTid
     AndelerTid <- reactive(NakkeFigAndelTid(RegData=RegData,
                                    valgtVar=input$valgtVarAndel,
-                                   reshID=reshID,
+                                   reshID=user$org(),
                                    datoFra=input$datovalgAndel[1], datoTil=input$datovalgAndel[2],
                                    minald=as.numeric(input$alderAndel[1]), maxald=as.numeric(input$alderAndel[2]),
                                    erMann=as.numeric(input$erMannAndel),
@@ -969,7 +969,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     AndelerShus <- reactive(
       NakkeFigAndelerGrVar(RegData=RegData,
                            valgtVar=input$valgtVarAndel,
-                           reshID=reshID,
+                           reshID=user$org(),
                            datoFra=input$datovalgAndel[1],
                            datoTil=input$datovalgAndel[2],
                            minald=as.numeric(input$alderAndel[1]),
@@ -1011,7 +1011,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   #------------ Gjennomsnitt--------------------------
   output$gjsnGrVar <- renderPlot({
     NakkeFigGjsnGrVar(RegData=RegData,  valgtVar=input$valgtVarGjsn,
-                      reshID=reshID,
+                      reshID=user$org(),
                       datoFra=input$datovalgGjsn[1],
                       datoTil=input$datovalgGjsn[2],
                       minald=as.numeric(input$alderGjsn[1]),
@@ -1030,7 +1030,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     },
     content = function(file){
       NakkeFigGjsnGrVar(RegData=RegData,  valgtVar=input$valgtVarGjsn,
-                        reshID=reshID,
+                        reshID=user$org(),
                         datoFra=input$datovalgGjsn[1],
                         datoTil=input$datovalgGjsn[2],
                         minald=as.numeric(input$alderGjsn[1]),
@@ -1046,7 +1046,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
 
   output$gjsnTid <- renderPlot({
     NakkeFigGjsnTid(RegData=RegData,  valgtVar=input$valgtVarGjsn,
-                    reshID=reshID,
+                    reshID=user$org(),
                     datoFra=input$datovalgGjsn[1], datoTil=input$datovalgGjsn[2],
                     minald=as.numeric(input$alderGjsn[1]),
                     maxald=as.numeric(input$alderGjsn[2]),
@@ -1066,7 +1066,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     },
     content = function(file){
       NakkeFigGjsnTid(RegData=RegData,  valgtVar=input$valgtVarGjsn,
-                      reshID=reshID,
+                      reshID=user$org(),
                       datoFra=input$datovalgGjsn[1],
                       datoTil=input$datovalgGjsn[2],
                       minald=as.numeric(input$alderGjsn[1]),
@@ -1083,19 +1083,20 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     })
 
   #Sykehusvise gjennomsnitt, figur og tabell
-    UtDataGjsnGrVar <- reactive(NakkeFigGjsnGrVar(RegData=RegData,
-                                         valgtVar=input$valgtVarGjsn,
-                                         reshID=reshID,
-                                         datoFra=input$datovalgGjsn[1],
-                                         datoTil=input$datovalgGjsn[2],
-                                         inngrep=as.numeric(input$inngrepGjsn),
-                                         minald=as.numeric(input$alderGjsn[1]),
-                                         maxald=as.numeric(input$alderGjsn[2]),
-                                         erMann=as.numeric(input$erMannGjsn),
-                                         myelopati = as.numeric(input$myelopatiGjsn),
-                                         fremBak = as.numeric(input$fremBakGjsn),
-                                         valgtMaal = input$sentralmaal,
-                                         session = session))
+  UtDataGjsnGrVar <- reactive(
+    NakkeFigGjsnGrVar(RegData=RegData,
+                      valgtVar=input$valgtVarGjsn,
+                      reshID=user$org(),
+                      datoFra=input$datovalgGjsn[1],
+                      datoTil=input$datovalgGjsn[2],
+                      inngrep=as.numeric(input$inngrepGjsn),
+                      minald=as.numeric(input$alderGjsn[1]),
+                      maxald=as.numeric(input$alderGjsn[2]),
+                      erMann=as.numeric(input$erMannGjsn),
+                      myelopati = as.numeric(input$myelopatiGjsn),
+                      fremBak = as.numeric(input$fremBakGjsn),
+                      valgtMaal = input$sentralmaal,
+                      session = session))
     output$tittelGjsn <- renderUI({
       tagList(
         h3(UtDataGjsnGrVar()$tittel),
@@ -1133,21 +1134,22 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     })
     #------gjsnTid
 
-    UtDataGjsnTid <- reactive(NakkeFigGjsnTid(RegData=RegData,
-                                     valgtVar=input$valgtVarGjsn,
-                                     reshID=reshID,
-                                     datoFra=input$datovalgGjsn[1],
-                                     datoTil=input$datovalgGjsn[2],
-                                     inngrep=as.numeric(input$inngrepGjsn),
-                                     minald=as.numeric(input$alderGjsn[1]),
-                                     maxald=as.numeric(input$alderGjsn[2]),
-                                     erMann=as.numeric(input$erMannGjsn),
-                                     myelopati = as.numeric(input$myelopatiGjsn),
-                                     fremBak = as.numeric(input$fremBakGjsn),
-                                     valgtMaal = input$sentralmaal,
-                                     tidsenhet = input$tidsenhetGjsn,
-                                     enhetsUtvalg = input$enhetsUtvalgGjsn,
-                                     session = session))
+    UtDataGjsnTid <- reactive(
+      NakkeFigGjsnTid(RegData=RegData,
+                      valgtVar=input$valgtVarGjsn,
+                      reshID=user$org(),
+                      datoFra=input$datovalgGjsn[1],
+                      datoTil=input$datovalgGjsn[2],
+                      inngrep=as.numeric(input$inngrepGjsn),
+                      minald=as.numeric(input$alderGjsn[1]),
+                      maxald=as.numeric(input$alderGjsn[2]),
+                      erMann=as.numeric(input$erMannGjsn),
+                      myelopati = as.numeric(input$myelopatiGjsn),
+                      fremBak = as.numeric(input$fremBakGjsn),
+                      valgtMaal = input$sentralmaal,
+                      tidsenhet = input$tidsenhetGjsn,
+                      enhetsUtvalg = input$enhetsUtvalgGjsn,
+                      session = session))
 
     observe({
       tabGjsnTid <- t(UtDataGjsnTid()$AggVerdier)
@@ -1197,12 +1199,12 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     Kvartalsrapp = list(
       synopsis = "NKR_Nakke/Rapporteket: Resultatrapport, abonnement",
       fun = "abonnementNakke",
-      paramNames = c('rnwFil', 'reshID', 'brukernavn'),
-      paramValues = c('NakkeMndRapp.Rnw', reshID, brukernavn) #'Alle')
+      paramNames = c('rnwFil', 'reshID'),
+      paramValues = c('NakkeMndRapp.Rnw', user$org())
     )
   )
   #test <- abonnementNakke(rnwFil = 'NakkeMndRapp.Rnw', brukernavn='hei', reshID=601161, datoTil=Sys.Date())
-  rapbase::autoReportServer(
+  rapbase::autoReportServer2(
     id = "NakkeAbb", registryName = "nakke", type = "subscription",
     paramNames = paramNames, paramValues = paramValues,
     reports = reports, orgs = orgs, eligible = TRUE
