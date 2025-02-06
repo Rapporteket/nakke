@@ -8,7 +8,7 @@ Description: Alle R-baserte resultattjenester på Rapporteket for Degenerativ
     kjørefiler og eksempeldatasett. Pakken inneholder også en Shiny-app. for 
     registeret, samt figurer og tabeller til årsrapport.
 Version: 3.0.1
-Date: 2025-01-31
+Date: 2025-02-06
 Author: Lena Ringstad Olsen, Nasjonalt Servicemiljo for Kvalitetsregistre, SKDE
 Maintainer: Lena Ringstad Olsen <lena.olsen@skde.no>
 Depends:
@@ -30,8 +30,7 @@ Imports:
     rlang,
     shiny,
     tidyverse,
-    xtable,
-    zoo
+    xtable
 Suggests:
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3

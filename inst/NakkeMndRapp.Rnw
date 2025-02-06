@@ -24,13 +24,6 @@ knitr::opts_knit$set(root.dir = './')
 
 <<'dataOgParam', include=FALSE>>=
 library(nakke)
-library(knitr)
-library(tools)
-library(lubridate)
-library(xtable)
-library(zoo)
-
-#MÅ sende inn: reshID
 
 datoTil <- Sys.Date()
 dato <- as.POSIXlt(datoTil)
@@ -48,7 +41,7 @@ if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
            FROM SkjemaOversikt
            WHERE HovedDato >= "2014-01-01" ')
 
-  SkjemaData <- rapbase::loadRegData(registryName="nakke", query=querySD, dbType="mysql")
+  SkjemaData <- rapbase::loadRegData(registryName='data', query=querySD, dbType="mysql") # "nakke"
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
 } #hente data på server

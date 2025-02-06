@@ -10,7 +10,7 @@
 #' @export
 #'
 NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medProm = 1) {
-
+  registryName <- 'data' # "nakke"
 
   queryAVN <- paste0('SELECT
 	Alder,
@@ -214,11 +214,11 @@ FROM allevarnum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
 
   #queryAVN <-'select * from allevarnum'
-  RegDataAVN <- rapbase::loadRegData(registryName = "nakke", query = queryAVN, dbType = "mysql")
+  RegDataAVN <- rapbase::loadRegData(registryName = registryName , query = queryAVN, dbType = "mysql")
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
                FROM forlopsoversikt'
-  RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
+  RegDataForl <- rapbase::loadRegData(registryName = registryName , query = queryForl, dbType = "mysql")
 
   RegData <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
 
@@ -226,7 +226,7 @@ FROM allevarnum
 
     #Feil i andel oppfølging etter innføreing av ePROM. OppFolgStatus3mnd=1 betyr ikke lenger at skjemaet er utfylt
     #Må lage variabelen på nytt
-    ePROMadmTab <- rapbase::loadRegData(registryName="nakke",
+    ePROMadmTab <- rapbase::loadRegData(registryName=registryName,
                                         query='SELECT * FROM proms')
     ePROMvar <- c("MCEID", "TSSENDT", "TSRECEIVED", "NOTIFICATION_CHANNEL", "DISTRIBUTION_RULE",
                   'REGISTRATION_TYPE')

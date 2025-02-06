@@ -1,8 +1,8 @@
 x-environment: &environment
   MYSQL_DB_LOG: db_log
-  NORDICSCIR_DB: db_data
+  # NORDICSCIR_DB: db_data
   MYSQL_DB_AUTOREPORT: db_autoreport
-  MYSQL_DB_DATA: nakkereportdatastaging
+  MYSQL_DB_DATA: NakkeReportDataStaging
   MYSQL_HOST: db
   MYSQL_USER: root
   MYSQL_PASSWORD: root
@@ -36,8 +36,8 @@ services:
   app:
     depends_on:
       - db
-    #image: rapporteket/nordicscir:latest
-    image: rapporteket/nakke:latest
+    image: rapporteket/nger:nhn_kev
+    #image: rapporteket/nakke:main
     ports:
       - 3838:3838
     volumes:
@@ -74,13 +74,3 @@ services:
       ADMINER_PLUGINS: frames
     ports:
       - 8888:8080
-
-  rapadm:
-    depends_on:
-      - db
-    image: rapporteket/rapadm:latest
-    restart: "no"
-    environment:
-      << : *environment
-    ports:
-      - 9011:3838
