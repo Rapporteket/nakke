@@ -20,6 +20,7 @@ Remotes:
 License: GPL-2
 LazyData: TRUE
 Imports:
+    digest,
     dplyr,
     kableExtra,
     knitr, 
@@ -29,6 +30,9 @@ Imports:
     rapFigurer,
     rlang,
     shiny,
+    shinyalert,
+    shinyjs,
+    synthpop,
     tidyverse,
     xtable
 Suggests:
