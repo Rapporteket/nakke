@@ -4,9 +4,17 @@
 #' @return Et objekt som representerer den NGERapp'en
 #' @export
 
-kjorNakkeApp <- function() {
+kjorNakkeApp <- function(browser = FALSE, logAsJson = FALSE) {
 
-  app <- shiny::shinyApp(ui = nakke::ui_nakke, server = nakke::server_nakke)
+  if (logAsJson) {
+    rapbase::loggerSetup()
+  }
+
+  app <- shiny::shinyApp(
+    ui = nakke::ui_nakke,
+    server = nakke::server_nakke,
+    options = list(launch.browser = browser)
+  )
 
   return(app)
 }
