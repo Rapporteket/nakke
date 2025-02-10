@@ -757,16 +757,6 @@ server_nakke <- function(input, output, session) {
   #---Utsendinger---------------
   orgs <- as.list(sykehusValg)
 
-  ## liste med metadata for rapport
-  # reports <- list(
-  #   HalvaarRapp = list(
-  #     synopsis = "Halvårsrapport",
-  #     fun = "abonnementNakke",
-  #     paramNames = c('rnwFil', "reshID"),
-  #     paramValues = c('NakkeMndRapp.Rnw', 0)
-  #   )
-  # )
-
   org <- rapbase::autoReportOrgServer("NakkeUts", orgs)
 
   # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
@@ -778,18 +768,18 @@ server_nakke <- function(input, output, session) {
     registryName = "nakke",
     type = "dispatchment",
     org = org$value,
-    #paramNames = paramNames,
-    #paramValues = paramValues,
-    reports = reports <- list(
+    paramNames = paramNames,
+    paramValues = paramValues,
+    reports = list(
       HalvaarRapp = list(
         synopsis = "Halvårsrapport",
         fun = "abonnementNakke",
         paramNames = c('rnwFil', "reshID"),
-        paramValues = c('NakkeMndRapp.Rnw', 0)
+        paramValues = c('NakkeMndRapp.Rnw', user$org())
       )
     ),
     orgs = orgs,
-    eligible = TRUE,
+    eligible = (user$role() == "SC"),
     user = user  )
 
 
@@ -1210,7 +1200,7 @@ server_nakke <- function(input, output, session) {
       id = "NakkeAbb",
       registryName = "nakke",
       type = "subscription",
-      reports = reports <- list(
+      reports = list(
         Kvartalsrapp = list(
           synopsis = "NKR_Nakke/Rapporteket: Resultatrapport, abonnement",
           fun = "abonnementNakke",
