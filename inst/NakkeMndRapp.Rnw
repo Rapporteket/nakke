@@ -31,8 +31,8 @@ dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-4,'-01-01'))
 #--------------------HENTE DATA--------------------
 
-context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
+#context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+#if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
   RegData <- NakkeRegDataSQL(datoFra = datoFra)
 
   querySD <- paste0('
@@ -44,12 +44,12 @@ if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
   SkjemaData <- rapbase::loadRegData(registryName='data', query=querySD, dbType="mysql") # "nakke"
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
-} #hente data på server
-      if (!exists('RegData')){
-  #Funker:
-  data('NakkeRegDataSyn', package = 'nakke')
-  data('SkjemaDataSyn', package = 'nakke')
-     }
+#} #hente data på server
+  #     if (!exists('RegData')){
+  # #Funker:
+  # data('NakkeRegDataSyn', package = 'nakke')
+  # data('SkjemaDataSyn', package = 'nakke')
+  #    }
 
 
 #----------------------------------------
