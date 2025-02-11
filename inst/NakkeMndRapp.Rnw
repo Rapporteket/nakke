@@ -38,7 +38,7 @@ datoFra <- as.Date(paste0(1900+dato$year-4,'-01-01'))
   querySD <- paste0('
           SELECT
             Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
-           FROM SkjemaOversikt
+           FROM skjemaoversikt
            WHERE HovedDato >= "2014-01-01" ')
 
   SkjemaData <- rapbase::loadRegData(registryName='data', query=querySD, dbType="mysql") # "nakke"
