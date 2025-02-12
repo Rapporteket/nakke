@@ -4,7 +4,7 @@
 \alias{kjorNakkeApp}
 \title{Kjør Shiny Application}
 \usage{
-kjorNakkeApp()
+kjorNakkeApp(browser = FALSE, logAsJson = FALSE)
 }
 \value{
 Et objekt som representerer den NGERapp'en

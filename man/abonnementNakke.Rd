@@ -9,8 +9,8 @@ has the effect of providing the parameters as class
 \usage{
 abonnementNakke(
   rnwFil,
-  brukernavn = "tullebukk",
   reshID = 0,
+  brukernavn = "Brukernavn ikke angitt",
   fulltNavn = "Mangler personnavn",
   datoFra = Sys.Date() - 180,
   datoTil = Sys.Date()

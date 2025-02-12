@@ -67,7 +67,7 @@ SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
 #SkjemaRekkeflg #5-pasientskjema, 10-legeskjema, 15- Oppf. 3mnd, 20 - Oppf. 12mnd
 SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
-SkjemaData$Mnd <- as.yearmon(SkjemaData$InnDato)
+SkjemaData$Mnd <- format.Date(SkjemaData$InnDato, '%b %Y') #as.yearmon(SkjemaData$InnDato)
 SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 SkjemaData12mnd <- SkjemaData[SkjemaData$InnDato > as.POSIXlt(datoFra12mnd), ]
 

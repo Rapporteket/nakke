@@ -6,7 +6,7 @@ x-environment: &environment
   MYSQL_HOST: db
   MYSQL_USER: root
   MYSQL_PASSWORD: root
-  FALK_APP_ID: 86
+  FALK_APP_ID: 85
   # FALK_EXTENDED_USER_RIGHTS: "[{\"A\":86,\"R\":\"SC\",\"U\":601161},{\"A\":86,\"R\":\"LU\",\"U\":601161},{\"A\":86,\"R\":\"LU\",\"U\":108172},{\"A\":86,\"R\":\"LU\",\"U\":103575}]"
   USERORGID: "pilot"
   SHINYPROXY_USERNAME: test@tester.no

@@ -12,13 +12,13 @@ tabAntSkjema(
 )
 }
 \arguments{
-\item{SkjemaOversikt}{tabellen skjemaoversikt fra QReg}
-
 \item{datoFra}{startdato}
 
 \item{datoTil}{til og med dato}
 
 \item{skjemastatus}{status på registreringsskjemaet}
+
+\item{skjemaversikt}{tabellen skjemaoversikt fra QReg}
 }
 \description{
 Hvor mange skjema av hver type

@@ -2,17 +2,15 @@
 Sys.setenv(FALK_EXTENDED_USER_RIGHTS= "[{\"A\":85,\"R\":\"SC\",\"U\":601161},{\"A\":85,\"R\":\"LU\",\"U\":601161},{\"A\":85,\"R\":\"LU\",\"U\":108172},{\"A\":85,\"R\":\"LU\",\"U\":103575}]")
 Sys.setenv(R_RAP_INSTANCE="QAC")
 Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nakke/data-raw/config")
-# Sys.unsetenv("MYSQL_PORT_LOG")
-Sys.setenv(MYSQL_DB_DATA="DegenNakkeReportDataStaging")
-# Sys.setenv(MYSQL_USER="root")
-# Sys.setenv(MYSQL_PASSWORD="root")
+Sys.setenv(MYSQL_DB_DATA="DegenNakkeReportDataStaging") #"db_data"
 
 Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
 
 nakke::kjorNakkeApp()
 
-
+data <- NakkeRegDataSQL()
+library(nakke)
 ##############################
 ## Kjøring på mobilt kontor ##
 ##############################
