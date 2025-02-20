@@ -569,10 +569,6 @@ server_nakke <- function(input, output, session) {
   names(sykehusValg) <- c('Alle',sykehusNavn$x)
 
 
-  #if (paaServer) {
-  #output$appUserName <- renderText(rapbase::getUserFullName(session))
-  #output$appOrgName <- renderText(paste0('rolle: ', user$org(), '<br> reshID: ', reshID=user$org()) )}
-
   # User info in widget
   userInfo <- rapbase::howWeDealWithPersonalData(session)
   observeEvent(input$userInfo, {
