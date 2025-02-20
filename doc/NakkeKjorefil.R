@@ -32,8 +32,9 @@ AntSkjemaAvHver <- tabAntSkjema(SkjemaOversikt=SkjemaData) #, skjemastatus=as.nu
 
 #--------------------------------------SAMLERAPPORT-----------------------------------
 setwd("C:/ResultattjenesteGIT/Nakke/inst")
-knitr::knit('NakkeAarsRapp.Rnw')
+knitr::knit('./inst/NakkeMndRapp.Rnw')
 tools::texi2pdf('NakkeAarsRapp.tex')
+knitr::knit2pdf('./inst/NakkeMndRapp.Rnw')
 #---------------- Tulledata ----------------------------------------
 #Permuter alle variable
 #Erstatt sykehusnavn med fiktive.

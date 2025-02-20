@@ -18,12 +18,13 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
 
       RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$InnDato, 'month')
       tabAvdMnd1 <- table(RegDataDum[ , c('ShNavn', 'Maaned1')])
-      colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)), '%b %y') #month(ymd(colnames(tabAvdMnd1)), label = T)
+      colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)),
+                                     ifelse(antMnd==12,'%b', '%b.%y'))  # '%b %y'
 
       if (dim(tabAvdMnd1)[1]>0) {
       if (reshID==0 ){
         tabAvdMnd1 <- addmargins((tabAvdMnd1))}
-      tabAvdMnd1 <- xtable::xtable(tabAvdMnd1, digits=0)
+      #tabAvdMnd1 <- xtable::xtable(tabAvdMnd1, digits=0)
       }}
 	return(tabAvdMnd1)
 }

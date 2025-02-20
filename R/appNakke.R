@@ -185,9 +185,6 @@ ui_nakke <- function() {
                    dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                   label = "Tidsperiode", separator="t.o.m.", language="nb"),
                    uiOutput('velgReshReg'),
-                   # selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                   #             selected = 0,
-                   #             choices = sykehusValg),
                    br(),
                    downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
                    br(),
@@ -611,9 +608,10 @@ server_nakke <- function(input, output, session) {
   #----------Tabeller, registreringsoversikter ----------------------
 
   observe({
-    tabAntOpphSh <- switch(input$tidsenhetReg,
-                           Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
-                           Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
+    tabAntOpphSh <-
+      xtable::xtable(switch(input$tidsenhetReg,
+                            Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12),
+                            Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg)))
 
     output$tabAntOpphSh <- renderTable(tabAntOpphSh, rownames = T, digits=0, spacing="xs")
     output$lastNed_tabAntOpphSh <- downloadHandler(
@@ -734,6 +732,9 @@ server_nakke <- function(input, output, session) {
   observe({
     DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
+    DataDump <- NakkeUtvalgEnh(DataDump,
+                               datoFra = input$datovalgRegKtr[1],
+                               datoTil = input$datovalgRegKtr[2])
 
     if (user$role() =='SC') {
       valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
