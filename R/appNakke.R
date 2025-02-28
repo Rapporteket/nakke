@@ -760,10 +760,13 @@ server_nakke <- function(input, output, session) {
   org <- rapbase::autoReportOrgServer("NakkeUts", orgs)
 
   # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
-  paramNames <- shiny::reactive("reshID")
-  paramValues <- shiny::reactive(org$value())
-
-  rapbase::autoReportServer2(
+  paramNames <- shiny::reactive(c("reshID"))
+  paramValues <- shiny::reactive(c(org$value()))
+  vis_rapp <- shiny::reactiveVal(FALSE)
+    shiny::observeEvent(user$role(), {
+      vis_rapp(user$role() == "SC")
+  })
+  rapbase::autoReportServer(
     id = "NakkeUts",
     registryName = "nakke",
     type = "dispatchment",
@@ -775,12 +778,13 @@ server_nakke <- function(input, output, session) {
         synopsis = "Halvårsrapport",
         fun = "abonnementNakke",
         paramNames = c('rnwFil', "reshID"),
-        paramValues = c('NakkeMndRapp.Rnw', user$org())
+        paramValues = c('NakkeMndRapp.Rnw', "org$value()")
       )
     ),
     orgs = orgs,
-    eligible = (user$role() == "SC"),
-    user = user  )
+    eligible = vis_rapp,
+    user = user
+  )
 
 
   #----------- Eksport ----------------
@@ -1194,25 +1198,23 @@ server_nakke <- function(input, output, session) {
 
   #------------------ Abonnement ----------------------------------------------
   # Modul, abonnement
-
-  observe({
-    rapbase::autoReportServer2(
-      id = "NakkeAbb",
-      registryName = "nakke",
-      type = "subscription",
-      reports = list(
-        Kvartalsrapp = list(
-          synopsis = "NKR_Nakke/Rapporteket: Resultatrapport, abonnement",
-          fun = "abonnementNakke",
-          paramNames = c('rnwFil', 'reshID', 'brukernavn'),
-          paramValues = c('NakkeMndRapp.Rnw', user$org(), user$name())
-        )
-      ),
-      orgs = as.list(sykehusValg[-1]),
-      eligible = TRUE,
-      user = user
-    )
-  })
+  paramNames <- shiny::reactive(c('reshID', 'brukernavn'))
+  paramValues <- shiny::reactive(c(user$org(), user$name()))
+  rapbase::autoReportServer(
+    id = "NakkeAbb",
+    registryName = "nakke",
+    type = "subscription",
+    reports = list(
+      Kvartalsrapp = list(
+        synopsis = "NKR_Nakke/Rapporteket: Resultatrapport, abonnement",
+        fun = "abonnementNakke",
+        paramNames = c('rnwFil', 'reshID', 'brukernavn'),
+        paramValues = c('NakkeMndRapp.Rnw', "user$org()", "user$name()")
+      )
+    ),
+    orgs = as.list(sykehusValg[-1]),
+    user = user
+  )
 
 } #server
 # Run the application
