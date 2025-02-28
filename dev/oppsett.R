@@ -19,11 +19,14 @@ devtools::install("../rapbase/.")
 devtools::install(upgrade = FALSE)
 
 # dekoding av database-dump
-# sship::dec("c://Users/ast046/Downloads/nordicscir573c60536ce3.sql.gz__20241107_122831.tar.gz", keyfile = "p://.ssh/id_rsa")
+sship::dec("c://Users/ast046/Downloads/nakke131fd5e4d.sql.gz__20250228_155615.tar.gz", keyfile = "p://.ssh/id_rsa", target_dir = "c://Users/ast046/Downloads/.")
 
 Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
 
 Sys.setenv(MYSQL_HOST="localhost") # for mobilt kontor
+Sys.setenv(MYSQL_DB_DATA="nakke")
 
-nordicscir::kjor_NSapper(register='nordicscir', browser = TRUE)
+Sys.setenv(R_RAP_CONFIG_PATH="c://Users/ast046/repo/rapporteket/rygg/dev/config")
+
+nakke::kjorNakkeApp()
