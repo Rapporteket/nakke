@@ -29,4 +29,4 @@ Sys.setenv(MYSQL_DB_DATA="nakke")
 
 Sys.setenv(R_RAP_CONFIG_PATH="c://Users/ast046/repo/rapporteket/rygg/dev/config")
 
-nakke::kjorNakkeApp()
+nakke::kjorNakkeApp(browser = TRUE)
