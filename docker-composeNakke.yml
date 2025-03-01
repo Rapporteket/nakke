@@ -2,7 +2,7 @@ x-environment: &environment
   MYSQL_DB_LOG: db_log
   # NORDICSCIR_DB: db_data
   MYSQL_DB_AUTOREPORT: db_autoreport
-  MYSQL_DB_DATA: NakkeReportDataStaging
+  MYSQL_DB_DATA: DegenNakkeReportDataStaging
   MYSQL_HOST: db
   MYSQL_USER: root
   MYSQL_PASSWORD: root
