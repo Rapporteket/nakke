@@ -545,7 +545,7 @@ server_nakke <- function(input, output, session) {
   RegData <- NakkeRegDataSQL()
   querySD <- paste0('
           SELECT Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
-           FROM skjemaoversikt
+           FROM SkjemaOversikt
            WHERE HovedDato >= "2014-01-01" ')
   SkjemaData <- rapbase::loadRegData(registryName='data', query=querySD, dbType="mysql")
   #  } #hente data på server
@@ -724,7 +724,7 @@ server_nakke <- function(input, output, session) {
   #})
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
-               FROM forlopsoversikt'
+               FROM ForlopsOversikt'
   RegDataForl <- rapbase::loadRegData(registryName = 'data', query = queryForl, dbType = "mysql")
 
   variablePRM <- 'Variabler som skal tas bort for LU-bruker'
