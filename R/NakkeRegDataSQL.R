@@ -210,14 +210,14 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medPro
 	VarighetSykeMeld12mnd,
 	VarighetSykeMeld3mnd,
 	Vekt
-FROM allevarnum
+FROM AlleVarNum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
 
   #queryAVN <-'select * from allevarnum'
   RegDataAVN <- rapbase::loadRegData(registryName = registryName , query = queryAVN, dbType = "mysql")
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
-               FROM forlopsoversikt'
+               FROM ForlopsOversikt'
   RegDataForl <- rapbase::loadRegData(registryName = registryName , query = queryForl, dbType = "mysql")
 
   RegData <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
