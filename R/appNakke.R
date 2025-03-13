@@ -723,9 +723,9 @@ server_nakke <- function(input, output, session) {
     content = function(file, filename){write.csv2(tabDblReg(), file, row.names = F, fileEncoding = 'latin1', na = '')})
   #})
 
-  queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
-               FROM forlopsoversikt'
-  RegDataForl <- rapbase::loadRegData(registryName = 'data', query = queryForl, dbType = "mysql")
+  # queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
+  #              FROM forlopsoversikt'
+  # RegDataForl <- rapbase::loadRegData(registryName = 'data', query = queryForl, dbType = "mysql")
 
   variablePRM <- 'Variabler som skal tas bort for LU-bruker'
 
