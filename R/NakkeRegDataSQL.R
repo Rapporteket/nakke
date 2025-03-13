@@ -14,6 +14,7 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medPro
 
   queryAVN <- paste0('SELECT mce.CENTREID                                                                    AS AvdRESH,
        -- getFriendlyName(mce.CENTREID)                                                   AS SykehusNavn,
+       mce.CENTREID                                                  AS SykehusNavn,
        mce.STATUS                                                                      AS ForlopsStatus,
        mce.MAIL_STATUS                                                                 AS ForlopsMailStatus,
        mce.MCEID                                                                       AS ForlopsID,
