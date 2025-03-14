@@ -185,12 +185,10 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                  dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                 label = "Tidsperiode", separator="t.o.m.", language="nb"),
                  uiOutput('velgReshReg'),
-                 # selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                 #             selected = 0,
-                 #             choices = sykehusValg),
                  br(),
                  downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
                  br(),
+                 downloadButton(outputId = 'lastNed_dataDumpAlle', label='Last ned datadump, ALLE variabler'),
                  br()
                ),
 
@@ -712,8 +710,6 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                FROM ForlopsOversikt'
   RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
 
-  variablePRM <- 'Variabler som skal tas bort for LU-bruker'
-
   output$velgReshReg <- renderUI({
     selectInput(inputId = 'velgReshReg', label='Velg sykehus',
                 selected = 0,
@@ -721,8 +717,16 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
   })
 
   observe({
-    DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
+    #DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
+    RegDataAVN_Alle <- rapbase::loadRegData(registryName = "nakke",
+                                            query = 'select * from AlleVarNum',
+                                            dbType = "mysql")
+    queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
+               FROM ForlopsOversikt'
+    RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
+    DataDumpRaa <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
+
 
     if (rolle =='SC') {
       valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
@@ -731,7 +735,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
       tabDataDump <- DataDump[ind,]
     } else { #Kun SC får laste ned data
       tabDataDump <-
-        DataDump[which(DataDump$ReshId == reshID), -which(names(DataDump) %in% variablePRM)]
+        DataDump[which(DataDump$ReshId == reshID)]
     } # Sjekk at PROM/PREM ikke er med for LU-bruker
 
     output$lastNed_dataDump <- downloadHandler(
