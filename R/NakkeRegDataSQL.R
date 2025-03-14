@@ -503,9 +503,11 @@ FROM mce mce
 
 
 
+  message("Before large query")
 
-  RegDataAVN <- rapbase::loadRegData(registryName = registryName , query = queryAVN, dbType = "mysql")
+  RegData <- rapbase::loadRegData(registryName = registryName , query = queryAVN, dbType = "mysql")
 
+  message("After large query")
 
 
 # 13.03.2025: Kan ikke se at noen av variablene fra Forløps-view er i bruk...
