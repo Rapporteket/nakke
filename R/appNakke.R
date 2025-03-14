@@ -186,9 +186,8 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
                                 label = "Tidsperiode", separator="t.o.m.", language="nb"),
                  uiOutput('velgReshReg'),
                  br(),
-                 downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
+                 downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump, alle variabler'),
                  br(),
-                 downloadButton(outputId = 'lastNed_dataDumpAlle', label='Last ned datadump, ALLE variabler'),
                  br()
                ),
 
