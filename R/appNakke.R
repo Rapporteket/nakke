@@ -723,7 +723,7 @@ ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
                FROM ForlopsOversikt'
     RegDataForl <- rapbase::loadRegData(registryName = "nakke", query = queryForl, dbType = "mysql")
-    DataDumpRaa <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
+    DataDumpRaa <- merge(RegDataAVN_Alle, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
 
 
