@@ -3,8 +3,8 @@
 #Nakke
 library(nakke)
 library(xtable)
-setwd('~/Aarsrappresultater/NKR/') #Nakke23/
-aarsRappAar <- 2023
+setwd('~/Aarsrapp/NKR/') #Nakke23/
+aarsRappAar <- 2024
 
 startAar <- 2012
 datoFra <- paste0(startAar,'-01-01')
@@ -19,10 +19,14 @@ aar2_12mnd <- (aarsRappAar-2):(aarsRappAar-1)
 tidlAar <- aarsRappAar-1
 tidlAar2 <- (aarsRappAar-3):(aarsRappAar-2)
 
-NakkeDataRaa <- NakkeRegDataSQL(datoTil = datoTil)
+NakkeDataRaa <- NakkeRegDataSQL(datoTil = datoTil) #13927
 NakkeData <- NakkePreprosess(NakkeDataRaa)
 NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra=datoFra1aar, datoTil=datoTil)$RegData
 
+#Datasjekk
+ShNavnReshRaa <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'AvdRESH')])
+ShNavnResh <- unique(NakkeData[ ,c('ShNavn', 'ReshId')])
+write.csv2(ShNavnResh[order(ShNavnResh$ShNavn), ], file = 'NakkeSykehusNavnAVDResh.csv', row.names = F, fileEncoding = 'latin1')
 
 #Til Tore
 # RegData <- NakkePreprosess(RegData = NakkeRegDataSQL(medProm = 1))

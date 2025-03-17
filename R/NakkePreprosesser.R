@@ -31,6 +31,7 @@ NakkePreprosess <- function(RegData=RegData)
 	class(RegData$ReshId) <- 'numeric'
 
 	RegData$ShNavn <- as.character(RegData$SykehusNavn) #Får bort tomme navn
+	RegData$ShNavn <- trimws(as.character(RegData$ShNavn))  #Fjerner mellomrom etter navn:
 
 	#Tomme sykehusnavn får resh som navn:
 	indTom <- which(is.na(RegData$ShNavn) | RegData$ShNavn == '')
