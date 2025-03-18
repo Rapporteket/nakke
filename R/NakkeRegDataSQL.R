@@ -533,18 +533,17 @@ FROM mce mce
     indIkkeEprom12mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind12mnd]))
 
     #indEprom <-  which((RegDataV3$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
-# AHS FJERNET FOR Å KJØRE VIDERE PÅ nhn
-# AHS    RegData$OppFolg3mndGML <- RegData$OppFolgStatus3mnd
-# AHS    RegData$OppFolgStatus3mnd <- 0
-# AHS    RegData$OppFolgStatus3mnd[
-# AHS      RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-# AHS    RegData$OppFolgStatus3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
-# AHS
-# AHS    RegData$OppFolg12mndGML <- RegData$OppFolgStatus12mnd
-# AHS    RegData$OppFolgStatus12mnd <- 0
-# AHS    RegData$OppFolgStatus12mnd[
-# AHS      RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-# AHS    RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
+    RegData$OppFolg3mndGML <- RegData$OppFolgStatus3mnd
+    RegData$OppFolgStatus3mnd <- 0
+    RegData$OppFolgStatus3mnd[
+      RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
+    RegData$OppFolgStatus3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
+
+    RegData$OppFolg12mndGML <- RegData$OppFolgStatus12mnd
+    RegData$OppFolgStatus12mnd <- 0
+    RegData$OppFolgStatus12mnd[
+      RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
+    RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
   }
 
   return(RegData)
