@@ -50,9 +50,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
 
   #----------- Figurparametre ------------------------------
 
-  grVar <- 'ShNavn'
-  #RegData[ ,grVar] <- factor(RegData[ ,grVar])
-
+  grVar <- 'SykehusNavn'
 
   NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnGrVar')
   RegData <- NakkeVarSpes$RegData

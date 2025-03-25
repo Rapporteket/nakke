@@ -30,8 +30,10 @@ NakkePreprosess <- function(RegData=RegData)
 	names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
 	class(RegData$ReshId) <- 'numeric'
 
-	RegData$ShNavn <- as.character(RegData$SykehusNavn) #Får bort tomme navn
-	RegData$ShNavn <- trimws(as.character(RegData$ShNavn))  #Fjerner mellomrom etter navn:
+	RegData$SykehusNavn <- as.character(RegData$SykehusNavn) #Får bort tomme navn
+	RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn))  #Fjerner mellomrom etter navn
+	RegData$SykehusNavn[which(RegData$AvdRESH %in% c(999975, 107511))] <- 'Aleris Oslo'
+	RegData$ShNavn <- RegData$SykehusNavn
 
 	#Tomme sykehusnavn får resh som navn:
 	indTom <- which(is.na(RegData$ShNavn) | RegData$ShNavn == '')

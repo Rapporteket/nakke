@@ -83,7 +83,7 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
   RegData <- NakkeUtvalg$RegData
   utvalgTxt <- NakkeUtvalg$utvalgTxt
 
-  grVar <- 'ShNavn'
+  grVar <- 'SykehusNavn'
   RegData[ ,grVar] <- factor(RegData[ ,grVar])
 
   if(dim(RegData)[1] > 0) {

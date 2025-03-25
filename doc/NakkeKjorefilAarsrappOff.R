@@ -25,6 +25,7 @@ NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra=datoFra1aar, datoTil=
 
 #Datasjekk
 ShNavnReshRaa <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'AvdRESH')])
+SykehusNavnResh <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'AvdRESH')])
 ShNavnResh <- unique(NakkeData[ ,c('ShNavn', 'ReshId')])
 write.csv2(ShNavnResh[order(ShNavnResh$ShNavn), ], file = 'NakkeSykehusNavnAVDResh.csv', row.names = F, fileEncoding = 'latin1')
 
@@ -119,7 +120,7 @@ AndelPst <- function(variabel,teller,nevner){
 
 #----- TABELLER og tall ------------------------------------------------------------------
 
-tabAvdNnakke <- addmargins(table(NakkeData[c('ShNavn','Aar')]))
+tabAvdNnakke <- addmargins(table(NakkeData[c('SykehusNavn','Aar')]))
 antKol <- ncol(tabAvdNnakke)
 tabAvdN5nakke <- tabAvdNnakke[,(antKol-5):antKol]
 rownames(tabAvdN5nakke)[dim(tabAvdN5nakke)[1] ]<- 'TOTALT, alle avdelinger:'
