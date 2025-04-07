@@ -1,5 +1,5 @@
 
-Sys.setenv(FALK_EXTENDED_USER_RIGHTS= "[{\"A\":85,\"R\":\"SC\",\"U\":110734},{\"A\":85,\"R\":\"LU\",\"U\":110734},{\"A\":85,\"R\":\"LU\",\"U\":108172},{\"A\":85,\"R\":\"LU\",\"U\":103575}]")
+Sys.setenv(FALK_EXTENDED_USER_RIGHTS= "[{\"A\":85,\"R\":\"SC\",\"U\":105588},{\"A\":85,\"R\":\"LU\",\"U\":105588},{\"A\":85,\"R\":\"LU\",\"U\":601161},{\"A\":85,\"R\":\"LU\",\"U\":4212372}]")
 Sys.setenv(FALK_APP_ID="85")
 Sys.setenv(FALK_USER_EMAIL="jesus@sky.no")
 Sys.setenv(FALK_USER_FULLNAME="Lotta")
