@@ -42,6 +42,8 @@ datoFra <- as.Date(paste0(1900+dato$year-4,'-01-01'))
            WHERE HovedDato >= "2014-01-01" ')
 
   SkjemaData <- rapbase::loadRegData(registryName='data', query=querySD, dbType="mysql") # "nakke"
+  SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
+
   knitr::opts_knit$set(root.dir = './')
   knitr::opts_chunk$set(fig.path='')
 #} #hente data på server
@@ -62,14 +64,19 @@ RegData12mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra12mnd), ]
 AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
 # Nye variabler:
 RegData$Mnd <- RegData$MndNum
-SkjemaData <- SkjemaData[SkjemaData$SkjemaStatus == 1, ]
+
+#lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
 
 #SkjemaRekkeflg #5-pasientskjema, 10-legeskjema, 15- Oppf. 3mnd, 20 - Oppf. 12mnd
-SkjemaData$InnDato <- as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
-SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
-SkjemaData$Mnd <- format.Date(SkjemaData$InnDato, '%b %Y') #as.yearmon(SkjemaData$InnDato)
-SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
+SkjemaData$InnDato <- SkjemaData$HovedDato # as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData12mnd <- SkjemaData[SkjemaData$InnDato > as.POSIXlt(datoFra12mnd), ]
+SkjemaData12mnd$Aar <- 1900 + strptime(SkjemaData12mnd$InnDato, format="%Y")$year
+#SkjemaData12mnd$Mnd <- format.Date(SkjemaData12mnd$InnDato, '%y-%m') #format.Date(SkjemaData12mnd$InnDato, '%b %Y')
+SkjemaData12mnd$MndNum <- as.POSIXlt(SkjemaData12mnd$InnDato, format="%Y-%m-%d")$mon +1
+SkjemaData12mnd <- SorterOgNavngiTidsEnhet(RegData=SkjemaData12mnd, tidsenhet = 'Mnd')$RegData
+mndNum <- min(SkjemaData12mnd$TidsEnhetSort, na.rm=T):max(SkjemaData12mnd$TidsEnhetSort, na.rm = T)
+
+#SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
 
 enhetsUtvalg <- 1
 shtxt <- ifelse(reshID == 0, 'Hele landet', as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
@@ -122,8 +129,10 @@ Dette er bare et lite utvalg resultater. På Rapporteket kan du finne mer spesif
 <<'Registreringer siste 12 mnd', warnings=FALSE , results='asis'>>=
 
 tabAvdSiste12mnd <- addmargins(table(SkjemaData12mnd[SkjemaData12mnd$SkjemaRekkeflg==2*5,
-                                                     c('Sykehusnavn', 'Mnd')]))
-colnames(tabAvdSiste12mnd) <- substring(colnames(tabAvdSiste12mnd),1,3)
+                                                     c('Sykehusnavn', "TidsEnhetSort")])) #'Mnd'
+#colnames(tabAvdSiste12mnd) <- substring(colnames(tabAvdSiste12mnd),1,3)
+SkjemaData12mnd$TidsEnhet <- as.character(SkjemaData12mnd$TidsEnhet)
+colnames(tabAvdSiste12mnd) <- c(SkjemaData12mnd$TidsEnhet[match(mndNum, SkjemaData12mnd$TidsEnhetSort)], 'Sum')
 tabAvdSiste12mndUt <- print(xtable::xtable(tabAvdSiste12mnd, digits=0, align=c('l', rep('r', ncol(tabAvdSiste12mnd))),
                                            caption='Antall registereringer (ferdigstilte legeskjema)
                                                           per måned og avdeling, siste 12 måneder.'),
@@ -165,7 +174,8 @@ tabAvd12MndNskjema <- cbind(
 xtable::xtable(tabAvd12MndNskjema, align=c('l', rep('r', ncol(tabAvd12MndNskjema))),
                digits=c(0,0,0,0,1),
                caption = paste0('Antall ferdigstilte skjema av hver type per måned og avdeling, for operasjoner
-                                  utført siste 12 måneder. For oppfølgingsskjema er antall og andel basert på operasjoner i perioden ', datoFra,' til ', (as.Date(dato)-100),', mens for lege- og pasientskjema er registreringer fram til dagens dato med.'))
+                                  utført siste 12 måneder. For oppfølgingsskjema er antall og andel basert på operasjoner i perioden ',
+                                datoFra12mnd,' til ', (as.Date(dato)-100),', mens for lege- og pasientskjema er registreringer fram til dagens dato med.'))
 
 @
 \end{frame}
