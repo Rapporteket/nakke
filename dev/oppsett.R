@@ -5,10 +5,10 @@ Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nakke/data-raw/config")
 # Sys.setenv(MYSQL_DB_DATA="DegenNakkeReportDataStaging") #"db_data"
 Sys.setenv(MYSQL_DB_DATA="nakke") #"db_data"
 
+setwd('../nakke')
 Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
-
-nakke::kjorNakkeApp()
+nakke::kjorNakkeApp(browser = TRUE)
 
 data <- NakkeRegDataSQL()
 library(nakke)
