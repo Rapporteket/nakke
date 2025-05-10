@@ -1,6 +1,5 @@
 
 Sys.setenv(FALK_EXTENDED_USER_RIGHTS= "[{\"A\":85,\"R\":\"SC\",\"U\":601161},{\"A\":85,\"R\":\"LU\",\"U\":601161},{\"A\":85,\"R\":\"LU\",\"U\":108172},{\"A\":85,\"R\":\"LU\",\"U\":103575}]")
-Sys.setenv(R_RAP_INSTANCE="QAC")
 Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nakke/data-raw/config")
 # Sys.setenv(MYSQL_DB_DATA="DegenNakkeReportDataStaging") #"db_data"
 Sys.setenv(MYSQL_DB_DATA="nakke") #"db_data"
