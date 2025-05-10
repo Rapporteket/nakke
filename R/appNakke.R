@@ -738,13 +738,16 @@ server_nakke <- function(input, output, session) {
   observe({
     DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
+    DataDump <- NakkeUtvalgEnh(RegData = DataDump, datoFra = input$datovalgRegKtr[1],
+                               datoTil = input$datovalgRegKtr[2])$RegData
 
     if (user$role() =='SC') {
+
       valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
       } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
-    } else { #Kun SC får laste ned data
+    } else { #Kun SC får laste ned data så trenger vel ikke denne...
       tabDataDump <-
         DataDump[which(DataDump$ReshId == user$org()), -which(names(DataDump) %in% variablePRM)]
     } # Sjekk at PROM/PREM ikke er med for LU-bruker

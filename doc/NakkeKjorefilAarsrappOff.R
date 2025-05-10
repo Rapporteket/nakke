@@ -3,7 +3,7 @@
 #Nakke
 library(nakke)
 library(xtable)
-setwd('~/Aarsrapp/NKR/') #Nakke23/
+setwd('../Aarsrapp/NKR/') #Nakke23/
 aarsRappAar <- 2024
 
 startAar <- 2012
