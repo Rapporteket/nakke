@@ -756,7 +756,8 @@ server_nakke <- function(input, output, session) {
       filename = function(){'dataDumpNakke.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
   })
-
+    }
+  })
   #---Utsendinger---------------
   orgs <- as.list(sykehusValg)
 
@@ -765,6 +766,7 @@ server_nakke <- function(input, output, session) {
   # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
   paramNames <- shiny::reactive(c("reshID"))
   paramValues <- shiny::reactive(c(org$value()))
+
   vis_rapp <- shiny::reactiveVal(FALSE)
     shiny::observeEvent(user$role(), {
       vis_rapp(user$role() == "SC")
@@ -796,8 +798,7 @@ server_nakke <- function(input, output, session) {
   ## veileding
   rapbase::exportGuideServer("nakkeExportGuide", "nakke")
 
-}
-    })
+
 
   #-----------Fordelinger---------------------
   output$fordelinger <- renderPlot({
@@ -1201,6 +1202,7 @@ server_nakke <- function(input, output, session) {
 
   #------------------ Abonnement ----------------------------------------------
   # Modul, abonnement
+  orgs = as.list(sykehusValg[-1])
   paramNames <- shiny::reactive(c('reshID', 'brukernavn'))
   paramValues <- shiny::reactive(c(user$org(), user$name()))
   rapbase::autoReportServer(
@@ -1209,13 +1211,13 @@ server_nakke <- function(input, output, session) {
     type = "subscription",
     reports = list(
       Kvartalsrapp = list(
-        synopsis = "NKR_Nakke/Rapporteket: Resultatrapport, abonnement",
+        synopsis = "NKR_Nakke: Resultatrapport, abonnement",
         fun = "abonnementNakke",
         paramNames = c('rnwFil', 'reshID', 'brukernavn'),
-        paramValues = c('NakkeMndRapp.Rnw', "user$org()", "user$name()")
+        paramValues = c('NakkeMndRapp.Rnw', 9999, "user$name()")
       )
     ),
-    orgs = as.list(sykehusValg[-1]),
+    orgs = orgs,
     user = user
   )
 
