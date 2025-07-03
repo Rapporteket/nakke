@@ -3,7 +3,7 @@
 #Nakke
 library(nakke)
 library(xtable)
-setwd('~/Aarsrapp/NKR/') #Nakke23/
+setwd('../Aarsrapp/NKR/') #Nakke23/
 aarsRappAar <- 2024
 
 startAar <- 2012
@@ -165,16 +165,16 @@ Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1),
 #Nakke
 library(nakke)
 #library(xtable)
-setwd('~/Aarsrappresultater/NETTsider')
-  aarTilVisning <- 2012:2024
+aarTilVisning <- 2012:2025
 NakkeDataRaa <- NakkeRegDataSQL() #Tar også med inneværende år
 NakkeData <- NakkePreprosess(NakkeDataRaa)
 
 #Sjekk om det har kommet nye avdelinger:
-#ny <- setdiff(sort(unique(NakkeData$ReshId)), sort(names(nyID)))
-#NakkeData$ShNavn[match(ny, NakkeData$ReshId)]
-#NB: Aktuelle utvalg for fremBak, myelopati osv. er lagt inn i funksjonen (dataTilOffVisning)
+ny <- setdiff(sort(unique(NakkeData$ReshId)), sort(names(nyID)))
+NakkeData$ShNavn[match(ny, NakkeData$ReshId)]
+# NB: Aktuelle utvalg for fremBak, myelopati osv. er lagt inn i funksjonen (dataTilOffVisning)
 
+setwd('../Aarsrapp/NKR')
 #Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
 #valgtVar='KomplStemme3mnd', myelopati=0, fremBak=1, Ngrense=20
 nakke1 <- nakke::dataTilOffVisning(RegData = NakkeData,

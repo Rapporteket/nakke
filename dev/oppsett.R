@@ -1,11 +1,15 @@
 
 Sys.setenv(FALK_EXTENDED_USER_RIGHTS= "[{\"A\":85,\"R\":\"SC\",\"U\":601161},{\"A\":85,\"R\":\"LU\",\"U\":601161},{\"A\":85,\"R\":\"LU\",\"U\":108172},{\"A\":85,\"R\":\"LU\",\"U\":103575}]")
-Sys.setenv(R_RAP_INSTANCE="QAC")
 Sys.setenv(R_RAP_CONFIG_PATH="/home/rstudio/nakke/data-raw/config")
 # Sys.setenv(MYSQL_DB_DATA="DegenNakkeReportDataStaging") #"db_data"
 Sys.setenv(MYSQL_DB_DATA="nakke") #"db_data"
 
+
+devtools::install_github('Rapporteket/rapbase', ref = 'ant_linjer_autorapport')
+
+#remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('c://Users/lro2402unn/RegistreGIT/nakke')
+
 Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
 nakke::kjorNakkeApp(browser = TRUE)
