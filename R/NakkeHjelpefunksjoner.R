@@ -212,12 +212,12 @@ abonnementNakke <- function(rnwFil, reshID=0,
                             fulltNavn = 'Mangler personnavn',
                        datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
-  rapbase::autLogger(user = brukernavn, name = fulltNavn,
-                     fun = "abonnementNakke",
-                     type = 'abb el uts',
-                     param = c(rnwFil, reshID),
-                     registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
-                    reshId = reshID, msg = "Abonnement: månedsrapport")
+  # rapbase::autLogger(user = brukernavn, name = fulltNavn,
+  #                    fun = "abonnementNakke",
+  #                    type = 'abb el uts',
+  #                    param = c(rnwFil, reshID),
+  #                    registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
+  #                   reshId = reshID, msg = "Abonnement: månedsrapport")
 
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(Sys.time()), '.Rnw')
