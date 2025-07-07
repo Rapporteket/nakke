@@ -1205,10 +1205,13 @@ server_nakke <- function(input, output, session) {
   orgs = as.list(sykehusValg[-1])
   paramNames <- shiny::reactive(c('reshID', 'brukernavn'))
   paramValues <- shiny::reactive(c(user$org(), user$name()))
+
   rapbase::autoReportServer(
     id = "NakkeAbb",
     registryName = "nakke",
     type = "subscription",
+    paramNames = paramNames,
+    paramValues = paramValues,
     reports = list(
       Kvartalsrapp = list(
         synopsis = "NKR_Nakke: Resultatrapport, abonnement",
