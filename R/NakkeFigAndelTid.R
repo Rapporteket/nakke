@@ -89,6 +89,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
   AggVerdier <- list(Hoved = 0, Rest =0)
   #N <- list(Hoved = dim(RegData)[1], Rest=0)
   N <- list(Hoved = length(ind$Hoved), Rest =length(ind$Rest))
+  grtxt2 <- ''
 
   yAkseTxt <- 'Andel (%)'
   vektor <- c('Aar','Halvaar','Kvartal','Mnd')

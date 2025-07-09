@@ -185,9 +185,6 @@ ui_nakke <- function() {
                    dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
                                   label = "Tidsperiode", separator="t.o.m.", language="nb"),
                    uiOutput('velgReshReg'),
-                   # selectInput(inputId = 'velgReshReg', label='Velg sykehus',
-                   #             selected = 0,
-                   #             choices = sykehusValg),
                    br(),
                    downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
                    br(),
@@ -215,7 +212,6 @@ ui_nakke <- function() {
                ),
                shiny::tabPanel(
                  h4("Eksport av krypterte data"),
-                 #shiny::sidebarLayout(
                  shiny::sidebarPanel(
                    rapbase::exportUCInput("nakkeExport")
                  ),
@@ -1203,15 +1199,15 @@ server_nakke <- function(input, output, session) {
   #------------------ Abonnement ----------------------------------------------
   # Modul, abonnement
   orgs = as.list(sykehusValg[-1])
-  paramNames <- shiny::reactive(c('reshID', 'brukernavn'))
-  paramValues <- shiny::reactive(c(user$org(), user$name()))
+  paramNamesAbb <- shiny::reactive(c('reshID', 'brukernavn'))
+  paramValuesAbb <- shiny::reactive(c(user$org(), user$name()))
 
   rapbase::autoReportServer(
     id = "NakkeAbb",
     registryName = "nakke",
     type = "subscription",
-    paramNames = paramNames,
-    paramValues = paramValues,
+    paramNames = paramNamesAbb,
+    paramValues = paramValuesAbb,
     reports = list(
       Kvartalsrapp = list(
         synopsis = "NKR_Nakke: Resultatrapport, abonnement",
