@@ -37,3 +37,49 @@ RegData <- dplyr::rename(IntData,
                          ReshId = ExternalId,
                          ShNavnReg = ShNavn,
                          ShNavn = Title) #newname = oldname
+
+#I UI-funksjonen så det slik ut:
+
+shiny::tabPanel(
+  "Utsending",
+  shiny::sidebarLayout(
+    shiny::sidebarPanel(
+      rapbase::autoReportOrgInput("norgastDispatch"),
+      rapbase::autoReportInput("norgastDispatch"),
+      shiny::actionButton(inputId = "run_autoreport",
+                          label = "Kjør autorapporter"),
+      shiny::dateInput(inputId = "rapportdato",
+                       label = "Kjør rapporter med dato:",
+                       value = Sys.Date(),
+                       min = Sys.Date(),
+                       max = Sys.Date() + 366
+      ),
+      shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+    ),
+    shiny::mainPanel(
+      rapbase::autoReportUI("norgastDispatch"),
+      p(em("System message:")),
+      verbatimTextOutput("sysMessage"),
+      p(em("Function message:")),
+      verbatimTextOutput("funMessage")
+    )
+  )
+)
+
+#Server:
+kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
+  dato <- input$rapportdato
+  dryRun <- !(input$dryRun)
+  withCallingHandlers({
+    shinyjs::html("sysMessage", "")
+    shinyjs::html("funMessage", "")
+    shinyjs::html("funMessage",
+                  rapbase::runAutoReport(group = "nakke",
+                                         dato = dato, dryRun = dryRun))
+  },
+  message = function(m) {
+    shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+  })
+})
+
+#    For hele konteksten kan du f.eks. se tag v3.0.15 hos norgast.

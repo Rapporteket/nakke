@@ -167,14 +167,29 @@ ui_nakke <- function() {
              h3('Denne siden skal kun vises for SC-bruker', align='center'),
              tabsetPanel(
                tabPanel(
-                 h4("Utsending av rapporter"),
+                 h4("Utsending av rapporter med TEST"),
                  sidebarLayout(
                    sidebarPanel(
                      rapbase::autoReportOrgInput("NakkeUts"),
-                     rapbase::autoReportInput("NakkeUts")
+                     rapbase::autoReportInput("NakkeUts"),
+
+                     shiny::actionButton(inputId = "run_autoreport",
+                                         label = "Kjør autorapporter"),
+                     shiny::dateInput(inputId = "rapportdato",
+                                      label = "Kjør rapporter med dato:",
+                                      value = Sys.Date(),
+                                      min = Sys.Date(),
+                                      max = Sys.Date() + 366
+                     ),
+                     shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+
                    ),
                    mainPanel(
-                     rapbase::autoReportUI("NakkeUts")
+                     rapbase::autoReportUI("NakkeUts"),
+                     p(em("System message:")),
+                     verbatimTextOutput("sysMessage"),
+                     p(em("Function message:")),
+                     verbatimTextOutput("funMessage")
                    )
                  )
                ),
@@ -513,33 +528,7 @@ ui_nakke <- function() {
                  rapbase::autoReportUI("NakkeAbb")
                )
              )
-    ), #tab abonnement
-
-    shiny::tabPanel(
-      "Utsending TEST",
-      shiny::sidebarLayout(
-        shiny::sidebarPanel(
-          rapbase::autoReportOrgInput("norgastDispatch"),
-          rapbase::autoReportInput("norgastDispatch"),
-          shiny::actionButton(inputId = "run_autoreport",
-                              label = "Kjør autorapporter"),
-          shiny::dateInput(inputId = "rapportdato",
-                           label = "Kjør rapporter med dato:",
-                           value = Sys.Date(),
-                           min = Sys.Date(),
-                           max = Sys.Date() + 366
-          ),
-          shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
-        ),
-        shiny::mainPanel(
-          rapbase::autoReportUI("norgastDispatch"),
-          p(em("System message:")),
-          verbatimTextOutput("sysMessage"),
-          p(em("Function message:")),
-          verbatimTextOutput("funMessage")
-        )
-      )
-    )
+    ) #tab abonnement
 
 
   ) #fluidpage, dvs. alt som vises på skjermen
