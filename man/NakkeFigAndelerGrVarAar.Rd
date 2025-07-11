@@ -16,7 +16,7 @@ NakkeFigAndelerGrVarAar(
   myelopati = 99,
   fremBak = 0,
   Ngrense = 10,
-  grVar = "ShNavn",
+  grVar = "SykehusNavn",
   ktr = 0,
   aar = 0,
   tidlAar = 0,

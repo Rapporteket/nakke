@@ -29,10 +29,11 @@ NakkePreprosess <- function(RegData=RegData)
 	#Variabel som identifiserer avdelingas resh
 	names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
 	class(RegData$ReshId) <- 'numeric'
+	RegData$ReshId[which(RegData$ReshId %in% c(999975, 4212372))] <- 107511
 
 	RegData$SykehusNavn <- as.character(RegData$SykehusNavn) #Får bort tomme navn
 	RegData$SykehusNavn <- trimws(as.character(RegData$SykehusNavn))  #Fjerner mellomrom etter navn
-	RegData$SykehusNavn[which(RegData$AvdRESH %in% c(999975, 107511))] <- 'Aleris Oslo'
+	RegData$SykehusNavn[which(RegData$ReshId == 107511)] <- 'Aleris Oslo'
 	RegData$ShNavn <- RegData$SykehusNavn
 
 	#Tomme sykehusnavn får resh som navn:

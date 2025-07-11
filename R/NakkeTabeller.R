@@ -7,26 +7,27 @@
 #'
 #' @export
 tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
-  #RegData må inneholde ..
+
   if (reshID!=0){RegData <- RegData[which(RegData$ReshId==reshID), ]}
   datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
-  tabAvdMnd1 <- 0
+  tabAvdMnd <- 0
   if (exists('datoFra')){
     aggVar <-  c('ShNavn', 'InnDato')
     RegDataDum <- RegData[intersect(which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')),
                                     which(as.Date(RegData$InnDato, tz='uTC') > as.Date(datoFra, tz='UTC'))), aggVar]
 
-    RegDataDum$Maaned1 <- lubridate::floor_date(RegDataDum$InnDato, 'month')
-    tabAvdMnd1 <- table(RegDataDum[ , c('ShNavn', 'Maaned1')])
-    colnames(tabAvdMnd1) <- format(lubridate::ymd(colnames(tabAvdMnd1)),
-                                   ifelse(antMnd==12,'%b', '%b.%y'))  # '%b %y'
+    RegDataDum$Maaned <- format(lubridate::ymd(RegDataDum$InnDato),'%b')
+    tabAvdMnd <- table(RegDataDum[ , c('ShNavn', 'Maaned')])
 
-    if (dim(tabAvdMnd1)[1]>0) {
+    if (dim(tabAvdMnd)[1]>0) {
       if (reshID==0 ){
-        tabAvdMnd1 <- addmargins((tabAvdMnd1))}
-      #tabAvdMnd1 <- xtable::xtable(tabAvdMnd1, digits=0)
-    }}
-  return(tabAvdMnd1)
+        tabAvdMnd <- addmargins(tabAvdMnd)
+        }
+      tabAvdMnd <- xtable::xtable(tabAvdMnd, digits=0)
+    }
+  }
+
+  return(tabAvdMnd)
 }
 
 #'  Antall opphold siste 5 år

@@ -513,7 +513,35 @@ ui_nakke <- function() {
                  rapbase::autoReportUI("NakkeAbb")
                )
              )
-    ) #tab abonnement
+    ), #tab abonnement
+
+    shiny::tabPanel(
+      "Utsending TEST",
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
+          rapbase::autoReportOrgInput("norgastDispatch"),
+          rapbase::autoReportInput("norgastDispatch"),
+          shiny::actionButton(inputId = "run_autoreport",
+                              label = "Kjør autorapporter"),
+          shiny::dateInput(inputId = "rapportdato",
+                           label = "Kjør rapporter med dato:",
+                           value = Sys.Date(),
+                           min = Sys.Date(),
+                           max = Sys.Date() + 366
+          ),
+          shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+        ),
+        shiny::mainPanel(
+          rapbase::autoReportUI("norgastDispatch"),
+          p(em("System message:")),
+          verbatimTextOutput("sysMessage"),
+          p(em("Function message:")),
+          verbatimTextOutput("funMessage")
+        )
+      )
+    )
+
+
   ) #fluidpage, dvs. alt som vises på skjermen
 
 } #ui
@@ -1219,6 +1247,28 @@ server_nakke <- function(input, output, session) {
     orgs = orgs,
     user = user
   )
+
+#Tørrkjøring av abonnement
+
+  kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
+    dato <- input$rapportdato
+    dryRun <- !(input$dryRun)
+    withCallingHandlers({
+      shinyjs::html("sysMessage", "")
+      shinyjs::html("funMessage", "")
+      shinyjs::html("funMessage",
+                    rapbase::runAutoReport(group = "nakke",
+                                           dato = dato, dryRun = dryRun))
+    },
+    message = function(m) {
+      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+    })
+  })
+
+#  I UI-funksjonen så det slik ut:
+
+
+
 
 } #server
 # Run the application
