@@ -15,10 +15,7 @@ ui_nakke <- function() {
   sluttDato <- idag
   aarFra <- paste0(1900+as.POSIXlt(idag)$year-5, '-01-01')
 
-  regTitle <- #ifelse(paaServer,
-    'NKR: Degenerativ nakke'
-  #, 'Degenerativ nakke med FIKTIVE data' #)
-
+  regTitle <- 'NKR: Degenerativ nakke'
 
   # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
   addResourcePath('rap', system.file('www', package='rapbase'))
@@ -42,10 +39,6 @@ ui_nakke <- function() {
                    'Bakre fusjon'=4,
                    'Korporektomi'=5,
                    'Andre inngrep'=6)
-
-
-  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  paaServer <- context %in% c("DEV", "TEST", "QA", "PRODUCTION")
 
 
   #----Define UI for application------
@@ -92,10 +85,7 @@ ui_nakke <- function() {
              ),
 
              mainPanel(
-               if (context %in% c("DEV", "TEST", "QA", "PRODUCTION", "QAC", "PRODUCTIONC")) {
-                 rapbase::navbarWidgetInput("navbar-widget", selectOrganization = TRUE)
-               },
-
+               rapbase::navbarWidgetInput("navbar-widget", selectOrganization = TRUE),
                tags$head(tags$link(rel="shortcut icon", href="rap/favicon.ico")),
 
                h4('Her kan man finne resultater fra NKR. Under hver fane kan man velge hva man
@@ -549,19 +539,16 @@ server_nakke <- function(input, output, session) {
 
   #-- Div serveroppstart og hente data
 
-  context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
-  #if (paaServer) {
-  rapbase::appLogger(session, msg = 'Starter Rapporteket-Nakke') #}
+  # context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
+  # paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
 
-  #  if (paaServer == TRUE) {
+  # rapbase::appLogger(session, msg = 'Starter Rapporteket-Nakke')
   RegData <- NakkeRegDataSQL()
   querySD <- paste0('
           SELECT Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
            FROM skjemaoversikt
            WHERE HovedDato >= "2014-01-01" ')
   SkjemaData <- rapbase::loadRegData(registryName='data', query=querySD, dbType="mysql")
-  #  } #hente data på server
 
   #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd. Endret til 5*, dvs. 5,10,15,20, juli 2022
   SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato)
@@ -581,8 +568,6 @@ server_nakke <- function(input, output, session) {
   sykehusValg <- c(0,sykehusValg)
   names(sykehusValg) <- c('Alle',sykehusNavn$x)
 
-
-  #if (paaServer) {
   #output$appUserName <- renderText(rapbase::getUserFullName(session))
   #output$appOrgName <- renderText(paste0('rolle: ', user$org(), '<br> reshID: ', reshID=user$org()) )}
 
@@ -769,6 +754,24 @@ server_nakke <- function(input, output, session) {
       filename = function(){'dataDumpNakke.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
   })
+
+  #Tørrkjøring av abonnement
+
+  kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
+    dato <- input$rapportdato
+    dryRun <- !(input$dryRun)
+    withCallingHandlers({
+      shinyjs::html("sysMessage", "")
+      shinyjs::html("funMessage", "")
+      shinyjs::html("funMessage",
+                    rapbase::runAutoReport(group = "nakke",
+                                           dato = dato, dryRun = dryRun))
+    },
+    message = function(m) {
+      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
+    })
+  })
+
     }
   })
   #---Utsendinger---------------
@@ -1237,22 +1240,6 @@ server_nakke <- function(input, output, session) {
     user = user
   )
 
-#Tørrkjøring av abonnement
-
-  kjor_autorapport <- shiny::observeEvent(input$run_autoreport, {
-    dato <- input$rapportdato
-    dryRun <- !(input$dryRun)
-    withCallingHandlers({
-      shinyjs::html("sysMessage", "")
-      shinyjs::html("funMessage", "")
-      shinyjs::html("funMessage",
-                    rapbase::runAutoReport(group = "nakke",
-                                           dato = dato, dryRun = dryRun))
-    },
-    message = function(m) {
-      shinyjs::html(id = "sysMessage", html = m$message, add = TRUE)
-    })
-  })
 
 #  I UI-funksjonen så det slik ut:
 
