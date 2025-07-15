@@ -776,7 +776,6 @@ server_nakke <- function(input, output, session) {
   })
   #---Utsendinger---------------
   orgs <- as.list(sykehusValg)
-
   org <- rapbase::autoReportOrgServer("NakkeUts", orgs)
 
   # oppdatere reaktive parametre, for å få inn valgte verdier (overskrive de i report-lista)
@@ -1218,7 +1217,6 @@ server_nakke <- function(input, output, session) {
 
   #------------------ Abonnement ----------------------------------------------
   # Modul, abonnement
-  orgs = as.list(sykehusValg[-1])
   paramNamesAbb <- shiny::reactive(c('reshID', 'brukernavn'))
   paramValuesAbb <- shiny::reactive(c(user$org(), user$name()))
 
@@ -1236,7 +1234,7 @@ server_nakke <- function(input, output, session) {
         paramValues = c('NakkeMndRapp.Rnw', 9999, "user$name()")
       )
     ),
-    orgs = orgs,
+    orgs = as.list(sykehusValg[-1]),
     user = user
   )
 
