@@ -740,21 +740,27 @@ server_nakke <- function(input, output, session) {
     DataDump <- NakkeUtvalgEnh(RegData = DataDump, datoFra = input$datovalgRegKtr[1],
                                datoTil = input$datovalgRegKtr[2])$RegData
 
-    if (user$role() =='SC') {
+    #if (user$role() =='SC') {
 
       valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
       } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
-    } else { #Kun SC får laste ned data så trenger vel ikke denne...
-      tabDataDump <-
-        DataDump[which(DataDump$ReshId == user$org()), -which(names(DataDump) %in% variablePRM)]
-    } # Sjekk at PROM/PREM ikke er med for LU-bruker
+      txtLog <- paste0('Datadump for Nakke: ',
+                       'tidsperiode ', input$datovalgRegKtr[1], '_', input$datovalgRegKtr[2],
+                       ', resh ', valgtResh)
+    # } else { #Kun SC får laste ned data så trenger vel ikke denne...
+    #   tabDataDump <-
+    #     DataDump[which(DataDump$ReshId == user$org()), -which(names(DataDump) %in% variablePRM)]
+    # } # Sjekk at PROM/PREM ikke er med for LU-bruker
 
     output$lastNed_dataDump <- downloadHandler(
       filename = function(){'dataDumpNakke.csv'},
-      content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')})
-  })
+      content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')
+          rapbase::repLogger(session = session, #list(...)[["session"]],
+                             msg = txtLog)
+      })
+  }) #observe
 
   #Tørrkjøring av abonnement
 
