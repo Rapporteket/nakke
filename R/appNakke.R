@@ -157,12 +157,13 @@ ui_nakke <- function() {
              h3('Denne siden skal kun vises for SC-bruker', align='center'),
              tabsetPanel(
                tabPanel(
-                 h4("Utsending av rapporter med TEST"),
+                 h4("Utsending av rapporter"),
                  sidebarLayout(
                    sidebarPanel(
                      rapbase::autoReportOrgInput("NakkeUts"),
                      rapbase::autoReportInput("NakkeUts"),
 
+                     h4('Test av autorapportutsending:'),
                      shiny::actionButton(inputId = "run_autoreport",
                                          label = "Kjør autorapporter"),
                      shiny::dateInput(inputId = "rapportdato",
@@ -615,7 +616,7 @@ server_nakke <- function(input, output, session) {
   observe({
     tabAntOpphSh <- switch(input$tidsenhetReg,
                            Mnd=tabAntOpphShMnd(RegData=RegData, datoTil=input$sluttDatoReg, antMnd=12), #input$datovalgTab[2])
-                           Aar=tabAntOpphSh5Aar(RegData=RegData, datoTil=input$sluttDatoReg))
+                           Aar=tabAntOpphShAar(RegData=RegData, datoTil=input$sluttDatoReg, antAar=10))
 
     output$tabAntOpphSh <- renderTable(tabAntOpphSh, rownames = T, digits=0, spacing="xs")
     output$lastNed_tabAntOpphSh <- downloadHandler(
@@ -630,7 +631,7 @@ server_nakke <- function(input, output, session) {
     valgtAar <- as.numeric(format.Date(input$sluttDatoReg, "%Y"))
     h4(HTML(switch(input$tidsenhetReg, #undertittel <-
                    Mnd = paste0(t1, 'siste 12 måneder før ', input$sluttDatoReg, '<br />'),
-                   Aar = paste0(t1, 'siste 5 år til og med ', valgtAar, '<br />'))
+                   Aar = paste0(t1, 'per år til og med ', valgtAar, '<br />'))
     ))})
 
   #RegData som har tilknyttede skjema av ulik type.

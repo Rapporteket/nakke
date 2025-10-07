@@ -31,8 +31,6 @@ dato <- as.POSIXlt(datoTil)
 datoFra <- as.Date(paste0(1900+dato$year-4,'-01-01'))
 #--------------------HENTE DATA--------------------
 
-#context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-#if (context %in% c("DEV", "TEST", "QA", "PRODUCTION")) {
   RegData <- NakkeRegDataSQL(datoFra = datoFra)
 
   querySD <- paste0('
@@ -58,20 +56,14 @@ AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
 # Nye variabler:
 RegData$Mnd <- RegData$MndNum
 
-#lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
-
 #SkjemaRekkeflg #5-pasientskjema, 10-legeskjema, 15- Oppf. 3mnd, 20 - Oppf. 12mnd
 SkjemaData$InnDato <- SkjemaData$HovedDato # as.POSIXlt(SkjemaData$HovedDato, format="%Y-%m-%d")
 SkjemaData12mnd <- SkjemaData[SkjemaData$InnDato > as.POSIXlt(datoFra12mnd), ]
 SkjemaData12mnd$Aar <- 1900 + strptime(SkjemaData12mnd$InnDato, format="%Y")$year
-#SkjemaData12mnd$Mnd <- format.Date(SkjemaData12mnd$InnDato, '%y-%m') #format.Date(SkjemaData12mnd$InnDato, '%b %Y')
 SkjemaData12mnd$MndNum <- as.POSIXlt(SkjemaData12mnd$InnDato, format="%Y-%m-%d")$mon +1
 SkjemaData12mnd <- SorterOgNavngiTidsEnhet(RegData=SkjemaData12mnd, tidsenhet = 'Mnd')$RegData
 mndNum <- min(SkjemaData12mnd$TidsEnhetSort, na.rm=T):max(SkjemaData12mnd$TidsEnhetSort, na.rm = T)
 
-#SkjemaData$Sykehusnavn <- as.factor(SkjemaData$Sykehusnavn)
-
-enhetsUtvalg <- 1
 shtxt <- ifelse(reshID == 0, 'Hele landet', as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
 tidsenhRapp <- 'Halvaar'
 
@@ -227,7 +219,7 @@ NakkeFigGjsnGrVar(RegData=RegData24mnd,valgtVar='NDIendr3mnd',
 
 NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NDIendr3mnd',
            fremBak=1, myelopati=0, tidsenhet=tidsenhRapp,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NDIendr3mndFremUmTid.pdf')
+           reshID=reshID, enhetsUtvalg=1, outfile='NDIendr3mndFremUmTid.pdf')
 
 
 #Gj.sn. armsmerte, fremre u/myelopati
@@ -236,7 +228,7 @@ NakkeFigGjsnGrVar(RegData=RegData24mnd,valgtVar='NRSsmerteArmEndr3mnd',
 
 NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteArmEndr3mnd',
            fremBak=1, myelopati=0, tidsenhet=tidsenhRapp,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NRSsmerteArmEndr3mndBakMmTid.pdf')
+           reshID=reshID, enhetsUtvalg=1, outfile='NRSsmerteArmEndr3mndBakMmTid.pdf')
 
 #Gjsn. nakkesmerte, alle
 NakkeFigGjsnGrVar(RegData=RegData24mnd,valgtVar='NRSsmerteNakkeEndr3mnd',
@@ -244,7 +236,7 @@ NakkeFigGjsnGrVar(RegData=RegData24mnd,valgtVar='NRSsmerteNakkeEndr3mnd',
 
 NakkeFigGjsnTid(RegData=RegData, preprosess=FALSE, valgtVar='NRSsmerteNakkeEndr3mnd',
                 tidsenhet=tidsenhRapp,
-           reshID=reshID, enhetsUtvalg=enhetsUtvalg, outfile='NSRsmerteNakkeEndr3mndTid.pdf')
+           reshID=reshID, enhetsUtvalg=1, outfile='NSRsmerteNakkeEndr3mndTid.pdf')
 
 
 @
