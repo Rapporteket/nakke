@@ -24,8 +24,8 @@ unique(RegData[,c("ReshId", 'ShNavn')])
 #Henter tilgangstre og mapper om resh og ShNavn
 Sys.setenv(MRS_ACCESS_HIERARCHY_URL="https://app.mrs.qa.nhn.no/intensivregisterservices/AccessHiearchyReport")
 #Sys.setenv(MRS_ACCESS_HIERARCHY_URL= 'https://qreg.nhn.no/laparoskopi/api/centre-information')
-#Sys.setenv(MRS_ACCESS_HIERARCHY_URL= 'https://qreg.nhn.no/nakke/api/centre-information')
-Sys.setenv(MRS_ACCESS_HIERARCHY_URL= 'https://qreg.nhn.no/rygg/api/centre-information')
+Sys.setenv(MRS_ACCESS_HIERARCHY_URL= 'https://qreg.nhn.no/nakke/api/centre-information')
+#Sys.setenv(MRS_ACCESS_HIERARCHY_URL= 'https://qreg.nhn.no/rygg/api/centre-information')
 TilgJsn <- Sys.getenv("MRS_ACCESS_HIERARCHY_URL")
 TilgangstreInt <- jsonlite::fromJSON(TilgJsn)$AccessUnits
 varTilg <- c("UnitId", "ParentUnitId", "HasDatabase", "ExternalId", "Title", "TitleWithPath","ExtraData")
