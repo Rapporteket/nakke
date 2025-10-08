@@ -12,12 +12,15 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
   datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
   tabAvdMnd <- 0
   if (exists('datoFra')){
-    aggVar <-  c('ShNavn', 'InnDato')
+    aggVar <-  c('ShNavn', 'InnDato', 'MndNum', 'Aar')
     RegDataDum <- RegData[intersect(which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')),
                                     which(as.Date(RegData$InnDato, tz='uTC') > as.Date(datoFra, tz='UTC'))), aggVar]
 
-    RegDataDum$Maaned <- format(lubridate::ymd(RegDataDum$InnDato),'%b')
-    tabAvdMnd <- table(RegDataDum[ , c('ShNavn', 'Maaned')])
+    RegDataDum <- SorterOgNavngiTidsEnhet(RegData=RegDataDum, tidsenhet = 'Mnd')$RegData
+    mndNum <- min(RegDataDum$TidsEnhetSort, na.rm=T):max(RegDataDum$TidsEnhetSort, na.rm = T)
+
+    tabAvdMnd <- table(RegDataDum[ , c('ShNavn', 'TidsEnhet' )]) #'Maaned'
+    #colnames(tabAvdMnd) <- substring(colnames(tabAvdMnd),1,3)
 
     if (dim(tabAvdMnd)[1]>0) {
       if (reshID==0 ){
@@ -30,19 +33,19 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
   return(tabAvdMnd)
 }
 
-#'  Antall opphold siste 5 år
+#'  Antall opphold per år
 #' @param RegData dataramme med alle data
 #' @param datoTil sluttdato
 #'
 #' @export
-tabAntOpphSh5Aar <- function(RegData, datoTil=Sys.Date()){
+tabAntOpphShAar <- function(RegData, datoTil=Sys.Date(), antAar=5){
       AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
       tabAvdAarN <- 0
       if (length(AarNaa)>0) {
         RegData <- RegData[which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')), ]
-      tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-4):AarNaa), c('ShNavn','Aar')]))
+      tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-antAar-1):AarNaa), c('ShNavn','Aar')]))
       rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle enheter:'
-      colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- 'Siste 5 år'
+      colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- paste0('Siste ', antAar, ' år')
       tabAvdAarN <- xtable::xtable(tabAvdAarN)
       }
       return(tabAvdAarN)
