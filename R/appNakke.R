@@ -18,7 +18,7 @@ ui_nakke <- function() {
   regTitle <- 'NKR: Degenerativ nakke'
 
   # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
-  addResourcePath('rap', system.file('www', package='rapbase'))
+ # addResourcePath('rap', system.file('www', package='rapbase'))
 
   # #----------Parametre som er statistke i appen----------
 
@@ -42,12 +42,12 @@ ui_nakke <- function() {
 
 
   #----Define UI for application------
+  # ??legge på shiny::tagList()
   ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     id = "tab1nivaa",
-    title = div(a(includeHTML(system.file('www/logo.svg', package='rapbase'))),
-                regTitle),
+    title = rapbase::title(regTitle),
     windowTitle = regTitle,
-    theme = "rap/bootstrap.css",
+    theme = rapbase::theme(),
 
 
     #------------ Viktigste resultater-----------------

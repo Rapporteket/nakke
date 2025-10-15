@@ -6,7 +6,6 @@ library(nakke)
 #remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('c://Users/lro2402unn/RegistreGIT/nakke')
 
-#Sys.setlocale(locale = 'nb_NO.UTF-8')
 source("dev/sysSetenv.R")
 nakke::kjorNakkeApp(browser = TRUE)
 
