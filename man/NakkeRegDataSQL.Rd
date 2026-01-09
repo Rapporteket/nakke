@@ -4,7 +4,12 @@
 \alias{NakkeRegDataSQL}
 \title{Henter data registrert for Degenerativ Nakke}
 \usage{
-NakkeRegDataSQL(datoFra = "2012-01-01", datoTil = Sys.Date(), medProm = 1)
+NakkeRegDataSQL(
+  datoFra = "2012-01-01",
+  datoTil = Sys.Date(),
+  medProm = 1,
+  alleVar = 0
+)
 }
 \arguments{
 \item{datoFra}{Operasjonsdato, fra og med. Standard: '2012-01-01'}

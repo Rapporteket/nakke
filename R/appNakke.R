@@ -735,10 +735,13 @@ server_nakke <- function(input, output, session) {
   })
 
   observe({
-    DataDumpRaa <- NakkeRegDataSQL(medProm = 0)
+    DataDumpRaa <- NakkeRegDataSQL(datoFra = input$datovalgRegKtr[1],
+                                   datoTil = input$datovalgRegKtr[2],
+                                   medProm = 0,
+                                   alleVar = 1)
     DataDump <- NakkePreprosess(RegData = DataDumpRaa)
-    DataDump <- NakkeUtvalgEnh(RegData = DataDump, datoFra = input$datovalgRegKtr[1],
-                               datoTil = input$datovalgRegKtr[2])$RegData
+    # DataDump <- NakkeUtvalgEnh(RegData = DataDump, datoFra = input$datovalgRegKtr[1],
+    #                            datoTil = input$datovalgRegKtr[2])$RegData
 
     #if (user$role() =='SC') {
 
