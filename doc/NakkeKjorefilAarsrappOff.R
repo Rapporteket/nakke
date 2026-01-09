@@ -162,7 +162,7 @@ Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1),
 
 #-------Data til SKDE interaktive nettsider----------
 
-#Nakke
+source("dev/sysSetenv.R")
 library(nakke)
 #library(xtable)
 aarTilVisning <- 2012:2025
@@ -180,7 +180,7 @@ setwd('../Aarsrapp/NKR')
 nakke1 <- nakke::dataTilOffVisning(RegData = NakkeData,
                                    valgtVar='KomplStemme3mnd',
                                    aar=aarTilVisning,
-                                   slaaSmToAar=1)
+                                   slaaSmToAar=0)
 
 
 #Svelgevansker, 3 mnd (ikke-myelopati, fremre tilgang) – lav
@@ -188,21 +188,21 @@ nakke1 <- nakke::dataTilOffVisning(RegData = NakkeData,
 nakke2 <- nakke::dataTilOffVisning(RegData = NakkeData,
                                    valgtVar='KomplSvelging3mnd',
                                    aar=aarTilVisning,
-                                   slaaSmToAar=1)
+                                   slaaSmToAar=0)
 
 # #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav FJERNET F.O.M 2022.
 # #valgtVar='Komplinfek', Ngrense=20,
 #     nakke3 <- nakke::dataTilOffVisning(RegData = NakkeData,
 #                                      valgtVar='Komplinfek',
 #                                      aar=aarTilVisning,
-#                                      slaaSmToAar=1)
+#                                      slaaSmToAar=0)
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
 # valgtVar='NDIendr12mnd35pst', fremBak = 1, myelopati = 0, Ngrense=20, outfile='NakkeNDIendr12mnd35pstSh.pdf')
 nakke4 <- nakke::dataTilOffVisning(RegData = NakkeData,
                                    valgtVar='NDIendr12mnd35pst',
                                    aar=aarTilVisning,
-                                   slaaSmToAar=1)
+                                   slaaSmToAar=0)
 
 FellesFilNakke <- rbind(nakke1, nakke2, nakke4)
 write.table(FellesFilNakke, file = 'NKRnakkeKvalInd.csv', sep = ';', row.names = F)
