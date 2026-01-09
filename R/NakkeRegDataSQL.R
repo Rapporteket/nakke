@@ -5,13 +5,17 @@
 #'
 #' @inheritParams NakkeFigAndeler
 #' @param medProm Ha med prom-skjema 0-nei, 1-ja (standard)
+#' @param alleVar 1 - alle variabler med,
+#'                0 -bare variabler som er i bruk på Rapporteket.
 #'
 #' @return Henter dataramma RegData for Degenerativ Nakke
 #' @export
 #'
-NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medProm = 1) {
+NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
+                            medProm = 1, alleVar=0) {
   registryName <- 'data' # "nakke"
 
+  if (alleVar==0){
   queryAVN <- paste0('SELECT
 	Alder,
 	AndreRelSykdommer,
@@ -212,8 +216,10 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(), medPro
 	Vekt
 FROM allevarnum
                   WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
-
-  #queryAVN <-'select * from allevarnum'
+  } else {
+    queryAVN <- paste0('select * from allevarnum
+     WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
+  }
   RegDataAVN <- rapbase::loadRegData(registryName = registryName , query = queryAVN, dbType = "mysql")
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
