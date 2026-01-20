@@ -9,11 +9,13 @@ kjorNakkeApp <- function(browser = FALSE, logAsJson = FALSE) {
   if (logAsJson) {
     rapbase::loggerSetup()
   }
+  if (browser) {
+    options(shiny.launch.browser = TRUE)
+  }
 
   app <- shiny::shinyApp(
     ui = nakke::ui_nakke,
-    server = nakke::server_nakke,
-    options = list(launch.browser = browser)
+    server = nakke::server_nakke
   )
 
   return(app)
