@@ -66,7 +66,7 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
       #ForlopsID <- RegData$ForlopsID
   if (!is.na(varBort[1])) {
       RegData <- RegData[,-which(names(RegData) %in% varBort)]}
-      sykehus <- cbind(ShNavn=paste('Sykehus', LETTERS[1:antSh]),
+      sykehus <- cbind(SykehusNavn=paste('Sykehus', LETTERS[1:antSh]),
                        ReshId=1:antSh)
       fordelingPasienter <- sample(1:10,antSh, replace = TRUE)
       indSample <-  sample(1:antSh, prob=fordelingPasienter/sum(fordelingPasienter),

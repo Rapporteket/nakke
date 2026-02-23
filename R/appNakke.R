@@ -545,6 +545,8 @@ server_nakke <- function(input, output, session) {
 
   # rapbase::appLogger(session, msg = 'Starter Rapporteket-Nakke')
   RegData <- NakkeRegDataSQL()
+  RegData$FIRST_TIME_CLOSED <- RegData$ForstLukketMed
+  RegData$ReshId <- RegData$AvdRESH
   querySD <- paste0('
           SELECT Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
            FROM skjemaoversikt
@@ -555,16 +557,16 @@ server_nakke <- function(input, output, session) {
   SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato)
   SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
   SkjemaData$Mnd <-  format.Date(SkjemaData$InnDato, '%b %Y') #zoo::as.yearmon(SkjemaData$InnDato)
-  SkjemaData$ShNavn <- as.factor(SkjemaData$Sykehusnavn)
+  SkjemaData$SykehusNavn <- as.factor(SkjemaData$Sykehusnavn)
 
   RegData <- NakkePreprosess(RegData = RegData)
 
   map_avdeling <- data.frame(
     UnitId = unique(RegData$ReshId),
-    orgname = RegData$ShNavn[match(unique(RegData$ReshId),
+    orgname = RegData$SykehusNavn[match(unique(RegData$ReshId),
                                    RegData$ReshId)])
 
-  sykehusNavn <- sort(unique(RegData$ShNavn), index.return=T)
+  sykehusNavn <- sort(unique(RegData$SykehusNavn), index.return=T)
   sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
   sykehusValg <- c(0,sykehusValg)
   names(sykehusValg) <- c('Alle',sykehusNavn$x)
@@ -735,32 +737,29 @@ server_nakke <- function(input, output, session) {
   })
 
   observe({
-    DataDumpRaa <- NakkeRegDataSQL(datoFra = input$datovalgRegKtr[1],
-                                   datoTil = input$datovalgRegKtr[2],
-                                   medProm = 0,
-                                   alleVar = 1)
-    DataDump <- NakkePreprosess(RegData = DataDumpRaa)
-    # DataDump <- NakkeUtvalgEnh(RegData = DataDump, datoFra = input$datovalgRegKtr[1],
-    #                            datoTil = input$datovalgRegKtr[2])$RegData
-
+    DataDumpRaa <- NakkeHentRegData(medOppf = 1)
+      # NakkeRegDataSQL(datoFra = input$datovalgRegKtr[1],
+      #                              datoTil = input$datovalgRegKtr[2],
+      #                              medProm = 0,
+      #                              alleVar = 1)
+    DataDumpPre <- NakkePreprosess(RegData = DataDumpRaa)
+    DataDump <- NakkeUtvalgEnh(RegData = DataDumpPre,
+                               datoFra = input$datovalgRegKtr[1],
+                               datoTil = input$datovalgRegKtr[2])$RegData
     #if (user$role() =='SC') {
 
       valgtResh <- ifelse(is.null(input$velgReshReg), 0, as.numeric(input$velgReshReg))
       ind <- if (valgtResh == 0) {1:dim(DataDump)[1]
-      } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
+        } else {which(as.numeric(DataDump$ReshId) %in% as.numeric(valgtResh))}
       tabDataDump <- DataDump[ind,]
       txtLog <- paste0('Datadump for Nakke: ',
                        'tidsperiode ', input$datovalgRegKtr[1], '_', input$datovalgRegKtr[2],
                        ', resh ', valgtResh)
-    # } else { #Kun SC får laste ned data så trenger vel ikke denne...
-    #   tabDataDump <-
-    #     DataDump[which(DataDump$ReshId == user$org()), -which(names(DataDump) %in% variablePRM)]
-    # } # Sjekk at PROM/PREM ikke er med for LU-bruker
 
     output$lastNed_dataDump <- downloadHandler(
       filename = function(){'dataDumpNakke.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')
-          rapbase::repLogger(session = session, #list(...)[["session"]],
+          rapbase::repLogger(session = session,
                              msg = txtLog)
       })
   }) #observe

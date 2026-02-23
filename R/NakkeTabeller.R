@@ -12,14 +12,14 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
   datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
   tabAvdMnd <- 0
   if (exists('datoFra')){
-    aggVar <-  c('ShNavn', 'InnDato', 'MndNum', 'Aar')
+    aggVar <-  c('SykehusNavn', 'InnDato', 'MndNum', 'Aar')
     RegDataDum <- RegData[intersect(which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')),
                                     which(as.Date(RegData$InnDato, tz='uTC') > as.Date(datoFra, tz='UTC'))), aggVar]
 
     RegDataDum <- SorterOgNavngiTidsEnhet(RegData=RegDataDum, tidsenhet = 'Mnd')$RegData
     mndNum <- min(RegDataDum$TidsEnhetSort, na.rm=T):max(RegDataDum$TidsEnhetSort, na.rm = T)
 
-    tabAvdMnd <- table(RegDataDum[ , c('ShNavn', 'TidsEnhet' )]) #'Maaned'
+    tabAvdMnd <- table(RegDataDum[ , c('SykehusNavn', 'TidsEnhet' )]) #'Maaned'
     #colnames(tabAvdMnd) <- substring(colnames(tabAvdMnd),1,3)
 
     if (dim(tabAvdMnd)[1]>0) {
@@ -43,7 +43,7 @@ tabAntOpphShAar <- function(RegData, datoTil=Sys.Date(), antAar=5){
       tabAvdAarN <- 0
       if (length(AarNaa)>0) {
         RegData <- RegData[which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')), ]
-      tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-antAar-1):AarNaa), c('ShNavn','Aar')]))
+      tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-antAar-1):AarNaa), c('SykehusNavn','Aar')]))
       rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle enheter:'
       colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- paste0('Siste ', antAar, ' år')
       tabAvdAarN <- xtable::xtable(tabAvdAarN)
@@ -71,7 +71,7 @@ tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Dat
   indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
   SkjemaOversikt <- SkjemaOversikt[intersect(indDato, indSkjemastatus),]
 
-  tab <- table(SkjemaOversikt[,c('ShNavn', 'SkjemaRekkeflg')])
+  tab <- table(SkjemaOversikt[,c('SykehusNavn', 'SkjemaRekkeflg')])
   tab <- rbind(tab,
                'TOTALT, alle enheter:'=colSums(tab))
   colnames(tab) <- skjemanavn

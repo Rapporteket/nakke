@@ -115,7 +115,7 @@ table(RegData[,variable[9]], useNA = 'a')
 	myelopati=9
 	fremBak=0
 	Ngrense=10
-	grVar='ShNavn'
+	grVar='SykehusNavn'
 	ktr=0
 	#aar=2015:2016
 	#tidlAar=2015:2016
@@ -347,7 +347,7 @@ NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar='NDIendr12mnd35pst
 kvalIndParam <- c('KomplSvelging3mnd', 'KomplStemme3mnd', 'Komplinfek', 'NDIendr12mnd35pst')
 indikatorID <- c('nakke_komplsvelg3mnd', 'nakke_komplstemme3mnd', 'nakke_komplinfek', 'nakke_ndiendr12mnd35pst')   #c('nakke1', 'nakke2', 'nakke3', 'nakke4')
 
-NakkeKvalInd <- data.frame(NULL) #Aar=NULL, ShNavn=NULL)
+NakkeKvalInd <- data.frame(NULL) #Aar=NULL, SykehusNavn=NULL)
 for (valgtVar in kvalIndParam){
   NakkeKvalInd1 <- NakkeKvalInd
   NakkeKvalInd <- dataTilOffVisning(RegData = RegData, valgtVar, aar=aar, ResPort=0, lagreFil=0)
@@ -422,7 +422,7 @@ NakkeData <- RegData[RegData$Aar>=2014,]
 # Suksess: «helt restituert» etter «mye bedre» 3 mnd. etter kirurgi	65%	61%* (Fremre nakkekirurgi)
 # Andel som angir at de er verre 3 mnd. etter kirurgi	3%	3%* (Fremre nakkekirurgi)
 
-antSh <- colSums(table(as.character(NakkeData$ShNavn),NakkeData$Aar)>0)
+antSh <- colSums(table(as.character(NakkeData$SykehusNavn),NakkeData$Aar)>0)
 antOp <- table(NakkeData$Aar)
 andelSvart3mnd <- tapply(NakkeData$OppFolgStatus3mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
 andelSvart12mnd <- tapply(NakkeData$OppFolgStatus12mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
@@ -499,7 +499,7 @@ tabNokkeltallNakke <- cbind(row.names(NokkeltallNakke),NokkeltallNakke)
 write.table(NokkeltallNakke, file = 'A:/Resultatportalen/NokkeltallNakke.csv', row.names=T,
             sep=';', fileEncoding = 'UTF-8' )
 
-tabShResh <- unique(NakkeData[,c("ReshId",'ShNavn')])
+tabShResh <- unique(NakkeData[,c("ReshId",'SykehusNavn')])
 write.table(tabShResh, file = 'P:/Registerinfo og historie/Nakke/ReshNakke.csv', row.names=T,
             sep=';', fileEncoding = 'UTF-8' )
 

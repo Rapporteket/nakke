@@ -17,6 +17,9 @@ NakkeRegDataSQL(
 \item{datoTil}{Operasjonsdato, til og med. Standard: '3000-01-01' (siste registreringsdato)}
 
 \item{medProm}{Ha med prom-skjema 0-nei, 1-ja (standard)}
+
+\item{alleVar}{1 - alle variabler med,
+0 -bare variabler som er i bruk på Rapporteket.}
 }
 \value{
 Henter dataramma RegData for Degenerativ Nakke

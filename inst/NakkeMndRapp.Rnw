@@ -64,7 +64,7 @@ SkjemaData12mnd$MndNum <- as.POSIXlt(SkjemaData12mnd$InnDato, format="%Y-%m-%d")
 SkjemaData12mnd <- SorterOgNavngiTidsEnhet(RegData=SkjemaData12mnd, tidsenhet = 'Mnd')$RegData
 mndNum <- min(SkjemaData12mnd$TidsEnhetSort, na.rm=T):max(SkjemaData12mnd$TidsEnhetSort, na.rm = T)
 
-shtxt <- ifelse(reshID == 0, 'Hele landet', as.character(RegData$ShNavn[match(reshID, RegData$ReshId)]))
+shtxt <- ifelse(reshID == 0, 'Hele landet', as.character(RegData$SykehusNavn[match(reshID, RegData$ReshId)]))
 tidsenhRapp <- 'Halvaar'
 
 skalShFig <- 0.32
