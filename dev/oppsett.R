@@ -15,10 +15,15 @@ nakke::kjorNakkeApp(browser = TRUE)
 
 
 dataGML <- NakkeRegDataSQL(datoFra = '2010-01-01', alleVar = 1)
+dataGML$FIRST_TIME_CLOSED <- dataGML$ForstLukketMed
+dataGML$ReshId <- dataGML$AvdRESH
 RegDataGML <- NakkePreprosess(dataGML)
 
 dataNy <- NakkeHentRegData()
 RegData <- NakkePreprosess(dataNy)
+
+setdiff(names(RegDataGML), names(RegData))
+setdiff(names(RegData), names(RegDataGML))
 
 unique(RegData[,c("ReshId", 'SykehusNavn')])
 

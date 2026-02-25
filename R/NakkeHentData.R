@@ -92,7 +92,6 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
   #Pasientskjema:
   qPas <- 'BIRTH_DATE,
-             CONSENT_STATUS,
              DECEASED,
              DECEASED_DATE,
              DISTRICTCODE,
@@ -158,7 +157,41 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
             suffixes = c("", "_oppf3"), by = "MCEID", all.x = TRUE) |>
       merge(Oppf12Skjema,
             suffixes = c("", "_oppf12"), by = "MCEID", all.x = TRUE)
-  }
+
+
+
+    # #Feil i andel oppfølging etter innføreing av ePROM. OppFolgStatus3mnd=1 betyr ikke lenger at skjemaet er utfylt
+    # #Må lage variabelen på nytt
+    # ePROMadmTab <- rapbase::loadRegData(registryName=registryName,
+    #                                     query='SELECT * FROM proms')
+    # ePROMvar <- c("MCEID", "TSSENDT", "TSRECEIVED", "NOTIFICATION_CHANNEL", "DISTRIBUTION_RULE",
+    #               'REGISTRATION_TYPE')
+    # # «EpromStatus»:  0 = Created, 1 = Ordered, 2 = Expired, 3 = Completed, 4 = Failed
+    # ind3mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
+    #                    c('PATIENTFOLLOWUP', 'PATIENTFOLLOWUP_3_PiPP', 'PATIENTFOLLOWUP_3_PiPP_REMINDER'))
+    # ind12mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
+    #                     c('PATIENTFOLLOWUP12', 'PATIENTFOLLOWUP_12_PiPP', 'PATIENTFOLLOWUP_12_PiPP_REMINDER'))
+    #
+    # indIkkeEprom3mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
+    # indIkkeEprom12mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind12mnd]))
+    #
+    # #indEprom <-  which((RegDataV3$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
+    # RegData$OppFolg3mndGML <- RegData$OppFolgStatus3mnd
+    # RegData$OppFolgStatus3mnd <- 0
+    # RegData$OppFolgStatus3mnd[
+    #   RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
+    # RegData$OppFolgStatus3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
+    #
+    # RegData$OppFolg12mndGML <- RegData$OppFolgStatus12mnd
+    # RegData$OppFolgStatus12mnd <- 0
+    # RegData$OppFolgStatus12mnd[
+    #   RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
+    # RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
+
+
+
+
+     }
 
   return(invisible(RegData))
 }

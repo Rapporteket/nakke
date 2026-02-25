@@ -64,14 +64,30 @@ tabAntSkjema <- function(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Dat
   #tabAntSkjema(SkjemaOversikt, datoFra = '2019-01-01', datoTil=Sys.Date(), skjemastatus=1)
   #NB: Denne skal også kunne vise skjema i kladd!
   #Skjemastatus kan være -1, 0 og 1
-  SkjemaOversikt$SkjemaRekkeflg <- factor(SkjemaOversikt$SkjemaRekkeflg, levels = 5*(1:4))
-  skjemanavn <- c('Pasient preop.','Lege preop.','Oppfølging, 3mnd', 'Oppfølging, 12mnd')
+Var <- c("SykehusNavn", 'InnDato','StatusPasSkjema', 'StatusLegeSkjema', 'StatusUtfyll3mnd', 'StatusUtfyll12mnd')
+tab <- cbind(RegData[,c("SykehusNavn", 'InnDato', statusVar[1])])
+
+head(RegData[ ,c('SykehusNavn', 'InnDato','StatusPasSkjema', 'StatusLegeSkjema', 'StatusUtfyll3mnd', 'StatusUtfyll12mnd')])
+
+SkjemaOversikt <- RegData[,var] %>%
+  tidyr::pivot_longer(
+    cols = starts_with("Status"),
+    names_to = "Skjematype",
+    values_to = "status"
+  )
+
+
+  # SkjemaOversikt$SkjemaRekkeflg <- factor(SkjemaOversikt$SkjemaRekkeflg, levels = 5*(1:4))
+  # skjemanavn <- c('Pasient preop.','Lege preop.','Oppfølging, 3mnd', 'Oppfølging, 12mnd')
 
   indDato <- which(as.Date(SkjemaOversikt$InnDato) >= datoFra & as.Date(SkjemaOversikt$InnDato) <= datoTil)
   indSkjemastatus <- which(SkjemaOversikt$SkjemaStatus==skjemastatus)
   SkjemaOversikt <- SkjemaOversikt[intersect(indDato, indSkjemastatus),]
 
-  tab <- table(SkjemaOversikt[,c('SykehusNavn', 'SkjemaRekkeflg')])
+
+
+  # tab <- table(SkjemaOversikt[,c('SykehusNavn', 'SkjemaRekkeflg')])
+  tab <- table(SkjemaOversikt[,c('SykehusNavn', 'Skjematype')])
   tab <- rbind(tab,
                'TOTALT, alle enheter:'=colSums(tab))
   colnames(tab) <- skjemanavn

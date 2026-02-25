@@ -540,9 +540,6 @@ server_nakke <- function(input, output, session) {
 
   #-- Div serveroppstart og hente data
 
-  # context <- Sys.getenv("R_RAP_INSTANCE") #Blir tom hvis jobber lokalt
-  # paaServer <- (context %in% c("DEV", "TEST", "QA","QAC", "PRODUCTION", "PRODUCTIONC")) #rapbase::isRapContext()
-
   # rapbase::appLogger(session, msg = 'Starter Rapporteket-Nakke')
   RegData <- NakkeRegDataSQL()
   RegData$FIRST_TIME_CLOSED <- RegData$ForstLukketMed
