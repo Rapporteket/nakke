@@ -621,7 +621,7 @@ server_nakke <- function(input, output, session) {
 
   #RegData som har tilknyttede skjema av ulik type.
   AntSkjemaAvHver <- reactive(
-    tabAntSkjema(SkjemaOversikt=RegData,
+    tabAntSkjema(RegData=RegData,
                  datoFra = input$datovalgReg[1],
                  datoTil=input$datovalgReg[2],
                  skjemastatus=as.numeric(input$skjemastatus))
