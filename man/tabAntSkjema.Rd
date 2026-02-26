@@ -5,7 +5,7 @@
 \title{Hvor mange skjema av hver type}
 \usage{
 tabAntSkjema(
-  SkjemaOversikt,
+  RegData,
   datoFra = "2019-01-01",
   datoTil = Sys.Date(),
   skjemastatus = 1

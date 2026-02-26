@@ -13,20 +13,28 @@ setwd('c://Users/lro2402unn/RegistreGIT/nakke')
 source("dev/sysSetenv.R")
 nakke::kjorNakkeApp(browser = TRUE)
 
-
-dataGML <- NakkeRegDataSQL(datoFra = '2010-01-01', alleVar = 1)
-dataGML$FIRST_TIME_CLOSED <- dataGML$ForstLukketMed
-dataGML$ReshId <- dataGML$AvdRESH
-RegDataGML <- NakkePreprosess(dataGML)
+dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
 dataNy <- NakkeHentRegData()
 RegData <- NakkePreprosess(dataNy)
 
-setdiff(names(RegDataGML), names(RegData))
-setdiff(names(RegData), names(RegDataGML))
+setdiff(names(dataGML), names(dataNy))
+#Endringer
+ # "ForlopsID" -> MCEID, "AvdRESH" -> ReshID,  PasientSkjemaStatus -> StatusPasSkjema
+ # "LegeskjemaStatus" -> StatusLegeSkjema,   "ForstLukketMed" -> ForstLukketLege,
+ # "StatusKtr3mnd" -> StatusUtfyll3mnd, "StatusKtr12mnd" -> StatusUtfyll12mnd
+
+ # "Avdod", "AvdodDato" - se nærmere på disse. Har DodsDato
+
+#Ikke i bruk: BasisRegStatus, ForlopsStatus, ForlopsMailStatus, EqType,
+#           ForstLukket3mnd, FriskmeldtDato3mnd, InngrepType, OppFolgLaget3mnd
+#           TidlSkulderPlager3mnd, TidlSkulderPlager12mnd
+
+# MANGLER!!!: TidlOpr, AntallNivaaOpr, PerOpEnhverKompl, EnhverKompl3mnd
+#Spør om ikke de kan legges til på linje med andre beregnede variabler som skårer?
 
 unique(RegData[,c("ReshId", 'SykehusNavn')])
-
+reshID <- 114288
 
 #Henter tilgangstre og mapper om resh og SykehusNavn
 Sys.setenv(MRS_ACCESS_HIERARCHY_URL= 'https://qreg.nhn.no/nakke/api/centre-information')

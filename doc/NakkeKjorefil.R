@@ -364,27 +364,27 @@ write.table(NakkeKvalInd, file='NakkeTilSKDE.csv', sep=';', row.names = F)
 # Stemmevansker, 3 mnd.'
 # Mål: lavest
 #   #Kode 0,1: Nei, Ja +tomme
-#   OppFolgStatus3mnd == 1 %i% KomplStemme3mnd %in% 0:1) %i% OprMetodeTilgangFremre==1
+#   StatusUtfyll3mnd == 1 %i% KomplStemme3mnd %in% 0:1) %i% OprMetodeTilgangFremre==1
 # Andel med KomplStemme3mnd=1
 # Utvalg, ikke-myelopati, fremre tilgang: OprIndikMyelopati=0, OprMetodeTilgangFremre=1
-#Variable: OppFolgStatus3mnd, KomplStemme3mnd, OprMetodeTilgangFremre, OprIndikMyelopati
+#Variable: StatusUtfyll3mnd, KomplStemme3mnd, OprMetodeTilgangFremre, OprIndikMyelopati
 variable <- c('ReshId','SykehusNavn','Aar','KomplStemme3mnd') #
-ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
+ind <- which((RegData$StatusUtfyll3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplStemme3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
 write.table(RegData[ind,variable], file='A:/ind2_Stemmevansker_Nakke.csv', sep=';', row.names = F)
 
 # 'Svelgvansker, 3 mnd.'
 #Mål: lavt
 # Kode 0,1: Nei, Ja +tomme
-# OppFolgStatus3mnd == 1 %i%
+# StatusUtfyll3mnd == 1 %i%
 # KomplSvelging3mnd %in% 0:1 %i%
 # OprMetodeTilgangFremre==1
 # Andel med KomplSvelging3mnd=1
 # Utvalg, ikke-myelopati, fremre tilgang: OprIndikMyelopati=0, OprMetodeTilgangFremre=1
-#Variable: OppFolgStatus3mnd, KomplSvelging3mnd, OprMetodeTilgangFremre,
+#Variable: StatusUtfyll3mnd, KomplSvelging3mnd, OprMetodeTilgangFremre,
 #OprIndikMyelopati
 variable <- c('ReshId','SykehusNavn','Aar','KomplSvelging3mnd') #
-ind <- which((RegData$OppFolgStatus3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
+ind <- which((RegData$StatusUtfyll3mnd==1) & (RegData$OprMetodeTilgangFremre==1)
              & (RegData$KomplSvelging3mnd %in% 0:1) & RegData$OprIndikMyelopati==0)
 write.table(RegData[ind,variable], file='A:/ind1_Svelgvansker_Nakke.csv', sep=';', row.names = F)
 
@@ -392,10 +392,10 @@ write.table(RegData[ind,variable], file='A:/ind1_Svelgvansker_Nakke.csv', sep=';
 #Pasientskjema. Alle komplikasjoner (dype og overfladiske), 3mnd.
 #Mål: lavt
 #Kode 0,1: Nei, Ja +tomme
-#    OppFolgStatus3mnd == 1, KomplinfekDyp3mnd eller KomplinfekOverfl3mnd %in% 0:1
+#    StatusUtfyll3mnd == 1, KomplinfekDyp3mnd eller KomplinfekOverfl3mnd %in% 0:1
 #    tittel <- 'Komplikasjoner (totalt) 3 mnd. etter operasjon'
 #valgtVar = Komplinfek
-ind <- intersect(which(RegData$OppFolgStatus3mnd == 1),
+ind <- intersect(which(RegData$StatusUtfyll3mnd == 1),
   union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1)))
 RegData <- RegData[ind, ]
 RegData$KomplInfek <- 0
@@ -424,8 +424,8 @@ NakkeData <- RegData[RegData$Aar>=2014,]
 
 antSh <- colSums(table(as.character(NakkeData$SykehusNavn),NakkeData$Aar)>0)
 antOp <- table(NakkeData$Aar)
-andelSvart3mnd <- tapply(NakkeData$OppFolgStatus3mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
-andelSvart12mnd <- tapply(NakkeData$OppFolgStatus12mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
+andelSvart3mnd <- tapply(NakkeData$StatusUtfyll3mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
+andelSvart12mnd <- tapply(NakkeData$StatusUtfyll12mnd,NakkeData$Aar, FUN=function(x){length(which(x==1))/length(x)})
 NakkeData$over70 <- 0
 NakkeData$over70[NakkeData$Alder>=70] <- 1
 andel70aar <- tapply(NakkeData$over70,NakkeData$Aar, FUN='mean', na.rm=T)
@@ -436,14 +436,14 @@ andelKvinner <- 1-tapply(NakkeData$ErMann,NakkeData$Aar, FUN='mean', na.rm=T)
 #datoTil <- min(datoTil, as.character(Sys.Date()-100))
 #Fornøydhet
 NakkeData$Fornoyd <- 0
-NakkeDataForn <- NakkeData[intersect(which(NakkeData$OppFolgStatus3mnd==1), which(NakkeData$FornoydBeh3mnd %in% 1:5)),
+NakkeDataForn <- NakkeData[intersect(which(NakkeData$StatusUtfyll3mnd==1), which(NakkeData$FornoydBeh3mnd %in% 1:5)),
                          c('FornoydBeh3mnd', 'Fornoyd', 'Aar')]
 NakkeDataForn$Fornoyd[NakkeDataForn$FornoydBeh3mnd %in% 1:2] <- 1
 andelFornoyd <- tapply(NakkeDataForn$Fornoyd, NakkeDataForn$Aar, FUN='mean', na.rm=T)
 
 andelForn <- function(Data, ktr=1){
   Data$Variabel <- 0
-  Data$Utfylt <- switch(ktr, Data$OppFolgStatus3mnd, Data$OppFolgStatus12mnd)
+  Data$Utfylt <- switch(ktr, Data$StatusUtfyll3mnd, Data$StatusUtfyll12mnd)
   Data$Fornoyd <- switch(ktr, Data$FornoydBeh3mnd, Data$FornoydBeh12mnd)
   ind <- intersect(which(Data$Utfylt==1), which(Data$Fornoyd %in% 1:5))
   DataDum <- Data[ind, c('Fornoyd', 'Variabel', 'Aar')]
@@ -457,7 +457,7 @@ andelForn12mnd <- andelForn(NakkeData,ktr = 2)
 andelEndring <- function(Data, ktr=2){
   Data$Bedre <- 0
   Data$Verre <- 0
-  Data$Utfylt <- switch(ktr, Data$OppFolgStatus3mnd, Data$OppFolgStatus12mnd)
+  Data$Utfylt <- switch(ktr, Data$StatusUtfyll3mnd, Data$StatusUtfyll12mnd)
   Data$NytteOpr <- switch(ktr, Data$NytteOpr3mnd, Data$NytteOpr12mnd)
   DataEndring <-  Data[intersect(intersect(which(Data$Utfylt==1),
                                            which(Data$NytteOpr %in% 1:7)),

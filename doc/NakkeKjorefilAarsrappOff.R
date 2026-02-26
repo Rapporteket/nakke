@@ -151,7 +151,7 @@ xtable(tabAvdN5nakke, digits=0, align=c('l', rep('r', 6)),
 
 #Forekomst av sårinfeksjon (totalt for bakre og fremre nakkekirurgi): 2,2%
 '%i%' <- intersect
-ind <- which(NakkeData1aar$OppFolgStatus3mnd == 1) %i%
+ind <- which(NakkeData1aar$StatusUtfyll3mnd == 1) %i%
       union(which(NakkeData1aar$KomplinfekDyp3mnd %in% 0:1),
             which(NakkeData1aar$KomplinfekOverfl3mnd %in% 0:1))
 NakkeData1aarDum <- NakkeData1aar[ind, ]

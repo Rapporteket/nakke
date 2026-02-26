@@ -11,7 +11,7 @@
 #' @return Henter dataramma RegData for Degenerativ Nakke
 #' @export
 #'
-NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
+NakkeRegDataSQL_FAS_UT <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
                             medProm = 1, alleVar=0) {
   registryName <- 'data' # "nakke"
 
@@ -89,7 +89,7 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
 	KomplSvelging3mnd,
 	KomplUVI12mnd,
 	KomplUVI3mnd,
-	LegeskjemaStatus,
+	StatusLegeSkjema,
 	LiggeDognPostop,
 	LiggeDognTotalt,
 	Morsmal,
@@ -105,8 +105,8 @@ NakkeRegDataSQL <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
 	NytteOpr12mnd,
 	NytteOpr3mnd,
 	OperasjonsKategori,
-	OppFolgStatus12mnd,
-	OppFolgStatus3mnd,
+	StatusUtfyll12mnd,
+	StatusUtfyll3mnd,
 	OprDato,
 	OprIndikAnnet,
 	OprIndikasjon,
@@ -220,19 +220,21 @@ FROM allevarnum
     queryAVN <- paste0('select * from allevarnum
      WHERE OprDato >= \'', datoFra, '\' AND OprDato <= \'', datoTil, '\'')
   }
-  RegDataAVN <- rapbase::loadRegData(registryName = registryName , query = queryAVN, dbType = "mysql")
+  #Denne er erstattet i NakkeHentData
+  RegDataAVN <- rapbase::loadRegData(registryName = 'data' , query = queryAVN, dbType = "mysql")
 
   queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
                FROM forlopsoversikt'
-  RegDataForl <- rapbase::loadRegData(registryName = registryName , query = queryForl, dbType = "mysql")
+  #Trenger ikke denne - har dødsdato i HentData
+  RegDataForl <- rapbase::loadRegData(registryName = 'data' , query = queryForl, dbType = "mysql")
 
   RegData <- merge(RegDataAVN, RegDataForl, by='ForlopsID', all.x = TRUE, all.y = FALSE, suffixes = '')
 
   if (medProm == 1) {
 
-    #Feil i andel oppfølging etter innføreing av ePROM. OppFolgStatus3mnd=1 betyr ikke lenger at skjemaet er utfylt
+    #Feil i andel oppfølging etter innføreing av ePROM. StatusUtfyll3mnd=1 betyr ikke lenger at skjemaet er utfylt
     #Må lage variabelen på nytt
-    ePROMadmTab <- rapbase::loadRegData(registryName=registryName,
+    ePROMadmTab <- rapbase::loadRegData(registryName='data',
                                         query='SELECT * FROM proms')
     ePROMvar <- c("MCEID", "TSSENDT", "TSRECEIVED", "NOTIFICATION_CHANNEL", "DISTRIBUTION_RULE",
                   'REGISTRATION_TYPE')
@@ -246,17 +248,17 @@ FROM allevarnum
     indIkkeEprom12mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind12mnd]))
 
     #indEprom <-  which((RegDataV3$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
-    RegData$OppFolg3mndGML <- RegData$OppFolgStatus3mnd
-    RegData$OppFolgStatus3mnd <- 0
-    RegData$OppFolgStatus3mnd[
+    RegData$OppFolg3mndGML <- RegData$StatusUtfyll3mnd
+    RegData$StatusUtfyll3mnd <- 0
+    RegData$StatusUtfyll3mnd[
       RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-    RegData$OppFolgStatus3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
+    RegData$StatusUtfyll3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
 
-    RegData$OppFolg12mndGML <- RegData$OppFolgStatus12mnd
-    RegData$OppFolgStatus12mnd <- 0
-    RegData$OppFolgStatus12mnd[
+    RegData$OppFolg12mndGML <- RegData$StatusUtfyll12mnd
+    RegData$StatusUtfyll12mnd <- 0
+    RegData$StatusUtfyll12mnd[
       RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-    RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
+    RegData$StatusUtfyll12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
   }
 
   return(RegData)

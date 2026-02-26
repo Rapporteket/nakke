@@ -9,27 +9,35 @@ mappingEgneNavn <- function(tabell, tabType) {
 
   friendlyVarTab  <-
     rapbase::loadRegData( "data",
-                          query = "SELECT *
-                           FROM friendly_vars") # "SELECT FIELD_NAME, REGISTRATION_TYPE, USER_SUGGESTION #, USER_DATE
-  rydd <- which(friendlyVarTab$USER_SUGGESTION == 'NEINNICHTS')
-  if (length(rydd)>0) {
-    friendlyVarTab <- friendlyVarTab[-rydd, ]}
-#CONTROL_TYPE: 3/12
+                          query = "SELECT FIELD_NAME, REGISTRATION_TYPE, USER_SUGGESTION
+                           FROM friendly_vars") #
 
   indTabType <- which(friendlyVarTab$REGISTRATION_TYPE %in% tabType)
-   navnFr <- friendlyVarTab$FIELD_NAME[indTabType]
-   kuttTabPrefiks <- if (tabType == 'PATIENTFOLLOWUP12') {'PATIENTFOLLOWUP_'} else {paste0(tabType, '_')}
-   navn <- gsub(kuttTabPrefiks, "", navnFr)
-   names(navn) <- friendlyVarTab$USER_SUGGESTION[indTabType]
-  tabellEgne <- dplyr::rename(tabell, dplyr::any_of(navn)) #all_of(navn
-  return(tabellEgne)
+  if (!length(indTabType)==0) {
+    friendlyVarTabType <- friendlyVarTab[indTabType,]
+    kuttTabPrefiks <- if (tabType == 'PATIENTFOLLOWUP12') {'PATIENTFOLLOWUP_'} else {paste0(tabType, '_')}
+
+    rydd <- which(friendlyVarTabType$USER_SUGGESTION == 'NEINNICHTS')
+
+    #Fjerner variabler merket 'NEINNICHTS'
+    if (length(rydd)>0) {
+      fjernvar <- gsub(kuttTabPrefiks, "", friendlyVarTabType$FIELD_NAME[rydd])
+      indFjern <- which(names(tabell) %in% fjernvar)
+      if (length(indFjern) > 0) {
+        tabell <- tabell[ , -indFjern]}
+      friendlyVarTabType <- friendlyVarTabType[-rydd, ]
+    }
+
+    navn <- gsub(kuttTabPrefiks, "", friendlyVarTabType$FIELD_NAME)
+    names(navn) <- friendlyVarTabType$USER_SUGGESTION
+    tabell <- dplyr::rename(tabell, dplyr::any_of(navn)) #all_of(navn
   }
+  return(tabell)
+}
 
 
-# LEGG INN FJERNING AV VARIABLER SOM GJENTAS I FLERE TABELLER. f.EKS. ReshId (CENTREID)
-# Alle variabler, Bare utvalgte var, Bare selvvalgte navn
 
-#' Hent datatabell fra ngers database
+#' Hent datatabell fra nakkes database
 #'
 #' @param tabellnavn Navn på tabell som skal lastes inn.
 #' @param egneVarNavn 0 - Qreg-navn benyttes.
@@ -83,7 +91,7 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
   #mce Trenger nok ganske få av disse variablene
   # mce_patient_data # eneste som inneholder kobling mellom mceid og pasientid
-  qmce <- 'CENTREID AS ReshId, CREATEDBY, MCEID, PATIENT_ID,
+  qmce <- 'CENTREID AS ReshId, CREATEDBY, MCEID, PATIENT_ID AS PasientID,
              sendtSMS12mnd, sendtSMS3mnd, TSCREATED, TSUPDATED'
 
   mceSkjema <- hentDataTabell(tabellnavn = "mce",
@@ -119,6 +127,8 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
   LegeSkjema <- hentDataTabell(tabellnavn = "surgeonform",
                                qVar = '*',
                                egneVarNavn = 1)
+  LegeSkjema <- dplyr::rename(LegeSkjema,
+                              'ForstLukketLege' = 'FIRST_TIME_CLOSED')
 
   #Pasientens spørreskjema
   PasSkjema <- hentDataTabell(tabellnavn = "patientform",
@@ -132,7 +142,7 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
   # SAMMENSTILL SKJEMA:
   RegData <-
     merge(mceSkjema,
-          PasInfoSkjema, by.x = "PATIENT_ID", by.y = "PasientID",
+          PasInfoSkjema, by = "PasientID",
           suffixes = c("", "_pas")) |>
     merge(LegeSkjema, by = "MCEID", all.x=TRUE, suffixes = c("", "_lege")) |>
     merge(PasSkjema,
@@ -160,7 +170,7 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
 
 
-    # #Feil i andel oppfølging etter innføreing av ePROM. OppFolgStatus3mnd=1 betyr ikke lenger at skjemaet er utfylt
+    # #Feil i andel oppfølging etter innføreing av ePROM. StatusUtfyll3mnd=1 betyr ikke lenger at skjemaet er utfylt
     # #Må lage variabelen på nytt
     # ePROMadmTab <- rapbase::loadRegData(registryName=registryName,
     #                                     query='SELECT * FROM proms')
@@ -176,17 +186,17 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
     # indIkkeEprom12mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind12mnd]))
     #
     # #indEprom <-  which((RegDataV3$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
-    # RegData$OppFolg3mndGML <- RegData$OppFolgStatus3mnd
-    # RegData$OppFolgStatus3mnd <- 0
-    # RegData$OppFolgStatus3mnd[
+    # RegData$OppFolg3mndGML <- RegData$StatusUtfyll3mnd
+    # RegData$StatusUtfyll3mnd <- 0
+    # RegData$StatusUtfyll3mnd[
     #   RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-    # RegData$OppFolgStatus3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
+    # RegData$StatusUtfyll3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
     #
-    # RegData$OppFolg12mndGML <- RegData$OppFolgStatus12mnd
-    # RegData$OppFolgStatus12mnd <- 0
-    # RegData$OppFolgStatus12mnd[
+    # RegData$OppFolg12mndGML <- RegData$StatusUtfyll12mnd
+    # RegData$StatusUtfyll12mnd <- 0
+    # RegData$StatusUtfyll12mnd[
     #   RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-    # RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
+    # RegData$StatusUtfyll12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
 
 
 

@@ -11,7 +11,7 @@
 NakkePreprosess <- function(RegData=RegData)
 {
   #Kun ferdigstilte registreringer:
-	RegData <- RegData[which(RegData$LegeskjemaStatus == 1), ]  # Vi ønsker kun ferdigstilte legeskjema
+	RegData <- RegData[which(RegData$StatusLegeSkjema == 1), ]  # Vi ønsker kun ferdigstilte legeskjema
 	#Kjønnsvariabel:ErMann - vil senere benytte denne
 	RegData$ErMann <- RegData$Kjonn
 	RegData$ErMann[which(RegData$Kjonn == 2)] <- 0
@@ -24,10 +24,9 @@ NakkePreprosess <- function(RegData=RegData)
 	RegData$Aar <- 1900 + as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
 	RegData$MndAar <- format(RegData$InnDato, '%b%y')
 
-	RegData$DiffUtFerdig <- as.numeric(difftime(as.Date(RegData$FIRST_TIME_CLOSED), RegData$UtDato,units = 'days'))
+	RegData$DiffUtFerdig <- as.numeric(difftime(as.Date(RegData$ForstLukketLege), RegData$UtDato,units = 'days'))
 
 	#Variabel som identifiserer avdelingas resh
-	#names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
 	class(RegData$ReshId) <- 'numeric'
 	RegData$ReshId[which(RegData$ReshId %in% c(999975, 4212372))] <- 107511
 
@@ -51,10 +50,10 @@ NakkePreprosess <- function(RegData=RegData)
 	}
 
 	#Lage hovekategorier
-variable <- c('OprMetodeDiskektomi', 'OprMetodeKirDekompresjon', 'OprMetodeAnnenBakreDekompr',
+variabler <- c('OprMetodeDiskektomi', 'OprMetodeKirDekompresjon', 'OprMetodeAnnenBakreDekompr',
               'OprMetodeKorpektomi', 'OprMetodeAndre', 'OprMetodeBakreFusjon')
-ind <- which(is.na(RegData[ ,variable]), arr.ind = T)
-RegData[,variable][ind] <- 0
+ind <- which(is.na(RegData[ ,variabler]), arr.ind = T)
+RegData[,variabler][ind] <- 0
 
 	RegData$Inngrep <- 0
 	RegData$Inngrep[RegData$OprMetodeAndre > 0] <- 6

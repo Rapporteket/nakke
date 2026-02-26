@@ -110,7 +110,7 @@ NakkeRegDataSQLutenAVN <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
        IFNULL(patientform.EQ5D_5L_SCORE, patientform.EQ5D_SCORE)                       AS Eq5DScorePreOp,
        patientform.HELSETILSTAND_SCALE                                                 AS HelsetilstPreOp,
        patientform.HELSETILSTAND_SCALE_MISS                                            AS HelsetilstPreOpMangler,
-       patientform.STATUS                                                              AS PasientSkjemaStatus,
+       patientform.STATUS                                                              AS StatusPasSkjema,
        patientform.FIRST_TIME_CLOSED_BY                                                AS ForstLukketAVPreOp,
        patientform.FIRST_TIME_CLOSED                                                   AS ForstLukketPreOp,
        surgeonform.OPERASJONSDATO                                                      AS OprDato,
@@ -257,7 +257,7 @@ NakkeRegDataSQLutenAVN <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
        surgeonform.LIGGEDOEGN_POSTOPERATIV                                             AS LiggeDognPostop,
        surgeonform.LIGGEDOEGN_TOTAL                                                    AS LiggeDognTotalt,
        surgeonform.DOEDSFALL_UNDER_OPPHOLDET                                           AS DodsfallOpphold,
-       surgeonform.STATUS                                                              AS LegeskjemaStatus,
+       surgeonform.STATUS                                                              AS StatusLegeSkjema,
        surgeonform.FIRST_TIME_CLOSED_BY                                                AS ForstLukketAVMed,
        surgeonform.FIRST_TIME_CLOSED                                                   AS ForstLukketMed,
 
@@ -321,7 +321,7 @@ NakkeRegDataSQLutenAVN <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
        IFNULL(followup3.EQ5D_5L_ANGST_DEPRESJON, followup3.EQ5D_ANGST_DEPRESJON)       AS EqAngst3mnd,
        IFNULL(followup3.EQ5D_5L_SCORE, followup3.EQ5D_SCORE)                           AS Eq5DScore3mnd,
        followup3.HELSETILSTAND_SCALE                                                   AS Helsetilst3mnd,
-       followup3.STATUS                                                                AS OppFolgStatus3mnd,
+       followup3.STATUS                                                                AS StatusUtfyll3mnd,
        followup3.TSUPDATED                                                             AS OppFolgOppdatert3mnd,    -- Not specified in NAKKE-203
        followup3.UPDATEDBY                                                             AS OppFolgOppdatertAv3mnd,  -- Not specified in NAKKE-203
        followup3.TSCREATED                                                             AS OppFolgLaget3mnd,        -- Not specified in NAKKE-203
@@ -389,7 +389,7 @@ NakkeRegDataSQLutenAVN <- function(datoFra = '2012-01-01', datoTil = Sys.Date(),
        IFNULL(followup12.EQ5D_5L_ANGST_DEPRESJON, followup12.EQ5D_ANGST_DEPRESJON)     AS EqAngst12mnd,
        IFNULL(followup12.EQ5D_5L_SCORE, followup12.EQ5D_SCORE)                         AS Eq5DScore12mnd,
        followup12.HELSETILSTAND_SCALE                                                  AS Helsetilst12mnd,
-       followup12.STATUS                                                               AS OppFolgStatus12mnd,
+       followup12.STATUS                                                               AS StatusUtfyll12mnd,
        followup12.TSUPDATED                                                            AS OppFolgOppdatert12mnd,   -- Not specified in NAKKE-203
        followup12.UPDATEDBY                                                            AS OppFolgOppdatertAv12mnd, -- Not specified in NAKKE-203
        followup12.TSCREATED                                                            AS OppFolgLaget12mnd,       -- Not specified in NAKKE-203
@@ -517,7 +517,7 @@ FROM mce mce
 
   if (medProm == 1) {
 
-    #Feil i andel oppfølging etter innføreing av ePROM. OppFolgStatus3mnd=1 betyr ikke lenger at skjemaet er utfylt
+    #Feil i andel oppfølging etter innføreing av ePROM. StatusUtfyll3mnd=1 betyr ikke lenger at skjemaet er utfylt
     #Må lage variabelen på nytt
     ePROMadmTab <- rapbase::loadRegData(registryName=registryName,
                                         query='SELECT * FROM proms')
@@ -533,17 +533,17 @@ FROM mce mce
     indIkkeEprom12mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind12mnd]))
 
     #indEprom <-  which((RegDataV3$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
-    RegData$OppFolg3mndGML <- RegData$OppFolgStatus3mnd
-    RegData$OppFolgStatus3mnd <- 0
-    RegData$OppFolgStatus3mnd[
+    RegData$OppFolg3mndGML <- RegData$StatusUtfyll3mnd
+    RegData$StatusUtfyll3mnd <- 0
+    RegData$StatusUtfyll3mnd[
       RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-    RegData$OppFolgStatus3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
+    RegData$StatusUtfyll3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
 
-    RegData$OppFolg12mndGML <- RegData$OppFolgStatus12mnd
-    RegData$OppFolgStatus12mnd <- 0
-    RegData$OppFolgStatus12mnd[
+    RegData$OppFolg12mndGML <- RegData$StatusUtfyll12mnd
+    RegData$StatusUtfyll12mnd <- 0
+    RegData$StatusUtfyll12mnd[
       RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-    RegData$OppFolgStatus12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
+    RegData$StatusUtfyll12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
   }
 
   return(RegData)

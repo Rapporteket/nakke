@@ -541,20 +541,9 @@ server_nakke <- function(input, output, session) {
   #-- Div serveroppstart og hente data
 
   # rapbase::appLogger(session, msg = 'Starter Rapporteket-Nakke')
-  RegData <- NakkeRegDataSQL()
-  RegData$FIRST_TIME_CLOSED <- RegData$ForstLukketMed
-  RegData$ReshId <- RegData$AvdRESH
-  querySD <- paste0('
-          SELECT Skjemanavn,	SkjemaStatus,	ForlopsID,	HovedDato,	Sykehusnavn,	AvdRESH,	SkjemaRekkeflg
-           FROM skjemaoversikt
-           WHERE HovedDato >= "2014-01-01" ')
-  SkjemaData <- rapbase::loadRegData(registryName='data', query=querySD, dbType="mysql")
-
-  #SkjemaRekkeflg #1-pasientskjema, 2-legeskjema, 3- Oppf. 3mnd, 4 - Oppf. 12mnd. Endret til 5*, dvs. 5,10,15,20, juli 2022
-  SkjemaData$InnDato <- as.Date(SkjemaData$HovedDato)
-  SkjemaData$Aar <- 1900 + strptime(SkjemaData$InnDato, format="%Y")$year
-  SkjemaData$Mnd <-  format.Date(SkjemaData$InnDato, '%b %Y') #zoo::as.yearmon(SkjemaData$InnDato)
-  SkjemaData$SykehusNavn <- as.factor(SkjemaData$Sykehusnavn)
+  RegData <- NakkeHentRegData() # NakkeRegDataSQL()
+  # RegData$FIRST_TIME_CLOSED <- RegData$ForstLukketMed
+  # RegData$ReshId <- RegData$AvdRESH
 
   RegData <- NakkePreprosess(RegData = RegData)
 
@@ -567,9 +556,6 @@ server_nakke <- function(input, output, session) {
   sykehusValg <- unique(RegData$ReshId)[sykehusNavn$ix]
   sykehusValg <- c(0,sykehusValg)
   names(sykehusValg) <- c('Alle',sykehusNavn$x)
-
-  #output$appUserName <- renderText(rapbase::getUserFullName(session))
-  #output$appOrgName <- renderText(paste0('rolle: ', user$org(), '<br> reshID: ', reshID=user$org()) )}
 
   # User info in widget
   userInfo <- rapbase::howWeDealWithPersonalData(session)
@@ -635,7 +621,7 @@ server_nakke <- function(input, output, session) {
 
   #RegData som har tilknyttede skjema av ulik type.
   AntSkjemaAvHver <- reactive(
-    tabAntSkjema(SkjemaOversikt=SkjemaData,
+    tabAntSkjema(SkjemaOversikt=RegData,
                  datoFra = input$datovalgReg[1],
                  datoTil=input$datovalgReg[2],
                  skjemastatus=as.numeric(input$skjemastatus))
@@ -720,12 +706,6 @@ server_nakke <- function(input, output, session) {
     filename = function(){paste0('MuligeDobbeltReg.csv')},
     content = function(file, filename){write.csv2(tabDblReg(), file, row.names = F, fileEncoding = 'latin1', na = '')})
   #})
-
-  queryForl <- 'SELECT ForlopsID, Kommune, Kommunenr, Fylkenr, Avdod, AvdodDato, BasisRegStatus
-               FROM forlopsoversikt'
-  RegDataForl <- rapbase::loadRegData(registryName = 'data', query = queryForl, dbType = "mysql")
-
-  variablePRM <- 'Variabler som skal tas bort for LU-bruker'
 
   output$velgReshReg <- renderUI({
     selectInput(inputId = 'velgReshReg', label='Velg sykehus',
