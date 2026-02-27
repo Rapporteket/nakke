@@ -97,12 +97,12 @@ RegData <-NakkePreprosess(NakkeRegDataSQL(datoFra = '2011'))
 
 variable <- c('KomplDVT3mnd', 'KomplinfekDyp3mnd', 'KomplLungeEmboli3mnd', 'KomplinfekOverfl3mnd',
               'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd',
-              'EnhverKompl3mnd')
+              'Kompl3mnd')
 test <- RegData[,variable]
 test$test <- rowSums(RegData[,variable[1:8]])
 table(test$test)
 colSums(test, na.rm = T)
-RegData[which(test$test==0 & test$EnhverKompl3mnd==1),variable]
+RegData[which(test$test==0 & test$Kompl3mnd==1),variable]
 table(RegData[,variable[9]], useNA = 'a')
 
 	datoFra='2018-01-01'
@@ -247,7 +247,7 @@ setwd("C:/ResultattjenesteGIT/Nakke/")
 RegData <- NakkePreprosess(NakkeRegDataSQL(datoFra = '2020-01-01'))
 
 valgtVar <- 'NDIendr12mnd35pstKI'	#Må velge... Alder, AndreRelSykdommer, Antibiotika,
-          #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, EnhverKompl3mnd
+          #ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd, ASAgrad, BMI, Kompl3mnd
 		  #ErstatningPreOp,
 		  #FornoydBeh3mnd,FornoydBeh12mnd, Misfor3mnd,Misfor12mnd, KomplinfekDyp3mnd,
 		  #KomplinfekOverfl3mnd, KomplStemme3mnd, KomplSvelging3mnd, NDIendr12mnd, NytteOpr3mnd, NytteOpr12mnd
@@ -261,7 +261,7 @@ NakkeFigAndelerGrVar(RegData=RegData, valgtVar=valgtVar)
            reshID=reshID, outfile=outfile)
 
 variable <- c('Alder', 'AndreRelSykdommer', 'Antibiotika',
-          'ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd', 'ASAgrad', 'BMI', 'EnhverKompl3mnd', 'ErstatningPreOp',
+          'ArbeidstausPreOp', 'Arbeidstaus3mnd', 'Arbeidstaus12mnd', 'ASAgrad', 'BMI', 'Kompl3mnd', 'ErstatningPreOp',
              'FornoydBeh3mnd', 'FornoydBeh12mnd', 'Misfor3mnd', 'Misfor12mnd', 'KomplinfekDyp3mnd',
              'KomplinfekOverfl3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'NDIendr12mnd30pst', 'NytteOpr3mnd',
           'NytteOpr12mnd', 'NRSsmerteArmEndr12mnd','Verre3mnd', 'Verre12mnd', 'OprIndikMyelopati', 'Roker', 'Saardren',

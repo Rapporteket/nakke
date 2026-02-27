@@ -2,9 +2,15 @@
 % Please edit documentation in R/NakkeHentData.R
 \name{hentDataTabell}
 \alias{hentDataTabell}
-\title{Hent datatabell fra ngers database}
+\title{Hent datatabell fra nakkes database}
 \usage{
-hentDataTabell(tabellnavn = "surgeonform", qVar = "*", egneVarNavn = 1)
+hentDataTabell(
+  tabellnavn = "surgeonform",
+  qVar = "*",
+  datoFra = "2023-01-01",
+  datoTil = Sys.Date(),
+  egneVarNavn = 1
+)
 }
 \arguments{
 \item{tabellnavn}{Navn på tabell som skal lastes inn.}
@@ -15,5 +21,5 @@ Bare ferdigstilte (status=1) legeskjema og pasientskjema overføres
 (Sjekket 23.feb 2026)}
 }
 \description{
-Hent datatabell fra ngers database
+Hent datatabell fra nakkes database
 }

@@ -218,7 +218,7 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
 
 	}
 
-  if (valgtVar=='EnhverKompl3mnd') { #AndelGrVar  #AndelTid
+  if (valgtVar=='Kompl3mnd') { #AndelGrVar  #AndelTid
     #Pasientskjema. Alle komplikasjoner, 3mnd.
     indSkjema <- which(RegData$StatusUtfyll3mnd == 1)
     RegData <- RegData[intersect(which(RegData[,valgtVar] %in% 0:1), indSkjema), ]
@@ -733,17 +733,17 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     tittel <- 'Operasjonsårsak: Smerter'
   }
 
-  if (valgtVar=='PerOpEnhverKompl') { #AndelTid
-    #LegeSkjema. Andel med PerOpEnhverKompl=1
+  if (valgtVar=='KomplPerOp') { #AndelTid
+    #LegeSkjema. Andel med KomplPerOp=1
     #Kode 0,1: Nei, Ja +tomme
-    RegData <- RegData[which(RegData$PerOpEnhverKompl %in% 0:1), ]
-    RegData$Variabel <- RegData$PerOpEnhverKompl
+    RegData <- RegData[which(RegData$KomplPerOp %in% 0:1), ]
+    RegData$Variabel <- RegData$KomplPerOp
     varTxt <- 'med komplikasjoner'
     tittel <- 'Komplikasjoner (alle) ved operasjon'
   }
 
   if (valgtVar=='OpTilgfrembak') { #Andeler
-    #LegeSkjema. Andel med PerOpEnhverKompl=1
+    #LegeSkjema. Andel med KomplPerOp=1
     #Kode 0,1: Nei, Ja +tomme
     grtxt <- c('Ikke klassifiserbar', 'Fremre tilgang', 'Bakre tilgang', 'Andre inngrep', 'Bakre og fremre')
     RegData$VariabelGr <- factor(RegData$OpTilgfrembak, levels=0:4)
@@ -1037,7 +1037,7 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
         variable <- c('PerOpKomplAnafylaksiI','PerOpKomplAnnet','PerOpKomplBlodning','PerOpKomplDurarift',
                       'PerOpKomplFeilplasseringImplant','PerOpKomplKardioVaskulare','PerOpKomplMedullaskade',
                       'PerOpKomplNerverotSkade','PerOpKomplAnnenNerveskade','PerOpKomplOpFeilNivaa',
-                      'PerOpKomplRespiratorisk','PerOpKomplOsofagusSkade','PerOpEnhverKompl')
+                      'PerOpKomplRespiratorisk','PerOpKomplOsofagusSkade','KomplPerOp')
        grtxt <- c('Anafylaksi','Annet','Blødning','Durarift','Feilplassering, impl.','Kardiovaskulære','Medullaskade',
                    'Nerverotskade','Nerveskade','Op. feil nivå','Respiratorisk','Øsofagusskade','Komplikasjoner, alle')
       }
@@ -1049,7 +1049,7 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
         RegData <- RegData[which(RegData$StatusUtfyll3mnd == 1), ]
         variable <- c('KomplDVT3mnd', 'KomplinfekDyp3mnd', 'KomplLungeEmboli3mnd', 'KomplinfekOverfl3mnd',
                       'KomplPneumoni3mnd', 'KomplStemme3mnd', 'KomplSvelging3mnd', 'KomplUVI3mnd', 'KomplKraftsvikt3mnd',
-                      'EnhverKompl3mnd')
+                      'Kompl3mnd')
         grtxt <- c('DVT', 'Dyp infeksjon', 'Lungeemboli', 'Overfladisk infeksjon',
                    'Pneumoni', 'Stemmevansker', 'Svelgevansker', 'UVI', 'Kraftsvikt', 'Totalt, 3 mnd.')
       }

@@ -337,7 +337,7 @@ ui_nakke <- function() {
                                                   'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
                                                   'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
                                                   'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
-                                                  'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'EnhverKompl3mnd',
+                                                  'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'Kompl3mnd',
                                                   'Misfornøyd med behandlinga, 3 mnd.' = 'Misfor3mnd',
                                                   'Misfornøyd med behandlinga, 12 mnd.' = 'Misfor12mnd',
                                                   'NDIendring over 35%, 12 mnd. etter' = 'NDIendr12mnd35pst',
@@ -714,13 +714,9 @@ server_nakke <- function(input, output, session) {
   })
 
   observe({
-    DataDumpRaa <- NakkeHentRegData(medOppf = 1)
-      # NakkeRegDataSQL(datoFra = input$datovalgRegKtr[1],
-      #                              datoTil = input$datovalgRegKtr[2],
-      #                              medProm = 0,
-      #                              alleVar = 1)
-    DataDumpPre <- NakkePreprosess(RegData = DataDumpRaa)
-    DataDump <- NakkeUtvalgEnh(RegData = DataDumpPre,
+    # DataDumpRaa <- NakkeHentRegData(medOppf = 1)
+    # DataDumpPre <- NakkePreprosess(RegData = DataDumpRaa)
+    DataDump <- NakkeUtvalgEnh(RegData = RegData,
                                datoFra = input$datovalgRegKtr[1],
                                datoTil = input$datovalgRegKtr[2])$RegData
     #if (user$role() =='SC') {

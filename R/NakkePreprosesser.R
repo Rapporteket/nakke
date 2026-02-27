@@ -49,7 +49,49 @@ NakkePreprosess <- function(RegData=RegData)
 	  RegData$SykehusNavn[ind] <- paste0(RegData$SykehusNavn[ind],' (', RegData$ReshId[ind], ')')
 	}
 
-	#Lage hovekategorier
+#--------------Beregnede variabler---------------------
+#	TidlOpr, AntallNivaaOpr, KomplPerOp, Kompl3mnd, Kompl12mnd
+
+	RegData <- RegData %>%
+	  dplyr::mutate(TidlOpr = dplyr::case_when(
+	      TidlOprAnnetNiv == 1 & TidlOprSammeNiv == 1 ~ 3,
+	      TidlOprSammeNiv == 1 ~ 1,
+	      TidlOprAnnetNiv == 1 ~ 2,
+	      TidlOprNei == 1 ~ 4,
+	      TRUE ~ 9)
+	  )
+
+	varNivaa <- c("SideNivaaC0C1", "SideNivaaC1C2", "SideNivaaC2C3", "SideNivaaC3C4",
+	              "SideNivaaC4C5", "SideNivaaC5C6", "SideNivaaC6C7",  "SideNivaaC7TH1")
+	RegData$AntallNivaaOpr <- rowSums(RegData[,varNivaa], na.rm = T)
+
+#	PerOpEnhverKompl -> KomplPerOp
+varKomplPerOp <-
+  c("PerOpKomplDurarift", "PerOpKomplNerverotSkade", "PerOpKomplOpFeilNivaa",
+    "PerOpKomplFeilplasseringImplant", "PerOpKomplBlodning", "PerOpKomplRespiratorisk",
+    "PerOpKomplAnafylaksiI", "PerOpKomplMedullaskade", "PerOpKomplOsofagusSkade",
+    "PerOpKomplSkadeStoreBlodkar", "PerOpKomplKardioVaskulare", "PerOpKomplAnnenNerveskade",
+    "PerOpKomplAnnet")
+
+RegData$KomplPerOp <- ifelse(rowSums(RegData[ ,varKomplPerOp]) > 0, 1, 0)
+
+
+# EnhverKompl3mnd -> Kompl3mnd
+varKompl3mnd <- c("KomplUVI3mnd", "KomplPneumoni3mnd",
+                  "KomplDVT3mnd", "KomplLungeEmboli3mnd", "KomplinfekOverfl3mnd",
+                  "KomplinfekDyp3mnd", "KomplKraftsvikt3mnd", "KomplSvelging3mnd",
+                  "KomplStemme3mnd")
+RegData$Kompl3mnd <- ifelse(rowSums(RegData[ ,varKompl3mnd]) > 0, 1, 0)
+
+# EnhverKompl12mnd -> Kompl12mnd
+varKompl12mnd <- c("KomplUVI12mnd", "KomplPneumoni12mnd",
+                   "KomplDVT12mnd", "KomplLungeEmboli12mnd", "KomplinfekOverfl12mnd",
+                   "KomplinfekDyp12mnd", "KomplKraftsvikt12mnd", "KomplSvelging12mnd",
+                   "KomplStemme12mnd")
+RegData$Kompl12mnd <- ifelse(rowSums(RegData[ ,varKompl12mnd]) > 0, 1, 0)
+
+
+	# ----------------Lage hovekategorier---------------------------
 variabler <- c('OprMetodeDiskektomi', 'OprMetodeKirDekompresjon', 'OprMetodeAnnenBakreDekompr',
               'OprMetodeKorpektomi', 'OprMetodeAndre', 'OprMetodeBakreFusjon')
 ind <- which(is.na(RegData[ ,variabler]), arr.ind = T)

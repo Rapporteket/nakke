@@ -49,10 +49,19 @@ mappingEgneNavn <- function(tabell, tabType) {
 
 hentDataTabell <- function(tabellnavn = "surgeonform",
                            qVar = '*',
+                           datoFra = '2023-01-01', datoTil = Sys.Date(),
                            egneVarNavn = 1) { #  status = 1
 
   tabType <- toupper(tabellnavn)
-  query <- paste0("SELECT ", qVar, " FROM ", tabellnavn)
+
+  query <- paste0('SELECT ', qVar, ' FROM ', tabellnavn)
+  if (tabellnavn == 'surgeonform'){
+    query <- paste0(query,
+               ' WHERE OPERASJONSDATO >= \'', datoFra,
+               '\' AND OPERASJONSDATO <= \'', datoTil, '\' ')
+    query1 <- paste0('SELECT * FROM surgeonform
+    WHERE OPERASJONSDATO >= \'', datoFra, '\' AND OPERASJONSDATO <= \'', datoTil, '\' ')
+    }
 
   if (tabellnavn == 'patientfollowup3') {
     query <- paste0("SELECT ", qVar, ' FROM patientfollowup
@@ -83,6 +92,37 @@ hentDataTabell <- function(tabellnavn = "surgeonform",
 #' @export
 
 
+
+#-----------Endringer i datasettet fra AlleVarNum til egen sammenkobling av skjema:
+# ForlopsID -> MCEID, AvdRESH -> ReshId,  PasientSkjemaStatus -> StatusPasSkjema
+# LegeskjemaStatus -> StatusLegeSkjema,   ForstLukketMed -> ForstLukketLege,
+# StatusKtr3mnd -> StatusUtfyll3mnd, StatusKtr12mnd -> StatusUtfyll12mnd
+
+# Avdod, AvdodDato - ikke i bruk. Har DodsDato
+
+#Ikke i bruk: BasisRegStatus, ForlopsStatus, ForlopsMailStatus, EqType,
+#           ForstLukket3mnd, FriskmeldtDato3mnd, InngrepType, OppFolgLaget3mnd
+#           TidlSkulderPlager3mnd, TidlSkulderPlager12mnd
+
+#Beregner: TidlOpr, AntallNivaaOpr,
+# PerOpEnhverKompl -> KomplPerOp
+# EnhverKompl3mnd -> Kompl3mnd
+# EnhverKompl12mnd -> Kompl12mnd
+#----------------------------------------------------------------
+
+
+
+#' Hente data fra Degenerativ Nakke
+#'
+#' @param datoFra fra og med operasjonsdato, format: 'yyyy-mm-dd'
+#' @param datoTil til og med operasjonsdato, format: 'yyyy-mm-dd'
+#' @param medOppf ha med oppfølgingsskjema? 0-nei, 1-ja
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
                              medOppf = 1,  ...) {
   # Få til å fungere med ny sammenkobling av alle data
@@ -124,8 +164,10 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
                                   qVar = qPas,
                                   egneVarNavn = 1)
   #Legeskjema
+  # datovalg lagt til bare for Legeskjema.
   LegeSkjema <- hentDataTabell(tabellnavn = "surgeonform",
                                qVar = '*',
+                               datoFra = datoFra, datoTil = datoTil,
                                egneVarNavn = 1)
   LegeSkjema <- dplyr::rename(LegeSkjema,
                               'ForstLukketLege' = 'FIRST_TIME_CLOSED')
@@ -144,12 +186,11 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
     merge(mceSkjema,
           PasInfoSkjema, by = "PasientID",
           suffixes = c("", "_pas")) |>
-    merge(LegeSkjema, by = "MCEID", all.x=TRUE, suffixes = c("", "_lege")) |>
+    merge(LegeSkjema, by = "MCEID", all.x=FALSE, suffixes = c("", "_lege")) |>
     merge(PasSkjema,
           by = "MCEID", all.x = TRUE, suffixes = c("", "_oppf0")) |>
     merge(EnhetsNavn,
           by.x = "ReshId", by.y = 'ID', all.x = TRUE)
-
 
   if (medOppf == 1) {
     #Oppfølging, 3 mnd
@@ -162,46 +203,44 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
                                    egneVarNavn = 1)
 
     # SAMMENSTILL SKJEMA:
+    tictoc::tic
     RegData <- RegData |>
       merge(Oppf3Skjema,
             suffixes = c("", "_oppf3"), by = "MCEID", all.x = TRUE) |>
       merge(Oppf12Skjema,
             suffixes = c("", "_oppf12"), by = "MCEID", all.x = TRUE)
+    tictoc::toc()
 
-
-
-    # #Feil i andel oppfølging etter innføreing av ePROM. StatusUtfyll3mnd=1 betyr ikke lenger at skjemaet er utfylt
+    # #Feil i andel oppfølging etter innføreing av ePROM.
+    # StatusUtfyll3mnd=1 betyr ikke lenger at skjemaet er utfylt
     # #Må lage variabelen på nytt
-    # ePROMadmTab <- rapbase::loadRegData(registryName=registryName,
-    #                                     query='SELECT * FROM proms')
-    # ePROMvar <- c("MCEID", "TSSENDT", "TSRECEIVED", "NOTIFICATION_CHANNEL", "DISTRIBUTION_RULE",
-    #               'REGISTRATION_TYPE')
-    # # «EpromStatus»:  0 = Created, 1 = Ordered, 2 = Expired, 3 = Completed, 4 = Failed
-    # ind3mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
-    #                    c('PATIENTFOLLOWUP', 'PATIENTFOLLOWUP_3_PiPP', 'PATIENTFOLLOWUP_3_PiPP_REMINDER'))
-    # ind12mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
-    #                     c('PATIENTFOLLOWUP12', 'PATIENTFOLLOWUP_12_PiPP', 'PATIENTFOLLOWUP_12_PiPP_REMINDER'))
-    #
-    # indIkkeEprom3mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
-    # indIkkeEprom12mnd <-  which(!(RegData$ForlopsID %in% ePROMadmTab$MCEID[ind12mnd]))
-    #
-    # #indEprom <-  which((RegDataV3$ForlopsID %in% ePROMadmTab$MCEID[ind3mnd]))
-    # RegData$OppFolg3mndGML <- RegData$StatusUtfyll3mnd
-    # RegData$StatusUtfyll3mnd <- 0
-    # RegData$StatusUtfyll3mnd[
-    #   RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-    # RegData$StatusUtfyll3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
-    #
-    # RegData$OppFolg12mndGML <- RegData$StatusUtfyll12mnd
-    # RegData$StatusUtfyll12mnd <- 0
-    # RegData$StatusUtfyll12mnd[
-    #   RegData$ForlopsID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
-    # RegData$StatusUtfyll12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
+    ePROMadmTab <- rapbase::loadRegData(registryName='data',
+                                        query='SELECT * FROM proms')
+    ePROMvar <- c("MCEID", "TSSENDT", "TSRECEIVED", "NOTIFICATION_CHANNEL", "DISTRIBUTION_RULE",
+                  'REGISTRATION_TYPE')
+    # «EpromStatus»:  0 = Created, 1 = Ordered, 2 = Expired, 3 = Completed, 4 = Failed
+    ind3mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
+                       c('PATIENTFOLLOWUP', 'PATIENTFOLLOWUP_3_PiPP', 'PATIENTFOLLOWUP_3_PiPP_REMINDER'))
+    ind12mnd <- which(ePROMadmTab$REGISTRATION_TYPE %in%
+                        c('PATIENTFOLLOWUP12', 'PATIENTFOLLOWUP_12_PiPP', 'PATIENTFOLLOWUP_12_PiPP_REMINDER'))
+
+    indIkkeEprom3mnd <-  which(!(RegData$MCEID %in% ePROMadmTab$MCEID[ind3mnd]))
+    indIkkeEprom12mnd <-  which(!(RegData$MCEID %in% ePROMadmTab$MCEID[ind12mnd]))
+
+    RegData$OppFolg3mndGML <- RegData$StatusUtfyll3mnd
+    RegData$StatusUtfyll3mnd <- 0
+    RegData$StatusUtfyll3mnd[
+      RegData$MCEID %in% ePROMadmTab$MCEID[intersect(ind3mnd, which(ePROMadmTab$STATUS==3))]] <- 1
+    RegData$StatusUtfyll3mnd[intersect(which(RegData$OppFolg3mndGML ==1), indIkkeEprom3mnd)] <- 1
+
+    RegData$OppFolg12mndGML <- RegData$StatusUtfyll12mnd
+    RegData$StatusUtfyll12mnd <- 0
+    RegData$StatusUtfyll12mnd[
+      RegData$MCEID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
+    RegData$StatusUtfyll12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
+  }
 
 
-
-
-     }
 
   return(invisible(RegData))
 }

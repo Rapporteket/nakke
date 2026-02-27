@@ -10,28 +10,20 @@ sship::dec("c://Users/lro2402unn/RegistreGIT/data/nakke1542de64e.sql.gz__2026022
 # source c://Users/lro2402unn/RegistreGIT/data/nakke1542de64e.sql;
 setwd('c://Users/lro2402unn/RegistreGIT/nakke')
 
+library(nakke)
 source("dev/sysSetenv.R")
 nakke::kjorNakkeApp(browser = TRUE)
 
 dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
-dataNy <- NakkeHentRegData()
+dataNy <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31')
 RegData <- NakkePreprosess(dataNy)
 
-setdiff(names(dataGML), names(dataNy))
-#Endringer
- # "ForlopsID" -> MCEID, "AvdRESH" -> ReshID,  PasientSkjemaStatus -> StatusPasSkjema
- # "LegeskjemaStatus" -> StatusLegeSkjema,   "ForstLukketMed" -> ForstLukketLege,
- # "StatusKtr3mnd" -> StatusUtfyll3mnd, "StatusKtr12mnd" -> StatusUtfyll12mnd
+dataNy <- NakkeHentRegData()
 
- # "Avdod", "AvdodDato" - se nærmere på disse. Har DodsDato
-
-#Ikke i bruk: BasisRegStatus, ForlopsStatus, ForlopsMailStatus, EqType,
-#           ForstLukket3mnd, FriskmeldtDato3mnd, InngrepType, OppFolgLaget3mnd
-#           TidlSkulderPlager3mnd, TidlSkulderPlager12mnd
-
-# MANGLER!!!: TidlOpr, AntallNivaaOpr, PerOpEnhverKompl, EnhverKompl3mnd
-#Spør om ikke de kan legges til på linje med andre beregnede variabler som skårer?
+# 3,6s - sammenstille
+# 6,8s - hente tabeller++
+# 10,4s - hente alt
 
 unique(RegData[,c("ReshId", 'SykehusNavn')])
 reshID <- 114288
