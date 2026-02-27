@@ -200,7 +200,7 @@ SELECT
   surgeonform.LIGGEDOEGN_TOTAL AS LiggeDognTotalt,
   surgeonform.DOEDSFALL_UNDER_OPPHOLDET AS DodsfallOpphold,
   surgeonform.DOEDSFALL_UNDER_OPPHOLDET_ANNET_SPESIFISER AS DodsfallOppholdAnnetSpes,
-  surgeonform.STATUS AS LegeskjemaStatus,
+  surgeonform.STATUS AS StatusLegeSkjema,
 
   patientform.CENTREID AS CentreIdPas,
   patientform.UTFYLLING_DATO AS UtfyltDatoPas,
@@ -267,7 +267,7 @@ SELECT
   patientform.EQ5D_SCORE AS Eq5DScorePreOp,
   patientform.HELSETILSTAND_SCALE AS HelsetilstPreOp,
   patientform.HELSETILSTAND_SCALE_MISS AS HelsetilstPreOpMissing,
-  patientform.STATUS AS PasientSkjemaStatus,
+  patientform.STATUS AS StatusPasSkjema,
   patientform.TSUPDATED AS PatSkjemaOppdatert,   -- Not specified in NAKKE-203
   patientform.UPDATEDBY AS PatSkjemaOppdatertAv, -- Not specified in NAKKE-203
   patientform.TSCREATED AS PatSkjemaLaget,       -- Not specified in NAKKE-203
@@ -327,7 +327,7 @@ SELECT
   followup3.EQ5D_ANGST_DEPRESJON AS EqAngst3mnd, 
   followup3.EQ5D_SCORE AS Eq5DScore3mnd, 
   followup3.HELSETILSTAND_SCALE AS Helsetilst3mnd,
-  followup3.STATUS AS OppFolgStatus3mnd,
+  followup3.STATUS AS StatusUtfyll3mnd,
   followup3.TSUPDATED AS OppFolgOppdatert3mnd,   -- Not specified in NAKKE-203
   followup3.UPDATEDBY AS OppFolgOppdatertAv3mnd, -- Not specified in NAKKE-203
   followup3.TSCREATED AS OppFolgLaget3mnd,       -- Not specified in NAKKE-203
@@ -387,7 +387,7 @@ SELECT
   followup12.EQ5D_ANGST_DEPRESJON AS EqAngst12mnd, 
   followup12.EQ5D_SCORE AS Eq5DScore12mnd, 
   followup12.HELSETILSTAND_SCALE AS Helsetilst12mnd,
-  followup12.STATUS AS OppFolgStatus12mnd,
+  followup12.STATUS AS StatusUtfyll12mnd,
   followup12.TSUPDATED AS OppFolgOppdatert12mnd,   -- Not specified in NAKKE-203
   followup12.UPDATEDBY AS OppFolgOppdatertAv12mnd, -- Not specified in NAKKE-203
   followup12.TSCREATED AS OppFolgLaget12mnd,       -- Not specified in NAKKE-203

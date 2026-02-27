@@ -26,8 +26,8 @@ NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra=datoFra1aar, datoTil=
 #Datasjekk
 ShNavnReshRaa <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'AvdRESH')])
 SykehusNavnResh <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'AvdRESH')])
-ShNavnResh <- unique(NakkeData[ ,c('ShNavn', 'ReshId')])
-write.csv2(ShNavnResh[order(ShNavnResh$ShNavn), ], file = 'NakkeSykehusNavnAVDResh.csv', row.names = F, fileEncoding = 'latin1')
+ShNavnResh <- unique(NakkeData[ ,c('SykehusNavn', 'ReshId')])
+write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavnAVDResh.csv', row.names = F, fileEncoding = 'latin1')
 
 #Til Tore
 # RegData <- NakkePreprosess(RegData = NakkeRegDataSQL(medProm = 1))
@@ -151,7 +151,7 @@ xtable(tabAvdN5nakke, digits=0, align=c('l', rep('r', 6)),
 
 #Forekomst av sårinfeksjon (totalt for bakre og fremre nakkekirurgi): 2,2%
 '%i%' <- intersect
-ind <- which(NakkeData1aar$OppFolgStatus3mnd == 1) %i%
+ind <- which(NakkeData1aar$StatusUtfyll3mnd == 1) %i%
       union(which(NakkeData1aar$KomplinfekDyp3mnd %in% 0:1),
             which(NakkeData1aar$KomplinfekOverfl3mnd %in% 0:1))
 NakkeData1aarDum <- NakkeData1aar[ind, ]
@@ -171,7 +171,7 @@ NakkeData <- NakkePreprosess(NakkeDataRaa)
 
 #Sjekk om det har kommet nye avdelinger:
 ny <- setdiff(sort(unique(NakkeData$ReshId)), sort(names(nyID)))
-NakkeData$ShNavn[match(ny, NakkeData$ReshId)]
+NakkeData$SykehusNavn[match(ny, NakkeData$ReshId)]
 # NB: Aktuelle utvalg for fremBak, myelopati osv. er lagt inn i funksjonen (dataTilOffVisning)
 
 setwd('../Aarsrapp/NKR')
@@ -214,7 +214,7 @@ table(FellesFilNakke$ind_id, FellesFilNakke$year)
 
 
 #----------Dekningsgrad---------------------
-ReshSh <- unique(NakkeData[ ,c('ReshId', 'ShNavn')])
+ReshSh <- unique(NakkeData[ ,c('ReshId', 'SykehusNavn')])
 write.csv2(ReshSh, file = 'data/ReshShNavn', row.names = F)
 
 

@@ -15,7 +15,7 @@
 #'             ArbeidstausPreOp: Mottar sykepenger, preoperativt?
 #'             ASAgrad: ASA-grad > II
 #'             BMI: Pasienter med fedme
-#'             EnhverKompl3mnd: Alle komplikasjoner
+#'             Kompl3mnd: Alle komplikasjoner
 #'             ErstatningPreOp: Søkt/planlegger å søke erstatning
 #'             FornoydBeh12mnd: Fornøyde pasienter, 12 mnd.
 #'             FornoydBeh3mnd: Fornøyde pasienter, 3 mnd.

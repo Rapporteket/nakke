@@ -30,7 +30,7 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
   enhetsUtvalg <- ifelse(reshID==0 | is.na(indEgen1), 0, enhetsUtvalg )
 
   if (enhetsUtvalg %in% c(1,2)) {	#Involverer egen enhet
-    hovedgrTxt <- as.character(RegData$ShNavn[indEgen1])
+    hovedgrTxt <- as.character(RegData$SykehusNavn[indEgen1])
   } else {
     hovedgrTxt <-'Hele landet'
   }

@@ -7,7 +7,7 @@
 NakkePreprosess(RegData = RegData)
 }
 \arguments{
-\item{RegData}{Dataramme med alle nødvendige variable fra registeret}
+\item{RegData}{dataramme med nakkedata}
 }
 \value{
 RegData En dataramme med det preprosesserte datasettet

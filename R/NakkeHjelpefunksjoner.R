@@ -65,10 +65,10 @@ lageTulleData <- function(RegData, varBort=NA, antSh=26, antObs=20000) {
   #Må også legge på resh som svarer til sykehusnavn.
       library(synthpop)
       library(dplyr)
-      #ForlopsID <- RegData$ForlopsID
+
   if (!is.na(varBort[1])) {
       RegData <- RegData[,-which(names(RegData) %in% varBort)]}
-      sykehus <- cbind(ShNavn=paste('Sykehus', LETTERS[1:antSh]),
+      sykehus <- cbind(SykehusNavn=paste('Sykehus', LETTERS[1:antSh]),
                        ReshId=1:antSh)
       fordelingPasienter <- sample(1:10,antSh, replace = TRUE)
       indSample <-  sample(1:antSh, prob=fordelingPasienter/sum(fordelingPasienter),
@@ -273,7 +273,7 @@ PasMdblReg <- function(RegData, tidsavvik=30){
 
   PasMdbl <- FlereReg$PasientID[which(FlereReg$KortTid == 1)]
   TabDbl <- RegData[which(RegData$PasientID %in% PasMdbl),
-                    c("PasientID", "InnDato", "SykehusNavn", "ReshId", "ForlopsID")] #, 'SkjemaGUID'
+                    c("PasientID", "InnDato", "SykehusNavn", "ReshId", "MCEID")]
   TabDbl <- TabDbl[order(TabDbl$InnDato), ]
   N <- dim(TabDbl)[1]
 
@@ -283,5 +283,7 @@ PasMdblReg <- function(RegData, tidsavvik=30){
     TabDbl$InnDato <- format(TabDbl$InnDato, '%Y-%m-%d') #'%d.%m.%Y')
     tabUt <- TabDbl[order(TabDbl$PasientID, TabDbl$InnDato), ]
   } else {tabUt <- paste0('Ingen registreringer med mindre enn ', tidsavvik, 'minutter mellom registreringene for samme pasient.')}
-}
+
+  return(tabUt)
+  }
 

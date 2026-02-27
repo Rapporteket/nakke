@@ -17,7 +17,7 @@
 #'             ArbeidstausPreOp: Mottar sykepenger, preoperativt?
 #'             ASAgrad: ASA-grad > II
 #'             BMI: Pasienter med fedme
-#'             EnhverKompl3mnd: Alle komplikasjoner
+#'             Kompl3mnd: Alle komplikasjoner
 #'             ErstatningPreOp: Søkt/planlegger å søke erstatning
 #'             FornoydBeh12mnd: Fornøyde pasienter, 12 mnd.
 #'             FornoydBeh3mnd: Fornøyde pasienter, 3 mnd.
@@ -81,7 +81,7 @@ NakkeFigAndelerGrVarAar <- function(RegData, valgtVar, datoFra='2012-01-01', dat
      if (valgtVar=='Komplinfek') {
        #3MndSkjema. Andel med KomplinfekDyp3mnd=1
        #Kode 0,1: Nei, Ja +tomme
-       ind <- which(RegData$OppFolgStatus3mnd == 1) %i%
+       ind <- which(RegData$StatusUtfyll3mnd == 1) %i%
          union(which(RegData$KomplinfekDyp3mnd %in% 0:1), which(RegData$KomplinfekOverfl3mnd %in% 0:1))
        RegData <- RegData[ind, ]
        RegData$Variabel[union(which(RegData$KomplinfekDyp3mnd==1), which(RegData$KomplinfekOverfl3mnd==1))] <- 1
@@ -92,7 +92,7 @@ NakkeFigAndelerGrVarAar <- function(RegData, valgtVar, datoFra='2012-01-01', dat
      if (valgtVar=='KomplStemme3mnd') {
           #3MndSkjema. Andel med KomplStemme3mnd=1
           #Kode 0,1: Nei, Ja +tomme
-          RegData <- RegData[which(RegData$OppFolgStatus3mnd == 1) %i%
+          RegData <- RegData[which(RegData$StatusUtfyll3mnd == 1) %i%
                                 which(RegData$KomplStemme3mnd %in% 0:1) %i%
                                which(RegData$OprMetodeTilgangFremre==1), ]
           RegData$Variabel <- RegData[ ,valgtVar]
@@ -103,7 +103,7 @@ NakkeFigAndelerGrVarAar <- function(RegData, valgtVar, datoFra='2012-01-01', dat
           #3MndSkjema. Andel med KomplSvelging3mnd=1
           #Kode 0,1: Nei, Ja +tomme
        ind <-
-          RegData <- RegData[(which(RegData$OppFolgStatus3mnd == 1) %i%
+          RegData <- RegData[(which(RegData$StatusUtfyll3mnd == 1) %i%
                                        which(RegData$KomplSvelging3mnd %in% 0:1) %i%
                                        which(RegData$OprMetodeTilgangFremre==1)), ]
           RegData$Variabel <- RegData[ ,valgtVar]
