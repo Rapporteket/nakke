@@ -42,8 +42,8 @@ mappingEgneNavn <- function(tabell, tabType) {
 #' @param tabellnavn Navn på tabell som skal lastes inn.
 #' @param egneVarNavn 0 - Qreg-navn benyttes.
 #'                    1 - selvvalgte navn fra Friendlyvar benyttes
-#' Bare ferdigstilte (status=1) legeskjema og pasientskjema overføres
-#' (Sjekket 23.feb 2026)
+#' @param datoFra fra og med operasjonsdato, format: 'yyyy-mm-dd'
+#' @param datoTil til og med operasjonsdato, format: 'yyyy-mm-dd'
 #'
 #' @export
 
@@ -51,6 +51,8 @@ hentDataTabell <- function(tabellnavn = "surgeonform",
                            qVar = '*',
                            datoFra = '2023-01-01', datoTil = Sys.Date(),
                            egneVarNavn = 1) { #  status = 1
+  # Bare ferdigstilte (status=1) legeskjema og pasientskjema overføres
+  # (Sjekket 23.feb 2026)
 
   tabType <- toupper(tabellnavn)
 
@@ -82,14 +84,8 @@ hentDataTabell <- function(tabellnavn = "surgeonform",
   return(tabell)
 }
 
-#' Henter Nakke-tabeller og kobler sammen
-#'
-#' @param medPROM: koble på RAND og TSS2-variabler
-#' @param alleData 1- alle variabler med, 0 - utvalgte variabler med
-#'
-#' @return RegData data frame
-#'
-#' @export
+
+
 
 
 
@@ -100,7 +96,7 @@ hentDataTabell <- function(tabellnavn = "surgeonform",
 
 # Avdod, AvdodDato - ikke i bruk. Har DodsDato
 
-#Ikke i bruk: BasisRegStatus, ForlopsStatus, ForlopsMailStatus, EqType,
+# Ikke i bruk: BasisRegStatus, ForlopsStatus, ForlopsMailStatus, EqType,
 #           ForstLukket3mnd, FriskmeldtDato3mnd, InngrepType, OppFolgLaget3mnd
 #           TidlSkulderPlager3mnd, TidlSkulderPlager12mnd
 
@@ -108,21 +104,18 @@ hentDataTabell <- function(tabellnavn = "surgeonform",
 # PerOpEnhverKompl -> KomplPerOp
 # EnhverKompl3mnd -> Kompl3mnd
 # EnhverKompl12mnd -> Kompl12mnd
-#----------------------------------------------------------------
 
 
-
-#' Hente data fra Degenerativ Nakke
+#' Henter Nakke-tabeller og kobler sammen
 #'
 #' @param datoFra fra og med operasjonsdato, format: 'yyyy-mm-dd'
 #' @param datoTil til og med operasjonsdato, format: 'yyyy-mm-dd'
 #' @param medOppf ha med oppfølgingsskjema? 0-nei, 1-ja
-#' @param ...
-#'
-#' @return
+#' @param medPROM: koble på RAND og TSS2-variabler
+#' @param alleData 1- alle variabler med, 0 - utvalgte variabler med
+#' @return RegData data frame
 #' @export
-#'
-#' @examples
+
 NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
                              medOppf = 1,  ...) {
   # Få til å fungere med ny sammenkobling av alle data
@@ -239,8 +232,6 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
       RegData$MCEID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
     RegData$StatusUtfyll12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
   }
-
-
 
   return(invisible(RegData))
 }

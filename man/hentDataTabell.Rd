@@ -15,10 +15,12 @@ hentDataTabell(
 \arguments{
 \item{tabellnavn}{Navn på tabell som skal lastes inn.}
 
+\item{datoFra}{fra og med operasjonsdato, format: 'yyyy-mm-dd'}
+
+\item{datoTil}{til og med operasjonsdato, format: 'yyyy-mm-dd'}
+
 \item{egneVarNavn}{0 - Qreg-navn benyttes.
-                   1 - selvvalgte navn fra Friendlyvar benyttes
-Bare ferdigstilte (status=1) legeskjema og pasientskjema overføres
-(Sjekket 23.feb 2026)}
+1 - selvvalgte navn fra Friendlyvar benyttes}
 }
 \description{
 Hent datatabell fra nakkes database

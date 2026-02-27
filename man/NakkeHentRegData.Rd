@@ -12,6 +12,12 @@ NakkeHentRegData(
 )
 }
 \arguments{
+\item{datoFra}{fra og med operasjonsdato, format: 'yyyy-mm-dd'}
+
+\item{datoTil}{til og med operasjonsdato, format: 'yyyy-mm-dd'}
+
+\item{medOppf}{ha med oppfølgingsskjema? 0-nei, 1-ja}
+
 \item{medPROM:}{koble på RAND og TSS2-variabler}
 
 \item{alleData}{1- alle variabler med, 0 - utvalgte variabler med}
