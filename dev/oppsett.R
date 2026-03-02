@@ -2,7 +2,7 @@
 
 library(nakke)
 
-#devtools::install_github('Rapporteket/rapbase', ref = 'ant_linjer_autorapport')
+#26
 #remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('../data')
 sship::dec("c://Users/lro2402unn/RegistreGIT/data/nakke119ead892.sql.gz__20260302_080143.tar.gz",

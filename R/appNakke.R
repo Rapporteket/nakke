@@ -321,42 +321,45 @@ ui_nakke <- function() {
                                 søkt erstatning/uføretrygd, utdanning'),
              h2("Sykehusvise andeler og utvikling over tid for valgt variabel", align='center'),
              sidebarPanel(width = 3,
-                          selectInput(inputId = "valgtVarAndel", label="Velg variabel",
-                                      choices = c('Alder' = 'Alder',
-                                                  'Andre sykdommer' = 'AndreRelSykdommer',
-                                                  'Antibiotika' = 'Antibiotika',
-                                                  'Arbeidstaus før operasjon' = 'ArbeidstausPreOp',
-                                                  'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
-                                                  'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
-                                                  'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
-                                                  'Fornøyd med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
-                                                  'Fornøyd med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
-                                                  'Forverring, 3 mnd. etter' = 'Verre3mnd',
-                                                  'Forverring, 12 mnd. etter' = 'Verre12mnd',
-                                                  'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
-                                                  'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
-                                                  'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
-                                                  'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
-                                                  'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'Kompl3mnd',
-                                                  'Misfornøyd med behandlinga, 3 mnd.' = 'Misfor3mnd',
-                                                  'Misfornøyd med behandlinga, 12 mnd.' = 'Misfor12mnd',
-                                                  'NDIendring over 35%, 12 mnd. etter' = 'NDIendr12mnd35pst',
-                                                  'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
-                                                  'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
-                                                  'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
-                                                  'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
-                                                  'Registreringsforsinkelse' = 'regForsinkelse',
-                                                  'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
-                                                  'Smertestillende, preoperativt' = 'SmertestillPreOp',
-                                                  'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
-                                                  'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
-                                                  'Søkt erstatning før operasjon' = 'ErstatningPreOp',
-                                                  'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
-                                                  'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
-                                                  'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
-                                                  'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
-                                                  'Utdanning' = 'Utdanning'),
-                                      selected = 'regForsinkelse'
+                          selectInput(
+                            inputId = "valgtVarAndel", label="Velg variabel",
+                            choices = c('Alder' = 'Alder',
+                                        'Andre sykdommer' = 'AndreRelSykdommer',
+                                        'Antibiotika' = 'Antibiotika',
+                                        'Arbeidstaus før operasjon' = 'ArbeidstausPreOp',
+                                        'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
+                                        'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
+                                        'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
+                                        'Fornøyd med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
+                                        'Fornøyd med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
+                                        'Forverring, 3 mnd. etter' = 'Verre3mnd',
+                                        'Forverring, 12 mnd. etter' = 'Verre12mnd',
+                                        'Komplikasjon, dyp infeksjon, 3 mnd. etter' = 'KomplinfekDyp3mnd',
+                                        'Komplikasjon, overfladisk infeksjon, 3 mnd. etter' = 'KomplinfekOverfl3mnd',
+                                        'Komplikasjon med stemme, 3 mnd. etter' = 'KomplStemme3mnd',
+                                        'Komplikasjon med stemme, 12 mnd. etter' = 'KomplStemme12mnd',
+                                        'Komplikasjon med svelging, 3 mnd. etter' = 'KomplSvelging3mnd',
+                                        'Komplikasjon med svelging, 12 mnd. etter' = 'KomplSvelging12mnd',
+                                        'Komplikasjoner, pasientrapportert 3 mnd. etter' = 'Kompl3mnd',
+                                        'Misfornøyd med behandlinga, 3 mnd.' = 'Misfor3mnd',
+                                        'Misfornøyd med behandlinga, 12 mnd.' = 'Misfor12mnd',
+                                        'NDIendring over 35%, 12 mnd. etter' = 'NDIendr12mnd35pst',
+                                        'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
+                                        'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
+                                        'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
+                                        'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
+                                        'Registreringsforsinkelse' = 'regForsinkelse',
+                                        'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
+                                        'Smertestillende, preoperativt' = 'SmertestillPreOp',
+                                        'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
+                                        'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
+                                        'Søkt erstatning før operasjon' = 'ErstatningPreOp',
+                                        'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
+                                        'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
+                                        'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
+                                        'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
+                                        'Utdanning' = 'Utdanning'),
+                            selected = 'regForsinkelse'
                           ),
                           selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet (kun for utvikling over tid)',
                                       choices = c("Egen mot resten av landet"=1, "Hele landet"=0, "Egen enhet"=2)
@@ -542,9 +545,6 @@ server_nakke <- function(input, output, session) {
 
   # rapbase::appLogger(session, msg = 'Starter Rapporteket-Nakke')
   RegData <- NakkeHentRegData() # NakkeRegDataSQL()
-  # RegData$FIRST_TIME_CLOSED <- RegData$ForstLukketMed
-  # RegData$ReshId <- RegData$AvdRESH
-
   RegData <- NakkePreprosess(RegData = RegData)
 
   map_avdeling <- data.frame(
@@ -729,7 +729,7 @@ server_nakke <- function(input, output, session) {
     output$lastNed_dataDump <- downloadHandler(
       filename = function(){'dataDumpNakke.csv'},
       content = function(file, filename){write.csv2(tabDataDump, file, row.names = F, fileEncoding = 'latin1', na = '')
-          rapbase::repLogger(session = session,
+          rapbase::repLogger2(session = session,
                              msg = txtLog)
       })
   }) #observe
