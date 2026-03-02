@@ -196,13 +196,11 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
                                    egneVarNavn = 1)
 
     # SAMMENSTILL SKJEMA:
-    tictoc::tic
     RegData <- RegData |>
       merge(Oppf3Skjema,
             suffixes = c("", "_oppf3"), by = "MCEID", all.x = TRUE) |>
       merge(Oppf12Skjema,
             suffixes = c("", "_oppf12"), by = "MCEID", all.x = TRUE)
-    tictoc::toc()
 
     # #Feil i andel oppfølging etter innføreing av ePROM.
     # StatusUtfyll3mnd=1 betyr ikke lenger at skjemaet er utfylt

@@ -5,9 +5,9 @@ library(nakke)
 #devtools::install_github('Rapporteket/rapbase', ref = 'ant_linjer_autorapport')
 #remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/nakke1542de64e.sql.gz__20260223_100410.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/nakke119ead892.sql.gz__20260302_080143.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa")
-# source c://Users/lro2402unn/RegistreGIT/data/nakke1542de64e.sql;
+# source c://Users/lro2402unn/RegistreGIT/data/nakke119ead892.sql;
 setwd('c://Users/lro2402unn/RegistreGIT/nakke')
 
 library(nakke)
