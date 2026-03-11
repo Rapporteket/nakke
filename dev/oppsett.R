@@ -18,10 +18,10 @@ dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
 dataNy <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31')
 RegData <- NakkePreprosess(dataNy)
-table(RegData$SivilStatus)
-table(RegData$SivilStatusPas)
 
 dataNy <- NakkeHentRegData()
+
+test <- RegData[ ,c('REOP_INNEN_90_DAGER_UTFYLT', 'Reopr90d')]
 
 # 3,6s - sammenstille
 # 6,8s - hente tabeller++

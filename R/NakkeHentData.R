@@ -148,13 +148,14 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
              SMOKING,
              SNUFF'
 
-  varFjernes <- c('TSCREATED', 'TSUPDATED', 'FIRST_TIME_CLOSED_BY', 'FIRST_TIME_CLOSED',
-                  'CENTREID', 'TYPE_UNDERSOEKELSE_UTFYLT')
 
   PasInfoSkjema <- hentDataTabell(tabellnavn = "patient",
                                   qVar = qPas,
                                   egneVarNavn = 1)
-  PasInfoSkjema <- PasInfoSkjema[ ,-which(names(PasInfoSkjema %in% varFjernes))]
+
+
+  varFjernes <- c('TSCREATED', 'TSUPDATED', 'FIRST_TIME_CLOSED_BY', 'FIRST_TIME_CLOSED',
+                  'CENTREID', 'TYPE_UNDERSOEKELSE_UTFYLT')
 
   #Legeskjema
   # datovalg lagt til bare for Legeskjema.
@@ -164,11 +165,13 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
                                egneVarNavn = 1)
   LegeSkjema <- dplyr::rename(LegeSkjema,
                               'ForstLukketLege' = 'FIRST_TIME_CLOSED')
+  LegeSkjema <- LegeSkjema[ ,-which(names(LegeSkjema) %in% varFjernes)]
 
   #Pasientens spørreskjema
   PasSkjema <- hentDataTabell(tabellnavn = "patientform",
                               qVar = '*',
                               egneVarNavn = 1)
+  PasSkjema <- PasSkjema[ ,-which(names(PasSkjema) %in% varFjernes)]
 
   #Sykehusnavn
   EnhetsNavn <- hentDataTabell(tabellnavn = "centreattribute",
@@ -198,12 +201,13 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
     Oppf3Skjema <- hentDataTabell(tabellnavn = "patientfollowup3",
                                   qVar = '*',
                                   egneVarNavn = 1)
-    Oppf3Skjema <-
-      Oppf3Skjema[ , -which(names(Oppf3Skjema %in% varFjernes))]
-    #Oppfølging, 12 mnd
+    Oppf3Skjema <- Oppf3Skjema[ , -which(names(Oppf3Skjema) %in% varFjernes)]
+
+     #Oppfølging, 12 mnd
     Oppf12Skjema <- hentDataTabell(tabellnavn = "patientfollowup12",
                                    qVar = '*',
                                    egneVarNavn = 1)
+    Oppf12Skjema <- Oppf12Skjema[ , -which(names(Oppf12Skjema) %in% varFjernes)]
 
     # SAMMENSTILL SKJEMA:
     RegData <- RegData |>
