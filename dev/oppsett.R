@@ -18,6 +18,8 @@ dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
 dataNy <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31')
 RegData <- NakkePreprosess(dataNy)
+table(RegData$SivilStatus)
+table(RegData$SivilStatusPas)
 
 dataNy <- NakkeHentRegData()
 

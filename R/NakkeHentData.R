@@ -124,8 +124,7 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
   #mce Trenger nok ganske få av disse variablene
   # mce_patient_data # eneste som inneholder kobling mellom mceid og pasientid
-  qmce <- 'CENTREID AS ReshId, CREATEDBY, MCEID, PATIENT_ID AS PasientID,
-             sendtSMS12mnd, sendtSMS3mnd, TSCREATED, TSUPDATED'
+  qmce <- 'CENTREID AS ReshId, MCEID, PATIENT_ID AS PasientID'
 
   mceSkjema <- hentDataTabell(tabellnavn = "mce",
                               qVar = qmce,
@@ -145,17 +144,18 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
              NATIVE_LANGUAGE,
              NATIVE_LANGUAGE_OTHER,
              NO_CHILDREN,
-             OWNING_CENTRE,
-             REAPER_DATE,
              REGISTERED_DATE,
              SMOKING,
-             SNUFF,
-             TSCREATED,
-             TSUPDATED'
+             SNUFF'
+
+  varFjernes <- c('TSCREATED', 'TSUPDATED', 'FIRST_TIME_CLOSED_BY', 'FIRST_TIME_CLOSED',
+                  'CENTREID', 'TYPE_UNDERSOEKELSE_UTFYLT')
 
   PasInfoSkjema <- hentDataTabell(tabellnavn = "patient",
                                   qVar = qPas,
                                   egneVarNavn = 1)
+  PasInfoSkjema <- PasInfoSkjema[ ,-which(names(PasInfoSkjema %in% varFjernes))]
+
   #Legeskjema
   # datovalg lagt til bare for Legeskjema.
   LegeSkjema <- hentDataTabell(tabellnavn = "surgeonform",
@@ -174,6 +174,8 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
   EnhetsNavn <- hentDataTabell(tabellnavn = "centreattribute",
                                qVar = 'ID, ATTRIBUTEVALUE as SykehusNavn')
 
+
+
   # SAMMENSTILL SKJEMA:
   RegData <-
     merge(mceSkjema,
@@ -185,11 +187,19 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
     merge(EnhetsNavn,
           by.x = "ReshId", by.y = 'ID', all.x = TRUE)
 
+
   if (medOppf == 1) {
+
+    varFjernes <- c(varFjernes, 'SMERTE_TILIGERE_SKULDER_PLAGER', 'FORM_COMPLETED_VIA_FROMS',
+                    'FORM_COMPLETED_VIA_PROMS', 'FRISKMELDT')
+
+
     #Oppfølging, 3 mnd
     Oppf3Skjema <- hentDataTabell(tabellnavn = "patientfollowup3",
                                   qVar = '*',
                                   egneVarNavn = 1)
+    Oppf3Skjema <-
+      Oppf3Skjema[ , -which(names(Oppf3Skjema %in% varFjernes))]
     #Oppfølging, 12 mnd
     Oppf12Skjema <- hentDataTabell(tabellnavn = "patientfollowup12",
                                    qVar = '*',
@@ -230,6 +240,9 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
       RegData$MCEID %in% ePROMadmTab$MCEID[intersect(ind12mnd, which(ePROMadmTab$STATUS==3))]] <- 1
     RegData$StatusUtfyll12mnd[intersect(which(RegData$OppFolg12mndGML ==1), indIkkeEprom12mnd)] <- 1
   }
+
+
+RegData <- RegData[ ,-grep('_MISS', names(RegData))]
 
   return(invisible(RegData))
 }
