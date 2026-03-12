@@ -121,12 +121,12 @@ ui_nakke <- function() {
                           conditionalPanel(
                             condition = "input.ark == 'Antall skjema'",
                             dateRangeInput(inputId = 'datovalgReg', start = startDato, end = Sys.Date(),
-                                           label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                            selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
-                                        choices = c("Ferdigstilt"=1,
-                                                    "Kladd (/oppf.skjema ikke besvart)"=0,
-                                                    "Åpen"=-1)
-                            )),
+                                           label = "Tidsperiode", separator="t.o.m.", language="nb")
+                            # , selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
+                            #             choices = c("Ferdigstilt"=1,
+                            #                         "Kladd (/oppf.skjema ikke besvart)"=0,
+                            #                         "Åpen"=-1))
+                            ),
                           br()
              ),
 
@@ -623,8 +623,9 @@ server_nakke <- function(input, output, session) {
   AntSkjemaAvHver <- reactive(
     tabAntSkjema(RegData=RegData,
                  datoFra = input$datovalgReg[1],
-                 datoTil=input$datovalgReg[2],
-                 skjemastatus=as.numeric(input$skjemastatus))
+                 datoTil=input$datovalgReg[2] #,
+                 #skjemastatus=as.numeric(input$skjemastatus)
+                 )
   )
   output$tabAntSkjema <- renderTable(AntSkjemaAvHver()
                                      ,rownames = T, digits=0, spacing="xs" )
