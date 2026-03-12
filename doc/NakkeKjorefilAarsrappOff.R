@@ -226,7 +226,7 @@ write.csv2(ReshSh, file = 'data/ReshShNavn', row.names = F)
 RegData <- NakkeData
 testDato <- aggregate(RegData$PasientID, by=RegData[ ,c('PasientID','OprDato')], drop=TRUE, FUN=length)
 print(testDato[which(testDato$x >1), ], row.names = F)
-RegData$Mnd <- as.POSIXlt(RegData$InnDato)$mon +1
+RegData$Mnd <- as.POSIXlt(RegData$OprDato)$mon +1
 RegData$Mnd <- RegData$Mnd-min(RegData$Mnd[RegData$Aar==min(RegData$Aar)])+1
 testMnd <- aggregate(RegData$OprDato, by=RegData[ ,c('PasientID','Mnd','Aar')], drop=TRUE, FUN=length)
 duplMnd <- testMnd[which(testMnd$x >1), ]

@@ -27,8 +27,8 @@ setwd('C:/ResultattjenesteGIT/Nakke/aarsrapp')
 	#Kjønnsvariabel:ErMann - vil senere benytte denne
 	#RegData$ErMann <- RegData$Kjonn
 	#RegData$ErMann[which(RegData$Kjonn == 2)] <- 0
-	#RegData$InnDato <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")
-	#RegData$Aar <- 1900 + strptime(RegData$InnDato, format="%Y")$year
+	#RegData$OprDato <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")
+	#RegData$Aar <- 1900 + strptime(RegData$OprDato, format="%Y")$year
 	#names(RegData)[which(names(RegData) == 'AvdRESH')] <- 'ReshId'
 	#class(RegData$ReshId) <- 'numeric'
 

@@ -35,8 +35,8 @@ datoFra12mnd <- as.Date(paste0(1900+dato$year-ifelse(dato$mon==11, 0, 1),'-',
 
 RegData <- NakkeHentRegData(datoFra = datoFra)  #NakkeRegDataSQL(datoFra = datoFra)
 RegData <- NakkePreprosess(RegData = RegData)
-RegData24mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra24mnd), ]
-RegData12mnd <- RegData[RegData$InnDato > as.POSIXlt(datoFra12mnd), ]
+RegData24mnd <- RegData[RegData$OprDato > as.POSIXlt(datoFra24mnd), ]
+RegData12mnd <- RegData[RegData$OprDato > as.POSIXlt(datoFra12mnd), ]
 AarNaa <- as.numeric(format(Sys.Date(), "%Y"))
 # Nye variabler:
 RegData$Mnd <- RegData$MndNum

@@ -688,7 +688,7 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
   if (valgtVar %in% c('Oppf3mnd', 'Oppf12mnd', 'Oppf3og12mnd')) { #AndelGrVar, -Tid
     #Oppfølgingsskjema: StatusUtfyll12mnd, StatusUtfyll3mnd
     trekkfraDager <- ifelse(valgtVar == 'Oppf3mnd', 100, 400)
-    RegData <- RegData[RegData$InnDato < min(max(RegData$InnDato), Sys.Date()-trekkfraDager), ]
+    RegData <- RegData[RegData$OprDato < min(max(RegData$OprDato), Sys.Date()-trekkfraDager), ]
     ind <- switch(valgtVar,
                   Oppf3mnd = which(RegData$StatusUtfyll3mnd==1),
                   Oppf12mnd = which(RegData$StatusUtfyll12mnd==1),
@@ -764,7 +764,7 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     cexgr <- 0.9
     xAkseTxt <- 'dager'
     sortAvtagende <- FALSE
-    RegData <- RegData[RegData$InnDato < min(max(RegData$InnDato), Sys.Date()-30), ]
+    RegData <- RegData[RegData$OprDato < min(max(RegData$OprDato), Sys.Date()-30), ]
 
     if (figurtype == 'andeler') {	#Fordelingsfigur
       gr <- c(seq(0,98,7), 2000)

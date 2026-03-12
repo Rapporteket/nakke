@@ -12,9 +12,9 @@ tabAntOpphShMnd <- function(RegData, datoTil=Sys.Date(), antMnd=6, reshID=0){
   datoFra <- lubridate::floor_date(as.Date(datoTil)- months(antMnd, abbreviate = T), unit='month')
   tabAvdMnd <- 0
   if (exists('datoFra')){
-    aggVar <-  c('SykehusNavn', 'InnDato', 'MndNum', 'Aar')
-    RegDataDum <- RegData[intersect(which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')),
-                                    which(as.Date(RegData$InnDato, tz='uTC') > as.Date(datoFra, tz='UTC'))), aggVar]
+    aggVar <-  c('SykehusNavn', 'OprDato', 'MndNum', 'Aar')
+    RegDataDum <- RegData[intersect(which(as.Date(RegData$OprDato) <= as.Date(datoTil, tz='UTC')),
+                                    which(as.Date(RegData$OprDato, tz='uTC') > as.Date(datoFra, tz='UTC'))), aggVar]
 
     RegDataDum <- SorterOgNavngiTidsEnhet(RegData=RegDataDum, tidsenhet = 'Mnd')$RegData
     mndNum <- min(RegDataDum$TidsEnhetSort, na.rm=T):max(RegDataDum$TidsEnhetSort, na.rm = T)
@@ -42,7 +42,7 @@ tabAntOpphShAar <- function(RegData, datoTil=Sys.Date(), antAar=5){
       AarNaa <- as.numeric(format.Date(datoTil, "%Y"))
       tabAvdAarN <- 0
       if (length(AarNaa)>0) {
-        RegData <- RegData[which(as.Date(RegData$InnDato) <= as.Date(datoTil, tz='UTC')), ]
+        RegData <- RegData[which(as.Date(RegData$OprDato) <= as.Date(datoTil, tz='UTC')), ]
       tabAvdAarN <- addmargins(table(RegData[which(RegData$Aar %in% (AarNaa-antAar-1):AarNaa), c('SykehusNavn','Aar')]))
       rownames(tabAvdAarN)[dim(tabAvdAarN)[1] ]<- 'TOTALT, alle enheter:'
       colnames(tabAvdAarN)[dim(tabAvdAarN)[2] ]<- paste0('Siste ', antAar, ' år')
@@ -64,7 +64,7 @@ tabAntSkjema <- function(RegData, datoFra = '2019-01-01', datoTil=Sys.Date(), sk
   #NB: Denne skal også kunne vise skjema i kladd!
   #Skjemastatus kan være -1, 0 og 1
 
-  variabler <- c("SykehusNavn", 'InnDato','StatusPasSkjema', 'StatusLegeSkjema', 'StatusUtfyll3mnd', 'StatusUtfyll12mnd')
+  variabler <- c("SykehusNavn", 'OprDato','StatusPasSkjema', 'StatusLegeSkjema', 'StatusUtfyll3mnd', 'StatusUtfyll12mnd')
 
 SkjemaOversikt <- RegData[ ,variabler] %>%
   tidyr::pivot_longer(
@@ -78,7 +78,7 @@ SkjemaOversikt <- RegData[ ,variabler] %>%
             levels = c('StatusPasSkjema', 'StatusLegeSkjema', 'StatusUtfyll3mnd', 'StatusUtfyll12mnd'),
             labels = c('Pasient preop.', 'Lege preop.', 'Oppf., 3mnd', 'Oppf., 12mnd'))
 
-  indDato <- which(as.Date(SkjemaOversikt$InnDato) >= datoFra & as.Date(SkjemaOversikt$InnDato) <= datoTil)
+  indDato <- which(as.Date(SkjemaOversikt$OprDato) >= datoFra & as.Date(SkjemaOversikt$OprDato) <= datoTil)
   indSkjemastatus <- which(SkjemaOversikt$status==skjemastatus)
   SkjemaOversikt <- SkjemaOversikt[intersect(indDato, indSkjemastatus),]
 
