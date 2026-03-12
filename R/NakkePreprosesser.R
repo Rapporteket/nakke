@@ -14,12 +14,12 @@ NakkePreprosess <- function(RegData=RegData) {
 	RegData$ErMann[which(RegData$Kjonn == 2)] <- 0
 
 	#Riktig datoformat og hoveddato
-	RegData$InnDato <- as.Date(RegData$OprDato, format="%Y-%m-%d")
+	RegData$OprDato <- as.Date(RegData$OprDato, format="%Y-%m-%d")
 	RegData$MndNum <- as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")$mon +1
 	RegData$Kvartal <- ceiling(RegData$MndNum/3)
 	RegData$Halvaar <- ceiling(RegData$MndNum/6)
 	RegData$Aar <- 1900 + as.POSIXlt(RegData$OprDato, format="%Y-%m-%d")$year #strptime(RegData$Innleggelsestidspunkt, format="%Y")$year
-	RegData$MndAar <- format(RegData$InnDato, '%b%y')
+	RegData$MndAar <- format(RegData$OprDato, '%b%y')
 
 	RegData$DiffUtFerdig <- as.numeric(difftime(as.Date(RegData$ForstLukketLege), RegData$UtDato,units = 'days'))
 

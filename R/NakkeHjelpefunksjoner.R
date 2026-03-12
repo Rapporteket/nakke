@@ -33,7 +33,7 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
       RegData$TidsEnhetSort <- switch(tidsenhet,
                                       Aar = RegData$Aar-min(RegData$Aar)+1,
                                       Mnd = RegData$MndNum-min(RegData$MndNum[RegData$Aar==min(RegData$Aar)])+1
-                                          +(RegData$Aar-min(RegData$Aar))*12, #format(RegData$InnDato, '%b%y'), #
+                                          +(RegData$Aar-min(RegData$Aar))*12, #format(RegData$OprDato, '%b%y'), #
                                       Kvartal = RegData$Kvartal-min(RegData$Kvartal[RegData$Aar==min(RegData$Aar)])+1+
                                             (RegData$Aar-min(RegData$Aar))*4,
                                       Halvaar = RegData$Halvaar-min(RegData$Halvaar[RegData$Aar==min(RegData$Aar)])+1+
@@ -41,8 +41,8 @@ SorterOgNavngiTidsEnhet <- function(RegData, tidsenhet='Aar', tab=0) {
       )
 
       tidtxt <- switch(tidsenhet,
-                        Mnd = format.Date(seq(from=lubridate::floor_date(as.Date(min(as.Date(RegData$InnDato), na.rm = T)), 'month'),
-                                         to=max(as.Date(RegData$InnDato), na.rm = T), by='month'), format = '%B%y'), #Hele måneden
+                        Mnd = format.Date(seq(from=lubridate::floor_date(as.Date(min(as.Date(RegData$OprDato), na.rm = T)), 'month'),
+                                         to=max(as.Date(RegData$OprDato), na.rm = T), by='month'), format = '%B%y'), #Hele måneden
                        Kvartal = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort), RegData$TidsEnhetSort)], 3,4),
                                        sprintf('%01.0f', RegData$Kvartal[match(1:max(RegData$TidsEnhetSort, na.rm = T), RegData$TidsEnhetSort)]), sep='-'),
                        Halvaar = paste(substr(RegData$Aar[match(1:max(RegData$TidsEnhetSort, na.rm = T), RegData$TidsEnhetSort)], 3,4),
@@ -266,22 +266,22 @@ PasMdblReg <- function(RegData, tidsavvik=30){
   FlereReg <- RegData %>% dplyr::group_by(PasientID) %>%
     dplyr::summarise(N = length(PasientID), #n(),
               KortTid = ifelse(N>1,
-                              ifelse(difftime(InnDato[order(InnDato)][2:N], InnDato[order(InnDato)][1:(N-1)], units = 'days') <= tidsavvik,
+                              ifelse(difftime(OprDato[order(OprDato)][2:N], OprDato[order(OprDato)][1:(N-1)], units = 'days') <= tidsavvik,
                                      1, 0), 0),
               PasientID = PasientID[1]
     )
 
   PasMdbl <- FlereReg$PasientID[which(FlereReg$KortTid == 1)]
   TabDbl <- RegData[which(RegData$PasientID %in% PasMdbl),
-                    c("PasientID", "InnDato", "SykehusNavn", "ReshId", "MCEID")]
-  TabDbl <- TabDbl[order(TabDbl$InnDato), ]
+                    c("PasientID", "OprDato", "SykehusNavn", "ReshId", "MCEID")]
+  TabDbl <- TabDbl[order(TabDbl$OprDato), ]
   N <- dim(TabDbl)[1]
 
   if (N>0) {
-    indSmTid <- which(difftime(TabDbl$InnDato[2:N], TabDbl$InnDato[1:(N-1)], units = 'days') <= tidsavvik)
+    indSmTid <- which(difftime(TabDbl$OprDato[2:N], TabDbl$OprDato[1:(N-1)], units = 'days') <= tidsavvik)
     TabDbl <- TabDbl[unique(sort(c(indSmTid, (indSmTid+1)))), ]
-    TabDbl$InnDato <- format(TabDbl$InnDato, '%Y-%m-%d') #'%d.%m.%Y')
-    tabUt <- TabDbl[order(TabDbl$PasientID, TabDbl$InnDato), ]
+    TabDbl$OprDato <- format(TabDbl$OprDato, '%Y-%m-%d') #'%d.%m.%Y')
+    tabUt <- TabDbl[order(TabDbl$PasientID, TabDbl$OprDato), ]
   } else {tabUt <- paste0('Ingen registreringer med mindre enn ', tidsavvik, 'minutter mellom registreringene for samme pasient.')}
 
   return(tabUt)
