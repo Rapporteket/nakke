@@ -155,7 +155,8 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
 
   varFjernes <- c('TSCREATED', 'TSUPDATED', 'FIRST_TIME_CLOSED_BY', 'FIRST_TIME_CLOSED',
-                  'CENTREID', 'TYPE_UNDERSOEKELSE_UTFYLT')
+                  'CENTREID', 'TYPE_UNDERSOEKELSE_UTFYLT', 'CREATEDBY', 'UPDATEDBY',
+                  'FORM_COMPLETED_VIA_FROMS')
 
   #Legeskjema
   # datovalg lagt til bare for Legeskjema.
@@ -193,8 +194,10 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
   if (medOppf == 1) {
 
-    varFjernes <- c(varFjernes, 'SMERTE_TILIGERE_SKULDER_PLAGER', 'FORM_COMPLETED_VIA_FROMS',
-                    'FORM_COMPLETED_VIA_PROMS', 'FRISKMELDT')
+    varFjernes <- c(varFjernes, 'SMERTE_TILIGERE_SKULDER_PLAGER',
+                    'FORM_COMPLETED_VIA_PROMS', 'FORM_COMPLETED_VIA_PROMS',
+                    'FRISKMELDT', 'CONTROL_TYPE', 'CONTROL_TYPE', 'ID', 'STATUS_CONTROL')
+    #NB: Hva inneholder STATUS_CONTROL ?
 
 
     #Oppfølging, 3 mnd
@@ -246,7 +249,7 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
   }
 
 
-RegData <- RegData[ ,-grep('_MISS', names(RegData))]
+RegData <- RegData[ ,-c(grep('_MISS', names(RegData)), grep('_UTFYLT', names(RegData)))]
 
   return(invisible(RegData))
 }

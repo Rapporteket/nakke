@@ -5,9 +5,9 @@ library(nakke)
 #26
 #remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/nakke11b6c7c2.sql.gz__20260305_113918.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/rygg11a0113bb.sql.gz__20260312_085511.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa")
-# source c://Users/lro2402unn/RegistreGIT/data/nakke11b6c7c2.sql;
+# source c://Users/lro2402unn/RegistreGIT/data/rygg11a0113bb.sql;
 setwd('c://Users/lro2402unn/RegistreGIT/nakke')
 
 library(nakke)
@@ -16,10 +16,10 @@ nakke::kjorNakkeApp(browser = TRUE)
 
 dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
-dataNy <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31')
+dataNy <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31', medOppf = 1)
 RegData <- NakkePreprosess(dataNy)
 
-dataNy <- NakkeHentRegData()
+head(RegData$FORM_COMPLETED_VIA_FROMS)
 
 test <- RegData[ ,c('REOP_INNEN_90_DAGER_UTFYLT', 'Reopr90d')]
 
