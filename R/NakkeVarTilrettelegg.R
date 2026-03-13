@@ -466,11 +466,7 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
 
 	if (valgtVar=='NDIscorePreOp') { #GjsnTid #GjsnGrVar
 		#Pasientkjema.
-	  RegData <- RegData[which(RegData$StatusPasSkjema == 1), ]
 	  KIekstrem <- c(0,100)
-		indVar <- which(RegData[ ,valgtVar] >= KIekstrem[1])
-		indSkjema <- which(RegData$StatusPasSkjema==1)
-		RegData <- RegData[intersect(indVar, indSkjema), ]
 		RegData$Variabel <- RegData[ ,valgtVar]
 		tittel <- 'NDI før operasjon'
 		ytxt1 <- '(NDI-skåring)'
@@ -478,6 +474,25 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
 	xAkseTxt <- 'skåring'
 	}
 
+  if (valgtVar=='NDIscore3mnd') { #GjsnTid #GjsnGrVar
+    #Pasientkjema.
+    KIekstrem <- c(0,100)
+    RegData$Variabel <- RegData[ ,valgtVar]
+    tittel <- 'NDI 3 mnd. etter operasjon'
+    ytxt1 <- '(NDI-skåring)'
+    deltittel <- 'NDI 3 mnd. etter operasjon'
+    xAkseTxt <- 'skåring'
+  }
+
+  if (valgtVar=='NDIscore12mnd') { #GjsnTid #GjsnGrVar
+    #Pasientkjema.
+    KIekstrem <- c(0,100)
+    RegData$Variabel <- RegData[ ,valgtVar]
+    tittel <- 'NDI 12 mnd. etter operasjon'
+    ytxt1 <- '(NDI-skåring)'
+    deltittel <- 'NDI 12 mnd. etter operasjon'
+    xAkseTxt <- 'skåring'
+  }
 
 if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, AndelTid
     #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
@@ -493,17 +508,6 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
 	#   KImaalGrenser <- rev(c(0,40,70,100)) #c(0,70,100)
 	# }
 }
-  # if (valgtVar=='NDIendr12mnd35pstKI') { #AndelGrVar, AndelTid
-  #   #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
-  #   RegData$NDIEndr <- 100*(RegData$NDIscorePreOp - RegData$NDIscore12mnd)/RegData$NDIscorePreOp
-  #   indVar <- which(is.finite(RegData$NDIEndr) & RegData$OprIndikMyelopati==0 & RegData$OprMetodeTilgangFremre==1)
-  #   indSkjema <- which(RegData$StatusPasSkjema==1 & RegData$StatusUtfyll12mnd==1)
-  #   RegData <- RegData[intersect(indVar, indSkjema), ]
-  #   RegData$Variabel[RegData$NDIEndr>=35] <- 1
-  #   tittel <- 'Minst 35% forb. av NDI, 12 mnd., fremre, ikke-myelopati'
-  #   varTxt <- 'med NDI>35%'
-  #   KImaalGrenser <- rev(c(0,40,70,100)) #c(0,70,100)
-  # }
 	if (valgtVar=='NDIendr12mnd') { #GjsnTid, GjsnGrVar
 		#Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
 		KIekstrem <- c(-100,100)
@@ -757,10 +761,7 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     tittel <- switch(figurtype,
                      andeler='Tid fra utskriving til ferdigstilt registrering',
                      andelGrVar = 'Mer enn 30 dager fra utskriving til ferdig registrering') #
-    subtxt <- 'døgn'
-    # gr <- c(0,1,7,14,30,90,365,5000) #gr <- c(seq(0, 90, 10), 1000)
-    # RegData$VariabelGr <- cut(RegData$DiffUtFerdig, breaks = gr, include.lowest = TRUE, right = TRUE)
-    # grtxt <- c('1', '(1-7]', '(7-14]', '(14-30]', '(30-90]', '(90-365]', '>365')
+    #subtxt <- 'døgn'
     cexgr <- 0.9
     xAkseTxt <- 'dager'
     sortAvtagende <- FALSE
@@ -769,7 +770,6 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     if (figurtype == 'andeler') {	#Fordelingsfigur
       gr <- c(seq(0,98,7), 2000)
       RegData$VariabelGr <- cut(RegData$DiffUtFerdig, breaks=gr, include.lowest=TRUE, right=FALSE)
-      #plot(RegData$VariabelGr)
       grtxt <- c(1:14, '>3 mnd.')
       subtxt <- 'innen gitte uker etter utskriving'
     }
@@ -948,6 +948,84 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     }
     retn <- 'H'
   }
+
+  if (valgtVar == 'ventetidHenvTimePol') { #Fordeling, AndelGrVar, AndelTid
+    # Ventetid fra poliklinikk til operasjon: VentetidSpesialistTilOpr (som rygg)
+    grtxt <- c("< 3 mnd.","3-6 mnd","6-12 mnd.","> 12 mnd.","Ikke utfylt")
+    RegData$VariabelGr <- factor(RegData$VentetidHenvTilSpesialist, levels = c(1:4,9))
+    retn <- 'H'
+    tittel <- 'Ventetid fra henvisning til time på poliklinikk'
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
+      RegData <- RegData[which(RegData$VentetidHenvTilSpesialist %in% 1:4),]
+      RegData$Variabel[which(RegData$VentetidHenvTilSpesialist == 1)] <- 1
+      varTxt <- 'ventet <3mnd'
+      tittel <- 'Ventetid < 3 mnd. fra henvisning til time på poliklinikk'
+    }}
+
+  if (valgtVar == 'ventetidSpesOp') { #Fordeling, AndelGrVar, AndelTid
+    # Ventetid fra poliklinikk til operasjon: VentetidSpesialistTilOpr (som rygg)
+    grtxt <- c("< 3 mnd.","3-6 mnd","6-12 mnd.","> 12 mnd.","Ikke utfylt")
+    RegData$VariabelGr <- factor(RegData$VentetidSpesialistTilOpr, levels = c(1:4,9))
+    retn <- 'H'
+    tittel <- 'Ventetid fra operasjon bestemt til utført'
+    if (figurtype %in% c('andelGrVar', 'andelTid')) {
+      RegData <- RegData[which(RegData$VentetidSpesialistTilOpr %in% 1:4),]
+      RegData$Variabel[which(RegData$VentetidSpesialistTilOpr == 1)] <- 1
+      varTxt <- 'ventet <3mnd'
+      tittel <- 'Ventetid < 3 mnd. fra operasjon bestemt til utført'
+      KImaalGrenser <- c(0,50,80,100)
+    }}
+
+  if (valgtVar == 'diffPasUtfOp') {  #Fordeling, Andeler
+    # diff Pasientutfyllingsdato på skjema vs. Operasjonsdato,
+    tittel <- 'Tid mellom operasjon og utfylling av pasientskjema'
+    gr <- c(-1000,-30, -14, 0, 15, 91, 2000)
+    RegData$VariabelGr <- cut(RegData$DiffUtfyltOp, breaks=gr, include.lowest=TRUE, right=FALSE)
+    grtxt <- c('<-30d', levels(RegData$VariabelGr)[2:(length(gr)-2)], '>3mnd')
+    subtxt <- 'dager fra operasjon til utfylling'
+    if (figurtype %in% c('andelTid', 'andelGrVar')) {
+      RegData$Variabel[which(RegData$DiffUtfyltOp < -14)] <- 1
+      tittel <- 'Pasientskjema fylt ut mer enn to uker før operasjon'
+      varTxt <- 'for sent registrert'
+      sortAvtagende <- F}
+    KImaalGrenser <- c(0,3,10,100)
+  }
+
+if (valgtVar == 'trombProfylLett') { #AndelGrVar, AndelTid
+  # Unødvendig bruk av blodfortynnende, tilsv rygg
+  indUtv <- which((RegData$ASAgrad<3) & (RegData$ErMann==1) & (RegData$BlodfortynnendeFast==0))
+  RegData <- RegData[indUtv,]
+  tittel <- c('Tromboseprofylakse gitt ved ASA<3')
+  RegData <- RegData[which(RegData$PostopTrombProfyl %in% 0:1), ]
+  RegData$Variabel <- RegData$PostopTrombProfyl
+  varTxt <- 'fått tromboseprofylakse'
+  sortAvtagende <- F
+#  KImaalGrenser <- c(0,10,100)
+}
+
+
+  #Lena
+  table(RegData$BlodfortynnendeFast, useNA = 'a')
+  ftable(RegData$Aar, RegData$PostopTrombProfyl )
+
+# test <- RegData[ ,c('diffPasUtfOp', 'OprDato', 'DiffUtfyltOp')]
+ #valgtvar <- c('diffPasUtfOp', 'ventetidHenvTimePol', 'ventetidSpesOp')
+
+  # Sumskår mJOA. EMS erstattet av mJOA. EMS brukes i år bare på oppfølging.
+  # Utfall foramenotomi nakke >- NDI, gjennomsnitt
+  # Utfall endoskopi -> NDI
+
+  # "MotoriskOexMJOA"                  "MotoriskOexMJOA12Mnd"
+  # [151] "MotoriskOexMJOA3Mnd"              "MotoriskUexMJOA"                  "MotoriskUexMJOA12Mnd"
+  # [154] "MotoriskUexMJOA3Mnd"
+
+
+
+
+
+
+
+
 
 
 

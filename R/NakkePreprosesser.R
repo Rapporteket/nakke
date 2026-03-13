@@ -22,6 +22,9 @@ NakkePreprosess <- function(RegData=RegData) {
 	RegData$MndAar <- format(RegData$OprDato, '%b%y')
 
 	RegData$DiffUtFerdig <- as.numeric(difftime(as.Date(RegData$ForstLukketLege), RegData$UtDato,units = 'days'))
+	RegData$DiffUtfyltOp <- as.numeric(difftime(as.Date(RegData$UtfyltDatoPas),
+	                                         as.Date(RegData$OprDato), units = 'days'))
+
 
 	#Variabel som identifiserer avdelingas resh
 	class(RegData$ReshId) <- 'numeric'
