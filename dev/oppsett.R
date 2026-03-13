@@ -16,10 +16,8 @@ nakke::kjorNakkeApp(browser = TRUE)
 
 dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
-dataNy <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31', medOppf = 1)
+dataNy <- NakkeHentRegData() #datoFra = '2024-01-01', medOppf = 1)
 RegData <- NakkePreprosess(dataNy)
-
-head(RegData$FORM_COMPLETED_VIA_FROMS)
 
 test <- RegData[ ,c('REOP_INNEN_90_DAGER_UTFYLT', 'Reopr90d')]
 

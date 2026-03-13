@@ -122,7 +122,6 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
   # legg på valg av variabler?
   # legg på datofiltrering
 
-  #mce Trenger nok ganske få av disse variablene
   # mce_patient_data # eneste som inneholder kobling mellom mceid og pasientid
   qmce <- 'CENTREID AS ReshId, MCEID, PATIENT_ID AS PasientID'
 
@@ -196,7 +195,8 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
 
     varFjernes <- c(varFjernes, 'SMERTE_TILIGERE_SKULDER_PLAGER',
                     'FORM_COMPLETED_VIA_PROMS', 'FORM_COMPLETED_VIA_PROMS',
-                    'FRISKMELDT', 'CONTROL_TYPE', 'CONTROL_TYPE', 'ID', 'STATUS_CONTROL')
+                    'FRISKMELDT', 'CONTROL_TYPE', 'CONTROL_TYPE', 'ID',
+                    'FORM_ID', 'STATUS_CONTROL')
     #NB: Hva inneholder STATUS_CONTROL ?
 
 
