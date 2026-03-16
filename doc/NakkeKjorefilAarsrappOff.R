@@ -34,6 +34,15 @@ write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavn
 # write.table(RegData, file = 'NakkeDataAarsrapp2023alt.csv', sep = ';', na='', row.names = F, fileEncoding = 'latin1') #'UTF-8')
 
 
+#-------------------------------
+#Nye figurer:
+#valgtVar == 'ventetidHenvTimePol') { #Fordeling, AndelGrVar, AndelTid
+# 'ventetidSpesOp') { #Fordeling, AndelGrVar, AndelTid
+# 'diffPasUtfOp') {  #Fordeling, Andeler
+# 'trombProfylLett') { #AndelGrVar, AndelTid
+#  'NDIscore3mnd') { #GjsnTid #GjsnGrVar
+#    'NDIscore12mnd') { #GjsnTid #GjsnGrVar
+
 #----------------------------Kvalitetsindikatorer:--------
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)

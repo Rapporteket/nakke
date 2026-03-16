@@ -42,15 +42,13 @@ ui_nakke <- function() {
 
 
   #----Define UI for application------
-  # ??legge på shiny::tagList()
   ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     id = "tab1nivaa",
     title = rapbase::title(regTitle),
     windowTitle = regTitle,
     theme = rapbase::theme(),
 
-
-    #------------ Viktigste resultater-----------------
+  #------------ Viktigste resultater-----------------
     tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og halvårsrapport'),
              h2('Velkommen til Rapporteket for NKR, degenerativ nakke!', align='center'),
              shinyjs::useShinyjs(),
@@ -148,8 +146,10 @@ ui_nakke <- function() {
                            )))
     ), #tab
     #------Registeradministrasjon-----------------------
-    tabPanel(p('Registeradministrasjon', title="Verktøy for SC-bruker"),
-             value = 'Registeradministrasjon',
+
+  tabPanel(p('Registeradministrasjon',
+                     title="Verktøy for SC-bruker"),
+                   value = 'Registeradministrasjon',
              h3('Denne siden skal kun vises for SC-bruker', align='center'),
              tabsetPanel(
                tabPanel(
@@ -701,7 +701,6 @@ server_nakke <- function(input, output, session) {
 
   # })
   #-----------Registeradministrasjon-----------
-
   observeEvent(user$role(), {
     if (user$role() == 'SC') {
   #observe({

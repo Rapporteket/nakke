@@ -19,6 +19,7 @@ dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 dataNy <- NakkeHentRegData() #datoFra = '2024-01-01', medOppf = 1)
 RegData <- NakkePreprosess(dataNy)
 
+names(Oppf3Skjema)[grep('Mjoa', names(Oppf3Skjema), ignore.case = T)]
 test <- RegData[ ,c('REOP_INNEN_90_DAGER_UTFYLT', 'Reopr90d')]
 
 # 3,6s - sammenstille
@@ -27,6 +28,18 @@ test <- RegData[ ,c('REOP_INNEN_90_DAGER_UTFYLT', 'Reopr90d')]
 
 unique(RegData[,c("ReshId", 'SykehusNavn')])
 reshID <- 114288
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Henter tilgangstre og mapper om resh og SykehusNavn
 Sys.setenv(MRS_ACCESS_HIERARCHY_URL= 'https://qreg.nhn.no/nakke/api/centre-information')
