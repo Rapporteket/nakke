@@ -153,7 +153,7 @@ NakkeHentRegData <- function(datoFra = '2013-01-01', datoTil = Sys.Date(),
                                   egneVarNavn = 1)
 
 
-  varFjernes <- c('TSCREATED', 'TSUPDATED', 'FIRST_TIME_CLOSED_BY', 'FIRST_TIME_CLOSED',
+  varFjernes <- c('TSCREATED', 'FIRST_TIME_CLOSED_BY', 'FIRST_TIME_CLOSED', #  'TSUPDATED',
                   'CENTREID', 'TYPE_UNDERSOEKELSE_UTFYLT', 'CREATEDBY', 'UPDATEDBY',
                   'FORM_COMPLETED_VIA_FROMS')
 

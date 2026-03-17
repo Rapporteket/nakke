@@ -40,7 +40,7 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
   }
 
   if (hentData == 1) {
-    RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
+    RegData <- NakkeRegDataSQL()
   }
 
   # Preprosessere data

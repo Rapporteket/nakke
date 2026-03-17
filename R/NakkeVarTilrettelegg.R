@@ -52,7 +52,6 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
 
   tittel <- '' #I AndelerGrVar og GjsnGrVar genereres tittel i beregningsfunksjonen
   ktrtxt <- c(', 3 mnd etter', ', 12 mnd. etter')[ktr]
-  #	}
 
 
   #-------------------------------------
@@ -215,8 +214,52 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
 	deltittel <- 'EMS hos myelopatipas. før operasjon'
 	xAkseTxt <- ''
 	KIekstrem <- c(0,18)
+}
 
-	}
+  # Sumskår mJOA. EMS erstattes av mJOA. EMS brukes i år bare på oppfølging.
+  #MotoriskOexMJOA	Kraft i armer og hender (Motorisk funksjon).	[1,2,3,4,5,6,9]
+  # c("Kan ikke bevege hendene","Ikke spise med skje, men bevege hendene","Ikke kneppe knapper, men spise med skje",
+  #   "Kan kneppe knapper med store vansker","Kan kneppe knapper med litt vansker","Ingen vansker med å bruke hendene","Ikke utfylt")
+  #MotoriskUexMJOA	Kraft i bein og føtter (Motorisk funksjon). [1,2,3,4,5,6,7,8,99]
+  # "Kan ikke bevege beina i det hele tatt og har ingen følelse i beina","-Har følelse i beina, men kan ikke bevege dem i det hele tatt","-Kan bevege beina, men kan ikke gå","-Kan gå på flatt underlag med ganghjelpemiddel (stokk eller krykke)","-Kan gå opp og ned trapper med hjelp av gelenderet","-Kan gå opp og ned trapper uten hjelp av gelenderet, men føler en føler en moderat til betydelig grad av ustøhet/ubalanse når jeg går","-Kan gå uten støtte (ingen krykke, stokk eller rullator) med smidige bevegelser (bena beveger seg uhindret), men har en følelse av lett ustøhet/ubalanse når jeg går","-Kan gå uten ustøhet eller ubalanse","Ikke utfylt"]
+  #SensoriskOexMJOA	Følsomhet i armer og hender (Sensorisk funksjon). [1,2,3,4,9]
+  # c("Ingen følelse i det hele tatt i hendene mine","Kraftig nedsatt følelse eller smerte i hendene mine",
+  # "Lett nedsatt følelse i hendene mine","Ingen nedsatt følelse i hendene mine","Ikke utfylt")
+  #BlareSfinkterMJOA	Vannlatning (Lukkemuskel, blærefunksjon). 	[1,2,3,4,9]
+  # c('Kan ikke kontrollere vannlatningen","Har betydelige vansker med å kontrollere vannlatningen",
+  # "Har milde til moderate vansker med å kontrollere vannlatningen","Har ingen vansker med å kontrollere vannlatningen","Ikke utfylt")
+
+   #test <- RegData[ ,c('MotoriskOexMJOA', 'MotoriskUexMJOA', 'SensoriskOexMJOA', 'BlareSfinkterMJOA', 'MJOAsum')]
+
+   if (valgtVar %in% c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd')) { #Fordeling
+    #Pasientskjema. Bare myelopatipasienter? (OprIndikMyelopati == 1)
+     tittel <-  paste0('Grad av myelopati ' , switch(valgtVar, MJOAsumPre = 'før operasjon',
+                                           MJOAsum3mnd = '3 mnd etter operasjon',
+                                           MJOAsum12mnd = '12 mnd etter operasjon'))
+
+     ind <- with(RegData,
+                    switch(valgtVar,
+                           MJOAsumPre = which(MotoriskOexMJOA %in% 1:6 & MotoriskUexMJOA %in% 1:8 &
+                                   SensoriskOexMJOA %in% 1:4 & BlareSfinkterMJOA %in% 1:4),
+                           MJOAsum3mnd = which(MotoriskOexMJOA3mnd %in% 1:6 & MotoriskUexMJOA3mnd %in% 1:8 &
+                                       SensoriskOexMJOA3mnd %in% 1:4 & BlareSfinkterMJOA3mnd %in% 1:4),
+                           MJOAsum12mnd = which(MotoriskOexMJOA12mnd %in% 1:6 & MotoriskUexMJOA12mnd %in% 1:8 &
+                                       SensoriskOexMJOA12mnd %in% 1:4 & BlareSfinkterMJOA12mnd %in% 1:4)))
+
+     RegData$MJOAsum <- NA
+     RegData$MJOAsum[ind] <-
+      with(RegData[ind, ],
+           switch(valgtVar,
+                  MJOAsumPre = MotoriskOexMJOA + MotoriskUexMJOA + SensoriskOexMJOA + BlareSfinkterMJOA,
+                  MJOAsum3mnd = MotoriskOexMJOA3mnd + MotoriskUexMJOA3mnd + SensoriskOexMJOA3mnd + BlareSfinkterMJOA3mnd,
+                  MJOAsum12mnd = MotoriskOexMJOA12mnd + MotoriskUexMJOA12mnd + SensoriskOexMJOA12mnd + BlareSfinkterMJOA12mnd)
+      ) - 4
+
+    RegData$VariabelGr <- cut(RegData$MJOAsum, breaks=c(0, 11.1, 14.1, 17.1, 18.1), include.lowest=TRUE, right=FALSE)
+#table(RegData$VariabelGr)
+   grtxt <- c('alvorlig', 'moderat', 'mild', 'ingen')
+  }
+
 
   if (valgtVar=='Kompl3mnd') { #AndelGrVar  #AndelTid
     #Pasientskjema. Alle komplikasjoner, 3mnd.
@@ -991,6 +1034,24 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     KImaalGrenser <- c(0,3,10,100)
   }
 
+  if (valgtVar %in% c('diffUtf3mnd', 'diffUtf12mnd')) {  #Gjsn
+    # diff svar på skjema vs. Operasjonsdato,
+    deltittel <- switch(valgtVar,
+                     diffUtf3mnd = 'tid fra operasjon til utfylling av 3mnd-skjema',
+                     diffUtf12mnd = 'tid fra operasjon til utfylling av 12mnd-skjema')
+    RegData$Variabel <- as.numeric(difftime(switch(valgtVar,
+                                                   diffUtf3mnd = as.Date(RegData$UtfyltDato3mnd),
+                                                   diffUtf12mnd = as.Date(RegData$UtfyltDato12mnd)),
+                                            as.Date(RegData$OprDato), units = 'days'))
+    # RegData$DiffOpTSUPD <- as.numeric(difftime(as.Date(RegData$TSUPDATED_oppf3),
+    #                                              as.Date(RegData$OprDato), units = 'days'))
+    # RegData$Diff <- RegData$DiffOpUtf3mnd - RegData$DiffOpTSUPD
+    # test <- RegData[,c('OprDato', 'UtfyltDato3mnd', "TSUPDATED_oppf3", 'Variabel', 'DiffOpUtf3mnd', 'DiffOpTSUPD', 'Diff', 'MCEID')]
+    ind <- which(RegData$Variabel > 0 & RegData$Variabel <365 )
+    RegData <- RegData[ind, ]
+    sortAvtagende <- F
+  }
+
 if (valgtVar == 'trombProfylLett') { #AndelGrVar, AndelTid
   # Unødvendig bruk av blodfortynnende, tilsv rygg
   indUtv <- which((RegData$ASAgrad<3) & (RegData$ErMann==1) & (RegData$BlodfortynnendeFast==0))
@@ -1005,20 +1066,6 @@ if (valgtVar == 'trombProfylLett') { #AndelGrVar, AndelTid
 
 
   #Lena
-  table(RegData$BlodfortynnendeFast, useNA = 'a')
-  ftable(RegData$Aar, RegData$PostopTrombProfyl )
-
-# test <- RegData[ ,c('diffPasUtfOp', 'OprDato', 'DiffUtfyltOp')]
- #valgtvar <- c('diffPasUtfOp', 'ventetidHenvTimePol', 'ventetidSpesOp')
-
-  # Sumskår mJOA. EMS erstattet av mJOA. EMS brukes i år bare på oppfølging.
-  # Utfall foramenotomi nakke >- NDI, gjennomsnitt
-  # Utfall endoskopi -> NDI
-
-  # "MotoriskOexMJOA"                  "MotoriskOexMJOA12Mnd"
-  # [151] "MotoriskOexMJOA3Mnd"              "MotoriskUexMJOA"                  "MotoriskUexMJOA12Mnd"
-  # [154] "MotoriskUexMJOA3Mnd"
-
 
 
 
@@ -1057,14 +1104,7 @@ if (valgtVar == 'trombProfylLett') { #AndelGrVar, AndelTid
 		RegData$SmerteMyelo <- NA
 		RegData$SmerteMyelo[(RegData$OprIndikSmerter %in% 0:1) & (RegData$OprIndikMyelopati %in% 0:1)] <- 0
     RegData$SmerteMyelo[ (RegData$OprIndikSmerter == 1) & (RegData$OprIndikMyelopati == 1)] <- 1
-            # ind01 <- which(RegData[ ,variable] %in% 0:1, arr.ind = T) #Alle ja/nei
-            # ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
-            # RegData[ ,variable] <- NA
-            # RegData[ ,variable][ind01] <- 0
-            # RegData[ ,variable][ind1] <- 1
-            # xAkseTxt <- 'Andel opphold (%)'
-            #
-      }
+       }
 
       if (valgtVar=='Radiologi') {
         retn <- 'H'
@@ -1076,11 +1116,7 @@ if (valgtVar == 'trombProfylLett') { #AndelGrVar, AndelTid
         grtxt <- c('CT', 'MR', 'Myelografi', 'Røntgen-Ccol')
 		variable <- c('RadiologiCt', 'RadiologiMr', 'RadiologiMyelografi', 'RadiologiRtgCcol')
            ind01 <- which(RegData[ ,variable] != -1, arr.ind = T) #Alle ja/nei
-            # ind1 <- which(RegData[ ,variable] == 1, arr.ind=T) #Ja i alle variable
-            # RegData[ ,variable] <- NA
-            # RegData[ ,variable][ind01] <- 0
-            # RegData[ ,variable][ind1] <- 1
-            xAkseTxt <- 'Andel opphold (%)'
+             xAkseTxt <- 'Andel opphold (%)'
       }
 
       if (valgtVar=='Komorbiditet') {

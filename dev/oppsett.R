@@ -20,7 +20,7 @@ dataNy <- NakkeHentRegData() #datoFra = '2024-01-01', medOppf = 1)
 RegData <- NakkePreprosess(dataNy)
 
 names(Oppf3Skjema)[grep('Mjoa', names(Oppf3Skjema), ignore.case = T)]
-test <- RegData[ ,c('REOP_INNEN_90_DAGER_UTFYLT', 'Reopr90d')]
+test <- RegData[ ,c('OprDato', 'Utf')]
 
 # 3,6s - sammenstille
 # 6,8s - hente tabeller++

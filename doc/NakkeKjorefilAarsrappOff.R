@@ -42,7 +42,24 @@ write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavn
 # 'trombProfylLett') { #AndelGrVar, AndelTid
 #  'NDIscore3mnd') { #GjsnTid #GjsnGrVar
 #    'NDIscore12mnd') { #GjsnTid #GjsnGrVar
+# 'diffUtf3mnd', 'diffUtf12mnd' gjsn.
 
+source("dev/sysSetenv.R")
+NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2018-01-01'))
+
+valgtVar <- 'diffUtf3mnd'
+ NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar = valgtVar, valgtMaal='Med',
+                   #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
+                   outfile = paste0(valgtVar, '_gjsnPrSh.pdf'))
+
+ NakkeFigGjsnTid(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg =0, valgtMaal='Med',
+                   #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
+                   outfile = paste0(valgtVar, '_gjsnTid.pdf'))
+
+# c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd')
+ valgtVar <- 'MJOAsum3mnd'
+ NakkeFigAndeler(RegData = NakkeData, valgtVar = valgtVar)
+ MotoriskOexMJOA3mnd
 #----------------------------Kvalitetsindikatorer:--------
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
