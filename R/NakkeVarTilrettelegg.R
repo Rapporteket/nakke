@@ -204,6 +204,7 @@ NakkeVarTilrettelegg  <- function(RegData, valgtVar, ktr=0, figurtype='andeler')
 		ytxt1 <- '(endring av EMS-skår)'
 		}
 
+
 if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
 	#Pasientskjema. Bare myelopatipasienter (OprIndikMyelopati == 1)
 	indPas <- which(RegData$StatusPasSkjema==1)
@@ -229,35 +230,70 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
   # c('Kan ikke kontrollere vannlatningen","Har betydelige vansker med å kontrollere vannlatningen",
   # "Har milde til moderate vansker med å kontrollere vannlatningen","Har ingen vansker med å kontrollere vannlatningen","Ikke utfylt")
 
-   #test <- RegData[ ,c('MotoriskOexMJOA', 'MotoriskUexMJOA', 'SensoriskOexMJOA', 'BlareSfinkterMJOA', 'MJOAsum')]
+   # test <- RegData[ ,c('MotoriskOexMJOA', 'MotoriskUexMJOA', 'SensoriskOexMJOA', 'BlareSfinkterMJOA', # 'MJOAsumPre',
+   #                     'MotoriskOexMJOA3mnd', 'MotoriskUexMJOA3mnd', 'SensoriskOexMJOA3mnd', 'BlareSfinkterMJOA3mnd',
+   #                     'MotoriskOexMJOA12mnd', 'MotoriskUexMJOA12mnd', 'SensoriskOexMJOA12mnd', 'BlareSfinkterMJOA12mnd')]
 
-   if (valgtVar %in% c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd')) { #Fordeling
+  if (valgtVar %in% c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd',
+                      'MJOAendr3mnd', 'MJOAendr12mnd')) { #Fordeling, gjsn
+
+    #Pasientkjema og 3mndskjema. Lav skår, lite plager -> Forbedring = nedgang
     #Pasientskjema. Bare myelopatipasienter? (OprIndikMyelopati == 1)
-     tittel <-  paste0('Grad av myelopati ' , switch(valgtVar, MJOAsumPre = 'før operasjon',
-                                           MJOAsum3mnd = '3 mnd etter operasjon',
-                                           MJOAsum12mnd = '12 mnd etter operasjon'))
+    if (valgtVar %in% c('MJOAsumPre', 'MJOAendr3mnd', 'MJOAendr12mnd')) {
+      indPre <- with(RegData, which(MotoriskOexMJOA %in% 1:6 & MotoriskUexMJOA %in% 1:8 &
+                        SensoriskOexMJOA %in% 1:4 & BlareSfinkterMJOA %in% 1:4))
+      RegData <- RegData[indPre,]
+      RegData$MJOAsumPre <- NA
+      RegData$MJOAsumPre <- with(RegData,
+                                 MotoriskOexMJOA + MotoriskUexMJOA + SensoriskOexMJOA + BlareSfinkterMJOA -4)
+    }
 
-     ind <- with(RegData,
-                    switch(valgtVar,
-                           MJOAsumPre = which(MotoriskOexMJOA %in% 1:6 & MotoriskUexMJOA %in% 1:8 &
-                                   SensoriskOexMJOA %in% 1:4 & BlareSfinkterMJOA %in% 1:4),
-                           MJOAsum3mnd = which(MotoriskOexMJOA3mnd %in% 1:6 & MotoriskUexMJOA3mnd %in% 1:8 &
-                                       SensoriskOexMJOA3mnd %in% 1:4 & BlareSfinkterMJOA3mnd %in% 1:4),
-                           MJOAsum12mnd = which(MotoriskOexMJOA12mnd %in% 1:6 & MotoriskUexMJOA12mnd %in% 1:8 &
-                                       SensoriskOexMJOA12mnd %in% 1:4 & BlareSfinkterMJOA12mnd %in% 1:4)))
+    if (valgtVar %in% c('MJOAsum3mnd', 'MJOAendr3mnd')) {
+      indOppf <- with(RegData,
+                      which(MotoriskOexMJOA3mnd %in% 1:6 & MotoriskUexMJOA3mnd %in% 1:8 &
+                       SensoriskOexMJOA3mnd %in% 1:4 & BlareSfinkterMJOA3mnd %in% 1:4))}
+    if (valgtVar %in% c('MJOAsum12mnd', 'MJOAendr12mnd')) {
+      indOppf <- with(RegData,
+                      which(MotoriskOexMJOA12mnd %in% 1:6 & MotoriskUexMJOA12mnd %in% 1:8 &
+                        SensoriskOexMJOA12mnd %in% 1:4 & BlareSfinkterMJOA12mnd %in% 1:4))
+      }
 
-     RegData$MJOAsum <- NA
-     RegData$MJOAsum[ind] <-
-      with(RegData[ind, ],
-           switch(valgtVar,
-                  MJOAsumPre = MotoriskOexMJOA + MotoriskUexMJOA + SensoriskOexMJOA + BlareSfinkterMJOA,
-                  MJOAsum3mnd = MotoriskOexMJOA3mnd + MotoriskUexMJOA3mnd + SensoriskOexMJOA3mnd + BlareSfinkterMJOA3mnd,
-                  MJOAsum12mnd = MotoriskOexMJOA12mnd + MotoriskUexMJOA12mnd + SensoriskOexMJOA12mnd + BlareSfinkterMJOA12mnd)
-      ) - 4
+    if (valgtVar %in% c('MJOAsum3mnd','MJOAendr3mnd')) {
+      RegData <- RegData[indOppf,]
+      RegData$MJOAsumOppf <-
+        with(RegData, MotoriskOexMJOA3mnd + MotoriskUexMJOA3mnd + SensoriskOexMJOA3mnd + BlareSfinkterMJOA3mnd)-4
+    }
+      if (valgtVar %in% c('MJOAsum12mnd', 'MJOAendr12mnd')) {
+        RegData <- RegData[indOppf,]
+        RegData$MJOAsumOppf <-
+          with(RegData, MotoriskOexMJOA12mnd + MotoriskUexMJOA12mnd + SensoriskOexMJOA12mnd + BlareSfinkterMJOA12mnd)-4
+      }
 
-    RegData$VariabelGr <- cut(RegData$MJOAsum, breaks=c(0, 11.1, 14.1, 17.1, 18.1), include.lowest=TRUE, right=FALSE)
-#table(RegData$VariabelGr)
-   grtxt <- c('alvorlig', 'moderat', 'mild', 'ingen')
+    if (figurtype == 'andeler') {
+      tittel <-  paste0('Grad av myelopati ' , switch(valgtVar, MJOAsumPre = 'før operasjon',
+                                                      MJOAsum3mnd = '3 mnd etter operasjon',
+                                                      MJOAsum12mnd = '12 mnd etter operasjon'))
+      RegData$MJOAsum <- if (valgtVar == 'MJOAsumPre'){RegData$MJOAsumPre
+        } else {RegData$MJOAsumOppf}
+      RegData$VariabelGr <- cut(RegData$MJOAsum,
+                                breaks=c(0, 11.1, 14.1, 17.1, 18.1), include.lowest=TRUE, right=FALSE)
+      grtxt <- c('alvorlig', 'moderat', 'mild', 'ingen')
+    }
+
+    if (figurtype %in% c('gjsnGrVar', 'gjsnTid')) {
+
+      deltittel <- paste0('endring av MJOA-skår', switch(valgtVar,
+                                                         MJOAendr3mnd = '3 mnd etter',
+                                                         MJOAendr3mnd = '12 mnd etter'))
+      RegData$Variabel <- RegData$MJOAsumOppf - RegData$MJOAsumPre
+
+      KIekstrem <- c(-18,18)
+      indVar <- which(RegData$Variabel >= KIekstrem[1])
+      tittel <- paste0('Forbedring av MJOA ',
+                       switch(valgtVar, MJOAendr3mnd = '3 mnd. etter operasjon',
+                              MJOAendr12mnd = '3 mnd. etter operasjon'))
+      ytxt1 <- '(endring av MJOA-skår)'
+    }
   }
 
 

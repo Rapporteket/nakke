@@ -45,21 +45,24 @@ write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavn
 # 'diffUtf3mnd', 'diffUtf12mnd' gjsn.
 
 source("dev/sysSetenv.R")
-NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2018-01-01'))
+NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2024-01-01'))
 
-valgtVar <- 'diffUtf3mnd'
- NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar = valgtVar, valgtMaal='Med',
+valgtVar <- 'MJOAendr12mnd'
+#  'MJOAendr3mnd', 'MJOAendr12mnd')
+ NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar = valgtVar, valgtMaal='')
                    #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
-                   outfile = paste0(valgtVar, '_gjsnPrSh.pdf'))
+                   # ,outfile = paste0(valgtVar, '_gjsnPrSh.pdf'))
 
- NakkeFigGjsnTid(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg =0, valgtMaal='Med',
+ NakkeFigGjsnTid(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg =0, valgtMaal='Med')
                    #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
-                   outfile = paste0(valgtVar, '_gjsnTid.pdf'))
+                  #  ,outfile = paste0(valgtVar, '_gjsnTid.pdf'))
 
 # c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd')
- valgtVar <- 'MJOAsum3mnd'
- NakkeFigAndeler(RegData = NakkeData, valgtVar = valgtVar)
- MotoriskOexMJOA3mnd
+ # 203, 55
+ valgtVar <- 'MJOAsum12mnd'
+ dum <- NakkeFigAndeler(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg = 0)
+
+
 #----------------------------Kvalitetsindikatorer:--------
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)

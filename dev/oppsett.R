@@ -5,9 +5,9 @@ library(nakke)
 #26
 #remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/rygg11a0113bb.sql.gz__20260312_085511.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/rygg1437f02ff.sql.gz__20260318_081310.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa")
-# source c://Users/lro2402unn/RegistreGIT/data/rygg11a0113bb.sql;
+# source c://Users/lro2402unn/RegistreGIT/data/rygg1437f02ff.sql;
 setwd('c://Users/lro2402unn/RegistreGIT/nakke')
 
 library(nakke)
