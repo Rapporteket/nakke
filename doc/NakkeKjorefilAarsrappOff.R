@@ -34,6 +34,37 @@ write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavn
 # write.table(RegData, file = 'NakkeDataAarsrapp2023alt.csv', sep = ';', na='', row.names = F, fileEncoding = 'latin1') #'UTF-8')
 
 
+#-------------------------------
+#Nye figurer:
+#valgtVar == 'ventetidHenvTimePol') { #Fordeling, AndelGrVar, AndelTid
+# 'ventetidSpesOp') { #Fordeling, AndelGrVar, AndelTid
+# 'diffPasUtfOp') {  #Fordeling, Andeler
+# 'trombProfylLett') { #AndelGrVar, AndelTid
+#  'NDIscore3mnd') { #GjsnTid #GjsnGrVar
+#    'NDIscore12mnd') { #GjsnTid #GjsnGrVar
+# 'diffUtf3mnd', 'diffUtf12mnd' gjsn.
+
+source("dev/sysSetenv.R")
+NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2025-01-01'))
+
+valgtVar <- 'Alder'
+#  'MJOAendr3mnd', 'MJOAendr12mnd')
+ NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar = valgtVar, valgtMaal='')
+                   #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
+                   # ,outfile = paste0(valgtVar, '_gjsnPrSh.pdf'))
+ MedIQR <- plot(NakkeData$SykehusNavn, as.numeric(NakkeData$Alder), notch=TRUE, plot=FALSE)
+
+ NakkeFigGjsnTid(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg =0, valgtMaal='Med')
+                   #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
+                  #  ,outfile = paste0(valgtVar, '_gjsnTid.pdf'))
+
+# c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd')
+ # 203, 55
+ valgtVar <- 'MJOAsum3mnd'
+ dum <- NakkeFigAndeler(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg = 0)
+
+
+
 #----------------------------Kvalitetsindikatorer:--------
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)

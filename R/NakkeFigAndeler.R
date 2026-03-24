@@ -58,10 +58,6 @@ NakkeFigAndeler  <- function(RegData=0, valgtVar='Alder', erMann='',
                              lagFig=1, ...)
 {
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndeler: ',valgtVar))
-  }
-
 	if (hentData == 1) {
 		RegData <- NakkeRegDataSQL(datoFra=datoFra, datoTil=datoTil)
 	  }
@@ -99,7 +95,6 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 
 
 #--------------- Gjøre beregninger ------------------------------
-#FRA INTENSIV
 
       AggVerdier <- list(Hoved = 0, Rest =0)
       N <- list(Hoved = 0, Rest =0)
@@ -144,7 +139,6 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
             Nfig <- N}
 
 
-
       xAkseTxt <- NakkeVarSpes$xAkseTxt
       yAkseTxt <- 'Andel opphold (%)'
       retn <- NakkeVarSpes$retn
@@ -160,10 +154,8 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 
 
       antDes <- if (valgtVar == 'KomplOpr') {2} else {1}
-      #grtxt2 <- paste0(sprintf(paste('%.', antDes, 'f'),AggVerdier$Hoved), '%')
       NutvTxt <- length(utvalgTxt)
       antDesTxt <- paste0('%.', antDes, 'f')
-      #txtpst <- paste0(' (', rev(sprintf(antDesTxt, AggVerdier$Hoved)), '%)')
       txtpst <- paste0(' (', sprintf(antDesTxt, AggVerdier$Hoved), '%)')
       grtxtpst <- paste0(rev(grtxt),  rev(txtpst))   #sprintf("%.3f", pi)
 
@@ -171,13 +163,9 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
                            N=N,
                            Ngr=Nfig,
                            Nvar=Ngr,
-                           #KImaal <- NIRVarSpes$KImaal,
-                           #grtxt2=grtxt2,
                            grtxt=grtxt,
-                           #grTypeTxt=grTypeTxt,
                            tittel=tittel,
                            retn=retn,
-                           #subtxt=subtxt,
                            yAkseTxt=yAkseTxt,
                            utvalgTxt=utvalgTxt,
                            fargepalett=NakkeUtvalg$fargepalett,

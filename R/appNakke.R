@@ -42,15 +42,13 @@ ui_nakke <- function() {
 
 
   #----Define UI for application------
-  # ??legge på shiny::tagList()
   ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     id = "tab1nivaa",
     title = rapbase::title(regTitle),
     windowTitle = regTitle,
     theme = rapbase::theme(),
 
-
-    #------------ Viktigste resultater-----------------
+  #------------ Viktigste resultater-----------------
     tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og halvårsrapport'),
              h2('Velkommen til Rapporteket for NKR, degenerativ nakke!', align='center'),
              shinyjs::useShinyjs(),
@@ -122,11 +120,7 @@ ui_nakke <- function() {
                             condition = "input.ark == 'Antall skjema'",
                             dateRangeInput(inputId = 'datovalgReg', start = startDato, end = Sys.Date(),
                                            label = "Tidsperiode", separator="t.o.m.", language="nb")
-                            # , selectInput(inputId = 'skjemastatus', label='Velg skjemastatus',
-                            #             choices = c("Ferdigstilt"=1,
-                            #                         "Kladd (/oppf.skjema ikke besvart)"=0,
-                            #                         "Åpen"=-1))
-                            ),
+                             ),
                           br()
              ),
 
@@ -152,8 +146,10 @@ ui_nakke <- function() {
                            )))
     ), #tab
     #------Registeradministrasjon-----------------------
-    tabPanel(p('Registeradministrasjon', title="Verktøy for SC-bruker"),
-             value = 'Registeradministrasjon',
+
+  tabPanel(p('Registeradministrasjon',
+                     title="Verktøy for SC-bruker"),
+                   value = 'Registeradministrasjon',
              h3('Denne siden skal kun vises for SC-bruker', align='center'),
              tabsetPanel(
                tabPanel(
@@ -236,7 +232,8 @@ ui_nakke <- function() {
              h2("Fordeling av valgt variabel", align='center'),
              sidebarPanel(width = 3,
                           selectInput(inputId = "valgtVar", label="Velg variabel",
-                                      choices = c('Alder' = 'Alder', 'Antall nivå operert' = 'AntallNivaaOpr',
+                                      choices = c('Alder' = 'Alder',
+                                                  'Antall nivå operert' = 'AntallNivaaOpr',
                                                   'Antibiotika' = 'Antibiotika',
                                                   'Arbeidsstatus før operasjon' = 'ArbeidstausPreOp',
                                                   'Arbeidsstatus 3 mnd. etter' = 'Arbeidstaus3mnd',
@@ -253,6 +250,9 @@ ui_nakke <- function() {
                                                   'Liggedøgn, postoperativt' = 'LiggeDognPostop',
                                                   'Liggedøgn, totalt' = 'LiggeDognTotalt',
                                                   'Morsmål' = 'Morsmal',
+                                                  'Myelopatigrad før operasjon' = 'MJOAsumPre',
+                                                  'Myelopatigrad 3mnd etter operasjon' = 'MJOAsum3mnd',
+                                                  'Myelopatigrad 12 mnd etter operasjon' = 'MJOAsum12mnd',
                                                   'Nytte av operasjon, 3 mnd. etter' = 'NytteOpr3mnd',
                                                   'Nytte av operasjon, 12 mnd. etter' = 'NytteOpr12mnd',
                                                   'Hastegrad kirurgi' = 'OperasjonsKategori',
@@ -262,16 +262,20 @@ ui_nakke <- function() {
                                                   'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
                                                   'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
                                                   'Registreringsforsinkelse' = 'regForsinkelse',
-                                                  'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus', 'Sårdren' = 'Saardren',
+                                                  'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus',
+                                                  'Sårdren' = 'Saardren',
                                                   'Smertestillende, hyppighet preoperativt' = 'SmertestillBrukPreOp',
                                                   'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                                   'Symptomvarighet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
                                                   'Søkt erstatning før operasjon' = 'ErstatningPreOp',
                                                   'Søkt uføretrygd før operasjon' = 'UforetrygdPreOp',
+                                                  'Tid mellom operasjon og utf. av pasientskjema' = 'diffPasUtfOp',
                                                   'Tidligere operert' = 'TidlOpr',
                                                   'Tidligere operert, antall' = 'TidlOprAntall',
                                                   'Tilgang ved operasjon' = 'OpTilgfrembak',
-                                                  'Utdanning' = 'Utdanning'),
+                                                  'Utdanning' = 'Utdanning',
+                                                  'Ventetid fra henv. til poliklinikk' = 'ventetidHenvTimePol',
+                                                  'Ventetid fra op bestemt til utført' = 'ventetidSpesOp'),
                                       selected = 'regForsinkelse'
                           ),
                           selectInput(inputId = 'enhetsUtvalg', label='Egen enhet og/eller landet',
@@ -294,9 +298,7 @@ ui_nakke <- function() {
                           selectInput(inputId = "bildeformatFord",
                                       label = "Velg format for nedlasting av figur",
                                       choices = c('pdf', 'png', 'jpg', 'bmp', 'tif', 'svg'))
-                          #sliderInput(inputId="aar", label = "Årstall", min = 2012,  #min(RegData$Aar),
-                          #           max = as.numeric(format(Sys.Date(), '%Y')), value = )
-             ),
+            ),
              mainPanel(
                h5("Hvilken variabel man ønsker å se resultater for, velges fra rullegardinmenyen
                     til venstre. Der kan man også gjøre ulike filtreringer."),
@@ -350,6 +352,7 @@ ui_nakke <- function() {
                                         'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
                                         'Registreringsforsinkelse' = 'regForsinkelse',
                                         'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
+                                        'Pasientskjema fylt ut mer enn to uker før operasjon?' = 'diffPasUtfOp',
                                         'Smertestillende, preoperativt' = 'SmertestillPreOp',
                                         'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
                                         'Symptomvariaghet, nakke/hodesmerter' = 'SymptVarighetNakkeHode',
@@ -358,7 +361,10 @@ ui_nakke <- function() {
                                         'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
                                         'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
                                         'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
-                                        'Utdanning' = 'Utdanning'),
+                                        'Unødvendig bruk av blodfortynnende' = 'trombProfylLett',
+                                        'Utdanning' = 'Utdanning',
+                                        'Ventetid fra henv. til poliklinikk' = 'ventetidHenvTimePol',
+                                        'Ventetid fra op bestemt til utført' = 'ventetidSpesOp'),
                             selected = 'regForsinkelse'
                           ),
                           selectInput(inputId = 'enhetsUtvalgAndelTid', label='Egen enhet og/eller landet (kun for utvikling over tid)',
@@ -438,7 +444,11 @@ ui_nakke <- function() {
                                                   'EQ5D-Forbedring, 3 mnd.' = 'EQ5Dendr3mnd',
                                                   'Liggetid etter operasjon' = 'LiggeDognPostop',
                                                   'Liggetid, totalt' = 'LiggeDognTotalt',
+                                                  'Myelopatigrad, endring pre-3mnd' =  'MJOAendr3mnd',
+                                                  'Myelopatigrad, endring pre-12mnd' =  'MJOAendr12mnd',
                                                   'NDI før operasjon' = 'NDIscorePreOp',
+                                                  'NDI, 3 mnd.' = 'NDIscore3mnd',
+                                                  'NDI, 12 mnd.' = 'NDIscore12mnd',
                                                   'NDI-forbedring, 3 mnd.' = 'NDIendr3mnd',
                                                   'NDI-forbedring, 12 mnd.' = 'NDIendr12mnd',
                                                   'NSR, arm før operasjon' = 'NRSsmerteArmPreOp',
@@ -696,7 +706,6 @@ server_nakke <- function(input, output, session) {
 
   # })
   #-----------Registeradministrasjon-----------
-
   observeEvent(user$role(), {
     if (user$role() == 'SC') {
   #observe({

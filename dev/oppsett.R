@@ -2,12 +2,11 @@
 
 library(nakke)
 
-#26
 #remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/rygg11a0113bb.sql.gz__20260312_085511.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/rygg1437f02ff.sql.gz__20260318_081310.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa")
-# source c://Users/lro2402unn/RegistreGIT/data/rygg11a0113bb.sql;
+# source c://Users/lro2402unn/RegistreGIT/data/rygg1437f02ff.sql;
 setwd('c://Users/lro2402unn/RegistreGIT/nakke')
 
 library(nakke)
@@ -16,12 +15,11 @@ nakke::kjorNakkeApp(browser = TRUE)
 
 dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
-dataNy <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31', medOppf = 1)
+dataNy <- NakkeHentRegData() #datoFra = '2024-01-01', medOppf = 1)
 RegData <- NakkePreprosess(dataNy)
 
-head(RegData$FORM_COMPLETED_VIA_FROMS)
-
-test <- RegData[ ,c('REOP_INNEN_90_DAGER_UTFYLT', 'Reopr90d')]
+names(Oppf3Skjema)[grep('Mjoa', names(Oppf3Skjema), ignore.case = T)]
+test <- RegData[ ,c('OprDato', 'Utf')]
 
 # 3,6s - sammenstille
 # 6,8s - hente tabeller++
@@ -29,6 +27,18 @@ test <- RegData[ ,c('REOP_INNEN_90_DAGER_UTFYLT', 'Reopr90d')]
 
 unique(RegData[,c("ReshId", 'SykehusNavn')])
 reshID <- 114288
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Henter tilgangstre og mapper om resh og SykehusNavn
 Sys.setenv(MRS_ACCESS_HIERARCHY_URL= 'https://qreg.nhn.no/nakke/api/centre-information')

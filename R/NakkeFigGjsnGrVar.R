@@ -35,12 +35,8 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
                               minald=0, maxald=130, erMann='', inngrep=99,
                               reshID=0, outfile='', hentData=0, preprosess=0,...) {
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigGjsnTid: ',valgtVar))
-  }
-
   if (hentData == 1) {
-    RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
+    RegData <- NakkeRegDataSQL()
   }
 
   # Preprosessere data
@@ -88,20 +84,35 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
   dummy0 <- NA #-0.001
   #Kommer ut ferdig sortert!
   if (valgtMaal=='Med') {
-    MedIQR <- plot(RegData[ ,grVar], RegData$Variabel, notch=TRUE, plot=FALSE)
-    MedIQR$stats[ ,indGrUt] <- dummy0
-    MedIQR$conf[ ,indGrUt] <- dummy0
-    sortInd <- order( MedIQR$stats[3,], decreasing=TRUE)
-    Midt <- as.numeric(MedIQR$stats[3, sortInd])
-    KIned <- MedIQR$conf[1, sortInd]
-    KIopp <- MedIQR$conf[2, sortInd]
-    MedIQRHele <-  boxplot.stats(RegData$Variabel, do.conf = TRUE)
-    MidtHele <- as.numeric(MedIQRHele$stats[3])	#median(RegData$Variabel)
-    KIHele <- MedIQRHele$conf
+    #MedIQR <- plot(RegData[ ,grVar], RegData$Variabel, notch=TRUE, plot=FALSE)
+    #MedIQR$stats[ ,indGrUt] <- dummy0
+    #MedIQR$conf[ ,indGrUt] <- dummy0
+    # sortInd <- order( MedIQR$stats[3,], decreasing=TRUE)
+    #Midt <- as.numeric(MedIQR$stats[3, sortInd])
+    # KIned <- #MedIQR$conf[1, sortInd]
+    # KIopp <- MedIQR$conf[2, sortInd]
+    # MedIQRHele <-  boxplot.stats(RegData$Variabel, do.conf = TRUE)
+    # MidtHele <- as.numeric(MedIQRHele$stats[3])	#median(RegData$Variabel)
+    # KIHele <- MedIQRHele$conf
     #The notches (if requested) extend to +/-1.58 IQR/sqrt(n). (Chambers et al. (1983, p. 62), given in McGill et al. (1978, p. 16).)
     #They are based on asymptotic normality of the median and roughly equal sample sizes for the two medians being compared,
     #and are said to be rather insensitive to the underlying distributions of the samples. The idea appears to be to give
     #roughly a 95% confidence interval for the difference in two medians.
+
+    #MedIQR <- (tapply(RegData$Variabel, RegData[ ,grVar], 'summary', na.rm=T))
+    Midt <- as.numeric(tapply(RegData$Variabel, RegData[ ,grVar], 'median', na.rm=T))
+    Midt[indGrUt] <- dummy0
+    sortInd <- order( Midt, decreasing=TRUE)
+    Midt <- Midt[sortInd]
+    MidtHele <- median(RegData$Variabel)
+    KIned <- Midt
+    KIopp <- Midt
+    KIHele <- Midt
+
+    Gjsn <- tapply(RegData$Variabel, RegData[ ,grVar], mean, na.rm=T)
+    Gjsn[indGrUt] <- dummy0
+    sortInd <- order(Gjsn, decreasing=TRUE)
+    Midt <- as.numeric(Gjsn[sortInd])
 
   } else {	#Gjennomsnitt blir standard.
     Gjsn <- tapply(RegData$Variabel, RegData[ ,grVar], mean, na.rm=T)
@@ -147,7 +158,6 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
                         valgtMaal=valgtMaal,
                         SentralmaalTxt=SentralmaalTxt,
                         tittel=tittel,    #NakkeVarSpes$tittel,
-                        #yAkseTxt=yAkseTxt,
                         retn='H',
                         xAkseTxt=NakkeVarSpes$xAkseTxt,
                         grTypeTxt=NakkeUtvalg$grTypeTxt,
@@ -158,8 +168,6 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
 
 
   #-----------Figur---------------------------------------
-  #print(Ngr)
-  #print(Ngrense)
   if 	(max(Ngr, na.rm = T) < Ngrense)	{#Dvs. hvis ALLE er mindre enn grensa.
     FigTypUt <- rapFigurer::figtype(outfile)
     farger <- FigTypUt$farger
@@ -169,7 +177,6 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
     } else {tekst <- 'Ingen registrerte data for dette utvalget'}
     title(main=tittel, cex=0.95)	#line=-8,
     text(0.5, 0.6, tekst, cex=1.2)
-    #text(0.5, 0.3, , cex=1.2)
     legend('topleft',utvalgTxt, bty='n', cex=0.9, text.col=farger[1])
     if ( outfile != '') {dev.off()}
   } else {
@@ -191,10 +198,6 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
     ybunn <- 0
     ytopp <- max(posKI)*1.05	 #min(posKI)
 
-    # if (!is.na(KImaalGrenser)) {
-    #   lines(x=rep(KImaalGrenser, 2), y=c(minpos, maxpos), col= '#FF7260', lwd=2.5) #y=c(0, max(pos)+0.55),
-    #   text(x=KImaalGrenser, y=maxpos+0.6, paste0('Mål:', KImaaltxt), cex=0.9*cexgr, col= '#FF7260',adj=c(0.5,0))
-    # }
     if (!is.na(KImaalGrenser[1])) {
       antMaalNivaa <- length(KImaalGrenser)-1
       rekkef <- 1:antMaalNivaa
@@ -210,21 +213,23 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
              legend=c('Måloppnåelse:', maalOppTxt[1:antMaalNivaa])) #,
     }
 
+    if (valgtMaal!='Med'){
     polygon( c(rep(KIHele[1],2), rep(KIHele[2],2)), c(ybunn, ytopp, ytopp, ybunn),
-             col=farger[4], border=farger[4])
+             col=farger[4], border=farger[4])}
     lines(x=rep(MidtHele, 2), y=c(ybunn, ytopp), col=farger[2], lwd=2)
 
-    legend('top', fill=c('white', farger[4]),  border='white', lwd=2,
-           col=c(farger[2], farger[4]), seg.len=0.6, merge=TRUE, bty='n',
+    legend('top', fill=c('white', ifelse(valgtMaal=='Med', 'white', farger[4])),
+                         border='white', lwd=2,
+           col=c(farger[2], ifelse(valgtMaal=='Med', 'white', farger[4])),
+           seg.len=0.6, merge=TRUE, bty='n',
            c(paste0(tleg, ', alle: ', sprintf('%.1f', MidtHele), ', N=', N),
-             paste0('95% konf.int., alle (',
-                    sprintf('%.1f', KIHele[1]), '-', sprintf('%.1f', KIHele[2]), ')')))
+           ifelse(valgtMaal=='Med', '', paste0(', 95% konf.int., alle (',
+                    sprintf('%.1f', KIHele[1]), '-', sprintf('%.1f', KIHele[2]), ')'))))
 
 
     barplot(Midt, horiz=T, border=NA, col=farger[3], xlim=c(xmin, xmax), add=TRUE,
             font.main=1, xlab = xAkseTxt, las=1) 	#xlim=c(0,ymax), #, cex.names=0.5
     title(tittel, line=1, font.main=1, cex.main=1.3)
-    #title('med 95% konfidensintervall', line=0.5, font.main=1, cex.main=0.95)
     mtext(at=pos+0.18, GrNavnSort, side=2, las=1, cex=cexGrNavn, adj=1, line=0.25)	#Sykehusnavn
     mtext(at=pos-0.18, Ngrtxt[sortInd], side=2, las=1, cex=cexGrNavn, adj=1, line=0.25)	#Sykehusnavn
 
@@ -235,13 +240,13 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
 
     #Tekst som angir hvilket utvalg som er gjort
     mtext(utvalgTxt, side=3, las=1, cex=0.9, adj=0, col=farger[1], line=c(2.2+0.8*((NutvTxt-1):0)))
-    #    mtext(utvalgTxt, side=3, las=1, cex=cexGrNavn*0.9, adj=0, col=farger[1], line=c(3+0.8*((NutvTxt-1):0)))
 
-    options(warn = -1)	#Unngå melding om KI med lengde 0. Fungerer av en eller annen grunn ikke i pdf.
-    arrows(x0=Midt[-indGrUtPlot]*0.999, y0=posKI, x1=KIopp[-indGrUtPlot], y1=posKI,
-           length=0.5/max(pos), code=2, angle=90, lwd=1.5, col=farger[1])
-    arrows(x0=Midt[-indGrUtPlot]*1.001, y0=posKI, x1=KIned[-indGrUtPlot], y1=posKI,
-           length=0.5/max(pos), code=2, angle=90, lwd=1.5, col=farger[1])
+    if (valgtMaal != 'Med') {
+      options(warn = -1)	#Unngå melding om KI med lengde 0. Fungerer av en eller annen grunn ikke i pdf.
+      arrows(x0=Midt[-indGrUtPlot]*0.999, y0=posKI, x1=KIopp[-indGrUtPlot], y1=posKI,
+             length=0.5/max(pos), code=2, angle=90, lwd=1.5, col=farger[1])
+      arrows(x0=Midt[-indGrUtPlot]*1.001, y0=posKI, x1=KIned[-indGrUtPlot], y1=posKI,
+             length=0.5/max(pos), code=2, angle=90, lwd=1.5, col=farger[1])}
     par('fig'=c(0, 1, 0, 1))
     if ( outfile != '') {dev.off()}
     #----------------------------------------------------------------------------------

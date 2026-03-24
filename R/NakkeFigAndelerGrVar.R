@@ -54,10 +54,6 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
                                  erMann='', myelopati=99, fremBak=0, Ngrense=10,
                                  hentData=0, preprosess=0, reshID=0, outfile='',...) { #tittel=1,
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelGrVar: ',valgtVar))
-  }
-
   if (hentData == 1) {
     RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
   }
