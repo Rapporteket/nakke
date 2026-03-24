@@ -58,10 +58,6 @@ NakkeFigAndeler  <- function(RegData=0, valgtVar='Alder', erMann='',
                              lagFig=1, ...)
 {
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndeler: ',valgtVar))
-  }
-
 	if (hentData == 1) {
 		RegData <- NakkeRegDataSQL(datoFra=datoFra, datoTil=datoTil)
 	  }

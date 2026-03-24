@@ -36,9 +36,6 @@ NakkeFigGjsnTid <- function(RegData, outfile='', valgtVar='Alder', erMann='',
 		myelopati=99, fremBak=0, tidsenhet='Aar', inngrep=99, konfInt=1,
 		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=0, reshID=0,...){ #tittel=1,
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigGjsnTid: ',valgtVar))
-  }
 	if (hentData == 1) {
 		RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
 	  }
@@ -50,8 +47,6 @@ NakkeFigGjsnTid <- function(RegData, outfile='', valgtVar='Alder', erMann='',
 
 
 #----------- Figurparametre ------------------------------
-# subtxt <- ''	#Benevning
-# antDes <- 1
 
 NakkeVarSpes <- NakkeVarTilrettelegg(RegData=RegData, valgtVar=valgtVar, figurtype = 'gjsnTid')
 RegData <- NakkeVarSpes$RegData
@@ -72,9 +67,7 @@ hovedgrTxt <- NakkeUtvalg$hovedgrTxt
 medSml <- NakkeUtvalg$medSml
 
 t1 <-ifelse(valgtMaal=='Med', 'Median', 'Gjennomsnittlig')
-#tleg <- ifelse(valgtMaal=='Med', 'Median', 'Gjennomsnitt')
 tittel <-  c(paste(t1, NakkeVarSpes$deltittel, sep=' '), hovedgrTxt)	#c(TittelVar, hovedkattxt, paste(kjtxt, ', ', optxt, sep=''), hovedgrTxt)
-#if (tittel==0) {Tittel<-''} else {Tittel <- TittelUt}
 
 #------------------------Klargjøre tidsenhet--------------
 N <- list(Hoved = dim(RegData)[1], Rest=0)
@@ -107,9 +100,13 @@ if (N$Hoved>4) {
     SD <- tapply(RegData[ind$Hoved ,'Variabel'], RegData[ind$Hoved, 'TidsEnhet'], sd)
     Konf <- rbind(Midt - 2*SD/sqrt(N), Midt + 2*SD/sqrt(N))
   }
+  if (length(KIekstrem) == 0) {	#Hvis ikke KIekstrem definert i variabeldefinisjonen
+    KIekstrem <- c(0,max(RegData$Variabel, na.rm=T))
+  }
+
   Konf <- replace(Konf, which(Konf < KIekstrem[1]), KIekstrem[1])
   Konf <- replace(Konf, which(Konf > KIekstrem[2]), KIekstrem[2])
-  Ngr$Hoved <- N
+  # Ngr$Hoved <- N
 
   #Resten (gruppa det sammenliknes mot)
   MidtRest <- NULL
@@ -138,7 +135,6 @@ if (N$Hoved>4) {
 ResData <- round(rbind(Midt, Konf, MidtRest, KonfRest), 2)
 rownames(ResData) <- c(maaltxt, 'KImin', 'KImaks',
                        paste0(maaltxt, 'Resten'), 'KImin, Resten', 'KImaks, Resten')[1:(3*(medSml+1))]
-#rownames(ResData) <- c('Midt', 'KIned', 'KIopp', 'MidtRest', 'KIRestned', 'KIRestopp')[1:(3*(medSml+1))]
 }
 UtData <- list(AggVerdier=ResData,
                      N=N,

@@ -45,13 +45,14 @@ write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavn
 # 'diffUtf3mnd', 'diffUtf12mnd' gjsn.
 
 source("dev/sysSetenv.R")
-NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2024-01-01'))
+NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2025-01-01'))
 
-valgtVar <- 'MJOAendr12mnd'
+valgtVar <- 'Alder'
 #  'MJOAendr3mnd', 'MJOAendr12mnd')
  NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar = valgtVar, valgtMaal='')
                    #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
                    # ,outfile = paste0(valgtVar, '_gjsnPrSh.pdf'))
+ MedIQR <- plot(NakkeData$SykehusNavn, as.numeric(NakkeData$Alder), notch=TRUE, plot=FALSE)
 
  NakkeFigGjsnTid(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg =0, valgtMaal='Med')
                    #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
@@ -59,8 +60,9 @@ valgtVar <- 'MJOAendr12mnd'
 
 # c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd')
  # 203, 55
- valgtVar <- 'MJOAsum12mnd'
+ valgtVar <- 'MJOAsum3mnd'
  dum <- NakkeFigAndeler(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg = 0)
+
 
 
 #----------------------------Kvalitetsindikatorer:--------

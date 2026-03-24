@@ -1083,7 +1083,7 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     #                                              as.Date(RegData$OprDato), units = 'days'))
     # RegData$Diff <- RegData$DiffOpUtf3mnd - RegData$DiffOpTSUPD
     # test <- RegData[,c('OprDato', 'UtfyltDato3mnd', "TSUPDATED_oppf3", 'Variabel', 'DiffOpUtf3mnd', 'DiffOpTSUPD', 'Diff', 'MCEID')]
-    ind <- which(RegData$Variabel > 0 & RegData$Variabel <365 )
+    ind <- which(RegData$Variabel > 0 & (RegData$Variabel < ifelse(valgtVar == 'diffUtf3mnd', 365, 700)))
     RegData <- RegData[ind, ]
     sortAvtagende <- F
   }

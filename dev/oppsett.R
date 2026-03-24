@@ -2,7 +2,6 @@
 
 library(nakke)
 
-#26
 #remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('../data')
 sship::dec("c://Users/lro2402unn/RegistreGIT/data/rygg1437f02ff.sql.gz__20260318_081310.tar.gz",

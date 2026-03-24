@@ -52,12 +52,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                              reshID=0, outfile='', enhetsUtvalg=0, preprosess=0,
                              hentData=0,...) {
 
-  if ("session" %in% names(list(...))) {
-    rapbase::repLogger(session = list(...)[["session"]], msg = paste0('NakkeFigAndelTid: ',valgtVar))
-  }
-
-
-  if (hentData == 1) {
+   if (hentData == 1) {
     RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
   }
 
