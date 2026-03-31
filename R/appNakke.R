@@ -17,11 +17,7 @@ ui_nakke <- function() {
 
   regTitle <- 'NKR: Degenerativ nakke'
 
-  # gjør Rapportekets www-felleskomponenter tilgjengelig for applikasjonen
- # addResourcePath('rap', system.file('www', package='rapbase'))
-
   # #----------Parametre som er statistke i appen----------
-
   #Definere innhold i felles rullegardinmenyer:
   kjonn <- c("Begge"=2, "Menn"=1, "Kvinner"=0)
   enhetsUtvalg <- c("Egen mot resten av landet"=1,
@@ -260,6 +256,7 @@ ui_nakke <- function() {
                                                   'Operasjonsindikasjon, paresegrad' = 'OprIndikPareseGrad',
                                                   'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
                                                   'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
+                                                  'Operasjonstype' = 'OpType',
                                                   'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
                                                   'Registreringsforsinkelse' = 'regForsinkelse',
                                                   'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus',
@@ -332,6 +329,7 @@ ui_nakke <- function() {
                                         'Arbeidstaus 3 mnd. etter' = 'Arbeidstaus3mnd',
                                         'Arbeidstaus 12 mnd. etter' = 'Arbeidstaus12mnd',
                                         'ASA-grad' = 'ASAgrad', 'BMI' = 'BMI',
+                                        'Endoskopisk operasjon' = 'OpAndreEndosk',
                                         'Fornøyd med behandlinga, 3 mnd. etter' = 'FornoydBeh3mnd',
                                         'Fornøyd med behandlinga, 12 mnd. etter' = 'FornoydBeh12mnd',
                                         'Forverring, 3 mnd. etter' = 'Verre3mnd',
@@ -351,7 +349,7 @@ ui_nakke <- function() {
                                         'NRSendring, smerter i arm, 12.mnd.' = 'NRSsmerteArmEndr12mnd',
                                         'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
                                         'Registreringsforsinkelse' = 'regForsinkelse',
-                                        'Røyker' = 'Roker', 'Sårdren' = 'Saardren',
+                                        'Røyker' = 'Roker',
                                         'Pasientskjema fylt ut mer enn to uker før operasjon?' = 'diffPasUtfOp',
                                         'Smertestillende, preoperativt' = 'SmertestillPreOp',
                                         'Symptomvarighet, armsmerter' = 'SymptVarighetArmer',
@@ -361,6 +359,7 @@ ui_nakke <- function() {
                                         'Svart på oppfølging, 3 mnd.' = 'Oppf3mnd',
                                         'Svart på oppfølging, 12 mnd.' = 'Oppf12mnd',
                                         'Svart på oppfølging, 3 og 12 mnd.' = 'Oppf3og12mnd',
+                                        'Sårdren' = 'Saardren',
                                         'Unødvendig bruk av blodfortynnende' = 'trombProfylLett',
                                         'Utdanning' = 'Utdanning',
                                         'Ventetid fra henv. til poliklinikk' = 'ventetidHenvTimePol',

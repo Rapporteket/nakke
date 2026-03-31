@@ -742,23 +742,13 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     RegData$VariabelGr[indDum] <- RegData$Nytte[indDum]
   }
 
-  if (valgtVar %in% c('Verre3mnd','Verre12mnd')) { #AndelTid  #AndelGrVar
-    #3/12mndSkjema. Andel med helt mye verre og noen sinne (6:7)
-    #Kode 1:7,9: ''Helt bra', 'Mye bedre', 'Litt bedre', 'Uendret', 'Litt verre', 'Mye verre',
-    #				'Verre enn noen gang', 'Ukjent')
-    indSkjema <- switch(valgtVar,
-                        Verre3mnd = which(RegData$NytteOpr3mnd %in% 1:7) %i% which(RegData$StatusUtfyll3mnd==1),
-                        Verre12mnd = which(RegData$NytteOpr12mnd %in% 1:7) %i% which(RegData$StatusUtfyll12mnd==1))
-    RegData <- RegData[indSkjema, ]
-    indVar <- switch(valgtVar,
-                     Verre3mnd = which(RegData$NytteOpr3mnd %in% 6:7),
-                     Verre12mnd = which(RegData$NytteOpr12mnd %in% 6:7))
-    RegData$Variabel[indVar] <- 1
-    varTxt <- 'med klar forverring'
-    tittel <- switch(valgtVar,
-                     Verre3mnd = 'Mye verre/verre enn noen gang, 3 mnd.' ,
-                     Verre12mnd = 'Mye verre/verre enn noen gang, 12 mnd.')
+  if (valgtVar == 'OpAndreEndosk') { #AndelGrVar
+    RegData <- RegData[RegData$OpAndreEndosk %in% 0:1, ]
+    RegData$Variabel <- RegData$OpAndreEndosk
+    tittel <- 'Operert endoskopisk'
+    deltittel <- 'endoskopisk operert'
   }
+
   if (valgtVar == 'OperasjonsKategori') { #Andeler
     retn <- 'H'
     grtxt <- c('Elektiv', 'Øhjelp', 'Subakutt', 'Ukjent')
@@ -778,7 +768,6 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
                   Oppf3og12mnd = which(RegData$StatusUtfyll3mnd==1 & RegData$StatusUtfyll12mnd==1 ))
 
     RegData$Variabel[ind] <- 1
-
     tittel <- paste0('Svart på oppfølging, ',
                      switch(valgtVar,
                             Oppf3mnd = '3 mnd. etter',
@@ -789,8 +778,6 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
   if (valgtVar=='OprIndikMyelopati') { #AndelTid #AndelGrVar
     #LegeSkjema. Andel med OprIndikMyelopati=1
     #Kode 0,1: Nei, Ja +tomme
-    #RegData <- RegData[which(RegData$OprIndikMyelopati %in% 0:1), ]
-    #RegData$Variabel <- RegData$OprIndikMyelopati
     #Antar tomme = nei. (Tore 3.okt. 2016)
     RegData$Variabel[which(RegData$OprIndikMyelopati == 1)] <- 1
     varTxt <- 'med myelopati'
@@ -832,6 +819,14 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     RegData$VariabelGr <- factor(RegData$OpTilgfrembak, levels=0:4)
     #varTxt <- 'med komplikasjoner'
     tittel <- 'Operasjonstilgang'
+  }
+  if (valgtVar=='OpType') { #Fordeling
+     grtxt <- 	c('Ikke klassifiserbar', 'Fremre diketomi \nfor prolaps', 'Bakre dekompresjon',
+                 'Fremre dekompr. \nSS u/prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep')
+    table(RegData$VariabelGr)
+     RegData$VariabelGr <- factor(RegData$OpType, levels=0:6)
+    tittel <- 'Operasjonstype'
+    retn <- 'H'
   }
 
   if (valgtVar == 'regForsinkelse') {  #Fordeling, Andeler
@@ -1079,10 +1074,6 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
                                                    diffUtf3mnd = as.Date(RegData$UtfyltDato3mnd),
                                                    diffUtf12mnd = as.Date(RegData$UtfyltDato12mnd)),
                                             as.Date(RegData$OprDato), units = 'days'))
-    # RegData$DiffOpTSUPD <- as.numeric(difftime(as.Date(RegData$TSUPDATED_oppf3),
-    #                                              as.Date(RegData$OprDato), units = 'days'))
-    # RegData$Diff <- RegData$DiffOpUtf3mnd - RegData$DiffOpTSUPD
-    # test <- RegData[,c('OprDato', 'UtfyltDato3mnd', "TSUPDATED_oppf3", 'Variabel', 'DiffOpUtf3mnd', 'DiffOpTSUPD', 'Diff', 'MCEID')]
     ind <- which(RegData$Variabel > 0 & (RegData$Variabel < ifelse(valgtVar == 'diffUtf3mnd', 365, 700)))
     RegData <- RegData[ind, ]
     sortAvtagende <- F
@@ -1099,18 +1090,23 @@ if (valgtVar == 'trombProfylLett') { #AndelGrVar, AndelTid
   sortAvtagende <- F
 #  KImaalGrenser <- c(0,10,100)
 }
-
-
-  #Lena
-
-
-
-
-
-
-
-
-
+  if (valgtVar %in% c('Verre3mnd','Verre12mnd')) { #AndelTid  #AndelGrVar
+    #3/12mndSkjema. Andel med helt mye verre og noen sinne (6:7)
+    #Kode 1:7,9: ''Helt bra', 'Mye bedre', 'Litt bedre', 'Uendret', 'Litt verre', 'Mye verre',
+    #				'Verre enn noen gang', 'Ukjent')
+    indSkjema <- switch(valgtVar,
+                        Verre3mnd = which(RegData$NytteOpr3mnd %in% 1:7) %i% which(RegData$StatusUtfyll3mnd==1),
+                        Verre12mnd = which(RegData$NytteOpr12mnd %in% 1:7) %i% which(RegData$StatusUtfyll12mnd==1))
+    RegData <- RegData[indSkjema, ]
+    indVar <- switch(valgtVar,
+                     Verre3mnd = which(RegData$NytteOpr3mnd %in% 6:7),
+                     Verre12mnd = which(RegData$NytteOpr12mnd %in% 6:7))
+    RegData$Variabel[indVar] <- 1
+    varTxt <- 'med klar forverring'
+    tittel <- switch(valgtVar,
+                     Verre3mnd = 'Mye verre/verre enn noen gang, 3 mnd.' ,
+                     Verre12mnd = 'Mye verre/verre enn noen gang, 12 mnd.')
+  }
 
 
    #-------------- SAMMENSATTE variable

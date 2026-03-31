@@ -43,12 +43,11 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
   Ninn <- dim(RegData)[1]
   indAld <- which(RegData$Alder >= minald & RegData$Alder <= maxald)
-  indDato <- which(RegData$OprDato >= as.Date(datoFra) & RegData$OprDato <= as.Date(datoTil)) #as.POSIXlt(datoFra) & RegData$OprDato <= as.POSIXlt(datoTil))
+  indDato <- which(RegData$OprDato >= as.Date(datoFra) & RegData$OprDato <= as.Date(datoTil))
   indAar <- if (aar[1] > 2000) {which(RegData$Aar %in% as.numeric(aar))} else {1:Ninn}
   indKj <- if (erMann %in% 0:1) {which(RegData$ErMann == erMann)} else {1:Ninn}
   indOpKat <- if (inngrep %in% 0:6) {which(RegData$Inngrep == inngrep)} else {1:Ninn}
   indMyelo <- if (myelopati %in% 0:1) {which(RegData$OprIndikMyelopati == myelopati)} else {1:Ninn}
-  #Myelopati: NA=0
   indFremBak <- if (fremBak %in% 1:2) {
     switch(as.character(fremBak),
                        '1' = which(RegData$OprMetodeTilgangFremre==1),
@@ -57,21 +56,14 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
   #--------------- Definisjoner av tilganger--------------------
 
-#-----------------------------------------------------------------------------
-
-
-
-  #indTidlOp <- if (tidlOp %in% 1:4) {which(RegData$TidlOpr==tidlOp)} else {indTidlOp <- 1:Ninn}
-  indMed <- indAld %i% indDato %i% indAar %i% indKj %i% indMyelo %i% indFremBak %i% indOpKat
+ indMed <- indAld %i% indDato %i% indAar %i% indKj %i% indMyelo %i% indFremBak %i% indOpKat
   RegData <- RegData[indMed,]
-
-
- # TidlOprtxt <-	c('Tidl. operert samme nivå', 'Tidl. operert annet nivå', 'Tidl. operert annet og sm. nivå', 'Primæroperasjon')
 
   N <- dim(RegData)[1]
 
   txtInngrep <- c('Ikke klassifiserbar operasjon', 'Fremre diskektomi for prolaps', 'Bakre dekompresjon',
              'Fremre dekompresjon sp st.uten prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep')
+
 
   utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$OprDato, na.rm=T)} else {datoFra},
                         ' til ', if (N>0) {max(RegData$OprDato, na.rm=T)} else {datoTil}),
@@ -80,11 +72,8 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
                  if (erMann %in% 0:1) {paste0('Kjønn: ', c('Kvinner', 'Menn')[erMann+1])},
                  if (myelopati %in% 0:1) {paste0('Myelopati: ', c('Nei', 'Ja')[myelopati+1])},
                  if (fremBak %in% 1:2) {paste0('Tilgang: ', c('Fremre','Bakre')[fremBak])},
-                 if (inngrep %in% 1:2) {txtInngrep[inngrep+1]}
-                 #	if (tidlOp %in% 1:4) {TidlOprtxt[tidlOp]}
+                 if (inngrep %in% 0:6) {txtInngrep[inngrep+1]}
   )
-
-
 
 
   #Enhetsutvalg:
@@ -101,9 +90,6 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
     ind$Hoved <-which(as.numeric(RegData$ReshId)==reshID)
     ind$Rest <- which(as.numeric(RegData$ReshId) != reshID)
   }
-
-
-
 
 
   UtData <- list(RegData=RegData, utvalgTxt=utvalgTxt, fargepalett=fargepalett, ind=ind,

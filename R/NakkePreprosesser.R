@@ -270,8 +270,6 @@ RegData$Inngrep[ind3] <- 3
 	# 4 'Bakre fusjon'
 	# 5 'Korporektomi'
 	# 6 'Andre inngrep'.
-txttxt <- 	c('Ikke klassifiserbar', 'Fremre diketomi for prolaps', 'Bakre dekompresjon',
-             'Fremre dekompr. SS u/ prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep')
 
 
 RegData <- RegData %>%
