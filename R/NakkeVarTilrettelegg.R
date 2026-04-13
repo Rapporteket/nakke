@@ -820,14 +820,14 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     #varTxt <- 'med komplikasjoner'
     tittel <- 'Operasjonstilgang'
   }
-  if (valgtVar=='OpType') { #Fordeling
-     grtxt <- 	c('Ikke klassifiserbar', 'Fremre diketomi \nfor prolaps', 'Bakre dekompresjon',
-                 'Fremre dekompr. \nSS u/prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep')
-    table(RegData$VariabelGr)
-     RegData$VariabelGr <- factor(RegData$OpType, levels=0:6)
-    tittel <- 'Operasjonstype'
-    retn <- 'H'
-  }
+  # if (valgtVar=='OpType') { #Fordeling
+  #    grtxt <- 	c('Ikke klassifiserbar', 'Fremre diketomi \nfor prolaps', 'Bakre dekompresjon',
+  #                'Fremre dekompr. \nSS u/prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep')
+  #   table(RegData$VariabelGr)
+  #    RegData$VariabelGr <- factor(RegData$OpType, levels=0:6)
+  #   tittel <- 'Operasjonstype'
+  #   retn <- 'H'
+  # }
 
   if (valgtVar == 'regForsinkelse') {  #Fordeling, Andeler
     #Verdier: 0-3402
@@ -835,7 +835,6 @@ if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, 
     tittel <- switch(figurtype,
                      andeler='Tid fra utskriving til ferdigstilt registrering',
                      andelGrVar = 'Mer enn 30 dager fra utskriving til ferdig registrering') #
-    #subtxt <- 'døgn'
     cexgr <- 0.9
     xAkseTxt <- 'dager'
     sortAvtagende <- FALSE

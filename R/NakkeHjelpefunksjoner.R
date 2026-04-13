@@ -190,10 +190,7 @@ henteSamlerapporter <- function(filnavn, rnwFil, reshID=0,
   file.copy(src, tmpFile, overwrite = TRUE)
 
   knitr::knit2pdf(tmpFile)
-
-  gc() #Opprydning gc-"garbage collection"
   file.copy(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), filnavn)
-  # file.rename(paste0(substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf'), file)
 }
 
 
@@ -214,13 +211,6 @@ abonnementNakke <- function(rnwFil, reshID=0,
                             fulltNavn = 'Mangler personnavn',
                        datoFra=Sys.Date()-180, datoTil=Sys.Date()) {
 
-  # rapbase::autLogger(user = brukernavn, name = fulltNavn,
-  #                    fun = "abonnementNakke",
-  #                    type = 'abb el uts',
-  #                    param = c(rnwFil, reshID),
-  #                    registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
-  #                   reshId = reshID, msg = "Abonnement: månedsrapport")
-
   filbase <- substr(rnwFil, 1, nchar(rnwFil)-4)
   tmpFile <- paste0(filbase, Sys.Date(),'_',digest::digest(Sys.time()), '.Rnw')
   src <- normalizePath(system.file(rnwFil, package='nakke'))
@@ -230,14 +220,7 @@ abonnementNakke <- function(rnwFil, reshID=0,
   file.copy(src, tmpFile, overwrite = TRUE)
   knitr::knit2pdf(input=tmpFile)
 
-  #gc() #Opprydning gc-"garbage collection"
   utfil <- paste0(dir, '/', substr(tmpFile, 1, nchar(tmpFile)-3), 'pdf')
-  # rapbase::autLogger(user = brukernavn, name = fulltNavn,
-  #                    fun = "abonnementNakke",
-  #                    type = 'abb el uts',
-  #                    param = c(rnwFil, reshID),
-  #                    registryName = 'NKR: Degenerativ Nakke', pkg = 'nakke',
-  #                   reshId = reshID, msg = paste("Sendt: ", utfil))
   return(utfil)
 }
 

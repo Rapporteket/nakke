@@ -186,77 +186,77 @@ RegData$Inngrep[ind3] <- 3
 	RegData$OpTilgfrembak[ind2] <- 2
 
 
-# Definere operasjonstyper
-	RegData$OpType <-0
-	RegData$OpType[RegData$OprMetodeAndre > 0] <- 6
-	RegData$OpType[with(RegData, which(OpType == 0 &
-	      (OprMetodeDiskektomi == 1 |
-	         OprMetodeTilgangFremre == 1 |
-	         OprMetodeTilgangFremreH == 1 |
-	         OprMetodeTilgangFremreV == 1 |
-	         OprMetodeDiskektomiBenblokk == 1 |
-	         OprMetodeDiskektomiPlate == 1 |
-	         OprMetodeDiskektomiCage == 1 &
-	         OprMetodeDiskektomiSkiveprotese == 1) &
-	      RtgFunnProlaps == 1 &
-	      (OprMetodeTilgangBakre == 0 |
-	         OprMetodeAndre == 0 |
-	         OprMetodeForamenotomiBakreUniLat == 0 |
-	         OprMetodeForamenotomiBakreBiLat == 0 |
-	         OprMetodeAnnenBakreDekompr < 1) &
-	      OprMetodeBakreFusjon == 0 &
-	      OprMetodeKorpektomi == 0))] <- 1
-
-	RegData$OpType[with(RegData, which(OpType == 0 &
-	      (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0) &
-	      (OprMetodeTilgangBakre == 1 |
-	         OprMetodeAndre == 0 |
-	         OprMetodeKirDekompresjon == 1 |
-	         OprMetodeForamenotomiBakreUniLat == 1 |
-	         OprMetodeForamenotomiBakreBiLat == 1 |
-	         OprMetodeAnnenBakreDekompr > 0) &
-	      OprMetodeBakreFusjon == 0 &
-	      OprMetodeKorpektomi == 0))] <- 2
-
-	RegData$OpType[with(RegData, which(OpType == 0 &
-	      (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1) &
-	      RtgFunnProlaps == 0 &
-	      (RtgFunnRotkanalstenose == 1 |
-	         RtgFunnCervicalSpStenose == 1 |
-	         RtgFunnDegnerasjonNakke == 1) &
-	      (OprMetodeTilgangBakre == 0 |
-	         OprMetodeAndre == 0 |
-	         OprMetodeForamenotomiBakreUniLat == 0 |
-	         OprMetodeForamenotomiBakreBiLat == 0 |
-	         OprMetodeAnnenBakreDekompr < 1) &
-	      OprMetodeBakreFusjon == 0 &
-	      OprMetodeKorpektomi == 0))] <- 3
-	RegData$OpType[with(RegData, which(OpType == 0 &
-	      (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0) &
-	      OprMetodeBakreFusjon == 1 &
-	      (OprMetodeTilgangBakre == 1 |
-	         OprMetodeAndre == 0 |
-	         BakreFusjonWire == 1 |
-	         BakreFusjonSkruer == 1 |
-	         BakreFusjonStag == 1) &
-	      OprMetodeKorpektomi == 0))] <- 4
-	RegData$OpType[with(RegData, which(OpType == 0 & OprMetodeKorpektomi == 1))] <- 5
-
-	RegData$OpType[with(RegData, which(OpType == 0 &
-	      (OprMetodeDiskektomi == 1 |
-	         OprMetodeTilgangFremre == 1 |
-	         OprMetodeDiskektomiCage == 1 |
-	         OprMetodeDiskektomiSkiveprotese == 1) &
-	      RtgFunnProlaps == 0))] <- 3
-
-	RegData$OpType[with(RegData, which(OpType == 0 &
-	      (OprMetodeDiskektomi == 1 |
-	         OprMetodeTilgangFremre == 1 |
-	         OprMetodeDiskektomiCage == 1 |
-	         OprMetodeDiskektomiSkiveprotese == 1) &
-	      RtgFunnProlaps == 0))] <- 1
-
-	RegData$OpType[with(RegData, which(OpType == 0 & OprMetodeBakreFusjon > 0))] <- 4
+# ------------ Definere operasjonstyper - viste seg å være kliss likt inngrepstyper
+	# RegData$OpType <-0
+	# RegData$OpType[RegData$OprMetodeAndre > 0] <- 6
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 1 |
+	#          OprMetodeTilgangFremre == 1 |
+	#          OprMetodeTilgangFremreH == 1 |
+	#          OprMetodeTilgangFremreV == 1 |
+	#          OprMetodeDiskektomiBenblokk == 1 |
+	#          OprMetodeDiskektomiPlate == 1 |
+	#          OprMetodeDiskektomiCage == 1 &
+	#          OprMetodeDiskektomiSkiveprotese == 1) &
+	#       RtgFunnProlaps == 1 &
+	#       (OprMetodeTilgangBakre == 0 |
+	#          OprMetodeAndre == 0 |
+	#          OprMetodeForamenotomiBakreUniLat == 0 |
+	#          OprMetodeForamenotomiBakreBiLat == 0 |
+	#          OprMetodeAnnenBakreDekompr < 1) &
+	#       OprMetodeBakreFusjon == 0 &
+	#       OprMetodeKorpektomi == 0))] <- 1
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0) &
+	#       (OprMetodeTilgangBakre == 1 |
+	#          OprMetodeAndre == 0 |
+	#          OprMetodeKirDekompresjon == 1 |
+	#          OprMetodeForamenotomiBakreUniLat == 1 |
+	#          OprMetodeForamenotomiBakreBiLat == 1 |
+	#          OprMetodeAnnenBakreDekompr > 0) &
+	#       OprMetodeBakreFusjon == 0 &
+	#       OprMetodeKorpektomi == 0))] <- 2
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1) &
+	#       RtgFunnProlaps == 0 &
+	#       (RtgFunnRotkanalstenose == 1 |
+	#          RtgFunnCervicalSpStenose == 1 |
+	#          RtgFunnDegnerasjonNakke == 1) &
+	#       (OprMetodeTilgangBakre == 0 |
+	#          OprMetodeAndre == 0 |
+	#          OprMetodeForamenotomiBakreUniLat == 0 |
+	#          OprMetodeForamenotomiBakreBiLat == 0 |
+	#          OprMetodeAnnenBakreDekompr < 1) &
+	#       OprMetodeBakreFusjon == 0 &
+	#       OprMetodeKorpektomi == 0))] <- 3
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0) &
+	#       OprMetodeBakreFusjon == 1 &
+	#       (OprMetodeTilgangBakre == 1 |
+	#          OprMetodeAndre == 0 |
+	#          BakreFusjonWire == 1 |
+	#          BakreFusjonSkruer == 1 |
+	#          BakreFusjonStag == 1) &
+	#       OprMetodeKorpektomi == 0))] <- 4
+	# RegData$OpType[with(RegData, which(OpType == 0 & OprMetodeKorpektomi == 1))] <- 5
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 1 |
+	#          OprMetodeTilgangFremre == 1 |
+	#          OprMetodeDiskektomiCage == 1 |
+	#          OprMetodeDiskektomiSkiveprotese == 1) &
+	#       RtgFunnProlaps == 0))] <- 3
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 1 |
+	#          OprMetodeTilgangFremre == 1 |
+	#          OprMetodeDiskektomiCage == 1 |
+	#          OprMetodeDiskektomiSkiveprotese == 1) &
+	#       RtgFunnProlaps == 0))] <- 1
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 & OprMetodeBakreFusjon > 0))] <- 4
 
 #table(RegData$OpType, useNA = 'a')
 

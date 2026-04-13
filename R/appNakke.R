@@ -256,7 +256,7 @@ ui_nakke <- function() {
                                                   'Operasjonsindikasjon, paresegrad' = 'OprIndikPareseGrad',
                                                   'Operasjonsindikasjon, myelopati' = 'OprIndikMyelopati',
                                                   'Operasjonsindikasjon, smerter' = 'OprIndikSmerter',
-                                                  'Operasjonstype' = 'OpType',
+                                               #   'Operasjonstype' = 'OpType',
                                                   'Radiologi' = 'Radiologi', 'Røyker' = 'Roker',
                                                   'Registreringsforsinkelse' = 'regForsinkelse',
                                                   'Snusbruk' = 'Snuser', 'Sivilstatus' = 'SivilStatus',
