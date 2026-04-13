@@ -43,9 +43,21 @@ write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavn
 #  'NDIscore3mnd') { #GjsnTid #GjsnGrVar
 #    'NDIscore12mnd') { #GjsnTid #GjsnGrVar
 # 'diffUtf3mnd', 'diffUtf12mnd' gjsn.
+#OpAndreEndosk andelGrVar/tid
+#OpType, fordeling
+
 
 source("dev/sysSetenv.R")
-NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2025-01-01'))
+NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2020-01-01'))
+
+NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OpAndreEndosk', datoFra = '2024-01-01'
+                     ,outfile='OpAndreEndoskSh.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='OpAndreEndosk', tidsenhet = 'Aar'
+                 ,outfile='OpAndreEndoskTid.pdf')
+
+NakkeFigAndeler(RegData = NakkeData, valgtVar = 'OpType', outfile = 'OpTypeFord.pdf')
+
+table(NakkeData$OpType)
 
 valgtVar <- 'Alder'
 #  'MJOAendr3mnd', 'MJOAendr12mnd')

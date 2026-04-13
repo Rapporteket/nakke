@@ -161,10 +161,10 @@ RegData$Inngrep[ind3] <- 3
 	# 5 'Korporektomi'
 	# 6 'Andre inngrep'.
 
-
-	RegData$OpFremBak <- 0
-	RegData$OpFremBak[RegData$OprMetodeTilgangFremre==1] <- 1
-	RegData$OpFremBak[RegData$OprMetodeTilgangBakre==1] <- 2
+	# Ikke i bruk
+	# RegData$OpFremBak <- 0
+	# RegData$OpFremBak[RegData$OprMetodeTilgangFremre==1] <- 1
+	# RegData$OpFremBak[RegData$OprMetodeTilgangBakre==1] <- 2
 
 	RegData$OpTilgfrembak<-0
 	RegData$OpTilgfrembak[RegData$OprMetodeAndre > 0] <- 3
@@ -185,8 +185,99 @@ RegData$Inngrep[ind3] <- 3
 	                            | OprMetodeBakreFusjon == 1))
 	RegData$OpTilgfrembak[ind2] <- 2
 
-	grtxt <- c('Ikke klassifiserbar', 'Fremre tilgang', 'Bakre tilgang', 'Andre inngrep', 'Kombinert bakre fremre')
 
+# ------------ Definere operasjonstyper - viste seg å være kliss likt inngrepstyper
+	# RegData$OpType <-0
+	# RegData$OpType[RegData$OprMetodeAndre > 0] <- 6
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 1 |
+	#          OprMetodeTilgangFremre == 1 |
+	#          OprMetodeTilgangFremreH == 1 |
+	#          OprMetodeTilgangFremreV == 1 |
+	#          OprMetodeDiskektomiBenblokk == 1 |
+	#          OprMetodeDiskektomiPlate == 1 |
+	#          OprMetodeDiskektomiCage == 1 &
+	#          OprMetodeDiskektomiSkiveprotese == 1) &
+	#       RtgFunnProlaps == 1 &
+	#       (OprMetodeTilgangBakre == 0 |
+	#          OprMetodeAndre == 0 |
+	#          OprMetodeForamenotomiBakreUniLat == 0 |
+	#          OprMetodeForamenotomiBakreBiLat == 0 |
+	#          OprMetodeAnnenBakreDekompr < 1) &
+	#       OprMetodeBakreFusjon == 0 &
+	#       OprMetodeKorpektomi == 0))] <- 1
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0) &
+	#       (OprMetodeTilgangBakre == 1 |
+	#          OprMetodeAndre == 0 |
+	#          OprMetodeKirDekompresjon == 1 |
+	#          OprMetodeForamenotomiBakreUniLat == 1 |
+	#          OprMetodeForamenotomiBakreBiLat == 1 |
+	#          OprMetodeAnnenBakreDekompr > 0) &
+	#       OprMetodeBakreFusjon == 0 &
+	#       OprMetodeKorpektomi == 0))] <- 2
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 1 | OprMetodeTilgangFremre == 1) &
+	#       RtgFunnProlaps == 0 &
+	#       (RtgFunnRotkanalstenose == 1 |
+	#          RtgFunnCervicalSpStenose == 1 |
+	#          RtgFunnDegnerasjonNakke == 1) &
+	#       (OprMetodeTilgangBakre == 0 |
+	#          OprMetodeAndre == 0 |
+	#          OprMetodeForamenotomiBakreUniLat == 0 |
+	#          OprMetodeForamenotomiBakreBiLat == 0 |
+	#          OprMetodeAnnenBakreDekompr < 1) &
+	#       OprMetodeBakreFusjon == 0 &
+	#       OprMetodeKorpektomi == 0))] <- 3
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 0 | OprMetodeTilgangFremre == 0) &
+	#       OprMetodeBakreFusjon == 1 &
+	#       (OprMetodeTilgangBakre == 1 |
+	#          OprMetodeAndre == 0 |
+	#          BakreFusjonWire == 1 |
+	#          BakreFusjonSkruer == 1 |
+	#          BakreFusjonStag == 1) &
+	#       OprMetodeKorpektomi == 0))] <- 4
+	# RegData$OpType[with(RegData, which(OpType == 0 & OprMetodeKorpektomi == 1))] <- 5
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 1 |
+	#          OprMetodeTilgangFremre == 1 |
+	#          OprMetodeDiskektomiCage == 1 |
+	#          OprMetodeDiskektomiSkiveprotese == 1) &
+	#       RtgFunnProlaps == 0))] <- 3
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 &
+	#       (OprMetodeDiskektomi == 1 |
+	#          OprMetodeTilgangFremre == 1 |
+	#          OprMetodeDiskektomiCage == 1 |
+	#          OprMetodeDiskektomiSkiveprotese == 1) &
+	#       RtgFunnProlaps == 0))] <- 1
+	#
+	# RegData$OpType[with(RegData, which(OpType == 0 & OprMetodeBakreFusjon > 0))] <- 4
+
+#table(RegData$OpType, useNA = 'a')
+
+
+	# VARIABLE LABELS OpType 'Type operasjon'.
+	# VALUE LABELS	OpType
+	# 0 'Ikke klassifiserbar'
+	# 1 'Fremre diketomi for prolaps'
+	# 2 'Bakre dekompresjon'
+	# 3 'Fremre dekompr. SS u/ prolaps'
+	# 4 'Bakre fusjon'
+	# 5 'Korporektomi'
+	# 6 'Andre inngrep'.
+
+
+RegData <- RegData %>%
+  dplyr::mutate(OpAndreEndosk = ifelse(
+      OprMetodeMikroMakroEndo == 3 |
+        EndoSkopTilg %in% c(1, 2) |
+        EndoSkopTekn %in% c(1, 2),
+      1, 0))
 
   return(invisible(RegData))
 }
