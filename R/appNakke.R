@@ -40,9 +40,9 @@ ui_nakke <- function() {
   #----Define UI for application------
   ui <- navbarPage( #fluidPage( #"Hoved"Layout for alt som vises på skjermen
     id = "tab1nivaa",
-    title = rapbase::title(regTitle),
+    title = rapbase::regTitle(regTitle),
     windowTitle = regTitle,
-    theme = rapbase::theme(),
+    theme = rapbase::rapTheme(),
 
   #------------ Viktigste resultater-----------------
     tabPanel(p("Viktigste resultater", title='Kvalitetsindikatorer og halvårsrapport'),
