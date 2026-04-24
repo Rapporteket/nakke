@@ -15,7 +15,7 @@ Depends:
     R (>= 3.5.0),
     rapFigurer
 Remotes:
-    Rapporteket/rapbase@main,
+    Rapporteket/rapbase,
     Rapporteket/rapFigurer
 License: GPL-2
 LazyData: TRUE
