@@ -187,10 +187,9 @@ NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
     farger <- FigTypUt$farger
     #Tilpasse marger for å kunne skrive utvalgsteksten
     NutvTxt <- length(utvalgTxt)
-    vmarg <- max(0, strwidth(GrNavnSort, units='figure', cex=cexGrNavn)*0.7)
     #NB: strwidth oppfører seg ulikt avh. av device...
-    par('fig'=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)))	#Har alltid datoutvalg med
-
+    vmarg <- min(0.55, max(0, strwidth(GrNavnSort, units='figure', cex=cexGrNavn)*0.7))
+    par(fig=c(vmarg, 1, 0, 1-0.02*(NutvTxt-1)), mar=c(2,0,1,1))	#Har alltid datoutvalg med
     pos <- barplot(Midt, horiz=T, border=NA, col=farger[3],
                    xlim=c(xmin,xmax), ylim=c(0.05, 1.25)*length(Ngr), font.main=1, xlab='', las=1, cex.names=cexGrNavn)
     indGrUtPlot <- AntGr+(1:length(indGrUt))

@@ -102,6 +102,7 @@ ui_nakke <- function() {
     #------------- Tabeller (vise antall)--------------------
 
     tabPanel(p('Registreringsoversikter',title="Tabeller med registreringsoversikter"),
+            value = "Registreringsoversikter",
              sidebarPanel(width=3,
                           h3('Utvalg'),
                           conditionalPanel(condition = "input.ark == 'Antall operasjoner'",
@@ -141,84 +142,7 @@ ui_nakke <- function() {
                                     )
                            )))
     ), #tab
-    #------Registeradministrasjon-----------------------
-
-  tabPanel(p('Registeradministrasjon',
-                     title="Verktøy for SC-bruker"),
-                   value = 'Registeradministrasjon',
-             h3('Denne siden skal kun vises for SC-bruker', align='center'),
-             tabsetPanel(
-               tabPanel(
-                 h4("Utsending av rapporter"),
-                 sidebarLayout(
-                   sidebarPanel(
-                     rapbase::autoReportOrgInput("NakkeUts"),
-                     rapbase::autoReportInput("NakkeUts"),
-
-                     h4('Test av autorapportutsending:'),
-                     shiny::actionButton(inputId = "run_autoreport",
-                                         label = "Kjør autorapporter"),
-                     shiny::dateInput(inputId = "rapportdato",
-                                      label = "Kjør rapporter med dato:",
-                                      value = Sys.Date(),
-                                      min = Sys.Date(),
-                                      max = Sys.Date() + 366
-                     ),
-                     shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
-
-                   ),
-                   mainPanel(
-                     rapbase::autoReportUI("NakkeUts"),
-                     p(em("System message:")),
-                     verbatimTextOutput("sysMessage"),
-                     p(em("Function message:")),
-                     verbatimTextOutput("funMessage")
-                   )
-                 )
-               ),
-               tabPanel(
-                 h4('Datadump og datakvalitet'),
-                 sidebarPanel(
-                   width=4,
-                   dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
-                                  label = "Tidsperiode", separator="t.o.m.", language="nb"),
-                   uiOutput('velgReshReg'),
-                   br(),
-                   downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
-                   br(),
-                   br()
-                 ),
-
-                 mainPanel(
-                   h3('Potensielle dobbeltregistreringer'),
-                   br(),
-                   h4('Funksjonen finner alle PID med to operasjoner nærmere enn valgt tidsintervall
-                           og tabellen viser alle operasjoner for de aktuelle pasientene.'),
-                   downloadButton(outputId = 'lastNed_tabDblReg', label='Last ned tabell med mulige dobbeltregistreringer'),
-                   br(),
-                   numericInput(inputId = 'valgtTidsavvik',
-                                label = 'Dager mellom registrerte operasjoner:',
-                                value = 30,
-                                min = 0,
-                                max = NA,
-                                step = 1
-                                , width = '100px'
-                   ),
-
-                   tableOutput("tabDblReg")
-                 )
-               ),
-               shiny::tabPanel(
-                 h4("Eksport av krypterte data"),
-                 shiny::sidebarPanel(
-                   rapbase::exportUCInput("nakkeExport")
-                 ),
-                 shiny::mainPanel(
-                   rapbase::exportGuideUI("nakkeExportGuide")
-                 )
-               ) #Eksport-tab
-             ) #tabsetPanel
-    ), #Registeradm-tab
+    
 
     #------------- Fordelingsfigurer--------------------
 
@@ -584,11 +508,96 @@ server_nakke <- function(input, output, session) {
     caller = "nakke"
   )
 
+  #------Registeradministrasjon-----------------------
+  idag <- Sys.Date()
+  startDato <- paste0(as.numeric(format(idag-200, "%Y")), '-01-01')
+  registerAdmTab <- tabPanel(
+            p("Registeradministrasjon", title = "Verktøy for SC-bruker"),
+            value = "Registeradministrasjon",
+             h3('Denne siden skal kun vises for SC-bruker', align='center'),
+             tabsetPanel(
+               tabPanel(
+                 h4("Utsending av rapporter"),
+                 sidebarLayout(
+                   sidebarPanel(
+                     rapbase::autoReportOrgInput("NakkeUts"),
+                     rapbase::autoReportInput("NakkeUts"),
+
+                     h4('Test av autorapportutsending:'),
+                     shiny::actionButton(inputId = "run_autoreport",
+                                         label = "Kjør autorapporter"),
+                     shiny::dateInput(inputId = "rapportdato",
+                                      label = "Kjør rapporter med dato:",
+                                      value = Sys.Date(),
+                                      min = Sys.Date(),
+                                      max = Sys.Date() + 366
+                     ),
+                     shiny::checkboxInput(inputId = "dryRun", label = "Send e-post")
+
+                   ),
+                   mainPanel(
+                     rapbase::autoReportUI("NakkeUts"),
+                     p(em("System message:")),
+                     verbatimTextOutput("sysMessage"),
+                     p(em("Function message:")),
+                     verbatimTextOutput("funMessage")
+                   )
+                 )
+               ),
+               tabPanel(
+                 h4('Datadump og datakvalitet'),
+                 sidebarPanel(
+                   width=4,
+                   dateRangeInput(inputId = 'datovalgRegKtr', start = startDato, end = idag,
+                                  label = "Tidsperiode", separator="t.o.m.", language="nb"),
+                   uiOutput('velgReshReg'),
+                   br(),
+                   downloadButton(outputId = 'lastNed_dataDump', label='Last ned datadump'),
+                   br(),
+                   br()
+                 ),
+
+                 mainPanel(
+                   h3('Potensielle dobbeltregistreringer'),
+                   br(),
+                   h4('Funksjonen finner alle PID med to operasjoner nærmere enn valgt tidsintervall
+                           og tabellen viser alle operasjoner for de aktuelle pasientene.'),
+                   downloadButton(outputId = 'lastNed_tabDblReg', label='Last ned tabell med mulige dobbeltregistreringer'),
+                   br(),
+                   numericInput(inputId = 'valgtTidsavvik',
+                                label = 'Dager mellom registrerte operasjoner:',
+                                value = 30,
+                                min = 0,
+                                max = NA,
+                                step = 1
+                                , width = '100px'
+                   ),
+
+                   tableOutput("tabDblReg")
+                 )
+               ),
+               shiny::tabPanel(
+                 h4("Eksport av krypterte data"),
+                 shiny::sidebarPanel(
+                   rapbase::exportUCInput("nakkeExport")
+                 ),
+                 shiny::mainPanel(
+                   rapbase::exportGuideUI("nakkeExportGuide")
+                 )
+               ) #Eksport-tab
+             ) #tabsetPanel
+    ) #Registeradm-tab
+
   observeEvent(user$role(), {
     if (user$role() == 'SC') {
-      showTab(inputId = "tab1nivaa", target = "Registeradministrasjon")
+      insertTab(
+        inputId = "tab1nivaa",
+        tab = registerAdmTab,
+        target = "Registreringsoversikter",
+        position = "after"
+      )
     } else {
-      hideTab(inputId = "tab1nivaa", target = "Registeradministrasjon")
+      removeTab(inputId = "tab1nivaa", target = "Registeradministrasjon")
     }
   })
 
