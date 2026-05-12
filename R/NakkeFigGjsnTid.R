@@ -37,7 +37,7 @@ NakkeFigGjsnTid <- function(RegData, outfile='', valgtVar='Alder', erMann='',
 		valgtMaal='', enhetsUtvalg=0, hentData=0, preprosess=0, reshID=0,...){ #tittel=1,
 
 	if (hentData == 1) {
-		RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
+		RegData <- NakkeHentRegData(datoFra = datoFra, datoTil = datoTil)
 	  }
 
 # Preprosessere data

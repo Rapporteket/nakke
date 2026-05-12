@@ -30,13 +30,13 @@
 
 
 NakkeFigGjsnGrVar <- function(RegData, valgtVar='Alder', valgtMaal='Gjsn',
-                              datoFra='2012-01-01', datoTil='2050-12-31',
+                              datoFra='2012-01-01', datoTil=Sys.Date(),
                               myelopati=99, fremBak=0, Ngrense=10, medKI=1,
                               minald=0, maxald=130, erMann='', inngrep=99,
                               reshID=0, outfile='', hentData=0, preprosess=0,...) {
 
   if (hentData == 1) {
-    RegData <- NakkeRegDataSQL()
+    RegData <- NakkeHentRegData(datoFra = datoFra, datoTil = datoTil)  #NakkeRegDataSQL()
   }
 
   # Preprosessere data

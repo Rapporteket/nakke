@@ -53,7 +53,7 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
                              hentData=0,...) {
 
    if (hentData == 1) {
-    RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
+    RegData <- NakkeHentRegData(datoFra = datoFra, datoTil = datoTil)
   }
 
   # Preprosessere data

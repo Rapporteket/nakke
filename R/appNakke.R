@@ -435,6 +435,7 @@ ui_nakke <- function() {
              sidebarPanel(width = 3,
                           selectInput(inputId = "valgtVarGjsn", label="Velg variabel",
                                       choices = c('Alder' = 'Alder',
+                                                  'Dager fra operasjon til 3 mnd-skjema' = 'diffUtf3mnd',
                                                   'EMS før operasjon, myelopatipasienter' = 'EMSscorePreOp',
                                                   'EMS-forbedring, myelopati, 12 mnd.' = 'EMSendr12mnd',
                                                   'EMS-forbedring, myelopati, 3 mnd.' = 'EMSendr3mnd',
