@@ -55,7 +55,7 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
                                  hentData=0, preprosess=0, reshID=0, outfile='',...) { #tittel=1,
 
   if (hentData == 1) {
-    RegData <- NakkeRegDataSQL()	#RegData <- NakkeLoadRegDataMinimal()
+    RegData <- NakkeHentRegData(datoFra = datoFra, datoTil = datoTil)
   }
 
   # Preprosessere data

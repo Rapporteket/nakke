@@ -22,7 +22,7 @@ table(DataNakke$RtgFunnANNET, useNA = 'a')
 
 #Dobbeltregistrering
 library(magrittr)
-RegDataRaa <- NakkeRegDataSQL()
+RegDataRaa <- NakkeHentRegData(datoFra = datoFra, datoTil = datoTil)
 RegData <- NakkePreprosess(RegDataRaa)
 DblReg <- RegData %<% group_by(PasientID) %<%
   summarise()

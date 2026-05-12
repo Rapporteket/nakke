@@ -553,25 +553,19 @@ if (valgtVar=='KnivtidTotalMin') { #GjsnTid #GjsnGrVar#Legeskjema.
 	xAkseTxt <- 'skåring'
 	}
 
-  if (valgtVar=='NDIscore3mnd') { #GjsnTid #GjsnGrVar
+  if (valgtVar %in% c('NDIscore3mnd', 'NDIscore312mnd')) { #GjsnTid #GjsnGrVar
     #Pasientkjema.
     KIekstrem <- c(0,100)
     RegData$Variabel <- RegData[ ,valgtVar]
-    tittel <- 'NDI 3 mnd. etter operasjon'
+    tittel <- switch(valgtVar,
+                     NDIscore3mnd = 'NDI 3 mnd. etter operasjon',
+                     NDIscore12mnd = 'NDI 12 mnd. etter operasjon')
     ytxt1 <- '(NDI-skåring)'
-    deltittel <- 'NDI 3 mnd. etter operasjon'
+    deltittel <- tittel
     xAkseTxt <- 'skåring'
+    RegData <- RegData[which(RegData$Variabel > KIekstrem[1] & RegData$Variabel < KIekstrem[2]), ]
   }
 
-  if (valgtVar=='NDIscore12mnd') { #GjsnTid #GjsnGrVar
-    #Pasientkjema.
-    KIekstrem <- c(0,100)
-    RegData$Variabel <- RegData[ ,valgtVar]
-    tittel <- 'NDI 12 mnd. etter operasjon'
-    ytxt1 <- '(NDI-skåring)'
-    deltittel <- 'NDI 12 mnd. etter operasjon'
-    xAkseTxt <- 'skåring'
-  }
 
 if (valgtVar %in% c('NDIendr12mnd35pst', 'NDIendr12mnd35pstKI')) { #AndelGrVar, AndelTid
     #Pasientkjema og 12mndskjema. Lav skår, lite plager -> forbedring = nedgang.
