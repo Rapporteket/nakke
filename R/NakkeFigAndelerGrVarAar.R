@@ -55,7 +55,7 @@ NakkeFigAndelerGrVarAar <- function(RegData, valgtVar, datoFra='2012-01-01', dat
                             hentData=0, preprosess=0, tittel=1, outfile='') {
 
      if (hentData == 1) {
-          RegData <- NakkeRegDataSQL()
+          RegData <- NakkeHentRegData(datoFra = datoFra, datoTil = datoTil)
      }
 
      # Preprosessere data

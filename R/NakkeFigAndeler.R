@@ -59,7 +59,7 @@ NakkeFigAndeler  <- function(RegData=0, valgtVar='Alder', erMann='',
 {
 
 	if (hentData == 1) {
-		RegData <- NakkeRegDataSQL(datoFra=datoFra, datoTil=datoTil)
+		RegData <- NakkeHentRegData(datoFra = datoFra, datoTil = datoTil)
 	  }
 
 # Preprosessere data

@@ -4,7 +4,7 @@
 library(nakke)
 library(xtable)
 setwd('../Aarsrapp/NKR/') #Nakke23/
-aarsRappAar <- 2024
+aarsRappAar <- 2025
 
 startAar <- 2012
 datoFra <- paste0(startAar,'-01-01')
@@ -19,62 +19,20 @@ aar2_12mnd <- (aarsRappAar-2):(aarsRappAar-1)
 tidlAar <- aarsRappAar-1
 tidlAar2 <- (aarsRappAar-3):(aarsRappAar-2)
 
-NakkeDataRaa <- NakkeRegDataSQL(datoTil = datoTil) #13927
+source("C:/Users/lro2402unn/RegistreGIT/nakke/dev/sysSetenv.R")
+NakkeDataRaa <- NakkeHentRegData(datoTil = datoTil) #13927
 NakkeData <- NakkePreprosess(NakkeDataRaa)
 NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra=datoFra1aar, datoTil=datoTil)$RegData
 
 #Datasjekk
-ShNavnReshRaa <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'AvdRESH')])
-SykehusNavnResh <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'AvdRESH')])
+ShNavnReshRaa <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'ReshId')])
+SykehusNavnResh <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'ReshId')])
 ShNavnResh <- unique(NakkeData[ ,c('SykehusNavn', 'ReshId')])
 write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavnAVDResh.csv', row.names = F, fileEncoding = 'latin1')
 
 #Til Tore
 # RegData <- NakkePreprosess(RegData = NakkeRegDataSQL(medProm = 1))
 # write.table(RegData, file = 'NakkeDataAarsrapp2023alt.csv', sep = ';', na='', row.names = F, fileEncoding = 'latin1') #'UTF-8')
-
-
-#-------------------------------
-#Nye figurer:
-#valgtVar == 'ventetidHenvTimePol') { #Fordeling, AndelGrVar, AndelTid
-# 'ventetidSpesOp') { #Fordeling, AndelGrVar, AndelTid
-# 'diffPasUtfOp') {  #Fordeling, Andeler
-# 'trombProfylLett') { #AndelGrVar, AndelTid
-#  'NDIscore3mnd') { #GjsnTid #GjsnGrVar
-#    'NDIscore12mnd') { #GjsnTid #GjsnGrVar
-# 'diffUtf3mnd', 'diffUtf12mnd' gjsn.
-#OpAndreEndosk andelGrVar/tid
-#OpType, fordeling
-
-
-source("dev/sysSetenv.R")
-NakkeData <- NakkePreprosess(NakkeHentRegData(datoFra = '2020-01-01'))
-
-NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OpAndreEndosk', datoFra = '2024-01-01'
-                     ,outfile='OpAndreEndoskSh.pdf')
-NakkeFigAndelTid(RegData=NakkeData, valgtVar='OpAndreEndosk', tidsenhet = 'Aar'
-                 ,outfile='OpAndreEndoskTid.pdf')
-
-NakkeFigAndeler(RegData = NakkeData, valgtVar = 'OpType', outfile = 'OpTypeFord.pdf')
-
-table(NakkeData$OpType)
-
-valgtVar <- 'Alder'
-#  'MJOAendr3mnd', 'MJOAendr12mnd')
- NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar = valgtVar, valgtMaal='')
-                   #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
-                   # ,outfile = paste0(valgtVar, '_gjsnPrSh.pdf'))
- MedIQR <- plot(NakkeData$SykehusNavn, as.numeric(NakkeData$Alder), notch=TRUE, plot=FALSE)
-
- NakkeFigGjsnTid(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg =0, valgtMaal='Med')
-                   #datoFra=datoFra3aar, datoTil=datoTil12mnd, myelopati=1, Ngrense=20,
-                  #  ,outfile = paste0(valgtVar, '_gjsnTid.pdf'))
-
-# c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd')
- # 203, 55
- valgtVar <- 'MJOAsum3mnd'
- dum <- NakkeFigAndeler(RegData = NakkeData, valgtVar = valgtVar, enhetsUtvalg = 0)
-
 
 
 #----------------------------Kvalitetsindikatorer:--------
@@ -98,9 +56,12 @@ NakkeFigAndelTid(RegData=NakkeData, preprosess=0, valgtVar='KomplStemme3mnd',
                  myelopati=0, fremBak=1, outfile='NakkeKomplStemme3mndTid.pdf')
 
 
-#Svelgvansker, 3 mnd (ikke-myelopati, fremre tilgang) – lav
+#Svelgvansker, 3 og 12 mnd (ikke-myelopati, fremre tilgang) – lav
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSvelging3mnd',
                         myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplSvelging3mndSh.pdf')
+NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra3aar, datoTil = datoTil12mnd,
+                     valgtVar='KomplSvelging12mnd',
+                     myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplSvelging12mndSh.pdf')
 # NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging3mnd',
 #                    myelopati=0, fremBak=1, Ngrense=20,
 #                    ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplSvelging3mndShAar.pdf')
@@ -119,14 +80,14 @@ NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfe
 
 #---Figurer---------
 #Registreringsforsinkelse:
-NakkeFigAndeler(RegData = NakkeData1aar, valgtVar = 'regForsinkelse', outfile = 'RegForsinkFord.pdf')
-NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='regForsinkelse', Ngrense=10, outfile= 'RegForsinkSh.pdf')
-NakkeFigAndelTid(RegData=NakkeData, valgtVar='regForsinkelse', datoFra = '2022-01-01', outfile='RegForsinkTid.pdf')
+NakkeFigAndeler(RegData = NakkeData1aar, valgtVar = 'regForsinkelse', outfile = 'NakkeRegForsinkFord.pdf')
+NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar='regForsinkelse', Ngrense=10, outfile= 'NakkeRegForsinkSh.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='regForsinkelse', datoFra = '2022-01-01', outfile='NakkeRegForsinkTid.pdf')
 
 #Oppf3mnd
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Oppf3mnd',
-                     Ngrense=20, outfile= 'Oppf3mndSh.pdf')
-NakkeFigAndelTid(RegData=NakkeData, valgtVar='Oppf3mnd', outfile='Oppf3mndTid.pdf')
+                     Ngrense=20, outfile= 'NakkeOppf3mndSh.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='Oppf3mnd', outfile='NakkeOppf3mndTid.pdf')
 
 
 # NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Alder', datoFra=datoFra1aar, outfile='NakkeAlder70Sh.pdf')
@@ -138,27 +99,38 @@ dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OprIndikMyelopati',
 dum <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
                         outfile='NakkeSaardrenUmFTid.pdf')
 
-# dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
-#                             datoFra=datoFra1aar, Ngrense=20,outfile='NakkeSaardrenUmFSh.pdf')
+#Div figurer:
 
-# dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NRSsmerteArmEndr12mnd',
-#                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
-#                             fremBak = 1, myelopati = 0, Ngrense=20, outfile='NakkeNRSsmerteArmEndr12mndUmFSh.pdf')
+for (variabler in c('Inngrep','OpAndreEndosk', 'ventetidSpesOp',  'diffPasUtfOp',
+                    'ventetidHenvTimePol') ){
+  NakkeFigAndeler(RegData = NakkeData1aar, valgtVar = variabler,
+                  outfile =paste0('Nakke', variabler, 'Ford.pdf'))
+}
 
-# dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='FornoydBeh12mnd',
-#                             datoFra=datoFra3aar, datoTil = datoTil12mnd,
-#                             fremBak = 1, Ngrense=20, outfile='NakkeFornoydBeh12mndFremSh.pdf')
+for (variabler in c('OpAndreEndosk', 'ventetidSpesOp',  'diffPasUtfOp',
+                    'ventetidHenvTimePol', 'trombProfylLett') ){
+  NakkeFigAndelerGrVar(RegData=NakkeData1aar, valgtVar=variabler,
+                       outfile = paste0('Nakke', variabler, 'Sh.pdf'))
+}
 
-#Pasienter med myelopati (ja) (både bakre og fremre tilgang) og lage figur for gj. sn. ODI forbedring per sykehus. (etterbestilling).
-# NakkeFigGjsnGrVar(RegData = NakkeData, valgtVar='NDIendr12mnd',
-#                   #datoFra=datoFra3aar, datoTil=datoTil12mnd,
-#                   myelopati=1, Ngrense=20, outfile='NakkeNDIendr12mnd.pdf')
+NakkeFigAndelTid(RegData=NakkeData, valgtVar='OpAndreEndosk', tidsenhet = 'Aar'
+                 ,outfile='NakkeOpAndreEndoskTid.pdf')
 
-
+for (variabler in c('NDIscore3mnd', 'diffUtf3mnd')){  # diffUtf12mnd'NDIscore12mnd',
+  NakkeFigGjsnGrVar(RegData = NakkeData1aar, valgtVar = variabler, valgtMaal='',
+                  outfile = paste0('Nakke', variabler, 'GjsnSh.pdf'))
+}
+NakkeFigGjsnGrVar(RegData = NakkeData, datoFra = datoFra2aar, datoTil = datoTil12mnd,
+                  valgtVar = 'diffUtf12mnd', valgtMaal='',
+                  outfile = 'NakkediffUtf12mndGjsnSh.pdf')
+# Innført sent i 2025:valgtVar <- c('MJOAendr3mnd', 'MJOAendr12mnd')
+#
+# MedIQR <- plot(NakkeData$SykehusNavn, as.numeric(NakkeData$Alder), notch=TRUE, plot=FALSE)
+# c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd')
 
 #-------------------------------------
 AndelPst <- function(variabel,teller,nevner){
-      sprintf('%.0f' , sum(variabel %in% teller)/
+      sprintf('%.1f' , sum(variabel %in% teller)/
                     sum(variabel %in% nevner)*100)}
 
 #----- TABELLER og tall ------------------------------------------------------------------
@@ -183,13 +155,13 @@ xtable(tabAvdN5nakke, digits=0, align=c('l', rep('r', 6)),
 #Tall for årsrapportåret:
 #Gjennomsnittsalder:
 (AlderGjsnNakke <- round(mean(NakkeData1aar$Alder, na.rm = T)))
-#Andel kvinner:
+#Andel kvinner, årsrapportåret:
 (Kvinner <- prop.table(table(NakkeData1aar$ErMann))[1]*100)
 
 #Andel elektive:
 (Elektivt <- sprintf('%.0f' , sum(NakkeData1aar$OperasjonsKategori == 1)/
                           sum(NakkeData1aar$OperasjonsKategori %in% 1:3)*100))
-#Andel med ASA-grad 3-5: 11%
+#Andel med ASA-grad 3-5:
 (ASA345 <- AndelPst(NakkeData1aar$ASAgrad, 3:5, 1:5))
 
 #Forekomst av sårinfeksjon (totalt for bakre og fremre nakkekirurgi): 2,2%
@@ -208,8 +180,7 @@ Saarinf <- length(union(which(NakkeData1aarDum$KomplinfekDyp3mnd==1),
 source("dev/sysSetenv.R")
 library(nakke)
 #library(xtable)
-aarTilVisning <- 2012:2025
-NakkeDataRaa <- NakkeRegDataSQL() #Tar også med inneværende år
+NakkeDataRaa <- NakkeHentRegData() #Tar også med inneværende år
 NakkeData <- NakkePreprosess(NakkeDataRaa)
 
 #Sjekk om det har kommet nye avdelinger:
@@ -222,7 +193,7 @@ setwd('../Aarsrapp/NKR')
 #valgtVar='KomplStemme3mnd', myelopati=0, fremBak=1, Ngrense=20
 nakke1 <- nakke::dataTilOffVisning(RegData = NakkeData,
                                    valgtVar='KomplStemme3mnd',
-                                   aar=aarTilVisning,
+                                  # aar=aarTilVisning,
                                    slaaSmToAar=0)
 
 
@@ -230,7 +201,7 @@ nakke1 <- nakke::dataTilOffVisning(RegData = NakkeData,
 #valgtVar='KomplSvelging3mnd', myelopati=0, fremBak=1, Ngrense=20
 nakke2 <- nakke::dataTilOffVisning(RegData = NakkeData,
                                    valgtVar='KomplSvelging3mnd',
-                                   aar=aarTilVisning,
+                                  # aar=aarTilVisning,
                                    slaaSmToAar=0)
 
 # #Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav FJERNET F.O.M 2022.
@@ -244,7 +215,7 @@ nakke2 <- nakke::dataTilOffVisning(RegData = NakkeData,
 # valgtVar='NDIendr12mnd35pst', fremBak = 1, myelopati = 0, Ngrense=20, outfile='NakkeNDIendr12mnd35pstSh.pdf')
 nakke4 <- nakke::dataTilOffVisning(RegData = NakkeData,
                                    valgtVar='NDIendr12mnd35pst',
-                                   aar=aarTilVisning,
+                                  # aar=aarTilVisning,
                                    slaaSmToAar=0)
 
 FellesFilNakke <- rbind(nakke1, nakke2, nakke4)
