@@ -39,7 +39,7 @@ write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavn
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
 
-NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
+NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra2aar , datoTil = datoTil12mnd,
                      fremBak = 1, myelopati = 0, Ngrense=20, outfile='NakkeNDIendr12mnd35pstSh.pdf')
 NakkeFigAndelTid(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoTil = datoTil12mnd,
                  fremBak=1, myelopati=0, Ngrense=20,outfile='NakkeNDIendr12mnd35pstTid.pdf')
@@ -49,17 +49,18 @@ NakkeFigAndelTid(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoTil = dato
 NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=0, datoFra=datoFra1aar,  valgtVar='KomplStemme3mnd',
                    myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplStemme3mndSh.pdf')
 
-# NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplStemme3mnd',
-#                      myelopati=0, fremBak=1, Ngrense=20,
-#                      ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplStemme3mndShAar.pdf')
 NakkeFigAndelTid(RegData=NakkeData, preprosess=0, valgtVar='KomplStemme3mnd',
                  myelopati=0, fremBak=1, outfile='NakkeKomplStemme3mndTid.pdf')
+
+NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=0, datoFra=datoFra2aar, datoTil = datoTil12mnd,
+                     valgtVar='KomplStemme12mnd',
+                     myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplStemme12mndSh.pdf')
 
 
 #Svelgvansker, 3 og 12 mnd (ikke-myelopati, fremre tilgang) – lav
 NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSvelging3mnd',
                         myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplSvelging3mndSh.pdf')
-NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra3aar, datoTil = datoTil12mnd,
+NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra2aar, datoTil = datoTil12mnd,
                      valgtVar='KomplSvelging12mnd',
                      myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplSvelging12mndSh.pdf')
 # NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging3mnd',
