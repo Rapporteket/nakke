@@ -1,0 +1,201 @@
+---
+title: "Traktplott for variabler fra NKR-Degenerativ nakke"
+author: "Lena Ringstad Olsen, basert på kode fra Henrik Hedevik og Bjørnar Berg"
+date: "`r Sys.Date()`"
+output: html_document
+note: Requires prepared NORspine data restricted to time-period and surgical cases of interest (long format)
+variables needed: success (dep.var), clinic (shnavn), covariates: alder, kjonn, asa, prevsurg(binar), oswtotpre
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Installation of packages
+
+```{r packages, echo=FALSE}
+#if(!require(foreign)) { install.packages("foreign"); require(foreign)}
+#library(foreign)
+if(!require(ggplot2)) { install.packages("ggplot2"); require(ggplot2)}
+#library(ggplot2)
+if(!require(dplyr)) { install.packages("dplyr"); require(dplyr)}
+#library(dplyr)
+if(!require(broom)) { install.packages("broom"); require(broom)}
+#library(broom)
+if(!require(data.table)) { install.packages("data.table"); require(data.table)}
+#library(data.table)
+if(!require(emmeans)) { install.packages("emmeans"); require(emmeans)}
+# library(emmeans)
+# library(haven) 
+# library(ggrepel)
+```
+### Loading data LR
+
+```{r data, echo=FALSE}
+
+source("C:/Users/lro2402unn/RegistreGIT/nakke/dev/sysSetenv.R")
+library(nakke)
+NakkeDataRaa <- NakkeHentRegData(datoFra = '2023-01-01',datoTil = '2024-12-31') #13927
+RegData <- NakkePreprosess(NakkeDataRaa)
+
+  RegData <- NakkeUtvalgEnh(RegData = RegData, datoTil = '2024-12-31', myelopati = 0)$RegData
+  RegData <- RegData[RegData$Inngrep %in% c(1,3), ]
+  RegData <- NakkeVarTilrettelegg(RegData = RegData, valgtVar = 'NDIendr12mnd35pst')$RegData
+
+  variabler <- c('SykehusNavn', 'Variabel', 'OprDato')
+  variablerTilAn <- c('Alder', 'ASAgrad', 'TidlOpr', 'Roker', 'Inngrep', 'Utdanning', 
+                     'BMI', 'ArbeidstausPreOp', 'SymptVarighetArmer', 'EqAngstPreOp', 'AntallNivaaOpr')
+RegDataAnalyse <- RegData[ ,c(variabler, variablerTilAn)]
+  
+# Kovariater («independent variables»):
+# Alder, kjønn (ErMann), preoperativ skår (NDIscorePreOp)
+RegData$ASAover2 <- RegData$ASAgrad>2  # ASAgrad: >2 (ja/nei) dikotom variabel
+RegData$ErTidlOpr <- RegData$TidlOpr %in% 1:3 # TidlOpr (ja/nei)
+RegData <- RegData[which(RegData$Roker %in% 0:1), ] # Roker (1ja, 0 nei), 9=NULL
+RegData <- RegData[which(RegData$Utdanning %in% 1:5), ] # Utdanning (1-3=1 (lav utdanning) og 4-5= 2 (Høy utdanning))
+RegData$UtdHoy <- ifelse(RegData$Utdanning %in% 4:5, 1,0)
+RegData$Fedme <- ifelse(RegData$BMI >= 30, 1,0)  # BMI ≥ 30.0=1 (fedme) og <30= 0 (ikke fedme)
+RegData <- RegData[which(RegData$ArbeidstausPreOp %in% 1:10), ]
+RegData$Sykepenger <- ifelse(RegData$ArbeidstausPreOp %in% 6:10, 1,0) # ArbeidstausPreOp (6-10=1 (mottar sykepenger) og 1-5=0 (mottar ikke sykepenger))
+RegData <- RegData[which(RegData$SymptVarighetArmer %in% 2:5), ] #SymptVarighetArmer (1=NULL, 2-3=1 (varighet under ett år) og 4-5= 2 (symtomvarighet over ett år))
+RegData$LangArmsm <- ifelse(RegData$SymptVarighetArmer %in% 4:5, 1,0)
+RegData <- RegData[which(RegData$EqAngstPreOp %in% 1:5), ] # EqAngstPreOp (1=1 (ingen angst/depresjon) og >1=2 (mild til betydelig angst/depresjon))
+RegData$Angst <- ifelse(RegData$EqAngstPreOp >1, 1,0)
+RegData <- RegData[which(RegData$AntallNivaaOpr > 0), ]  # AntallNivaaOpr (0=NULL, 1=1 (ett nivå) og >1=2 (mer enn ett nivå))
+RegData$OpFlereNivaa <- ifelse(RegData$AntallNivaaOpr >1, 1,0)
+
+# Traktplott for "suksess" (%)
+#' Generell traktplottfunksjon. Krever tilpasset datasett
+#'
+#' @param data dataramme, ryggdata med tilrettelagte variabler. Må inneholde
+#' xvar variabel på x-aksen. Som regel antall i gruppa 
+#' respons responsvariabelen vi ser på
+#' konf_opp konfidensintervall, øvre grense
+#' konf_ned konfidensintervall, nedre grense
+#'
+#' @return
+#' @export
+#'
+Traktplott <- function(data_aggregert = LPHD_Clinic,
+                       xaksetxt = 'Antall operasjoner',
+                       yaksetxt = 'Suksess') {
+  x_maks <- ceiling(max(data_aggregert$xvar)/50)*50
+  ggplot2::ggplot(data = data_aggregert, aes(x = xvar, group = respons)) +
+     geom_smooth(aes(y=konf_opp), se=FALSE, linetype="solid", color="red", size=0.8) +
+     geom_smooth(aes(y=konf_ned), se=FALSE, linetype="solid", color="red", size=0.8) +
+     geom_smooth(aes(y=respons), se=FALSE, color="darkgray", size=0.8) +
+     geom_point(aes(y = Rate), color = "black", size = 2) +
+     geom_text_repel(aes(y = Rate, label = SykehusNavn), 
+                size = 2.5, color = "black", 
+                box.padding = 0.4, # Adds padding between labels and points
+                point.padding = 0.2, # Adds padding between points and lines
+                max.overlaps = 10, # Adjusts the number of overlapping labels allowed
+                min.segment.length = 0.2, # Avoids long connecting lines
+                segment.color = "gray") + # Sets line color
+  theme_classic() +
+  scale_x_continuous(breaks = seq(0, x_maks, by = 50), limits = c(0, x_maks)) +
+  scale_y_continuous(breaks=seq(0.20, 1, by=0.05), labels=scales::percent) +
+  labs(x = xaksetxt,
+       y = yaksetxt)
+}
+
+```
+
+### Beregner data
+
+```{r LPHD_LogReg, echo=FALSE}
+
+# Selecting HD
+LPHD <- RegData 
+
+# Calculate Clinic Volume and Satisfied patients
+LPHD <- LPHD |> dplyr::group_by(SykehusNavn) |> 
+  dplyr::mutate(ClinicVolume = dplyr::n(),
+         Success := sum(Variabel)) |>
+  dplyr::ungroup()
+
+# Filtrerer bort enheter med få registreringer
+LPHD <- LPHD[LPHD$ClinicVolume > 20, ]
+
+#Brukes denne...?
+# LPHD <- LPHD |>  
+#   dplyr::mutate(MeanAge = mean(Alder),
+#                 MeanSex = mean(ErMann),
+#                 meanPrevsurg = mean(ErTidlOpr),
+#                 MeanAsa = mean(ASAover2),
+#                 meanNDIPre = mean(NDIscorePreOp)
+#                 )
+# LPHD
+
+# Logistic Regression model on Success
+#LPHD_Model <- glm(success ~ clinic + alder + kjonn + prevsurg + asa + oswtotpre, family = binomial, data = LPHD)
+LPHD_Model1 <- glm(Variabel ~ SykehusNavn + Alder + ErMann + ErTidlOpr + ASAover2 + NDIscorePreOp, family = binomial, data = LPHD)
+LPHD_Model2 <- glm(Variabel ~ SykehusNavn + Alder + ErMann + NDIscorePreOp + ASAover2 + TidlOpr + Roker +
+             UtdHoy + Fedme + Sykepenger + LangArmsm + Angst + OpFlereNivaa, family = binomial, data = LPHD)
+summary(LPHD_Model1)
+summary(LPHD_Model2)
+
+# Calculate estimated marginal means for Clinic on the response scale (EMMs are also known as least-squares means)
+LPHD_EMMs1 <- emmeans::emmeans(LPHD_Model1, ~ SykehusNavn, type = "response")
+LPHD_EMMs2 <- emmeans::emmeans(LPHD_Model2, ~ SykehusNavn, type = "response")
+
+# View the EMMs on the response scale
+summary(LPHD_EMMs1)
+summary(LPHD_EMMs2)
+
+# Extract EMMs as a data.table
+LPHD_Prob1 <- as.data.table(summary(LPHD_EMMs1))
+LPHD_Prob2 <- as.data.table(summary(LPHD_EMMs2))
+
+# Merge EMMs with the original data table
+LPHD1 <- merge(LPHD, LPHD_Prob1, by = "SykehusNavn", all.x = TRUE)
+LPHD1$SuccessAdj <- LPHD1$ClinicVolume*LPHD1$prob
+
+LPHD2 <- merge(LPHD, LPHD_Prob2, by = "SykehusNavn", all.x = TRUE)
+LPHD2$SuccessAdj <- LPHD2$ClinicVolume*LPHD2$prob
+
+# Exclude duplicate cases in Clinic
+# LPHD_Clinic <- LPHD[, .(clinic, ClinicVolume, Success, SuccessAdj)][!duplicated(clinic)]
+LPHD_Clinic1 <- LPHD1[!duplicated(LPHD1$SykehusNavn), c('SykehusNavn', 'ClinicVolume', 'Success', 'SuccessAdj')]
+LPHD_Clinic2 <- LPHD2[!duplicated(LPHD2$SykehusNavn), c('SykehusNavn', 'ClinicVolume', 'Success', 'SuccessAdj')]
+
+# Calculate Satisfaction Rates
+#Viser for en og en modell, dvs. husk å bytte modellnr
+LPHD_Clinic <- LPHD_Clinic2 |>
+  dplyr::mutate(Rate = Success/ClinicVolume, #Andel suksess observert
+                OverallRate = sum(Success)/sum(ClinicVolume),
+                se = sqrt(OverallRate * ((1 - OverallRate)/ClinicVolume)),
+                lcl95 =  OverallRate - (1.96 * se),
+                ucl95 =  OverallRate + (1.96 * se),
+                RateAdj = SuccessAdj/ClinicVolume, #Andel suksess estimert
+                OverallRateAdj = sum(SuccessAdj)/sum(ClinicVolume), 
+                seAdj = sqrt(OverallRateAdj * ((1 - OverallRateAdj)/ClinicVolume)),
+                lcl95Adj =  OverallRateAdj - (1.96 * seAdj),
+                ucl95Adj =  OverallRateAdj + (1.96 * seAdj))
+View(LPHD_Clinic)
+
+```
+
+### Funnel plot Satisfaction (%) LPHD
+
+```{r LPHD_Plot, echo=FALSE}
+
+
+#Må standardisere inngangsvariabler
+data_aggregert <- LPHD_Clinic |> 
+  dplyr::mutate(xvar = ClinicVolume, 
+                respons = OverallRateAdj,
+                konf_opp = lcl95Adj, 
+                konf_ned = ucl95Adj)
+
+# Hente traktplott
+#PlotRateAdj <- 
+Traktplott(data_aggregert = data_aggregert,
+                          xaksetxt = 'Antall operasjoner',
+                          yaksetxt = 'Suksess')
+
+# Save the plot to a PDF file
+ggsave("Funnel_plot_success_adjusted(HD).pdf", plot = PlotRateAdj, width = 10, height = 6)
+
+```
+

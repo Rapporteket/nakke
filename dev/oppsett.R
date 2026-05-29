@@ -13,13 +13,10 @@ library(nakke)
 source("dev/sysSetenv.R")
 nakke::kjorNakkeApp(browser = TRUE)
 
-dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
+#dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
 RegData <- NakkeHentRegData(datoFra = '2024-01-01') #, medOppf = 1)
 RegData <- NakkePreprosess(RegData)
-
-names(Oppf3Skjema)[grep('Mjoa', names(Oppf3Skjema), ignore.case = T)]
-test <- RegData[ ,c('OprDato', 'Utf')]
 
 # 3,6s - sammenstille
 # 6,8s - hente tabeller++
@@ -27,10 +24,6 @@ test <- RegData[ ,c('OprDato', 'Utf')]
 
 unique(RegData[,c("ReshId", 'SykehusNavn')])
 reshID <- 114288
-
-
-
-
 
 
 

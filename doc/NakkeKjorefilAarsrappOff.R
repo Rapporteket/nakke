@@ -249,3 +249,187 @@ print(duplMnd, row.names = F)
 testAar <- aggregate(RegData$PasientID, by=RegData[ ,c('PasientID','Aar')], drop=TRUE, FUN=length)
 sum(testAar$x >1)
 
+
+
+
+
+
+
+
+
+
+
+
+#-------Traktplott med justering---------------------
+library(nakke)
+source("dev/sysSetenv.R")
+
+
+library(ggplot2)
+library(tidyr)
+
+#------------------Eksempel, intro til traktplott---------------
+# Make up some data, as if it was from a regression model
+# with observed and predicted (expected) events.
+# Add a ratio (SR) of observed to expected, our indicator
+# Scatter plot in ggplot
+# Now add a central line, as 1 is the average/expected value in this case.
+# Add a 95% Poisson limit, by using the density function to get the
+# quantile value for each 'expected'.
+#Dette og det under er hentet fra:
+#https://cran.r-project.org/web/packages/FunnelPlotR/vignettes/funnel_plots.html
+
+devtools::install_github("https://github.com/nhs-r-community/FunnelPlotR")
+library(FunnelPlotR)
+library(COUNT)
+library(ggplot2)
+data(medpar)
+medpar$provnum <- factor(medpar$provnum)
+medpar$los <- as.numeric(medpar$los)
+
+mod <- glm(los ~ hmo + died + age80 + factor(type)
+           , family = "poisson" #modell, siden har count-data
+           , data = medpar)
+#mod er ei liste med mange objekter, også datasettet.
+summary(mod)
+# Nå har vi en lineær modell som kan sammenlignes med observert
+medpar$prds <- predict(mod, type = "response")
+#Build plot
+#Now we can build a funnel plot object with standard Poisson limits, and outliers labelled.
+#The function returns an S3 object, with various methods including
+#print(), outlier(), limits(), source_data() etc. See the help file: ?funnel_plot for more details.
+FunnelPlotR::funnel_plot(
+  medpar, numerator = los, denominator = prds, group = provnum
+  , title = "Length of Stay Funnel plot for `medpar` data"
+  , draw_unadjusted = TRUE, draw_adjusted = FALSE
+  , label = "outlier", limit = 99
+)
+# Overdispersion = There is more variation in our data than we would expect. We get too many outliers!
+#The following ratio should be 1 if our data are conforming to Poisson distribution assumption (conditional mean = variance).
+#If it is greater than 1, we have overdispersion:
+
+  sum(mod$weights * mod$residuals^2) / mod$df.residual
+
+#applying overdispersed limits using either SHMI or Spiegelhalter methods adjust for this by inflating the limits:
+  FunnelPlotR::funnel_plot(
+    medpar, numerator = los, denominator = prds, group = provnum
+    , title = "Length of Stay Funnel plot for `medpar` data"
+    , draw_unadjusted = FALSE, draw_adjusted = TRUE
+    , data_type = "SR", sr_method = "SHMI"
+    , label = "outlier", limit = 99
+  )
+
+#----------------------Traktplott for nakkedata
+  source("dev/sysSetenv.R")
+  RegData1 <- NakkePreprosess(NakkeHentRegData(datoFra = '2024-01-01')) #, medOppf = 1))
+  RegData <- NakkeUtvalgEnh(RegData = RegData1, datoTil = '2024-12-31', myelopati = 0)$RegData
+  RegData <- RegData[RegData$Inngrep %in% c(1,3), ]
+  RegData <- NakkeVarTilrettelegg(RegData = RegData, valgtVar = 'NDIendr12mnd35pst')$RegData
+RegData$Ant <- 1
+RegData$ASAover2 <- RegData$ASAgrad>2
+RegData$ErTidlOpr <- RegData$TidlOpr %in% 1:3
+RegData <- RegData[which(RegData$Roker %in% 0:1), ]
+RegData <- RegData[which(RegData$Utdanning %in% 1:5), ]
+RegData$UtdHoy <- ifelse(RegData$Utdanning %in% 4:5, 1,0)
+RegData$Fedme <- ifelse(RegData$BMI >= 30, 1,0)
+RegData$Sykepenger <- ifelse(RegData$ArbeidstausPreOp %in% 6:10, 1,0)
+RegData <- RegData[which(RegData$SymptVarighetArmer %in% 2:5), ]
+RegData$LangArmsm <- ifelse(RegData$SymptVarighetArmer %in% 4:5, 1,0)
+RegData <- RegData[which(RegData$EqAngstPreOp %in% 1:5), ]
+RegData$Angst <- ifelse(RegData$EqAngstPreOp >1, 1,0)
+RegData <- RegData[which(RegData$AntallNivaaOpr > 0), ]
+RegData$OpFlereNivaa <- ifelse(RegData$AntallNivaaOpr >1, 1,0)
+
+
+#plotUjust <-
+   FunnelPlotR::funnel_plot(RegData,
+    numerator = Variabel, denominator = Ant, group = SykehusNavn,
+    title = "NDIendr12mnd35pst, ujustert ",
+    draw_unadjusted = TRUE, draw_adjusted = FALSE,
+    data_type = "RC", #  sr_method = "SHMI",
+    label = "outlier", limit = 95,
+    y_label = "NDIendr>35%"
+  )
+ggsave('plotUjust.pdf')
+
+
+
+  # Traktplott, justerte analyser
+  # Utvalg:
+  #   (operasjon_type= 1 ELLER operasjon_type=3) & OprIndikMyelopati=0
+
+  #Utfall  - avhengig variabel
+  # 1.	Mean differanse: NDIscore12mnd – NDIscorePreOp =NDImeanForbedring12Mnd
+  # 2.	 ((NDIscore12mnd – NDIscorePreOp)/ NDIscorePreOp)* 100= prosentvis forbedring av NDI: NDI%Forbedring12Mnd.
+  #Lag så dikotom variabel: NDI%Forbedring12Mnd ≥ 35% (ja/nei), (suksess ja/nei)
+
+
+
+mod <- glm(Variabel ~ Alder + ErMann + NDIscorePreOp + ASAover2 + TidlOpr + Roker +
+             UtdHoy + Fedme + Sykepenger + LangArmsm + Angst + OpFlereNivaa
+           , family = "poisson" #modell, poisson for countdata
+           , data = RegData, na.action = 'na.exclude')
+summary(mod)
+test <- predict(mod, type = "response")
+RegData$Estimert <- predict(mod, type = "response")
+RegData <- RegData[!is.na(RegData$Estimert), ]
+
+FunnelPlotR::funnel_plot(RegData,
+                         numerator = Estimert, denominator = Ant, group = SykehusNavn,
+                         title = "NDIendr12mnd35pst, justert ",
+                         draw_unadjusted = TRUE, draw_adjusted = FALSE,
+                         data_type = "RC", #  sr_method = "SHMI",
+                         label = "outlier", limit = 95,
+                         y_label = "NDIendr>35%",
+                         x_range = c(10, max(table(RegData$SykehusNavn)))
+)
+ggsave('NDI35pst_estimert.pdf')
+
+  # Kovariater («independent variables»):
+  Alder
+  Kjonn  (mann/kvinne)
+  NDIscorePreOp
+  ASAgrad: >2 (ja/nei) dikotom variabel
+  TidlOpr (ja/nei)
+  Roker (1ja, 0 nei), 9=NULL
+  Utdanning (1-3=1 (lav utdanning) og 4-5= 2 (Høy utdanning)), 9=NULL
+  BMI (BMI ≥ 30.0=1 (fedme)) og <30= 0 (ikke fedme), 9=NULL
+  ArbeidstausPreOp (6-10=1 (mottar sykepenger) og 1-5=0 (mottar ikke sykepenger)), 99= NULL
+  SymptVarighetArmer (1=NULL, 2-3=1 (symtomvarighet arm under ett år) og 4-5= 2 (symtomvarighet arm over ett år)), 9= NULL.
+  EqAngstPreOp (1=1 (ingen angst eller depresjon) og >1=2 (mild til betydelig angst eller depresjon)), 9= NULL.
+  AntallNivaaOpr (0=NULL, 1=1 (ett nivå) og >1=2 (mer enn ett nivå)), 9=NULL.
+
+
+  Presentasjon av resultat/figurer:
+    Ønskelig med analyse for hele perioden med og uten justering for kovariater.
+  I tillegg splitte output på tidsperioder:
+    Hele perioden: operert i perioden 2012-2024 + perioden 2023-2024
+  Dette blir til sammen 8 funnel plot.
+
+  Fixed effects (sykehus)
+
+
+
+  # Aggregering: antall og andel per sykehus
+  agg <- RegData %>%
+    group_by(SykehusNavn) %>%
+    summarise(
+      n = n(),
+      rate = mean(Variabel)
+    )
+
+  # Traktplott
+  funnel_plot(agg,
+              numerator   = agg$rate * agg$n,   # antall "1" i Variabel
+              denominator = agg$n,              # antall per sykehus
+              group       = agg$SykehusNavn,
+              limit       = 95,                 # 95% konfidensgrenser
+              label       = TRUE,               # vis sykehusnavn
+              title       = "Traktplott for indikatorvariabelen 'Variabel'",
+              xlab        = "Antall observasjoner per sykehus",
+              ylab        = "Andel (Variabel)"
+  )
+
+
+
+
