@@ -107,7 +107,7 @@ NakkeFigAndelerGrVar <- function(RegData=0, valgtVar='Alder', minald=0, maxald=1
     GrNavn <- c(GrNavn[-indGrUt], GrUtNavn)
   }
 
-  if (valgtVar == 'Komplinfek') {KImaalGrenser <- c(0,2,100)}
+  # if (valgtVar == 'Komplinfek') {KImaalGrenser <- c(0,2,100)}
   if (valgtVar == 'NDIendr12mnd35pst' & fremBak == 1 & myelopati == 0) {KImaalGrenser <- c(0,40,70,100)}
   if (valgtVar == 'KomplSvelging3mnd' & myelopati == 0) {KImaalGrenser <- c(0,17,100)}
   if (valgtVar == 'KomplStemme3mnd' & myelopati == 0) {KImaalGrenser <- c(0,10,100)}
