@@ -227,10 +227,34 @@ table(FellesFilNakke$ind_id, FellesFilNakke$year)
 
 #----------------Kompletthet av kvalitetsindikatorvariabler---------
 source("C:/Users/lro2402unn/RegistreGIT/nakke/dev/sysSetenv.R")
-NakkeDataRaa <- NakkeHentRegData(datoTil = datoTil) #13927
+library(nakke)
+NakkeDataRaa <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31') #13927
 NakkeData <- NakkePreprosess(NakkeDataRaa)
-NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra=datoFra1aar, datoTil=datoTil)$RegData
+NakkeData <- NakkeUtvalgEnh(RegData=NakkeData, fremBak = 1, myelopati = 0)$RegData
+NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra='2025-01-01')$RegData
 
+#Utvalg - alle kvalitetsindikatorer er filtrert på fremBak = 1, myelopati = 0
+table(NakkeData$OprMetodeTilgangFremre, useNA = 'a') #fremBak = 1, OprMetodeTilgangFremre==1
+#alle registrert.
+table(NakkeData$OprIndikMyelopati, useNA = 'a') #myelopati=0
+#alle registrert.
+
+#NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
+# valgtVar='NDIendr12mnd35pst', 2023 og 2024
+# fremBak = 1, myelopati = 0
+NakkeDataNDI <- NakkeUtvalgEnh(RegData=NakkeData, datoTil = '2024-12-31')$RegData
+NakkeDataNDI$NDIdiff <- NakkeDataNDI$NDIscorePreOp - NakkeDataNDI$NDIscore12mnd
+100*sum(is.na(NakkeDataNDI$NDIdiff))/dim(NakkeDataNDI)[1] #28,1% manglende
+
+#Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
+#2024 og 2025 valgtVar='KomplStemme3mnd',StatusUtfyll3mnd == 1, KomplStemme3mnd %in% 0:1
+100*prop.table(table(NakkeData$KomplStemme3mnd, useNA = 'a'))
+#20.3%
+
+#Svelgvansker, 3 og 12 mnd (ikke-myelopati, fremre tilgang) – lav
+#2024 og 2025 valgtVar='KomplSvelging3mnd',
+100*prop.table(table(NakkeData$KomplSvelging3mnd, useNA = 'a'))
+#20.3%
 
 
 #----------Dekningsgrad---------------------
