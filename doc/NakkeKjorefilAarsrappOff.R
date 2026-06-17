@@ -25,10 +25,9 @@ NakkeData <- NakkePreprosess(NakkeDataRaa)
 NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra=datoFra1aar, datoTil=datoTil)$RegData
 
 #Datasjekk
-ShNavnReshRaa <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'ReshId')])
 SykehusNavnResh <- unique(NakkeDataRaa[ ,c('SykehusNavn', 'ReshId')])
 ShNavnResh <- unique(NakkeData[ ,c('SykehusNavn', 'ReshId')])
-write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavnAVDResh.csv', row.names = F, fileEncoding = 'latin1')
+#write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavnAVDResh.csv', row.names = F, fileEncoding = 'latin1')
 
 #Til Tore
 # RegData <- NakkePreprosess(RegData = NakkeRegDataSQL(medProm = 1))
@@ -39,43 +38,33 @@ write.csv2(ShNavnResh[order(ShNavnResh$SykehusNavn), ], file = 'NakkeSykehusNavn
 
 #NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
 
-NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra2aar , datoTil = datoTil12mnd,
+NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoFra = datoFra3aar , datoTil = datoTil12mnd,
                      fremBak = 1, myelopati = 0, Ngrense=20, outfile='NakkeNDIendr12mnd35pstSh.pdf')
 NakkeFigAndelTid(RegData=NakkeData, valgtVar='NDIendr12mnd35pst', datoTil = datoTil12mnd,
                  fremBak=1, myelopati=0, Ngrense=20,outfile='NakkeNDIendr12mnd35pstTid.pdf')
 
 
 #Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
-NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=0, datoFra=datoFra1aar,  valgtVar='KomplStemme3mnd',
+NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=0, datoFra=datoFra2aar,  valgtVar='KomplStemme3mnd',
                    myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplStemme3mndSh.pdf')
 
 NakkeFigAndelTid(RegData=NakkeData, preprosess=0, valgtVar='KomplStemme3mnd',
                  myelopati=0, fremBak=1, outfile='NakkeKomplStemme3mndTid.pdf')
 
-NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=0, datoFra=datoFra2aar, datoTil = datoTil12mnd,
+NakkeFigAndelerGrVar(RegData=NakkeData, preprosess=0, datoFra=datoFra3aar, datoTil = datoTil12mnd,
                      valgtVar='KomplStemme12mnd',
                      myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplStemme12mndSh.pdf')
 
 
 #Svelgvansker, 3 og 12 mnd (ikke-myelopati, fremre tilgang) – lav
-NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar,  valgtVar='KomplSvelging3mnd',
+NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra2aar,  valgtVar='KomplSvelging3mnd',
                         myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplSvelging3mndSh.pdf')
-NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra2aar, datoTil = datoTil12mnd,
+NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra3aar, datoTil = datoTil12mnd,
                      valgtVar='KomplSvelging12mnd',
                      myelopati=0, fremBak=1, Ngrense=20, outfile='NakkeKomplSvelging12mndSh.pdf')
-# NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='KomplSvelging3mnd',
-#                    myelopati=0, fremBak=1, Ngrense=20,
-#                    ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplSvelging3mndShAar.pdf')
+
 NakkeFigAndelTid(RegData=NakkeData, valgtVar='KomplSvelging3mnd',
                  myelopati=0, fremBak=1, outfile='NakkeKomplSvelging3mndTid.pdf')
-
-#Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav
-NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
-                     Ngrense=20, outfile= 'NakkeKomplinfekSh.pdf')
-# dum <- NakkeFigAndelerGrVarAar(RegData=NakkeData, preprosess=0, valgtVar='Komplinfek',
-#                                Ngrense=20, ktr=0,aar=aar2,tidlAar=tidlAar2, outfile='NakkeKomplinfekShAar.pdf')
-
-# NakkeFigAndelTid(RegData=NakkeData, valgtVar='Komplinfek', outfile='NakkeInfekTid.pdf')
 
 
 
@@ -99,6 +88,17 @@ dum <- NakkeFigAndelerGrVar(RegData=NakkeData, valgtVar='OprIndikMyelopati',
 
 dum <- NakkeFigAndelTid(RegData=NakkeData, valgtVar='Saardren', fremBak = 1, myelopati = 0,
                         outfile='NakkeSaardrenUmFTid.pdf')
+#Infeksjon, pasientrapp., 3 mnd etter (bakre tilgang) – lav, ikke lenger kval.ind.
+NakkeFigAndelerGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='Komplinfek',
+                     Ngrense=20, outfile= 'NakkeKomplinfekSh.pdf')
+
+#LiggeDognPostop
+NakkeFigGjsnGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='LiggeDognPostop',
+                     Ngrense=10, myelopati = 0, valgtMaal = 'Med',
+                     outfile= 'NakkeLiggeDognPostopMedSh_uMy.pdf')
+NakkeFigGjsnGrVar(RegData=NakkeData, datoFra=datoFra1aar, valgtVar='LiggeDognPostop',
+                     Ngrense=10, myelopati = 1,valgtMaal = 'Med',
+                     outfile= 'NakkeLiggeDognPostopMedSh_mMy.pdf')
 
 #Div figurer:
 
@@ -225,7 +225,36 @@ table(FellesFilNakke$ind_id, FellesFilNakke$year)
 
 
 
+#----------------Kompletthet av kvalitetsindikatorvariabler---------
+source("C:/Users/lro2402unn/RegistreGIT/nakke/dev/sysSetenv.R")
+library(nakke)
+NakkeDataRaa <- NakkeHentRegData(datoFra = '2023-01-01', datoTil = '2025-12-31') #13927
+NakkeData <- NakkePreprosess(NakkeDataRaa)
+NakkeData <- NakkeUtvalgEnh(RegData=NakkeData, fremBak = 1, myelopati = 0)$RegData
+NakkeData1aar <- NakkeUtvalgEnh(RegData=NakkeData, datoFra='2025-01-01')$RegData
 
+#Utvalg - alle kvalitetsindikatorer er filtrert på fremBak = 1, myelopati = 0
+table(NakkeData$OprMetodeTilgangFremre, useNA = 'a') #fremBak = 1, OprMetodeTilgangFremre==1
+#alle registrert.
+table(NakkeData$OprIndikMyelopati, useNA = 'a') #myelopati=0
+#alle registrert.
+
+#NDI etter fremre nakkekirurgi hos pasienter operert for cervikal radikulopati (ekskl. myelopati)
+# valgtVar='NDIendr12mnd35pst', 2023 og 2024
+# fremBak = 1, myelopati = 0
+NakkeDataNDI <- NakkeUtvalgEnh(RegData=NakkeData, datoTil = '2024-12-31')$RegData
+NakkeDataNDI$NDIdiff <- NakkeDataNDI$NDIscorePreOp - NakkeDataNDI$NDIscore12mnd
+100*sum(is.na(NakkeDataNDI$NDIdiff))/dim(NakkeDataNDI)[1] #28,1% manglende
+
+#Stemmevansker, 3 mnd etter (ikke-myelopati, fremre tilgang) – lav
+#2024 og 2025 valgtVar='KomplStemme3mnd',StatusUtfyll3mnd == 1, KomplStemme3mnd %in% 0:1
+100*prop.table(table(NakkeData$KomplStemme3mnd, useNA = 'a'))
+#20.3%
+
+#Svelgvansker, 3 og 12 mnd (ikke-myelopati, fremre tilgang) – lav
+#2024 og 2025 valgtVar='KomplSvelging3mnd',
+100*prop.table(table(NakkeData$KomplSvelging3mnd, useNA = 'a'))
+#20.3%
 
 
 #----------Dekningsgrad---------------------
@@ -366,7 +395,7 @@ ggsave('plotUjust.pdf')
 
 
 mod <- glm(Variabel ~ Alder + ErMann + NDIscorePreOp + ASAover2 + TidlOpr + Roker +
-             UtdHoy + Fedme + Sykepenger + LangArmsm + Angst + OpFlereNivaa
+             UtdHoy + Fedme + Sykepenger + Angst + OpFlereNivaa #LangArmsm +
            , family = "poisson" #modell, poisson for countdata
            , data = RegData, na.action = 'na.exclude')
 summary(mod)
