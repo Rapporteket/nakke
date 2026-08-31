@@ -218,15 +218,15 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
 }
 
   # Sumskår mJOA. EMS erstattes av mJOA. EMS brukes i år bare på oppfølging.
-  #MotoriskOexMJOA	Kraft i armer og hender (Motorisk funksjon).	[1,2,3,4,5,6,9]
+  #MotoriskOexMJOA	Kraft i armer og hender (Motorisk funksjon).	Nå: 0-5, 9 Før: [1,2,3,4,5,6,9]
   # c("Kan ikke bevege hendene","Ikke spise med skje, men bevege hendene","Ikke kneppe knapper, men spise med skje",
   #   "Kan kneppe knapper med store vansker","Kan kneppe knapper med litt vansker","Ingen vansker med å bruke hendene","Ikke utfylt")
-  #MotoriskUexMJOA	Kraft i bein og føtter (Motorisk funksjon). [1,2,3,4,5,6,7,8,99]
+  #MotoriskUexMJOA	Kraft i bein og føtter (Motorisk funksjon). 	Nå: 0-7, 99 Før: [1,2,3,4,5,6,7,8,99]
   # "Kan ikke bevege beina i det hele tatt og har ingen følelse i beina","-Har følelse i beina, men kan ikke bevege dem i det hele tatt","-Kan bevege beina, men kan ikke gå","-Kan gå på flatt underlag med ganghjelpemiddel (stokk eller krykke)","-Kan gå opp og ned trapper med hjelp av gelenderet","-Kan gå opp og ned trapper uten hjelp av gelenderet, men føler en føler en moderat til betydelig grad av ustøhet/ubalanse når jeg går","-Kan gå uten støtte (ingen krykke, stokk eller rullator) med smidige bevegelser (bena beveger seg uhindret), men har en følelse av lett ustøhet/ubalanse når jeg går","-Kan gå uten ustøhet eller ubalanse","Ikke utfylt"]
-  #SensoriskOexMJOA	Følsomhet i armer og hender (Sensorisk funksjon). [1,2,3,4,9]
+  #SensoriskOexMJOA	Følsomhet i armer og hender (Sensorisk funksjon). Nå: 0-3, 9 Før: [1,2,3,4,9]
   # c("Ingen følelse i det hele tatt i hendene mine","Kraftig nedsatt følelse eller smerte i hendene mine",
   # "Lett nedsatt følelse i hendene mine","Ingen nedsatt følelse i hendene mine","Ikke utfylt")
-  #BlareSfinkterMJOA	Vannlatning (Lukkemuskel, blærefunksjon). 	[1,2,3,4,9]
+  #BlareSfinkterMJOA	Vannlatning (Lukkemuskel, blærefunksjon). Nå: 0-3, 9 Før:	[1,2,3,4,9]
   # c('Kan ikke kontrollere vannlatningen","Har betydelige vansker med å kontrollere vannlatningen",
   # "Har milde til moderate vansker med å kontrollere vannlatningen","Har ingen vansker med å kontrollere vannlatningen","Ikke utfylt")
 
@@ -240,33 +240,33 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
     #Pasientkjema og 3mndskjema. Lav skår, lite plager -> Forbedring = nedgang
     #Pasientskjema. Bare myelopatipasienter? (OprIndikMyelopati == 1)
     if (valgtVar %in% c('MJOAsumPre', 'MJOAendr3mnd', 'MJOAendr12mnd')) {
-      indPre <- with(RegData, which(MotoriskOexMJOA %in% 1:6 & MotoriskUexMJOA %in% 1:8 &
-                        SensoriskOexMJOA %in% 1:4 & BlareSfinkterMJOA %in% 1:4))
+      indPre <- with(RegData, which(MotoriskOexMJOA %in% 0:5 & MotoriskUexMJOA %in% 0:7 &
+                        SensoriskOexMJOA %in% 0:3 & BlareSfinkterMJOA %in% 0:3))
       RegData <- RegData[indPre,]
       RegData$MJOAsumPre <- NA
       RegData$MJOAsumPre <- with(RegData,
-                                 MotoriskOexMJOA + MotoriskUexMJOA + SensoriskOexMJOA + BlareSfinkterMJOA -4)
+                                 MotoriskOexMJOA + MotoriskUexMJOA + SensoriskOexMJOA + BlareSfinkterMJOA)
     }
 
     if (valgtVar %in% c('MJOAsum3mnd', 'MJOAendr3mnd')) {
       indOppf <- with(RegData,
-                      which(MotoriskOexMJOA3mnd %in% 1:6 & MotoriskUexMJOA3mnd %in% 1:8 &
-                       SensoriskOexMJOA3mnd %in% 1:4 & BlareSfinkterMJOA3mnd %in% 1:4))}
+                      which(MotoriskOexMJOA3mnd %in% 0:5 & MotoriskUexMJOA3mnd %in% 0:7 &
+                       SensoriskOexMJOA3mnd %in% 0:3 & BlareSfinkterMJOA3mnd %in% 0:3))}
     if (valgtVar %in% c('MJOAsum12mnd', 'MJOAendr12mnd')) {
       indOppf <- with(RegData,
-                      which(MotoriskOexMJOA12mnd %in% 1:6 & MotoriskUexMJOA12mnd %in% 1:8 &
-                        SensoriskOexMJOA12mnd %in% 1:4 & BlareSfinkterMJOA12mnd %in% 1:4))
+                      which(MotoriskOexMJOA12mnd %in% 0:5 & MotoriskUexMJOA12mnd %in% 0:7 &
+                        SensoriskOexMJOA12mnd %in% 0:3 & BlareSfinkterMJOA12mnd %in% 0:3))
       }
 
     if (valgtVar %in% c('MJOAsum3mnd','MJOAendr3mnd')) {
       RegData <- RegData[indOppf,]
       RegData$MJOAsumOppf <-
-        with(RegData, MotoriskOexMJOA3mnd + MotoriskUexMJOA3mnd + SensoriskOexMJOA3mnd + BlareSfinkterMJOA3mnd)-4
+        with(RegData, MotoriskOexMJOA3mnd + MotoriskUexMJOA3mnd + SensoriskOexMJOA3mnd + BlareSfinkterMJOA3mnd)
     }
       if (valgtVar %in% c('MJOAsum12mnd', 'MJOAendr12mnd')) {
         RegData <- RegData[indOppf,]
         RegData$MJOAsumOppf <-
-          with(RegData, MotoriskOexMJOA12mnd + MotoriskUexMJOA12mnd + SensoriskOexMJOA12mnd + BlareSfinkterMJOA12mnd)-4
+          with(RegData, MotoriskOexMJOA12mnd + MotoriskUexMJOA12mnd + SensoriskOexMJOA12mnd + BlareSfinkterMJOA12mnd)
       }
 
     if (figurtype == 'andeler') {
