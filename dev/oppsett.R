@@ -4,9 +4,9 @@ library(nakke)
 
 #remotes::install_github('Rapporteket/nakke', ref = 'main')
 setwd('../data')
-sship::dec("c://Users/lro2402unn/RegistreGIT/data/rygg1437f02ff.sql.gz__20260318_081310.tar.gz",
+sship::dec("c://Users/lro2402unn/RegistreGIT/data/nakke1505f0ff0.sql.gz__20260831_090711.tar.gz",
            keyfile = "c://Users/lro2402unn/.ssh/id_rsa")
-# source c://Users/lro2402unn/RegistreGIT/data/rygg1437f02ff.sql;
+# source c://Users/lro2402unn/RegistreGIT/data/nakke1505f0ff0.sql;
 setwd('c://Users/lro2402unn/RegistreGIT/nakke')
 
 library(nakke)
@@ -15,7 +15,7 @@ nakke::kjorNakkeApp(browser = TRUE)
 
 #dataGML <- NakkeRegDataSQL_FAS_UT(datoFra = '2010-01-01', alleVar = 1)
 
-RegData <- NakkeHentRegData(datoFra = '2024-01-01') #, medOppf = 1)
+RegData <- NakkeHentRegData(datoFra = '2025-01-01') #, medOppf = 1)
 RegData <- NakkePreprosess(RegData)
 
 # 3,6s - sammenstille
@@ -25,12 +25,93 @@ RegData <- NakkePreprosess(RegData)
 unique(RegData[,c("ReshId", 'SykehusNavn')])
 reshID <- 114288
 
+var <- c('MotoriskOexMJOA', 'MotoriskUexMJOA', 'SensoriskOexMJOA', 'BlareSfinkterMJOA', # 'MJOAsumPre',
+                       'MotoriskOexMJOA3mnd', 'MotoriskUexMJOA3mnd', 'SensoriskOexMJOA3mnd', 'BlareSfinkterMJOA3mnd',
+                       'MotoriskOexMJOA12mnd', 'MotoriskUexMJOA12mnd', 'SensoriskOexMJOA12mnd', 'BlareSfinkterMJOA12mnd')
+for (k in 1:length(var)) {
+  print(var[k])
+  print(table(RegData[,var[k]]))
+}
+
+#Data fra 11.mai 2026:
+#1:MotoriskOexMJOA og 4:BlareSfinkterMJOA inneholder 0
+table(RegData$Aar, RegData$MotoriskOexMJOA) # 1 i jan26, 1 i mar26
+table(RegData$Aar, RegData$BlareSfinkterMJOA)  # 2 i jan26, 1 i mar26
+
+"MotoriskOexMJOA"
+0   1   2   3   4   5   9
+2   9  15  31 142 214  83
+"MotoriskUexMJOA"
+1   2   3   4   5   6   7   8  99
+1   3  32  32  25  76 244   1  82
+"SensoriskOexMJOA"
+1   2   3   9
+72 187 115 122
+"BlareSfinkterMJOA"
+0   1   2   3   4   9
+3  16  74 330   1  72
+"MotoriskOexMJOA3mnd"
+1  2  3  4  5  6
+1  2  8 23 91 55
+"MotoriskUexMJOA3mnd"
+3  4  5  6  7  8
+3  8 12 15 81 58
+"SensoriskOexMJOA3mnd"
+1  2  3  4
+10 45 82 43
+"BlareSfinkterMJOA3mnd"
+1  2  3  4
+1 22 92 65
+"MotoriskOexMJOA12mnd"
+3 4 5 6
+1 1 3 1
+"MotoriskUexMJOA12mnd"
+6 7 8
+1 4 1
+"SensoriskOexMJOA12mnd"
+2 3
+2 4
+"BlareSfinkterMJOA12mnd"
+2 3 4
+3 2 1
 
 
-
-
-
-
+"MotoriskOexMJOA"
+0   1   2   3   4   5   9
+2  12  27  58 290 404 110
+"MotoriskUexMJOA"
+1   2   3   4   5   6   7   8  99
+2   4  42  55  53 163 470   1 113
+"SensoriskOexMJOA"
+1   2   3   9
+145 372 235 151
+"BlareSfinkterMJOA"
+0   1   2   3   4   9
+5  26 131 643   1  97
+"MotoriskOexMJOA3mnd"
+1   2   3   4   5   6
+1   3  13  28 166 284
+"MotoriskUexMJOA3mnd"
+3   4   5   6   7   8
+3  14  30  34 131 275
+"SensoriskOexMJOA3mnd"
+1   2   3   4
+11  60 194 229
+"BlareSfinkterMJOA3mnd"
+1   2   3   4
+4  24 136 328
+"MotoriskOexMJOA12mnd"
+3 4 5 6
+1 1 5 4
+"MotoriskUexMJOA12mnd"
+6 7 8
+1 5 5
+"SensoriskOexMJOA12mnd"
+2 3 4
+2 8 1
+"BlareSfinkterMJOA12mnd"
+2 3 4
+4 2 4
 
 
 #Henter tilgangstre og mapper om resh og SykehusNavn
