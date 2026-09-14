@@ -35,6 +35,7 @@ ui_nakke <- function() {
                    'Bakre fusjon'=4,
                    'Korporektomi'=5,
                    'Andre inngrep'=6)
+  endoValg <- c('Ikke valgt' = 99, 'ja' = 1, 'nei' = 0)
 
 
   #----Define UI for application------
@@ -142,7 +143,7 @@ ui_nakke <- function() {
                                     )
                            )))
     ), #tab
-    
+
 
     #------------- Fordelingsfigurer--------------------
 
@@ -170,6 +171,10 @@ ui_nakke <- function() {
                                                   'Liggedøgn, postoperativt' = 'LiggeDognPostop',
                                                   'Liggedøgn, totalt' = 'LiggeDognTotalt',
                                                   'Morsmål' = 'Morsmal',
+                                                  'MJOA: Kraft i armer og hender (motorisk)' = 'MotoriskOexMJOA',
+                                                  'MJOA: Kraft i bein og føtter (motorisk)' = 'MotoriskUexMJOA',
+                                                  'MJOA: Følsomhet i armer og hender (sensorisk)' = 'SensoriskOexMJOA',
+                                                  'MJOA: Vannlatning (lukkemuskel/blærefunksjon)' = 'BlareSfinkterMJOA',
                                                   'Myelopatigrad før operasjon' = 'MJOAsumPre',
                                                   'Myelopatigrad 3mnd etter operasjon' = 'MJOAsum3mnd',
                                                   'Myelopatigrad 12 mnd etter operasjon' = 'MJOAsum12mnd',
@@ -212,6 +217,8 @@ ui_nakke <- function() {
                           ),
                           selectInput(inputId = "inngrep", label="Inngrepstype",
                                       choices = inngrepValg),
+                          selectInput(inputId = "endoskBak", label="Endoskopi ved bakre tilg.?",
+                                      choices =  endoValg),
                           selectInput(inputId = "myelopati", label="Myelopati",
                                       choices = myelopatiValg),
                           selectInput(inputId = "fremBak", label="Tilgang ",
@@ -306,6 +313,8 @@ ui_nakke <- function() {
                           ),
                           selectInput(inputId = "inngrepAndel", label="Inngrepstype",
                                       choices = inngrepValg),
+                          selectInput(inputId = "endoskBakAndel", label="Endoskopi ved bakre tilg.?",
+                                      choices = endoValg),
                           selectInput(inputId = "myelopatiAndel", label="Myelopati",
                                       choices = c("Ikke valgt"=2, "Ja"=1, "Nei"=0)),
                           selectInput(inputId = "fremBakAndel", label="Tilgang ",
@@ -820,7 +829,11 @@ server_nakke <- function(input, output, session) {
                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                     minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
                     erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                    fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep), session=session)
+                    fremBak = as.numeric(input$fremBak),
+                    inngrep=as.numeric(input$inngrep),
+                    endoskBak = as.numeric(input$endoskBak),
+                    session=session)
+
   }, height=700, width=600)
 
   output$LastNedFigFord <- downloadHandler(
@@ -832,8 +845,11 @@ server_nakke <- function(input, output, session) {
                       reshID=user$org(), enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                       datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                       minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
-                      erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                      fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
+                      erMann=as.numeric(input$erMann),
+                      myelopati = as.numeric(input$myelopati),
+                      fremBak = as.numeric(input$fremBak),
+                      inngrep=as.numeric(input$inngrep),
+                      endoskBak = as.numeric(input$endoskBak),
                       session=session,
                       outfile = file)
     })
@@ -845,8 +861,11 @@ server_nakke <- function(input, output, session) {
                     reshID=user$org(), enhetsUtvalg=as.numeric(input$enhetsUtvalg),
                     datoFra=input$datovalg[1], datoTil=input$datovalg[2],
                     minald=as.numeric(input$alder[1]), maxald=as.numeric(input$alder[2]),
-                    erMann=as.numeric(input$erMann), myelopati = as.numeric(input$myelopati),
-                    fremBak = as.numeric(input$fremBak), inngrep=as.numeric(input$inngrep),
+                    erMann=as.numeric(input$erMann),
+                    myelopati = as.numeric(input$myelopati),
+                    fremBak = as.numeric(input$fremBak),
+                    inngrep=as.numeric(input$inngrep),
+                    endoskBak = as.numeric(input$endoskBak),
                     session=session))
   #Følgende kan være likt for fordelingsfigurer i alle registre:
   tabFord <- reactive(lagTabavFig(UtDataFraFig = UtDataFord()))
@@ -894,7 +913,9 @@ server_nakke <- function(input, output, session) {
                          erMann=as.numeric(input$erMannAndel),
                          myelopati = as.numeric(input$myelopatiAndel),
                          fremBak = as.numeric(input$fremBakAndel),
-                         inngrep=as.numeric(input$inngrepAndel), session=session)
+                         inngrep=as.numeric(input$inngrepAndel),
+                         endoskBak = as.numeric(input$endoskBakAndel),
+                         session=session)
   }, height=700, width=600)
 
   output$LastNedFigAndelGrVar <- downloadHandler(
@@ -912,7 +933,9 @@ server_nakke <- function(input, output, session) {
                            erMann=as.numeric(input$erMannAndel),
                            myelopati = as.numeric(input$myelopatiAndel),
                            fremBak = as.numeric(input$fremBakAndel),
-                           inngrep=as.numeric(input$inngrepAndel), session=session,
+                           inngrep=as.numeric(input$inngrepAndel),
+                           endoskBak = as.numeric(input$endoskBakAndel),
+                           session=session,
                            outfile = file)
     })
 
@@ -927,6 +950,7 @@ server_nakke <- function(input, output, session) {
                      tidsenhet = input$tidsenhetAndelTid,
                      enhetsUtvalg = input$enhetsUtvalgAndelTid,
                      inngrep=as.numeric(input$inngrepAndel),
+                     endoskBak = as.numeric(input$endoskBakAndel),
                      session=session)
   }, height=300, width=1000)
 
@@ -945,6 +969,7 @@ server_nakke <- function(input, output, session) {
                        tidsenhet = input$tidsenhetAndelTid,
                        enhetsUtvalg = input$enhetsUtvalgAndelTid,
                        inngrep=as.numeric(input$inngrepAndel),
+                       endoskBak = as.numeric(endoskAndel),
                        session=session,
                        outfile = file)
     })
@@ -962,6 +987,7 @@ server_nakke <- function(input, output, session) {
                                           tidsenhet = input$tidsenhetAndelTid,
                                           enhetsUtvalg = input$enhetsUtvalgAndelTid,
                                           inngrep=as.numeric(input$inngrepAndel),
+                                          endoskBak = as.numeric(input$endoskBakAndel),
                                           session=session))
 
   tabAndelTid <- reactive(
@@ -1004,6 +1030,7 @@ server_nakke <- function(input, output, session) {
                          erMann=as.numeric(input$erMannAndel),
                          myelopati = as.numeric(input$myelopatiAndel),
                          inngrep=as.numeric(input$inngrepAndel),
+                         endoskBak = as.numeric(input$endoskBakAndel),
                          session=session))
 
   tabAndelerShus <- reactive(cbind('Antall (n)' = AndelerShus()$Nvar,

@@ -47,8 +47,9 @@
 #' @export
 
 
-NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31', tidsenhet='Aar',
-                             minald=0, maxald=130, erMann='', myelopati=99, fremBak=0, inngrep=99,
+NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', datoTil='3000-12-31',
+                             tidsenhet='Aar', minald=0, maxald=130, erMann='',
+                             myelopati=99, fremBak=0, inngrep=99, endoskBak = 9,
                              reshID=0, outfile='', enhetsUtvalg=0, preprosess=0,
                              hentData=0,...) {
 
@@ -72,9 +73,9 @@ NakkeFigAndelTid <- function(RegData, valgtVar='Alder', datoFra='2013-01-01', da
 
   #Gjør utvalg
   NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
-                                minald=minald, maxald=maxald, inngrep = inngrep,
-                                erMann=erMann, myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg,
-                                reshID=reshID)
+                                minald=minald, maxald=maxald, inngrep = inngrep, endoskBak = endoskBak,
+                                erMann=erMann, myelopati=myelopati, fremBak=fremBak,
+                                enhetsUtvalg=enhetsUtvalg, reshID=reshID)
   RegData <- NakkeUtvalg$RegData
   utvalgTxt <- NakkeUtvalg$utvalgTxt
   ind <- NakkeUtvalg$ind

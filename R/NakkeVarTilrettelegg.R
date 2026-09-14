@@ -219,20 +219,61 @@ if (valgtVar == 'EMSscorePreOp') { #GjsnGrVar, GjsnTid
 
   # Sumskår mJOA. EMS erstattes av mJOA. EMS brukes i år bare på oppfølging.
   #MotoriskOexMJOA	Kraft i armer og hender (Motorisk funksjon).	Nå: 0-5, 9 Før: [1,2,3,4,5,6,9]
-  # c("Kan ikke bevege hendene","Ikke spise med skje, men bevege hendene","Ikke kneppe knapper, men spise med skje",
-  #   "Kan kneppe knapper med store vansker","Kan kneppe knapper med litt vansker","Ingen vansker med å bruke hendene","Ikke utfylt")
   #MotoriskUexMJOA	Kraft i bein og føtter (Motorisk funksjon). 	Nå: 0-7, 99 Før: [1,2,3,4,5,6,7,8,99]
-  # "Kan ikke bevege beina i det hele tatt og har ingen følelse i beina","-Har følelse i beina, men kan ikke bevege dem i det hele tatt","-Kan bevege beina, men kan ikke gå","-Kan gå på flatt underlag med ganghjelpemiddel (stokk eller krykke)","-Kan gå opp og ned trapper med hjelp av gelenderet","-Kan gå opp og ned trapper uten hjelp av gelenderet, men føler en føler en moderat til betydelig grad av ustøhet/ubalanse når jeg går","-Kan gå uten støtte (ingen krykke, stokk eller rullator) med smidige bevegelser (bena beveger seg uhindret), men har en følelse av lett ustøhet/ubalanse når jeg går","-Kan gå uten ustøhet eller ubalanse","Ikke utfylt"]
-  #SensoriskOexMJOA	Følsomhet i armer og hender (Sensorisk funksjon). Nå: 0-3, 9 Før: [1,2,3,4,9]
-  # c("Ingen følelse i det hele tatt i hendene mine","Kraftig nedsatt følelse eller smerte i hendene mine",
-  # "Lett nedsatt følelse i hendene mine","Ingen nedsatt følelse i hendene mine","Ikke utfylt")
+    #SensoriskOexMJOA	Følsomhet i armer og hender (Sensorisk funksjon). Nå: 0-3, 9 Før: [1,2,3,4,9]
   #BlareSfinkterMJOA	Vannlatning (Lukkemuskel, blærefunksjon). Nå: 0-3, 9 Før:	[1,2,3,4,9]
-  # c('Kan ikke kontrollere vannlatningen","Har betydelige vansker med å kontrollere vannlatningen",
-  # "Har milde til moderate vansker med å kontrollere vannlatningen","Har ingen vansker med å kontrollere vannlatningen","Ikke utfylt")
 
    # test <- RegData[ ,c('MotoriskOexMJOA', 'MotoriskUexMJOA', 'SensoriskOexMJOA', 'BlareSfinkterMJOA', # 'MJOAsumPre',
    #                     'MotoriskOexMJOA3mnd', 'MotoriskUexMJOA3mnd', 'SensoriskOexMJOA3mnd', 'BlareSfinkterMJOA3mnd',
    #                     'MotoriskOexMJOA12mnd', 'MotoriskUexMJOA12mnd', 'SensoriskOexMJOA12mnd', 'BlareSfinkterMJOA12mnd')]
+
+  if (valgtVar == 'MotoriskOexMJOA') {
+    tittel <- 'Kraft i armer og hender (motorisk funksjon)'
+    gr <- c(0:5, 9)
+    RegData <- RegData[which(RegData$MotoriskOexMJOA %in% gr), ]
+    RegData$VariabelGr <- factor(RegData$MotoriskOexMJOA, levels = gr)
+    retn <- 'H'
+    grtxt <- c("Kan ikke bevege hendene", "Ikke spise med skje",
+               "Ikke kneppe knapper", "Kneppe knapper, store vansker",
+               "Kneppe knapper, litt vansker", "Ingen vansker med hendene",
+               "Ikke utfylt")
+  }
+  if (valgtVar == 'MotoriskUexMJOA') {
+    tittel <- 'Kraft i bein og føtter (Motorisk funksjon)'
+    gr <- c(0:7, 99)
+    RegData <- RegData[which(RegData$MotoriskUexMJOA %in% gr), ]
+    RegData$VariabelGr <- factor(RegData$MotoriskUexMJOA, levels = gr)
+    retn <- 'H'
+    grtxt <- c("Ikke bevege og ingen følelse",
+               "Følelse i, men kan ikke bevege",
+               "Kan bevege, men ikke gå",
+               "Går på flatt underlag med stokk/krykke)",
+               "Går i trapper, trenger gelenderet",
+               "Moderat/betydelig grad av ustøhet/ubalanse",
+               "Litt ustødig, går uten støtte",
+               "Ingen ustøhet/ubalanse", "Ikke utfylt")
+
+  }
+  if (valgtVar == 'SensoriskOexMJOA') {
+    tittel <- 'Følsomhet i armer og hender (Sensorisk funksjon)'
+    gr <- c(0:3, 9)
+    RegData <- RegData[which(RegData$SensoriskOexMJOA %in% gr), ]
+    RegData$VariabelGr <- factor(RegData$SensoriskOexMJOA, levels = gr)
+    retn <- 'H'
+    grtxt <- c("Ingen følelse i hendene", "Kraftig nedsatt følelse eller smerte ",
+               "Lett nedsatt følelse","Ingen nedsatt følelse","Ikke utfylt")
+  }
+  if (valgtVar == 'BlareSfinkterMJOA') {
+    tittel <- 'Vannlatning (Lukkemuskel, blærefunksjon)'
+    gr <- c(0:3, 9)
+    RegData <- RegData[which(RegData$BlareSfinkterMJOA %in% gr), ]
+    RegData$VariabelGr <- factor(RegData$BlareSfinkterMJOA, levels = gr)
+    retn <- 'H'
+    grtxt <- c("Kan ikke kontrollere vannlatningen",
+    "Betydelige vansker med å kontrollere vannlatningen",
+    "Milde til moderate vansker ","Ingen vansker","Ikke utfylt")
+  }
+
 
   if (valgtVar %in% c('MJOAsumPre', 'MJOAsum3mnd', 'MJOAsum12mnd',
                       'MJOAendr3mnd', 'MJOAendr12mnd')) { #Fordeling, gjsn

@@ -53,9 +53,9 @@
 
 NakkeFigAndeler  <- function(RegData=0, valgtVar='Alder', erMann='',
                              datoFra='2012-01-01', datoTil='3000-12-31', inngrep=99,
-                             minald=0, maxald=110, myelopati=99, fremBak=0, outfile='',
+                             minald=0, maxald=110, myelopati=99, fremBak=0, endoskBak = 9,
                              hentData=0, preprosess=0, reshID=0, enhetsUtvalg=0,
-                             lagFig=1, ...)
+                             outfile='',lagFig=1, ...)
 {
 
 	if (hentData == 1) {
@@ -86,9 +86,11 @@ flerevar <- NakkeVarSpes$flerevar
 
 
 #------------Gjøre utvalg-------------------------
-NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil, erMann=erMann,
-                              minald=minald, maxald=maxald, inngrep=inngrep,
-		myelopati=myelopati, fremBak=fremBak, enhetsUtvalg=enhetsUtvalg, reshID = reshID)
+NakkeUtvalg <- NakkeUtvalgEnh(RegData=RegData, datoFra=datoFra, datoTil=datoTil,
+                              erMann=erMann, minald=minald, maxald=maxald,
+                              inngrep=inngrep, endoskBak = endoskBak,
+                              myelopati=myelopati, fremBak=fremBak,
+                              enhetsUtvalg=enhetsUtvalg, reshID = reshID)
 RegData <- NakkeUtvalg$RegData
 utvalgTxt <- NakkeUtvalg$utvalgTxt
 hovedgrTxt <- NakkeUtvalg$hovedgrTxt
