@@ -14,12 +14,15 @@
 #' @param inngrep Inngrepstype 	0-'Ikke klassifiserbar operasjon', 1-'Fremre diketomi for prolaps',
 #' 2-'Bakre dekompresjon', 3-'Fremre dekompresjon sp st.uten prolaps', 4-'Bakre fusjon',
 #' 5-'Korporektomi', 6-'Andre inngrep', 99-alle (standard)
+#' @param endoskBak Benyttet endoskopi ved bakre tilgang? 0-nei, 1-ja, 9-ikke valgt (standard)
 #' @param fargepalett - Velge fargepalett, standard:BlaaOff ("offentliggjøringsfargene")
 #'
 #' @export
 
-NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', minald=0, maxald=110, erMann='', aar=0,
-                           myelopati=99, fremBak=0, inngrep=99, enhetsUtvalg=0, reshID=0, fargepalett='BlaaOff')	#insttype,
+NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01',
+                           minald=0, maxald=110, erMann='', aar=0,
+                           myelopati=99, fremBak=0, inngrep=99, endoskBak = 9,
+                           enhetsUtvalg=0, reshID=0, fargepalett='BlaaOff')	#insttype,
 {
 
   '%i%' <- intersect
@@ -47,6 +50,12 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
   indAar <- if (aar[1] > 2000) {which(RegData$Aar %in% as.numeric(aar))} else {1:Ninn}
   indKj <- if (erMann %in% 0:1) {which(RegData$ErMann == erMann)} else {1:Ninn}
   indOpKat <- if (inngrep %in% 0:6) {which(RegData$Inngrep == inngrep)} else {1:Ninn}
+  indEndo <- if (endoskBak %in% 0:1) {
+    with(RegData, which(OpAndreEndosk == endoskBak &
+                          (OprMetodeTilgangBakre == 1 |
+                             OprMetodeForamenotomiBakreUniLat == 1 |
+                             OprMetodeForamenotomiBakreBiLat == 1)))
+    } else {indEndo <- 1:Ninn}
   indMyelo <- if (myelopati %in% 0:1) {which(RegData$OprIndikMyelopati == myelopati)} else {1:Ninn}
   indFremBak <- if (fremBak %in% 1:2) {
     switch(as.character(fremBak),
@@ -56,13 +65,16 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
 
   #--------------- Definisjoner av tilganger--------------------
 
- indMed <- indAld %i% indDato %i% indAar %i% indKj %i% indMyelo %i% indFremBak %i% indOpKat
+ indMed <- indAld %i% indDato %i% indAar %i% indKj %i% indMyelo %i%
+    indFremBak %i% indOpKat %i% indEndo
   RegData <- RegData[indMed,]
 
   N <- dim(RegData)[1]
 
   txtInngrep <- c('Ikke klassifiserbar operasjon', 'Fremre diskektomi for prolaps', 'Bakre dekompresjon',
              'Fremre dekompresjon sp st.uten prolaps', 'Bakre fusjon', 'Korporektomi', 'Andre inngrep')
+  endoskTxt <- paste0('Endoskopi ved bakre tilgang: ', c('nei', 'ja'))
+
 
 
   utvalgTxt <- c(paste0('Operasjonsdato: ', if (N>0) {min(RegData$OprDato, na.rm=T)} else {datoFra},
@@ -72,7 +84,8 @@ NakkeUtvalgEnh <- function(RegData, datoFra='2012-01-01', datoTil='3000-01-01', 
                  if (erMann %in% 0:1) {paste0('Kjønn: ', c('Kvinner', 'Menn')[erMann+1])},
                  if (myelopati %in% 0:1) {paste0('Myelopati: ', c('Nei', 'Ja')[myelopati+1])},
                  if (fremBak %in% 1:2) {paste0('Tilgang: ', c('Fremre','Bakre')[fremBak])},
-                 if (inngrep %in% 0:6) {txtInngrep[inngrep+1]}
+                 if (inngrep %in% 0:6) {txtInngrep[inngrep+1]},
+                 if (endoskBak %in% 0:1) {endoskTxt[endoskBak + 1]}
   )
 
 
